@@ -24,11 +24,11 @@ const LoginScreen = () => {
               <Image
                 source={require('../assets/images/godesk.jpg')}
                 style={{
-                  width: 30,
-                  height: 30,
+                  width: 40,
+                  height: 40,
                 }}
               />
-              <Text className='font-bold text-secondary-950 ms-.5 mb-1.5'>
+              <Text className='font-bold text-secondary-950 ms-.5 text-lg mb-2'>
                 desk <Text className='text-primary-950'>Engineer</Text>
               </Text>
             </View>
@@ -42,7 +42,7 @@ const LoginScreen = () => {
               Let’s create something extraordinary!
             </Text>
           </View>
-          <View className='mt-10'>
+          <View className='mt-4'>
             <FormControl
               isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
             >

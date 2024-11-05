@@ -2,6 +2,7 @@ import {
   AssetInUseListItemModel,
   AssetSubTypeListItemModel,
   AssetInUseCustomerDetailsModel,
+  IssueTypeModel,
 } from "./assets";
 import { ConfigurationModel } from "./configurations";
 import { EmployeeDetailsModel } from "./employees";
@@ -18,10 +19,11 @@ export interface TicketListItemModel {
   serviceTypeDetails?: ConfigurationModel;
   warrantyDetails?: ConfigurationModel;
   customerDetails?: AssetInUseCustomerDetailsModel;
-  issueTypeDetails?: ConfigurationModel;
+  issueTypeDetails?: IssueTypeModel;
   billable?: boolean;
   timerRunning?: boolean;
   createdAt?: string;
   ticketNo?: string;
   assignedToDetails?: EmployeeDetailsModel;
+  ticketImages?: string[];
 }

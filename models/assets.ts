@@ -61,9 +61,8 @@ export interface AssetMasterListItemModel {
   licensedTypeDetails?: ConfigurationModel;
 }
 
-export interface IssueTypeListItemModel {
+export interface IssueTypeModel {
   id?: string;
   name?: string;
   code?: string;
-  description?: string;
 }

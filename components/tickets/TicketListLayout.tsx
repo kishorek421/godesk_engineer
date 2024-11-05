@@ -16,19 +16,23 @@ const TicketListLayout = () => {
     fetchTickets(1);
   }, []);
 
-  const fetchTickets = (currentPage: number) => {
-    if (currentPage === 1) {
+  const fetchTickets = (nextPage: number) => {
+
+    console.log(nextPage);
+    
+    if (nextPage === 1) {
       setRecentTickets([]);
     }
 
-    getAssignedTickets(currentPage).then((response: any) => {
-      console.log("response", response);
+    getAssignedTickets(nextPage).then((response: any) => {
       let content = response.data?.data?.content ?? [];
-      console.log("content", content);
       if (content && content.length > 0) {
         setRecentTickets((prevState) => [...prevState, ...content]);
       }
       let paginator = response.data?.data?.paginator;
+
+      console.log("paginator _______________", paginator);
+      
       if (paginator) {
         let iCurrentPage = paginator.currentPage;
         let iLastPage = paginator.lastPage;
@@ -37,10 +41,9 @@ const TicketListLayout = () => {
           setIsLastPage(iLastPage);
         }
       }
-    })
-      .catch((e: any) => {
-        console.error(e);
-      });
+    }).catch((e: any) => {
+      console.error(e);
+    });
   };
 
   return (
