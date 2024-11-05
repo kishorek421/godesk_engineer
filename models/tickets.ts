@@ -26,4 +26,5 @@ export interface TicketListItemModel {
   ticketNo?: string;
   assignedToDetails?: EmployeeDetailsModel;
   ticketImages?: string[];
+
 }

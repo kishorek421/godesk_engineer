@@ -19,7 +19,7 @@ const TicketListItemLayout = ({
       className={cn}
       onPress={() => {
         router.push({
-          pathname: "/tickets/tickets_history/details/[ticketId]",
+          pathname: "/ticket_details/[ticketId]",
           params: {
             ticketId: ticketModel.id ?? "",
           },
