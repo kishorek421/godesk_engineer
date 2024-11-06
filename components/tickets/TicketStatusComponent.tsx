@@ -1,7 +1,5 @@
-import { ESCALATED, RAISED, IN_PROGRESS, TICKET_CLOSED } from "@/constants/configuration_keys";
 import { getStatusColor } from "@/utils/helper";
 import { View, Text } from "react-native";
-
 
 const TicketStatusComponent = ({
   statusKey,
