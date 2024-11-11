@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.godesk_engineer.godesk_engineer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
