@@ -18,10 +18,27 @@ export interface TicketListItemModel {
   serviceTypeDetails?: ConfigurationModel;
   warrantyDetails?: ConfigurationModel;
   customerDetails?: AssetInUseCustomerDetailsModel;
-  issueTypeDetails?: ConfigurationModel;
+  issueTypeDetails?: IssueTypeModel;
   billable?: boolean;
   timerRunning?: boolean;
   createdAt?: string;
   ticketNo?: string;
   assignedToDetails?: EmployeeDetailsModel;
+  ticketImages?: string[];
+  lastAssignedToDetails?: AssignedToUserDetailsModel;
+}
+
+export interface AssignedToUserDetailsModel {
+  assignedAt?: string;
+  assignedTo?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+}
+
+
+export interface IssueTypeModel {
+  id?: string;
+  name?: string;
+  code?: string;
 }
