@@ -56,7 +56,7 @@ const HomeScreen = () => {
                         extraData={selectedTabIndex}
                         className='mt-4 py-4'
                     />
-                    <TicketListLayout />
+                    <TicketListLayout selectedTabIndex={selectedTabIndex}/>
                 </View>
             </View>
         </SafeAreaView>

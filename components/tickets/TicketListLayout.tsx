@@ -6,7 +6,7 @@ import { TicketListItemModel } from "@/models/tickets";
 import apiService from "@/services/api/base_api_service";
 import { getAssignedTickets } from "@/services/api/tickets_api_service";
 
-const TicketListLayout = () => {
+const TicketListLayout = ({ selectedTabIndex }: { selectedTabIndex: number }) => {
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,10 +16,24 @@ const TicketListLayout = () => {
     fetchTickets(1);
   }, []);
 
+  const getTicketUrl =(): string =>{
+    switch(selectedTabIndex){
+      case 0:
+        return "getAssignedTickets";
+      case 1:
+        return "GET_CLOSED_TICKET_LIST";
+      case 2:
+        return "";  
+      default :
+      return "";
+    }
+  }
+
+
   const fetchTickets = (nextPage: number) => {
 
     console.log(nextPage);
-    
+
     if (nextPage === 1) {
       setRecentTickets([]);
     }
@@ -32,7 +46,7 @@ const TicketListLayout = () => {
       let paginator = response.data?.data?.paginator;
 
       console.log("paginator _______________", paginator);
-      
+
       if (paginator) {
         let iCurrentPage = paginator.currentPage;
         let iLastPage = paginator.lastPage;

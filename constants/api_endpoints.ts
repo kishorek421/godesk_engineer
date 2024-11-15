@@ -10,5 +10,7 @@ export const GET_CONFIGURATIONS_BY_CATEGORY =
 // tickets
 export const GET_ASSIGNED_TICKETS_LIST =
   "tickets/getAssignedTicketsList";
+export const GET_ONHOLD_TICKETS_LIST = "tickets/getOnHoldTicketsList";
+export const GET_CLOSED_TICKET_LIST= "tickets/getClosedTicketsList";
 export const TICKET_UPLOADS = "/tickets/upload";
 export const GET_TICKET_DETAILS = "/tickets/getTicketById";
