@@ -5,19 +5,20 @@ import { isTickeApiServiceMock } from "@/config/env";
 import { TicketListItemModel } from "@/models/tickets";
 import { getMockAssignedTicketDetails, getMockAssignedTickets } from "./mock/mock_tickets_api_service";
 
-export const getAssignedTickets = async (currentPage: number): Promise<any> => {
+export const getTicketLists = async (currentPage: number, endPoint: string): Promise<any> => {
     return isTickeApiServiceMock ? {
         data: await getMockAssignedTickets(),
     } : apiService
-        .get(GET_ASSIGNED_TICKETS_LIST, {
+        .get(endPoint, {
             params: {
                 pageNo: currentPage,
                 pageSize: 10,
             },
+
         });
 }
 
-export const getAssignedTicketDetails = async (ticketId: string): Promise<any> => {
+export const getTicketDetails = async (ticketId: string): Promise<any> => {
     return isTickeApiServiceMock ? {
         data: await getMockAssignedTicketDetails(),
     } : apiService
