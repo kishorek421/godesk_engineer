@@ -46,11 +46,12 @@ const TicketListLayout = () => {
       let paginator = response.data?.data?.paginator;
       if (paginator) {
         let iCurrentPage = paginator.currentPage;
-        let iLastPage = paginator.lastPage;
-        if (iCurrentPage && iLastPage !== undefined) {
+        setIsLastPage(paginator.lastPage ?? true);
+        if (iCurrentPage) {
           setCurrentPage(iCurrentPage);
-          setIsLastPage(iLastPage);
         }
+      } else {
+        setIsLastPage(true);
       }
     })
       .catch((e: any) => {
@@ -63,11 +64,10 @@ const TicketListLayout = () => {
       data={recentTickets}
       renderItem={({ item }) => (
         <TicketListItemLayout
-          cn={`"m-3"}`}
+          cn={`my-2 mx-4`}
           ticketModel={item}
         />
       )}
-      className={`my-4 h-96`}
       keyExtractor={(_, index) => index.toString()}
       onEndReached={() => {
         if (!isLastPage) {

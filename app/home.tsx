@@ -32,9 +32,9 @@ const HomeScreen = () => {
                                     <Text className='text-md font-semibold'>Sam Joe</Text>
                                 </View>
                             </View>
-                            <View>
+                            {/* <View>
                                 <AntDesignIcon name='search1' size={20} />
-                            </View>
+                            </View> */}
                         </View>
                         {/* <Text className='font-bold text-secondary-950'>Employee</Text> */}
                     </View>
@@ -56,6 +56,8 @@ const HomeScreen = () => {
                         extraData={selectedTabIndex}
                         className='mt-4 py-4'
                     />
+                </View>
+                <View className='h-full'>
                     <TicketListLayout />
                 </View>
             </View>

@@ -16,6 +16,8 @@ const TicketListItemLayout = ({
   ticketModel: TicketListItemModel;
   cn?: string;
 }) => {
+  console.log("ticketModel ->     ------>>>>>> ", ticketModel);
+
   return (
     <TouchableOpacity
       onPress={() => {
@@ -26,6 +28,7 @@ const TicketListItemLayout = ({
           },
         });
       }}
+      className={cn}
     >
       <View className="w-full bg-white px-3 py-3 rounded-lg">
         <View className="flex">
@@ -68,7 +71,7 @@ const TicketListItemLayout = ({
                 <Text className="text-gray-500 text-md ">Raised At</Text>
                 <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                   {ticketModel.createdAt
-                    ? moment(ticketModel.createdAt).fromNow()
+                    ? moment(Number.parseInt(ticketModel.createdAt)).fromNow()
                     : "-"}
                 </Text>
               </View>
