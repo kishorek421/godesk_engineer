@@ -4,4 +4,5 @@ export interface ConfigurationModel {
   value?: string;
   category?: string;
   description?: string;
+
 }

@@ -2,12 +2,12 @@ import { View, Text, FlatList, Image, SafeAreaView, TouchableOpacity } from 'rea
 import React, { useState } from 'react'
 import TicketListLayout from '@/components/tickets/TicketListLayout';
 import AntDesignIcon from '@expo/vector-icons/AntDesign';
-
+import { Link } from 'expo-router';
 const HomeScreen = () => {
 
     const tabs = ["Assigned", "Completed", "Not Closed"];
     const [selectedTabIndex, setSelectedTabIndex] = useState<number>(0);
-
+    
     return (
         <SafeAreaView className=''>
             <View className='  h-full'>
@@ -28,8 +28,10 @@ const HomeScreen = () => {
                             </View> */}
                             <View className='ms-2'>
                                 <View>
-                                    <Text className='text-sm '>Good morning👋</Text>
-                                    <Text className='text-md font-semibold'>Sam Joe</Text>
+                                    <Text className='text-sm mt-10'>Good morning👋</Text>
+                                    <Text className='text-md font-semibold mt-4'>Sam Joe</Text>
+                                    {/* <Text><Link href={'/map/location'}> location</Link></Text>
+                                    <Text><Link href={'/dropdown'}> dropdown</Link></Text> */}
                                 </View>
                             </View>
                             {/* <View>
@@ -47,9 +49,7 @@ const HomeScreen = () => {
                                     setSelectedTabIndex(item.index);
                                 }}
                             >
-                                <View className={`${item.index === selectedTabIndex ? "bg-primary-200" : "bg-gray-200"} py-3 px-2 rounded-full w-28 me-8`}>
-                                    <Text className={`${item.index === selectedTabIndex ? "text-primary-950 font-medium" : "text-gray-500 font-normal text-sm"} text-center `}>{item.item}</Text>
-                                </View>
+                               
                             </TouchableOpacity>
                         )}
                         keyExtractor={(item) => item}

@@ -13,6 +13,7 @@ export interface DropdownModel {
 }
 
 export interface ErrorModel {
+  field? : string;
   value?: string;
   message?: string;
   param?: string;
@@ -30,3 +31,10 @@ export interface PaginatedData<T> {
   content: T,
   pagination: PaginatorModel
 }
+
+
+export interface DropdownProps {
+    options: (string | { label: string; value: string })[]; 
+    placeholder: string;
+    onSelect: (selected: string) => void;
+  }

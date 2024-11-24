@@ -7,4 +7,5 @@ export const RAISED = "RAISED";
 export const IN_PROGRESS = "IN_PROGRESS";
 export const TICKET_CLOSED = "TICKET_CLOSED";
 export const TICKET_STATUS = "TICKET_STATUS";
-export const ASSIGNED = "TICKET_ASSIGNED";
+export const TICKET_ASSIGNED = "TICKET_ASSIGNED";
+export const ASSIGNED = "ASSIGNED";

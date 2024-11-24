@@ -21,6 +21,7 @@ interface PrimarySelectProps {
 }
 
 const ConfigurationSelect = ({
+  
   options,
   selectedConfig,
   setSelectedConfig,
@@ -43,7 +44,7 @@ const ConfigurationSelect = ({
           placeholder={placeholder}
           value={selectedConfig.value}
         />
-        <SelectIcon className="mr-3 " as={ChevronDownIcon} />
+        <SelectIcon className="mr-4 " as={ChevronDownIcon} />
       </SelectTrigger>
       <SelectPortal>
         <SelectBackdrop />

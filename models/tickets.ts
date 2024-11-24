@@ -26,14 +26,15 @@ export interface TicketListItemModel {
   assignedToDetails?: EmployeeDetailsModel;
   ticketImages?: string[];
   lastAssignedToDetails?: AssignedToUserDetailsModel;
+  
 }
 
 export interface AssignedToUserDetailsModel {
-  assignedAt?: string;
-  assignedTo?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
+  assignedAt?: string | null;
+  assignedTo?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  phoneNumber?: string | null;
 }
 
 

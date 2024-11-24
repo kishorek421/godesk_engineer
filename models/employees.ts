@@ -3,4 +3,5 @@ export interface EmployeeDetailsModel {
   firstName?: string;
   lastName?: string;
   email?: string;
+  employeeNo? : string
 }
