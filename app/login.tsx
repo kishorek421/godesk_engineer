@@ -105,7 +105,9 @@ const LoginScreen = () => {
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
+
+export default LoginScreen;
 
 export default LoginScreen
