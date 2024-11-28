@@ -5,15 +5,18 @@ import {
   GET_ASSIGNED_TICKETS_LIST,
   GET_CLOSED_TICKETS_LIST,
   GET_NOT_COMPLETED_TICKETS_LIST,
+  GET_INPROGRESS_TICKETS_DETAILS,
 } from "@/constants/api_endpoints";
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 
 const TicketListLayout = () => {
+ 
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(1); // Track selected tab (1 = Assigned, 2 = Closed, 3 = Not Completed)
+  const [selectedTab, setSelectedTab] = useState(1);
+ // Track selected tab (1 = Assigned, 2 = Closed, 3 = Not Completed)
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -31,7 +34,7 @@ const TicketListLayout = () => {
         return "";
     }
   };
-
+  
   const fetchTickets = (nextCurrentPage: number, selectedTab: number) => {
     console.log("fetching tickets");
 
@@ -71,8 +74,9 @@ const TicketListLayout = () => {
 
   return (
     <>
+  
       {/* Tab buttons to switch between different ticket types */}
-      <View className="flex flex-row justify-between py-3 px-4 rounded-full w-full">
+      <View className="flex flex-row justify-between py-3 px-4 rounded-full w-full mt-4">
         <TouchableOpacity
           onPress={() => setSelectedTab(1)}
           className={`p-3 rounded-full w-28 ${selectedTab === 1 ? "bg-primary-200" : "bg-gray-200"
@@ -117,11 +121,12 @@ const TicketListLayout = () => {
             Not Closed
           </Text>
         </TouchableOpacity>
+        
       </View>
       {recentTickets.length === 0 ? (
         <View className=" justify-center items-center mt-6 mb-72 mx-4 px-6 py-14 bg-gray-300 rounded-lg shadow-md border border-gray-200">
           <Text className="text-gray-500 text-lg text-center">
-            No {selectedTab === 1 ? "Assigned" : selectedTab === 2 ? "Completed" : "Not Closed"} tickets 
+            No {selectedTab === 1 ? "Assigned " : selectedTab === 2 ? "Completed" : "Not Closed" } tickets 
           </Text>
         </View>
       ) : (
@@ -133,7 +138,7 @@ const TicketListLayout = () => {
           keyExtractor={(_, index) => index.toString()}
           onEndReached={() => {
             if (!isLastPage) {
-              fetchTickets(currentPage + 1, selectedTab); // Fetch next page based on selected tab
+              fetchTickets(currentPage + 1, selectedTab); 
             }
           }}
         />

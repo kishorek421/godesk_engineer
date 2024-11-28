@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export async function setItem(key: string, value: string) {
   try {
     await AsyncStorage.setItem(key, value);
-    console.log(`Token saved successfully for key: ${key} -> ${value}`);
+    // console.log(`Token saved successfully for key: ${key} -> ${value}`);
   } catch (e) {
     console.error('Failed to save the token:', e);
   }

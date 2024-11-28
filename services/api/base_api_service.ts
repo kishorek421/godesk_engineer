@@ -15,10 +15,10 @@ api.interceptors.request.use(
     console.log("requesting");
     await setItem(
       AUTH_TOKEN_KEY,
-      "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6Ik5GVFdMNzltOTNLU3IvS1crdDNLRzI3YWxWT2l4bGg1a0FGVnhROG1VRlk9Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6IjliYTA0OWQxLTFiNTEtNGNlMS05MzkyLTViYTUyZjE1NWY0OSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6ImUwZmJlZmNiLTFiZWYtNDhhNy1hNmVmLTlmZThhZTczYzk3ZiIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6IjY1MWYwYjNjLWM3ZDAtNGQyNi05NzEwLWE0NGJiZGFlMWQyZCJ9LCJlbWFpbCI6ImJoYXJhdGlwYXJpdDRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJCaGFyYXRpIiwic3ViIjoiYmhhcmF0aXBhcml0NEBnbWFpbC5jb20iLCJpYXQiOjE3MzIyNzM4NDAsImV4cCI6MTczMjMwMjY0MH0.LuZ7n7CNVwyGoxosbIA0AZHKJbRI2uqsN_pvfMKhxWFPImCAMMA-cQRqwznMRx2hziiyp-Q0ZISr4pQLyZ8OrA");
+      "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6Ik5GVFdMNzltOTNLU3IvS1crdDNLRzI3YWxWT2l4bGg1a0FGVnhROG1VRlk9Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6IjliYTA0OWQxLTFiNTEtNGNlMS05MzkyLTViYTUyZjE1NWY0OSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6ImUwZmJlZmNiLTFiZWYtNDhhNy1hNmVmLTlmZThhZTczYzk3ZiIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6IjY1MWYwYjNjLWM3ZDAtNGQyNi05NzEwLWE0NGJiZGFlMWQyZCJ9LCJlbWFpbCI6ImJoYXJhdGlwYXJpdDRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJCaGFyYXRpIiwic3ViIjoiYmhhcmF0aXBhcml0NEBnbWFpbC5jb20iLCJpYXQiOjE3MzI3NzA0MzcsImV4cCI6MTczMjc5OTIzN30.0fEQo2wl5crL1a7bFuZKPNm_luYCwzFrkqS9LWDK6TQyoh56wYw1Xf08Fu0nOvGS9Vf3PwBh0rCok7f3XDBZXA");
     await setItem(
       REFRESH_TOKEN_KEY,
-      "ddf0c17b-f3a9-411f-8a42-65f0c567b95a",
+      "6eaa7cd1-ac70-48ce-bc1f-df1a299a747f",
     );
     let token = await getItem(AUTH_TOKEN_KEY);
     // console.log("token", token);
@@ -50,26 +50,9 @@ api.interceptors.request.use(
   },
 );
 
-// Define the function to check ticket status by ticket ID
-
-// // Request interceptor: Add Authorization Header
-// apiService.interceptors.request.use(
-//   async (config) => {
-//     const token = await getItem(AUTH_TOKEN_KEY); 
-//     if (token) {
-//       config.headers["Authorization"] = `Bearer ${"eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6Ik5GVFdMNzltOTNLU3IvS1crdDNLRzI3YWxWT2l4bGg1a0FGVnhROG1VRlk9Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6IjliYTA0OWQxLTFiNTEtNGNlMS05MzkyLTViYTUyZjE1NWY0OSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6ImUwZmJlZmNiLTFiZWYtNDhhNy1hNmVmLTlmZThhZTczYzk3ZiIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6IjY1MWYwYjNjLWM3ZDAtNGQyNi05NzEwLWE0NGJiZGFlMWQyZCJ9LCJlbWFpbCI6ImJoYXJhdGlwYXJpdDRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJCaGFyYXRpIiwic3ViIjoiYmhhcmF0aXBhcml0NEBnbWFpbC5jb20iLCJpYXQiOjE3MzE5OTg1MDcsImV4cCI6MTczMjAyNzMwN30.t-krcWvNkV25TUBqtaoNXX7SU7Z069EFpJTT44k6GG-ON1y8xCNYDRJjQsaW0yFBLByQN5-oYyZDTcpyCWx5nA"}`; // Add token to header
-//     } else {
-//       console.error("No token found in SecureStore.");
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     return Promise.reject(error); // Handle request error
-//   }
-// );
 
 // Response interceptor: Handle errors and refresh tokens
-// apiService.interceptors.response.use(
+// api.interceptors.response.use(
 //   (response) => response,
 //   async (error) => {
 //     const originalRequest = error.config;
