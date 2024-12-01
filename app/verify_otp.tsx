@@ -10,6 +10,7 @@ import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Button } from '@/components/ui/button';
 import api from '@/services/api/base_api_service';
+import { VERIFY_OTP} from "@/constants/api_endpoints";
 
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
@@ -29,7 +30,7 @@ const VerifyOTPScreen = () => {
 
     try {
 
-      await api.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then((response) => {
+      await api.get(`${VERIFY_OTP}?mobile=${mobile}&otp=${otp}`).then((response) => {
         if (response.data?.success) {
           router.replace('/home');
           console.log("valid otp");

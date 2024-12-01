@@ -19,5 +19,6 @@ export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus"
 //user list
 
 export const GET_USER_DETAILS = "/users/view";
-
 export const GET_CUSTOMER_DETAILS = "/customers/list";
+export const SEND_OTP ="/otp/send";
+export const VERIFY_OTP ="/otp/verify";

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from "react-native";
+import { View, Text, SafeAreaView, Image, TouchableOpacity,Alert } from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import api from "@/services/api/base_api_service";
 import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
-
+import { SEND_OTP } from "@/constants/api_endpoints";
 const LoginScreen = () => {
   const animationRef = useRef<LottieView>(null);
 
@@ -20,33 +20,37 @@ const LoginScreen = () => {
   const [otp, setOtp] = useState<string>("");
   const handleSendOTP = async () => {
 
-    if (!mobile || !/^\d{10}$/.test(mobile)) {
-      setErrors([{ field: "mobileNo", message: "Please enter a valid 10-digit mobile number." }]);
-      return;
-    }
-
-    setIsLoading(true);
-    setErrors([]);
-
-    try {
-      const response = await api.post('/otp/send', { mobile });
-
-      if (response.data?.success) {
-        console.log("otp sent successfully ")
-        router.push({
-          pathname: '/verify_otp',
-          params: { mobile },
-        });
-      } else {
-        setErrors([{ field: "mobileNo", message: response.data?.message || 'Failed to send OTP. Try again.' }]);
+    const sendOtp = () => {
+      if (!mobile || !/^\d{10}$/.test(mobile)) {
+        setErrors([{ field: "mobileNo", message: "Please enter a valid 10-digit mobile number." }]);
+        return;
       }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      setErrors([{ field: "mobileNo", message: "An error occurred. Please try again." }]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    
+      setIsLoading(true);
+      setErrors([]);
+    
+      api.post(SEND_OTP, { mobile })
+        .then((response) => {
+          if (response.data?.success) {
+            console.log("OTP sent successfully");
+            Alert.alert('Success', 'otp sent successfully!', [{ text: 'OK' }]);
+            router.push({
+              pathname: '/verify_otp',
+              params: { mobile },
+            });
+          } else {
+            setErrors([{ field: "mobileNo", message: response.data?.message || 'Failed to send OTP. Try again.' }]);
+          }
+        })
+        .catch((error) => {
+          console.error('Error sending OTP:', error);
+          setErrors([{ field: "mobileNo", message: "An error occurred. Please try again." }]);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    };
+  }
 
   return (
     <SafeAreaView className="bg-white">

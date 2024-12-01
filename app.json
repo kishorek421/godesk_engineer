@@ -21,15 +21,24 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.godesk.godeskengineer"
+      
+      "package": "com.godesk.godeskengineer",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-     
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "extra": {
       "eas": {

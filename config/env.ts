@@ -29,4 +29,4 @@ const getBaseURL = (iENV: ENVS) => {
 };
 
 export const BASE_URL = getBaseURL(env);
-export const isTickeApiServiceMock = true;
+
