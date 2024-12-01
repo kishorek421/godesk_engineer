@@ -1,0 +1,5 @@
+/android
+/ios
+
+# Ignore test coverage reports
+/coverage

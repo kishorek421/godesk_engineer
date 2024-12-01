@@ -2,7 +2,7 @@
   "expo": {
     "name": "godesk_engineer",
     "slug": "godesk_engineer",
-    "scheme": "godesk_engineer",
+    "scheme": "godesk-engineer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,14 +20,21 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.godesk.godeskengineer"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+     
       "expo-router",
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b26fa7c5-a714-4871-8a5b-8174a2974484"
+      }
+    }
   }
 }
