@@ -63,7 +63,8 @@ const HomeScreen = () => {
                         {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
                     </Text>
                 </View>
-                {inProgressTicketDetails.id &&
+                {
+                    inProgressTicketDetails.id &&
                     <Pressable
                         className="w-full mt-4 px-4"
                         onPress={() => {
@@ -112,7 +113,8 @@ const HomeScreen = () => {
                                 </View>
                             </View>
                         </View>
-                    </Pressable>}
+                    </Pressable>
+                }
                 <TicketListLayout />
             </View>
         </SafeAreaView>

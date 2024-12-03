@@ -143,9 +143,9 @@ const TicketDetails = () => {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
         toStatus: selectedTicketStatus.key,
-        location: ticketDetails.location || { longitude: "0.0", latitude: "0.0" },
+        location: ticketDetails.location || { longitude: 19.4210814, latitude: 72.9167569 },
         description: ticketDetails.description || "No description available",
-        pin: otp,
+        pin: null,
       };
 
       console.log("Request Body: ~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>> ", JSON.stringify(requestBody));
@@ -294,7 +294,7 @@ const TicketDetails = () => {
                   </View>
 
                   {/* Conditionally render Update Ticket Status section */}
-                  {(ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
+                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
                     <View className='my-4'>
                       <Text className="font-bold text-lg text-primary-950">Update Ticket Status</Text>
                       <FormControl
@@ -306,11 +306,12 @@ const TicketDetails = () => {
                         </FormControlLabel>
                         <CustomDropdown
                           options={ticketStatusOptions.length > 0 ? (
-                            ticketDetails.statusDetails?.key === TICKET_OPENED ?
+                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
                               ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
-                              : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "IN_PROGRESS", label: "InProgress" }] :
-                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ? [{ value: "OPENED", label: "Open" },
-                               { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] : []
+                              : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
+                              { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
+                                ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] :
+                                []
                           )
                             : []}
                           placeholder="Select status"
