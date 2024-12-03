@@ -20,8 +20,8 @@ const ImageViewer = () => {
           <AntDesign name="closecircle" size={20} color="#9ca3af" />
         </Pressable>
       </View>
-      <View className="h-full flex justify-center items-center">
-        <Image className="w-full h-96" source={{ uri: uri.toString() }} />
+      <View className="h-full flex justify-center items-center p-4">
+        <Image className=" w-full h-96" source={{ uri: uri.toString() }} />
       </View>
     </View>
   );

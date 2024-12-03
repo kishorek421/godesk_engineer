@@ -7,8 +7,9 @@ import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import moment from "moment";
 import { GET_INPROGRESS_TICKETS_DETAILS, GET_USER_DETAILS } from "@/constants/api_endpoints";
 import TicketListLayout from '@/components/tickets/TicketListLayout';
-import { UserDetailsModel } from '@/models/users'
+import { UserDetailsModel } from '@/models/users';
 import { getGreetingMessage } from '@/utils/helper';
+
 const HomeScreen = () => {
     const { ticketId } = useLocalSearchParams();
     const [inProgressTicketDetails, setInProgressTicketDetails] = useState<TicketListItemModel>({});
@@ -54,17 +55,19 @@ const HomeScreen = () => {
 
     return (
         <SafeAreaView>
-            <View className='py-4'>
-                <View className="flex px-4 ">
+            <View className="py-4">
+                <View className="flex px-4">
+                    
                     <Text className="text-2xl font-bold">
-                        {getGreetingMessage()}{" "}👋
+                        {getGreetingMessage()}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                        {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
+                         {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}👋
                     </Text>
                 </View>
-                {
-                    inProgressTicketDetails.id &&
+                {isLoading ? (
+                    <Text className="text-gray-500 text-center mt-6">Loading...</Text>
+                ) : inProgressTicketDetails.id ? (
                     <Pressable
                         className="w-full mt-4 px-4"
                         onPress={() => {
@@ -92,7 +95,7 @@ const HomeScreen = () => {
                                 </View>
                                 <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
                                 <View className="w-full">
-                                    <View className="flex-row inProgressTicketDetailss-center justify-between">
+                                    <View className="flex-row items-center justify-between">
                                         <View className="flex">
                                             <Text className="text-gray-500 text-md">
                                                 Raised by
@@ -101,7 +104,7 @@ const HomeScreen = () => {
                                                 {inProgressTicketDetails.customerDetails?.firstName ?? ""} {inProgressTicketDetails.customerDetails?.lastName ?? ""}
                                             </Text>
                                         </View>
-                                        <View className="flex inProgressTicketDetailss-end">
+                                        <View className="flex items-end">
                                             <Text className="text-gray-500 text-md">
                                                 Raised At
                                             </Text>
@@ -114,7 +117,15 @@ const HomeScreen = () => {
                             </View>
                         </View>
                     </Pressable>
-                }
+                ) : (
+                    <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
+         rounded-lg
+       ">
+          <Text className="text-gray-400 text-md text-center">
+            No inProgress Ticket found
+          </Text>
+        </View>
+                )}
                 <TicketListLayout />
             </View>
         </SafeAreaView>

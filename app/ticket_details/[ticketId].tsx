@@ -143,7 +143,7 @@ const TicketDetails = () => {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
         toStatus: selectedTicketStatus.key,
-        location: ticketDetails.location || { longitude: 19.4210814, latitude: 72.9167569 },
+        location: ticketDetails.location || { "latitude": 19.4210814,"longitude": 72.9167569 },
         description: ticketDetails.description || "No description available",
         pin: null,
       };
@@ -161,7 +161,7 @@ const TicketDetails = () => {
         console.error("Failed to update ticket status. Server responded with:", response.status);
         Alert.alert('Failed', 'failed to update ticket status', [{ text: 'OK' }]);
       }
-    } catch (e) {
+    } catch (e ) {
       console.error("Failed to update ticket status.", e.response.data);
     }
   };
