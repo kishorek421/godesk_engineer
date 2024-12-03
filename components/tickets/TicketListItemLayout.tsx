@@ -1,8 +1,10 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Pressable, Text, TouchableOpacity, View } from "react-native";
 import { TicketListItemModel } from "@/models/tickets";
 import TicketStatusComponent from "./TicketStatusComponent";
 import { router } from "expo-router";
 import moment from "moment";
+import React from "react";
+
 const TicketListItemLayout = ({
   ticketModel,
   cn = "",
@@ -11,7 +13,7 @@ const TicketListItemLayout = ({
   cn?: string;
 }) => {
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={() => {
         router.push({
           pathname: "/ticket_details/[ticketId]",
@@ -20,7 +22,7 @@ const TicketListItemLayout = ({
           },
         });
       }}
-      className={cn}
+      className={`${cn} px-4`}
     >
       <View className="w-full bg-white px-3 py-3 rounded-lg">
         <View className="flex">
@@ -60,7 +62,7 @@ const TicketListItemLayout = ({
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

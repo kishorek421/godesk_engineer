@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, Modal, TextInput } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, FlatList, Modal, TextInput, Pressable } from 'react-native';
+import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { DropdownProps } from '../models/common';
 
 const CustomDropdown: React.FC<DropdownProps> = ({
@@ -12,32 +12,30 @@ const CustomDropdown: React.FC<DropdownProps> = ({
   const [selectedValue, setSelectedValue] = useState<string>('');
   const [inputText, setInputText] = useState<string>('');
 
-
-
   const handleSelect = (item: string | { label: string; value: string }) => {
     const value = typeof item === 'string' ? item : item.value;
     setSelectedValue(value);
     setInputText(typeof item === 'string' ? item : item.label);
     onSelect(value);
-    setVisible(false); 
+    setVisible(false);
   };
 
   return (
     <View>
       {/* Input Text Box with Dropdown Icon */}
-      <TouchableOpacity
+      <Pressable
         onPress={() => setVisible(true)}
-        className="flex-row items-center justify-between px-3 py-2 border border-gray-300 rounded-sm bg-white w-full"
       >
-        <TextInput
-          className="flex-1 text-base text-gray-800 p-0"
-          placeholder={placeholder}
-          value={inputText}
-          editable={false}
-        />
-        <FontAwesome name="chevron-down" size={16} color="#a9a9a9" />
-      </TouchableOpacity>
-
+        <View
+         className="flex-row items-center justify-between px-3 border
+         border-gray-300 rounded-md bg-white w-full py-2.5"
+        >
+          <Text className={`${inputText && inputText.length > 0 ? 'text-gray-900' : 'text-gray-500'}`}>
+            {inputText && inputText.length > 0 ? inputText : placeholder}
+          </Text>
+          <SimpleLineIcons name="arrow-down" size={14} color="#a9a9a9" />
+        </View>
+      </Pressable>
       {/* Dropdown Modal */}
       <Modal
         transparent

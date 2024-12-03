@@ -1,29 +1,37 @@
-import { View, Text, FlatList, SafeAreaView, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useLocalSearchParams, router } from 'expo-router';
 import { TicketListItemModel } from "@/models/tickets";
-import api from "@/services/api/base_api_service";
+import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import moment from "moment";
 import { GET_INPROGRESS_TICKETS_DETAILS, GET_USER_DETAILS } from "@/constants/api_endpoints";
 import TicketListLayout from '@/components/tickets/TicketListLayout';
-import {UserDetailsModel} from '@/models/users'
+import { UserDetailsModel } from '@/models/users'
+import { getGreetingMessage } from '@/utils/helper';
 const HomeScreen = () => {
     const { ticketId } = useLocalSearchParams();
-    const [ticketModel, setTicketModel] = useState<TicketListItemModel | null>(null);
-    const [userDetails, setUserDetails] = useState<UserDetailsModel | null>(null);
+    const [inProgressTicketDetails, setInProgressTicketDetails] = useState<TicketListItemModel>({});
+    const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
     const [isLoading, setIsLoading] = useState(true);
 
+    const { refresh } = useLocalSearchParams();
+
     useEffect(() => {
-        fetchTicketDetails();
-        fetchUserDetails(); 
+        fetchInProgressTicketDetails();
+        fetchUserDetails();
     }, []);
 
-    const fetchTicketDetails = () => {
-        api.get(GET_INPROGRESS_TICKETS_DETAILS)
+    const fetchInProgressTicketDetails = () => {
+        apiClient.get(GET_INPROGRESS_TICKETS_DETAILS)
             .then((response) => {
-                const ticketData = response.data?.data?.content?.[0] ?? null;
-                setTicketModel(ticketData);
+                const content = response.data?.data?.content;
+                console.log("inProgressTicketDetails", content);
+
+                if (content && content.length > 0) {
+                    const ticketData = content[0] ?? {};
+                    setInProgressTicketDetails(ticketData);
+                }
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -33,10 +41,9 @@ const HomeScreen = () => {
     };
 
     const fetchUserDetails = () => {
-        api.get(GET_USER_DETAILS)
+        apiClient.get(GET_USER_DETAILS)
             .then((response) => {
                 console.log(response.data?.data);
-                
                 const userData = response.data.data ?? {};
                 setUserDetails(userData);
             })
@@ -45,80 +52,69 @@ const HomeScreen = () => {
             });
     };
 
-    if (isLoading) {
-        return <Text>Loading...</Text>;
-    }
-
     return (
         <SafeAreaView>
-            
-
-            <FlatList
-                data={ticketModel ? [ticketModel] : []} 
-                keyExtractor={(item) => item.id?.toString() ?? item.ticketNo ?? "defaultKey"}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        className="flex-1 w-full p-4 rounded-sm mb-4"
+            <View className='py-4'>
+                <View className="flex px-4 ">
+                    <Text className="text-2xl font-bold">
+                        {getGreetingMessage()}{" "}👋
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold mt-[2px]">
+                        {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
+                    </Text>
+                </View>
+                {inProgressTicketDetails.id &&
+                    <Pressable
+                        className="w-full mt-4 px-4"
                         onPress={() => {
                             router.push({
                                 pathname: "/ticket_details/[ticketId]",
-                                params: { ticketId: item.id ?? "" },
+                                params: { ticketId: inProgressTicketDetails.id ?? "" },
                             });
                         }}
                     >
-                        <View className="flex mb-4">
-                            <Text>
-                                <Text className="text-2xl font-bold">
-                                    Hello{" "}
-                                </Text>
-                                <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                                    {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""} 👋
-                                </Text>
-                            </Text>
-                        </View>
                         <View className="bg-white px-4 py-3 rounded-lg w-full">
                             <View className="flex">
                                 <View className="flex-row justify-between w-full">
                                     <View>
                                         <Text className="text-gray-900 font-bold">
-                                            {item.ticketNo ?? "-"}
+                                            {inProgressTicketDetails.ticketNo ?? "-"}
                                         </Text>
                                         <Text className="text-gray-500 text-[13px] mt-[1px]">
-                                            Issue in {item.issueTypeDetails?.name ?? "-"}
+                                            Issue in {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                                         </Text>
                                     </View>
                                     <TicketStatusComponent
-                                        statusKey={item.statusDetails?.key ?? ""}
-                                        statusValue={item.statusDetails?.value ?? ""}
+                                        statusKey={inProgressTicketDetails.statusDetails?.key ?? ""}
+                                        statusValue={inProgressTicketDetails.statusDetails?.value ?? ""}
                                     />
                                 </View>
                                 <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
                                 <View className="w-full">
-                                    <View className="flex-row items-center justify-between">
+                                    <View className="flex-row inProgressTicketDetailss-center justify-between">
                                         <View className="flex">
                                             <Text className="text-gray-500 text-md">
                                                 Raised by
                                             </Text>
                                             <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                                                {item.customerDetails?.firstName ?? ""} {item.customerDetails?.lastName ?? ""}
+                                                {inProgressTicketDetails.customerDetails?.firstName ?? ""} {inProgressTicketDetails.customerDetails?.lastName ?? ""}
                                             </Text>
                                         </View>
-                                        <View className="flex items-end">
+                                        <View className="flex inProgressTicketDetailss-end">
                                             <Text className="text-gray-500 text-md">
                                                 Raised At
                                             </Text>
                                             <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                                                {item.createdAt ? moment(Number.parseInt(item.createdAt)).fromNow() : "-"}
+                                                {inProgressTicketDetails.createdAt ? moment(Number.parseInt(inProgressTicketDetails.createdAt)).fromNow() : "-"}
                                             </Text>
                                         </View>
                                     </View>
                                 </View>
                             </View>
                         </View>
-                    </TouchableOpacity>
-                )}
-            />
-            <TicketListLayout />
+                    </Pressable>}
+                <TicketListLayout />
+            </View>
         </SafeAreaView>
     );
 };

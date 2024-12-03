@@ -11,12 +11,17 @@ import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 
 const TicketListLayout = () => {
- 
+
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
-  const [selectedTab, setSelectedTab] = useState(1);
- // Track selected tab (1 = Assigned, 2 = Closed, 3 = Not Completed)
+  const [selectedTab, setSelectedTab] = useState(0);
+
+  const tabs = [
+    "Assigned",
+    "Completed",
+    "Not Closed",
+  ];
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -24,17 +29,17 @@ const TicketListLayout = () => {
 
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {
-      case 1:
+      case 0:
         return GET_ASSIGNED_TICKETS_LIST;
-      case 2:
+      case 1:
         return GET_CLOSED_TICKETS_LIST;
-      case 3:
+      case 2:
         return GET_NOT_COMPLETED_TICKETS_LIST;
       default:
         return "";
     }
   };
-  
+
   const fetchTickets = (nextCurrentPage: number, selectedTab: number) => {
     console.log("fetching tickets");
 
@@ -50,7 +55,7 @@ const TicketListLayout = () => {
           if (nextCurrentPage === 1) {
             setRecentTickets(content);
           } else {
-            setRecentTickets((prevState) => [...prevState, ...content]);
+            setRecentTickets((prevState: any) => [...prevState, ...content]);
           }
         } else if (nextCurrentPage === 1) {
           setRecentTickets([]); // Reset tickets if no content found
@@ -74,73 +79,51 @@ const TicketListLayout = () => {
 
   return (
     <>
-  
       {/* Tab buttons to switch between different ticket types */}
-      <View className="flex flex-row justify-between py-3 px-4 rounded-full w-full mt-4">
-        <TouchableOpacity
-          onPress={() => setSelectedTab(1)}
-          className={`p-3 rounded-full w-28 ${selectedTab === 1 ? "bg-primary-200" : "bg-gray-200"
-            }`}
-        >
-          <Text
-            className={`text-center ${selectedTab === 1
-              ? "text-primary-950 font-medium"
-              : "text-gray-500 font-normal text-sm"
-              }`}
-          >
-            Assigned
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => setSelectedTab(2)}
-          className={`p-3 rounded-full w-28 ${selectedTab === 2 ? "bg-primary-200" : "bg-gray-200"
-            }`}
-        >
-          <Text
-            className={`text-center ${selectedTab === 2
-              ? "text-primary-950 font-medium"
-              : "text-gray-500 font-normal text-sm"
-              }`}
-          >
-            Completed
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => setSelectedTab(3)}
-          className={`p-3 rounded-full w-28 ${selectedTab === 3 ? "bg-primary-200" : "bg-gray-200"
-            }`}
-        >
-          <Text
-            className={`text-center ${selectedTab === 3
-              ? "text-primary-950 font-medium"
-              : "text-gray-500 font-normal text-sm"
-              }`}
-          >
-            Not Closed
-          </Text>
-        </TouchableOpacity>
-        
+      <View className="flex flex-row justify-between py-3 rounded-full w-full mt-4 px-4">
+        {
+          tabs.map((tab, index) => (
+            <TouchableOpacity
+              onPress={() => setSelectedTab(index)}
+              className={`p-3 rounded-full w-28 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
+                }`}
+              key={index}
+            >
+              <Text
+                className={`text-center ${selectedTab === index
+                  ? "text-primary-950 font-medium"
+                  : "text-gray-500 font-normal text-sm"
+                  }`}
+              >
+                {tab}
+              </Text>
+            </TouchableOpacity>
+          ))
+        }
       </View>
       {recentTickets.length === 0 ? (
-        <View className=" justify-center items-center mt-6 mb-72 mx-4 px-6 py-14 bg-gray-300 rounded-lg shadow-md border border-gray-200">
-          <Text className="text-gray-500 text-lg text-center">
-            No {selectedTab === 1 ? "Assigned " : selectedTab === 2 ? "Completed" : "Not Closed" } tickets 
+        <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
+         rounded-lg
+       ">
+          <Text className="text-gray-400 text-md text-center">
+            No tickets found
           </Text>
         </View>
       ) : (
         <FlatList
           data={recentTickets}
           renderItem={({ item }) => (
-            <TicketListItemLayout cn={`my-2 mx-4`} ticketModel={item} />
+            <TicketListItemLayout cn={`my-2`} ticketModel={item} />
           )}
-          keyExtractor={(_, index) => index.toString()}
+          keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
           onEndReached={() => {
             if (!isLastPage) {
-              fetchTickets(currentPage + 1, selectedTab); 
+              fetchTickets(currentPage + 1, selectedTab);
             }
           }}
+          ListFooterComponent={
+            <View style={{ height: 500 }} />
+          }
         />
       )}
     </>

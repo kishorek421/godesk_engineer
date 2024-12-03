@@ -7,7 +7,7 @@ import { VStack } from "../components/ui/vstack";
 import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import api from "@/services/api/base_api_service";
+import apiClient from "@/clients/apiClient";
 import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
 
@@ -28,9 +28,7 @@ const LoginScreen = () => {
     setIsLoading(true);
     setErrors([]);
 
-    try {
-      const response = await api.post('/otp/send', { mobile });
-
+    await apiClient.post('/otp/send', { mobile }).then((response) => {
       if (response.data?.success) {
         console.log("otp sent successfully ")
         router.push({
@@ -40,12 +38,14 @@ const LoginScreen = () => {
       } else {
         setErrors([{ field: "mobileNo", message: response.data?.message || 'Failed to send OTP. Try again.' }]);
       }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
+    }).catch((error) => {
+      if (error) {
+        console.error('Error sending OTP:', error.response.data);
+      }
       setErrors([{ field: "mobileNo", message: "An error occurred. Please try again." }]);
-    } finally {
+    }).finally(() => {
       setIsLoading(false);
-    }
+    });
   };
 
   return (
@@ -69,13 +69,13 @@ const LoginScreen = () => {
           </View>
 
           {/* Welcome Text */}
-          <View className="mt-8">
+          <View className="mt-6">
             <Text className="text-2xl font-bold">Hey, Welcome! 🎉</Text>
             <Text className="color-gray-400 text-sm">Let’s create something extraordinary!</Text>
           </View>
 
           {/* Mobile Number Input */}
-          <View className="mt-10">
+          <View className="mt-6">
             <FormControl isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}>
               <FormControlLabel className="mb-1">
                 <FormControlLabelText>Mobile Number</FormControlLabelText>
@@ -87,7 +87,7 @@ const LoginScreen = () => {
                   keyboardType="numeric"
                   maxLength={10}
                   value={mobile}
-                  onChangeText={(text) => setMobileNumber(text)}
+                  onChangeText={(text: string) => setMobileNumber(text)}
                 />
               </Input>
               <FormControlError>

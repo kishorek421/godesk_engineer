@@ -3,7 +3,7 @@ import React from "react";
 import {
   ESCALATED,
   RAISED,
-  IN_PROGRESS,
+  TICKET_IN_PROGRESS,
   TICKET_CLOSED,
   ASSIGNED,
   TICKET_ASSIGNED,
@@ -17,14 +17,12 @@ const TicketStatusComponent = ({
   statusValue?: string;
 }) => {
   const getStatusColor = (statusKey?: string): string => {
-    console.log("statusKey", statusKey);
-    
     switch (statusKey) {
       case ESCALATED:
         return "text-red-500 bg-red-100";
       case RAISED:
         return "text-blue-500 bg-blue-100";
-      case IN_PROGRESS:
+      case TICKET_IN_PROGRESS:
         return "text-secondary-950 bg-secondary-100";
       case TICKET_CLOSED:
         return "text-primary-950 bg-primary-100";

@@ -9,7 +9,7 @@ import { ErrorModel } from '@/models/common';
 import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Button } from '@/components/ui/button';
-import api from '@/services/api/base_api_service';
+import apiClient from '@/clients/apiClient';
 
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
@@ -29,7 +29,7 @@ const VerifyOTPScreen = () => {
 
     try {
 
-      await api.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then((response) => {
+      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then((response) => {
         if (response.data?.success) {
           router.replace('/home');
           console.log("valid otp");
@@ -62,14 +62,14 @@ const VerifyOTPScreen = () => {
             </View>
           </View>
 
-          <View className="mt-8">
+          <View className="mt-6">
             <Text className="text-2xl font-bold">Check your mobile 📱</Text>
             <Text className="color-gray-400 text-sm">
               OTP has been sent to {mobile}.
             </Text>
           </View>
 
-          <View className="mt-2">
+          <View className="mt-6">
             <FormControl isInvalid={isFormFieldInValid('otp', errors).length > 0}>
               <FormControlLabel className="mb-1">
                 <FormControlLabelText>Enter OTP</FormControlLabelText>
@@ -85,7 +85,7 @@ const VerifyOTPScreen = () => {
                   className="py-2"
                   maxLength={6}
                   value={otp}
-                  onChangeText={(text) => setOtp(text)}
+                  onChangeText={(text: string) => setOtp(text)}
                 />
               </Input>
               <FormControlError>
