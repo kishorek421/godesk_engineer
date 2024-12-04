@@ -47,3 +47,52 @@ export function getGreetingMessage() {
     return "Hello";
   }
 }
+
+export const getFileName = (uri: string, isFullName = false) => {
+  const splits = uri.split("/");
+  const fileName = splits[splits.length - 1];
+  return isFullName
+    ? fileName
+    : fileName.length > 17
+      ? fileName.substring(17) + "..."
+      : fileName;
+};
+
+export function bytesToMB(bytes: number) {
+  return bytes / (1024 * 1024);
+}
+
+
+export const setErrorValue = (
+  param: string,
+  value: string,
+  msg: string,
+  setErrors: any,
+) => {
+  setErrors((prevState: ErrorModel[]) => {
+    // to check whether field is present or not
+    let isFieldExist = false;
+
+    // find error and assign the message to field
+    for (const e of prevState) {
+      let eParam = e.param;
+      if (eParam === param) {
+        e.message = msg;
+        e.value = value;
+        isFieldExist = true;
+        break;
+      }
+    }
+
+    // if isFieldExist not exist
+    if (!isFieldExist) {
+      prevState.push({
+        param: param,
+        value: value,
+        message: msg,
+      });
+    }
+
+    return prevState;
+  });
+};

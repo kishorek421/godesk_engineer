@@ -122,6 +122,7 @@ const TicketListLayout = () => {
       <FlatList
         horizontal
         data={tabs}
+        showsHorizontalScrollIndicator={false}
         renderItem={(item) => {
           return <TouchableOpacity
             onPress={() => setSelectedTab(item.index)}
@@ -139,7 +140,7 @@ const TicketListLayout = () => {
             </Text>
           </TouchableOpacity>
         }}
-        className="mt-4"
+        className="mt-6"
       />
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200

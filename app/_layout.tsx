@@ -16,13 +16,13 @@ const RootLayout = () => {
                     <Stack.Screen name='ticket_details/[ticketId]' options={{
                         headerShown: false,
                     }} />
-                     <Stack.Screen
-                name="image_viewer/[uri]"
-                options={{
-                  presentation: "modal",
-                  headerShown: false,
-                }}
-              />
+                    <Stack.Screen
+                        name="image_viewer/[uri]"
+                        options={{
+                            presentation: "modal",
+                            headerShown: false,
+                        }}
+                    />
                 </Stack>
             </AuthProvider>
         </GluestackUIProvider>

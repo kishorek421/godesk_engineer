@@ -21,3 +21,9 @@ export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus"
 export const GET_USER_DETAILS = "/users/view";
 
 export const GET_CUSTOMER_DETAILS = "/customers/list";
+
+// check in out
+export const CHECK_IN_OUT =
+  "/attendanceTransaction/createORUpdateAttendanceTransaction";
+export const GET_CHECK_IN_OUT_STATUS =
+  "/attendanceTransaction/checkAttendanceStatusByEmployeeId";

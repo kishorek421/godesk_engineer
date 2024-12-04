@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import apiClient from "@/clients/apiClient";
 import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
+import { setItem } from "@/utils/secure_store";
+import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
 
 const LoginScreen = () => {
   const animationRef = useRef<LottieView>(null);
@@ -17,9 +19,12 @@ const LoginScreen = () => {
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-  const [otp, setOtp] = useState<string>("");
+  
   const handleSendOTP = async () => {
-
+    await setItem(
+      AUTH_TOKEN_KEY,
+      "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6Ik5GVFdMNzltOTNLU3IvS1crdDNLRzI3YWxWT2l4bGg1a0FGVnhROG1VRlk9Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6IjliYTA0OWQxLTFiNTEtNGNlMS05MzkyLTViYTUyZjE1NWY0OSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6ImUwZmJlZmNiLTFiZWYtNDhhNy1hNmVmLTlmZThhZTczYzk3ZiIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6IjY1MWYwYjNjLWM3ZDAtNGQyNi05NzEwLWE0NGJiZGFlMWQyZCJ9LCJlbWFpbCI6ImJoYXJhdGlwYXJpdDRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJCaGFyYXRpIiwic3ViIjoiYmhhcmF0aXBhcml0NEBnbWFpbC5jb20iLCJpYXQiOjE3MzMyMjQyMzQsImV4cCI6MTczMzI1MzAzNH0.979q9XCjMS9FoenTFX3m0cSLfBxe4fWBdmLoGzOcsjCYbCI2Jn3Z-sqYKDnxJNxo2BL9HUw2sAPqDWhy38dgYQ");
+    
     if (!mobile || !/^\d{10}$/.test(mobile)) {
       setErrors([{ field: "mobileNo", message: "Please enter a valid 10-digit mobile number." }]);
       return;
@@ -30,7 +35,6 @@ const LoginScreen = () => {
 
     await apiClient.post('/otp/send', { mobile }).then((response) => {
       if (response.data?.success) {
-        console.log("otp sent successfully ")
         router.push({
           pathname: '/verify_otp',
           params: { mobile },

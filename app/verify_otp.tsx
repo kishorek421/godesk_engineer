@@ -10,6 +10,8 @@ import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { Button } from '@/components/ui/button';
 import apiClient from '@/clients/apiClient';
+import { setItem } from '@/utils/secure_store';
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/storage_keys';
 
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
@@ -18,6 +20,8 @@ const VerifyOTPScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
   const [errors, setError] = useState<ErrorModel[]>([]);
+
+
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
       setError([{ field: "otp", message: "Please enter a valid 6-digit OTP." }]);
@@ -29,10 +33,14 @@ const VerifyOTPScreen = () => {
 
     try {
 
-      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then((response) => {
+      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then(async (response) => {
         if (response.data?.success) {
-          router.replace('/home');
-          console.log("valid otp");
+          const loginData = response.data?.data;
+          if (loginData && loginData.token) {
+            await setItem(AUTH_TOKEN_KEY, loginData.token);
+            await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
+            router.replace('/home');
+          }
         }
       }).catch((e) => {
         console.error(e.response.request);
@@ -61,7 +69,6 @@ const VerifyOTPScreen = () => {
               </Text>
             </View>
           </View>
-
           <View className="mt-6">
             <Text className="text-2xl font-bold">Check your mobile 📱</Text>
             <Text className="color-gray-400 text-sm">

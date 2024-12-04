@@ -21,3 +21,18 @@ export interface UserDetailsModel {
   userTypeDetails?: ConfigurationModel;
   orgDetails?: OrgDetailsModel;
 }
+
+export interface CreateCheckInOutModel {
+  date?: string;
+  pincode?: string;
+  checkInImage?: string;
+  checkOutImage?: string;
+}
+
+export interface CheckInOutStatusDetailsModel {
+  value?: string;
+  attendance_status?: string;
+  employee_id?: string;
+  category?: string;
+  id?: string;
+}

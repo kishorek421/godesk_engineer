@@ -1,14 +1,16 @@
 import { View, Text, FlatList, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocalSearchParams, router } from 'expo-router';
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import moment from "moment";
-import { GET_INPROGRESS_TICKETS_DETAILS, GET_USER_DETAILS } from "@/constants/api_endpoints";
+import { GET_CHECK_IN_OUT_STATUS, GET_INPROGRESS_TICKETS_DETAILS, GET_USER_DETAILS } from "@/constants/api_endpoints";
 import TicketListLayout from '@/components/tickets/TicketListLayout';
-import { UserDetailsModel } from '@/models/users';
+import { CheckInOutStatusDetailsModel, UserDetailsModel } from '@/models/users';
 import { getGreetingMessage } from '@/utils/helper';
+import { Button, ButtonText } from '@/components/ui/button';
+import CheckInOutModal from '@/components/home/CheckInOutModal';
 
 const HomeScreen = () => {
     const { ticketId } = useLocalSearchParams();
@@ -18,9 +20,43 @@ const HomeScreen = () => {
 
     const { refresh } = useLocalSearchParams();
 
+    const bottomSheetRef = useRef(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
+        useState<CheckInOutStatusDetailsModel>({});
+
+    const toggleImagePicker = () => {
+        setIsModalVisible(!isModalVisible);
+        if (!isModalVisible) {
+            bottomSheetRef.current?.show();
+        } else {
+            bottomSheetRef.current?.hide();
+        }
+    };
+
     useEffect(() => {
         fetchInProgressTicketDetails();
         fetchUserDetails();
+    }, []);
+
+    const fetchCheckInOutStatus = async () => {
+        apiClient
+            .get(GET_CHECK_IN_OUT_STATUS)
+            .then((response) => {
+                console.log("checkInDetails", response.data.data);
+                const data = response.data?.data;
+                if (data) {
+                    setCheckInOutStatusDetails(data);
+                }
+            })
+            .catch((e) => {
+                console.error(e.response.data);
+            });
+    };
+
+    useEffect(() => {
+        fetchCheckInOutStatus();
     }, []);
 
     const fetchInProgressTicketDetails = () => {
@@ -55,19 +91,36 @@ const HomeScreen = () => {
 
     return (
         <SafeAreaView>
-            <View className="py-4">
-                <View className="flex px-4">
-                    
-                    <Text className="text-2xl font-bold">
-                        {getGreetingMessage()}
-                    </Text>
-                    <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                         {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}👋
-                    </Text>
+            <View className="py-2">
+                <View className='flex-row justify-between items-center'>
+                    <View className="flex px-4">
+                        <Text className="text-md font-bold">
+                            {getGreetingMessage()} 👋
+                        </Text>
+                        <Text className="text-md text-primary-950 font-semibold mt-[2px]">
+                            {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""} 
+                        </Text>
+                    </View>
+                    {checkInOutStatusDetails.value !== "Checked Out" && (
+                        <View className="me-4">
+                            <Button
+                                className="bg-primary-950 rounded-lg"
+                                onPress={() => {
+                                    toggleImagePicker();
+                                }}
+                            >
+                                <ButtonText>
+                                    {checkInOutStatusDetails.value === "Checked In"
+                                        ? "Check Out"
+                                        : "Check In"}
+                                </ButtonText>
+                            </Button>
+                        </View>
+                    )}
                 </View>
                 {isLoading ? (
                     <Text className="text-gray-500 text-center mt-6">Loading...</Text>
-                ) : inProgressTicketDetails.id ? (
+                ) : inProgressTicketDetails.id && (
                     <Pressable
                         className="w-full mt-4 px-4"
                         onPress={() => {
@@ -117,17 +170,26 @@ const HomeScreen = () => {
                             </View>
                         </View>
                     </Pressable>
-                ) : (
-                    <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
-         rounded-lg
-       ">
-          <Text className="text-gray-400 text-md text-center">
-            No inProgress Ticket found
-          </Text>
-        </View>
                 )}
+                {/* (
+                    <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200 rounded-lg">
+                        <Text className="text-gray-400 text-md text-center">
+                            No InProgress Ticket found
+                        </Text>
+                    </View>
+                ) */}
                 <TicketListLayout />
             </View>
+            <CheckInOutModal
+                setIsModalVisible={setIsModalVisible}
+                bottomSheetRef={bottomSheetRef}
+                status={checkInOutStatusDetails.value}
+                checkedInId={checkInOutStatusDetails.id}
+                onClose={() => {
+                    setIsModalVisible(false);
+                    fetchCheckInOutStatus();
+                }}
+            />
         </SafeAreaView>
     );
 };
