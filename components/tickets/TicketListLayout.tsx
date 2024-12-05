@@ -126,7 +126,7 @@ const TicketListLayout = () => {
         renderItem={(item) => {
           return <TouchableOpacity
             onPress={() => setSelectedTab(item.index)}
-            className={`ms-4 py-3 rounded-full w-28 ${selectedTab === item.index ? "bg-primary-200" : "bg-gray-200"
+            className={`ms-4  py-3 rounded-full w-28 ${selectedTab === item.index ? "bg-primary-200" : "bg-gray-200"
               }`}
             key={item.index}
           >
@@ -140,7 +140,7 @@ const TicketListLayout = () => {
             </Text>
           </TouchableOpacity>
         }}
-        className="mt-6"
+        className="mt-6 "
       />
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
@@ -152,20 +152,22 @@ const TicketListLayout = () => {
         </View>
       ) : (
         <FlatList
-          data={recentTickets}
-          renderItem={({ item }) => (
-            <TicketListItemLayout cn={`my-2`} ticketModel={item} />
-          )}
-          keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
-          onEndReached={() => {
-            if (!isLastPage) {
-              fetchTickets(currentPage + 1, selectedTab);
-            }
-          }}
-          ListFooterComponent={
-            <View style={{ height: 500 }} />
+        data={recentTickets}
+        renderItem={({ item }) => (
+          <TicketListItemLayout cn={`my-2`} ticketModel={item} />
+        )}
+        keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
+        onEndReached={() => {
+          if (!isLastPage) {
+            fetchTickets(currentPage + 1, selectedTab);
           }
-        />
+        }}
+        ListFooterComponent={
+          <View style={{ height: 500 }} />
+        }
+        contentContainerStyle={{ paddingTop: 20 }} // Added top padding to create space between the button and list
+      />
+      
       )}
     </>
   );

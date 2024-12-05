@@ -91,20 +91,20 @@ const HomeScreen = () => {
 
     return (
         <SafeAreaView>
-            <View className="py-2">
+            <View className="p-1 mt-6">
                 <View className='flex-row justify-between items-center'>
                     <View className="flex px-4">
-                        <Text className="text-md font-bold">
+                        <Text className="text-md font-bold mx-2">
                             {getGreetingMessage()} 👋
                         </Text>
-                        <Text className="text-md text-primary-950 font-semibold mt-[2px]">
+                        <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
                             {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""} 
                         </Text>
                     </View>
                     {checkInOutStatusDetails.value !== "Checked Out" && (
                         <View className="me-4">
                             <Button
-                                className="bg-primary-950 rounded-lg"
+                                className="bg-primary-950 rounded-lg mx-2"
                                 onPress={() => {
                                     toggleImagePicker();
                                 }}

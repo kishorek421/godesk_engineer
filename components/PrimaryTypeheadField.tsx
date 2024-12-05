@@ -27,7 +27,7 @@ interface PrimaryTypeheadFieldProps {
   placeholder: string;
   filterExp?: RegExp;
   editable?: boolean;
-  onItemSelect?: (type: any, item: DropdownItemModel) => void;
+  onSelect?: (type: any, item: DropdownItemModel) => void;
   keyboardType?: KeyboardTypeOptions;
   errors: ErrorModel[];
   fieldName: string;
@@ -44,7 +44,7 @@ const PrimaryTypeheadField = ({
   placeholder,
   filterExp,
   editable = true,
-  onItemSelect,
+  onSelect,
   keyboardType = "default",
   errors,
   fieldName,
@@ -80,8 +80,8 @@ const PrimaryTypeheadField = ({
       onSelectItem={(item: any) => {
         if (item) {
           setSelectedValue(item);
-          if (onItemSelect) {
-            onItemSelect(type, item);
+          if (onSelect) {
+            onSelect(type, item);
           }
         }
       }}

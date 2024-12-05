@@ -6,7 +6,7 @@ export const isFormFieldInValid = (
   name: string,
   errors: ErrorModel[],
 ): string => {
-  console.log("checking error", name);
+  //console.log("checking error", name);
   
   let msg = "";
   for (const error of errors) {

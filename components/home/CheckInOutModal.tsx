@@ -35,11 +35,12 @@ interface CheckInOutProps {
   checkedInId?: string;
   onClose: () => void;
 }
-
+ 
 const CheckInOutModal = ({
   status,
   bottomSheetRef,
   checkedInId,
+  setIsModalVisible,
   onClose,
 }: CheckInOutProps) => {
   const [currentTime, setCurrentTime] = useState(
@@ -47,43 +48,43 @@ const CheckInOutModal = ({
   );
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-
+ 
   const [selfie, setSelfie] = useState("");
-
+ 
   const [errorMsg, setErrorMsg] = useState("");
-
+ 
   const [cameraPermissionStatus, requestCameraPermission] =
     ImagePicker.useCameraPermissions();
-
+ 
   const [isLoading, setIsLoading] = useState(false);
-
+ 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(moment().format("DD/MM/YYYY hh:mm:ss A"));
     }, 1000);
-
+ 
     const fetchPincode = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.error("Permission to access location was denied");
         return;
       }
-
+ 
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
+ 
       const [address] = await Location.reverseGeocodeAsync({
         latitude,
         longitude,
       });
       setPincode(address.postalCode ?? "");
     };
-
+ 
     fetchPincode();
-
+ 
     return () => clearInterval(timer); // Cleanup timer on component unmount
   }, []);
-
+ 
   const requestCameraPermissions = async () => {
     if (cameraPermissionStatus?.granted) {
       return true;
@@ -118,15 +119,15 @@ const CheckInOutModal = ({
     );
     return false;
   };
-
+ 
   const takePhoto = async () => {
-    setSelfie(
-      "file:///Users/fci-1988/Library/Developer/CoreSimulator/Devices/2552B9A6-1492-49E4-88FE-BF21786D7E11/data/Containers/Data/Application/AE599E3E-E808-49A2-8A4A-FDE16DD81297/Library/Caches/ImagePicker/34E026E3-9107-4E08-BD66-54829AB346E1.png",
-    );
-
+    // setSelfie(
+    //   "file:///Users/fci-1988/Library/Developer/CoreSimulator/Devices/2552B9A6-1492-49E4-88FE-BF21786D7E11/data/Containers/Data/Application/AE599E3E-E808-49A2-8A4A-FDE16DD81297/Library/Caches/ImagePicker/34E026E3-9107-4E08-BD66-54829AB346E1.png",
+    // );
+ 
     const permissionsGranted = await requestCameraPermissions();
     if (!permissionsGranted) return;
-
+ 
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -134,7 +135,7 @@ const CheckInOutModal = ({
       base64: true,
       cameraType: ImagePicker.CameraType.front,
     });
-
+ 
     if (!result.canceled) {
       const asset = result.assets[0];
       const fileSize = (asset.base64?.length ?? 0) * (3 / 4) - 2;
@@ -149,7 +150,7 @@ const CheckInOutModal = ({
       }
     }
   };
-
+ 
   const chechInOut = async () => {
     if (selfie.length === 0) {
       setErrorValue("selfie", "", "Selfie is required", setErrors);
@@ -157,19 +158,19 @@ const CheckInOutModal = ({
     } else {
       setErrorValue("selfie", "", "", setErrors);
     }
-
+ 
     setIsLoading(true);
-
+ 
     const formData = new FormData();
-
+ 
     formData.append("assetImages", {
       uri: selfie,
       type: "image/jpeg",
       name: getFileName(selfie, true),
     } as any);
-
+ 
     setErrors([]);
-
+ 
     apiClient
       .post(TICKET_UPLOADS, formData, {
         headers: {
@@ -179,20 +180,22 @@ const CheckInOutModal = ({
       .then((response) => {
         const uploadedSelfie = response.data.data;
         console.log("uploadedSelfie", uploadedSelfie);
-
+ 
         if (uploadedSelfie && uploadedSelfie.length > 0) {
           const checkInOutModel: CreateCheckInOutModel = {
             date: moment().format("YYYY-MM-DD"),
             pincode: pincode?.length === 5 ? `560078` : pincode,
             checkInImage:
-              status === "Checked In" ? uploadedSelfie[0] : undefined,
+              status === undefined ? uploadedSelfie[0] : undefined,
             checkOutImage:
-              status !== "Checked In" ? uploadedSelfie[0] : undefined,
+              status === "Checked In" ? uploadedSelfie[0] : undefined,
           };
           apiClient
-            .put(CHECK_IN_OUT + `?attendanceId=${checkedInId}`, checkInOutModel)
+            .put(CHECK_IN_OUT + (checkedInId ? `?attendanceId=${checkedInId}` : ''), checkInOutModel)
             .then((response) => {
               console.log(response.data.data);
+              // setIsModalVisible(false);
+              // bottomSheetRef
               setIsLoading(false);
               Toast.show({
                 type: "success",
@@ -204,7 +207,7 @@ const CheckInOutModal = ({
               onClose();
             })
             .catch((e) => {
-              // console.error(e.response);
+              console.error(e.response?.data);
               let errors = e.response?.data?.errors;
               if (errors) {
                 console.error("errors -> ", errors);
@@ -223,27 +226,28 @@ const CheckInOutModal = ({
         }
       })
       .catch((e) => {
-        let errors = e.response?.data?.errors;
-        console.log(errors);
+        let errors = e.response?.data;
+        console.log("errors ---->", errors);
         setIsLoading(false);
         setErrorMsg("Failed to check in");
       });
   };
-
+ 
   return (
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
-      <View className="p-4 gap-4">
-        <Text className="text-xl font-bold">
+      <View className="gap-4 p-4">
+        {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
+        <Text className="font-bold text-xl">
           {status === "Checked In" ? "Check Out" : "Check In"}
         </Text>
         <View className="gap-5">
           <View className="">
-            <Text className="text-lg font-semibold">Start at</Text>
-            <Text className="text-md text-gray-700 mt-1">{currentTime}</Text>
+            <Text className="font-semibold text-lg">Start at</Text>
+            <Text className="mt-1 text-gray-700 text-md">{currentTime}</Text>
           </View>
           <View className="">
-            <Text className="text-lg font-semibold">Pincode</Text>
-            <Text className="text-md text-gray-700 mt-1">{pincode ?? "-"}</Text>
+            <Text className="font-semibold text-lg">Pincode</Text>
+            <Text className="mt-1 text-gray-700 text-md">{pincode ?? "-"}</Text>
           </View>
           <View className="flex-row justify-between">
             <FormControl
@@ -251,7 +255,7 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="text-lg font-semibold">Selfie</Text>
+                <Text className="font-semibold text-lg">Selfie</Text>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {
@@ -260,7 +264,7 @@ const CheckInOutModal = ({
                     className="mt-1"
                   >
                     <View
-                      className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
+                      className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px]
                       border-dashed h-28 w-28
                 rounded-md mt-1 flex justify-center items-center `}
                     >
@@ -281,9 +285,9 @@ const CheckInOutModal = ({
                   <View>
                     <Image
                       source={{ uri: selfie }}
-                      className="w-28 h-28 rounded-xl absolute mt-1"
+                      className="absolute mt-1 rounded-xl w-28 h-28"
                     />
-                    <View className="w-28 flex items-end gap-4 h-28 rounded-xl">
+                    <View className="flex items-end gap-4 rounded-xl w-28 h-28">
                       <Pressable
                         className="mt-2 me-2"
                         onPress={() => {
@@ -310,7 +314,7 @@ const CheckInOutModal = ({
           </View>
           {errorMsg && <Text className="mt-4 text-red-500">* {errorMsg}</Text>}
           <Button
-            className="bg-primary-950 mt-4 h-12 rounded-lg"
+            className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {
               if (isLoading) return;
               chechInOut();
@@ -326,5 +330,5 @@ const CheckInOutModal = ({
     </BottomSheet>
   );
 };
-
+ 
 export default CheckInOutModal;

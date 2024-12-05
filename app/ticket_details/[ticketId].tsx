@@ -15,11 +15,14 @@ import { ConfigurationModel } from "@/models/configurations";
 import { ASSIGNED, TICKET_ASSIGNED, TICKET_CLOSED, TICKET_IN_PROGRESS, TICKET_OPENED, TICKET_STATUS } from "@/constants/configuration_keys";
 import moment from "moment";
 import CustomDropdown from '../../components/DropDown';
-import { ErrorModel } from "@/models/common";
+import { ErrorModel, DropdownModel } from "@/models/common";
 import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 import useAuth from "@/hooks/useAuth";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-
+import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
+import PrimaryTextFormField from "@/components/PrimaryTextFormField";
+import RouteMap from '../map/location';
+import * as Location from "expo-location";
 
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
@@ -35,95 +38,147 @@ const TicketDetails = () => {
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [otp, setOtp] = useState("");
   const [selectedTicketStatus, setSelectedTicketStatus] = useState<ConfigurationModel>({});
-
+  const [selectTicketStatusOptions, setSelectTicketStatusOptions] = useState<DropdownModel>(
+    {},
+  ); const [currentTime, setCurrentTime] = useState(
+    moment().format("DD/MM/YYYY hh:mm:ss A"),
+  );
   const [ticketStatusOptionsState, setTicketStatusOptions] = useState<ConfigurationModel[]>(ticketStatusOptions);
-
+  const [pincode, setPincode] = useState<string | undefined>(undefined);
   const { user } = useAuth();
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
 
+  const [canValidateField, setCanValidateField] = useState(false);
+
+  const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
+
+  const setFieldValidationStatusFunc = (
+    fieldName: string,
+    isValid: boolean,
+  ) => {
+    if (fieldValidationStatus[fieldName]) {
+      fieldValidationStatus[fieldName](isValid);
+    }
+  };
+
+  const fetchTicketDetails = async () => {
+    setIsLoading(true);
+    if (typeof ticketId === 'string') {
+      try {
+        const response = await apiClient.get(GET_TICKET_DETAILS + `?ticketId=${ticketId}`);
+        const ticketData = response.data.data ?? {};
+        console.log('ticketData ~~~~~~~~~~~~~~~~~~~~~~~~', response.data.data);
+        setTicketDetails(ticketData);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  // Fetch ticket status options
+  const loadTicketStatus = async () => {
+    try {
+      const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
+        params: { category: TICKET_STATUS },
+      });
+      console.log('response.data?.data ', response.data?.data);
+      setTicketStatusOptions(response.data?.data ?? []);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // Fetch pincode based on current location
+  const fetchPincode = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission to access location was denied');
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      const [address] = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      // Set latitude and longitude
+      setLatitude(latitude);
+      setLongitude(longitude);
+      setPincode(address.postalCode ?? '');
+      console.log('Fetched Location:', latitude, longitude);
+    } catch (error) {
+      console.error('Error fetching pincode:', error);
+    }
+  };
+
+  // Update current time every second
   useEffect(() => {
+    console.log('ticketId', ticketId);
 
-    console.log("ticketId", ticketId);
-
+    // Set navigation options
     navigation.setOptions({
       headerLeftContainerStyle: {
         paddingStart: 10,
       },
     });
 
+    // Call necessary functions
     fetchTicketDetails();
-
     loadTicketStatus();
+    fetchPincode();
+
+    // Update current time every second
+    const timer = setInterval(() => {
+      setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
+    }, 1000);
+
+    // Cleanup timer on component unmount
+    return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
-  const fetchTicketDetails = () => {
-    setIsLoading(true);
-    if (typeof ticketId === "string") {
-      apiClient
-        .get(GET_TICKET_DETAILS + `?ticketId=${ticketId}`)
-        .then((response) => {
-          const ticketData = response.data.data ?? {};
-          console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
-
-          setTicketDetails(ticketData);
-        })
-        .catch((e) => {
-          console.error(e);
-        }).finally(() => {
-          setIsLoading(false);
-        });
-    }
-  }
-
-  const loadTicketStatus = () => {
-    apiClient
-      .get(GET_CONFIGURATIONS_BY_CATEGORY, {
-        params: {
-          category: TICKET_STATUS,
-        },
-      })
-      .then((response) => {
-        console.log("response.data?.data ", response.data?.data);
-        setTicketStatusOptions(response.data?.data ?? []);
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
-
-  const handleSelectOption = (option: string) => {
-    console.log("option", option);
+  // Handle ticket status selection
+  const handleSelectOption = async (option: string) => {
+    console.log('Selected option:', option);
     if (option === 'OPENED') {
-      setSelectedTicketStatus({ key: "OPENED", value: "Open" });
+      setSelectedTicketStatus({ key: 'OPENED', value: 'Open' });
     } else if (option === 'CUSTOMER_NOT_AVAILABLE') {
-      setSelectedTicketStatus({ key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" });
+      setSelectedTicketStatus({ key: 'CUSTOMER_NOT_AVAILABLE', value: 'Customer Not Available' });
     } else if (option === 'IN_PROGRESS') {
-      setSelectedTicketStatus({ key: "IN_PROGRESS", value: "InProgress" });
+      setSelectedTicketStatus({ key: 'IN_PROGRESS', value: 'InProgress' });
     } else {
       const selectedOption = ticketStatusOptions.find((item) => item.value === option);
       setSelectedTicketStatus(selectedOption || {});
     }
   };
 
+  // Update ticket status function
   const updateTicketStatus = async () => {
     try {
-      console.log("ticketDetails.assignedToDetails?.id", ticketDetails.lastAssignedToDetails?.assignedTo);
+      console.log('ticketDetails.assignedToDetails?.id', ticketDetails.lastAssignedToDetails?.assignedTo);
 
       setErrors([]);
 
       // Validate if ticketId exists
       if (!ticketId) {
-        console.error("Ticket ID is missing");
+        console.error('Ticket ID is missing');
         return;
       }
 
       if (!selectedTicketStatus?.key) {
-        setErrors([{ param: "ticketStatus", message: "Status is required" }]);
+        setErrors([{ param: 'ticketStatus', message: 'Status is required' }]);
       }
 
       // Ensure OTP and selected status are provided
       if (!otp && (selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED')) {
         setErrors((prevState: any) => {
-          return [...prevState, { param: "otp", message: "OTP is required" }]
+          return [...prevState, { param: 'otp', message: 'OTP is required' }];
         });
       }
 
@@ -131,41 +186,37 @@ const TicketDetails = () => {
         return;
       }
 
-      // // Validate OTP
-      // if (!/^\d{4,6}$/.test(otp)) {
-      //   setErrors([{ param: "otp", message: "Invalid OTP. It should be a 6-digit number." }]);
-      //   return;
-      // }
-
-      console.log("Selected Ticket Status:", selectedTicketStatus);
+      console.log('Selected Ticket Status:', selectedTicketStatus);
 
       const requestBody = {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
         toStatus: selectedTicketStatus.key,
-        location: ticketDetails.location || { "latitude": 19.4210814,"longitude": 72.9167569 },
-        description: ticketDetails.description || "No description available",
+        location: {
+          latitude: latitude || 19.4210814, // Use fetched latitude, fallback to default
+          longitude: longitude || 72.9167569, // Use fetched longitude, fallback to default
+        },
+        description: ticketDetails.description || 'No description available',
         pin: null,
       };
 
-      console.log("Request Body: ~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>> ", JSON.stringify(requestBody));
+      console.log('Request Body: ~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>> ', JSON.stringify(requestBody));
 
       // Step 3: Send the PUT request to update ticket status
       const response = await apiClient.put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody);
 
       if (response.status === 200) {
-        console.log("Ticket status updated successfully!", response);
-        fetchTicketDetails();
+        console.log('Ticket status updated successfully!', response);
+        fetchTicketDetails(); // Call the fetchTicketDetails function after updating
         Alert.alert('Success', 'Ticket status updated successfully!', [{ text: 'OK' }]);
       } else {
-        console.error("Failed to update ticket status. Server responded with:", response.status);
-        Alert.alert('Failed', 'failed to update ticket status', [{ text: 'OK' }]);
+        console.error('Failed to update ticket status. Server responded with:', response.status);
+        Alert.alert('Failed', 'Failed to update ticket status', [{ text: 'OK' }]);
       }
-    } catch (e ) {
-      console.error("Failed to update ticket status.", e.response.data);
+    } catch (e) {
+      console.error('Failed to update ticket status.', e.response?.data || e);
     }
   };
-
   return isLoading ? (
     <LoadingBar />
   ) : (
@@ -180,16 +231,21 @@ const TicketDetails = () => {
               }
             })
           }}
-        >
-          <View className="flex-row items-center">
-            <View className=" flex-row ps-4 pe-2 items-center">
+        ><View className="flex-row items-center bg-white h-14 shadow-md px-4">
+            {/* Back Button */}
+            <View className="flex-row items-center flex-1">
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
-              {/* <Text className="text-primary-950 text-xl">Home</Text> */}
             </View>
-            <View className=" text-center">
+
+            {/* Title */}
+            <View className="flex-1">
               <Text className="font-bold text-lg text-center">Ticket Details</Text>
             </View>
+
+            {/* Optional Right Side Placeholder */}
+            <View className="flex-1"></View>
           </View>
+
         </Pressable>
         <ScrollView>
 
@@ -299,22 +355,30 @@ const TicketDetails = () => {
                       <Text className="font-bold text-lg text-primary-950">Update Ticket Status</Text>
                       <FormControl
                         isInvalid={isFormFieldInValid("ticketStatus", errors).length > 0}
-                        className="mt-4"
+                        className={`mt-4 `}
                       >
-                        <FormControlLabel className="mb-1">
-                          <FormControlLabelText>Status to</FormControlLabelText>
-                        </FormControlLabel>
-                        <CustomDropdown
+                        <PrimaryDropdownFormField
                           options={ticketStatusOptions.length > 0 ? (
                             ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
                               ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
                               : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
                               { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
                                 ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] :
-                                []
+                                  []
                           )
                             : []}
-                          placeholder="Select status"
+                          selectedValue={selectTicketStatusOptions} // Pass the current state here
+                          setSelectedValue={setSelectTicketStatusOptions} // Pass the state updater function
+                          type="ticketStatusOptionsState"
+                          placeholder="Select Status"
+                          fieldName="selectTicketStatusOptions"
+                          label="Status to"
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          errors={errors}
+                          setErrors={setErrors}
                           onSelect={handleSelectOption}
                         />
                         <FormControlError>
@@ -324,18 +388,32 @@ const TicketDetails = () => {
 
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                        className="mt-4"
+                        className="mt-4 "
                       >
-                        <FormControlLabel className="mb-1">
-                          <FormControlLabelText>Customer OTP</FormControlLabelText>
-                        </FormControlLabel>
-                        <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
+                        <PrimaryTextFormField
+                          fieldName="Customer OTP"
+                          label="Customer OTP"
+                          placeholder="Enter customer otp"
+                          // defaultValue={.orgMobile}
+                          errors={errors}
+                          setErrors={setErrors}
+                          min={6}
+                          max={6}
+                          keyboardType="phone-pad"
+                          filterExp={/^[0-9]*$/}
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          onChangeText={(e: any) => setOtp(e)}
+                        />
+                        {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
                           <InputField
                             placeholder="Enter customer otp"
                             className="py-2"
                             onChangeText={(e: any) => setOtp(e)}  // Ensure the OTP is set correctly
                           />
-                        </Input>
+                        </Input> */}
                         <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
                         </FormControlError>

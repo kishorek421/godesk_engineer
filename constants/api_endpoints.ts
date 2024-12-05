@@ -19,7 +19,6 @@ export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus"
 //user list
 
 export const GET_USER_DETAILS = "/users/view";
-
 export const GET_CUSTOMER_DETAILS = "/customers/list";
 
 // check in out
