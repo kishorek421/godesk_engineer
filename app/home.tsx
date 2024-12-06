@@ -1,6 +1,6 @@
 import { View, Text, FlatList, SafeAreaView, TouchableOpacity, Pressable } from 'react-native';
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams, router, Link } from 'expo-router';
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
@@ -31,8 +31,10 @@ const HomeScreen = () => {
         if (!isModalVisible) {
             bottomSheetRef.current?.show();
         } else {
+
             bottomSheetRef.current?.hide();
         }
+      
     };
 
     useEffect(() => {
@@ -98,8 +100,9 @@ const HomeScreen = () => {
                             {getGreetingMessage()} 👋
                         </Text>
                         <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
-                            {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""} 
+                            {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
                         </Text>
+                        
                     </View>
                     {checkInOutStatusDetails.value !== "Checked Out" && (
                         <View className="me-4">
@@ -186,10 +189,12 @@ const HomeScreen = () => {
                 status={checkInOutStatusDetails.value}
                 checkedInId={checkInOutStatusDetails.id}
                 onClose={() => {
-                    setIsModalVisible(false);
-                    fetchCheckInOutStatus();
+                    toggleImagePicker(); 
+                    fetchCheckInOutStatus(); 
                 }}
             />
+
+
         </SafeAreaView>
     );
 };
