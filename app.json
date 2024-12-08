@@ -5,26 +5,28 @@
     "scheme": "godesk_engineer",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.godesk.godeskengineer"
+      "bundleIdentifier": "com.godesk.godeskengineer",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes"
+      }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "android.permission.RECORD_AUDIO",
-        "android.permission.RECORD_AUDIO"
+        "CAMERA"
       ],
       "package": "com.godesk.godeskengineer"
     },
@@ -36,7 +38,13 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "cameraPermission": "Allow access to your camera to capture photos of damaged assets for reporting purposes."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to track your check in and check out location."
         }
       ]
     ]
