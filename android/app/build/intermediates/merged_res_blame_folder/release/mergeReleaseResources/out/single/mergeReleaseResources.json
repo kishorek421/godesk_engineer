@@ -1,0 +1,214 @@
+[
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/raw_node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_materialicons.ttf.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/raw/node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_materialicons.ttf"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_sitemap.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_sitemap.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_error.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_error.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_forward.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_forward.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxxhdpi_splashscreen_logo.png.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable-xxxhdpi/splashscreen_logo.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_pkg.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_pkg.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_assets_images_godesk.jpg.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/assets_images_godesk.jpg"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_splashscreen_logo.png.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable-mdpi/splashscreen_logo.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_file.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_file.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-mdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-mdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xhdpi_splashscreen_logo.png.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable-xhdpi/splashscreen_logo.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/raw_node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_simplelineicons.ttf.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/raw/node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_simplelineicons.ttf"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-hdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-hdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_exporouter_assets_unmatched.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_exporouter_assets_unmatched.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-hdpi_splashscreen_logo.png.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable-hdpi/splashscreen_logo.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_backiconmask.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_backiconmask.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/raw_node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_antdesign.ttf.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/raw/node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_antdesign.ttf"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxhdpi_splashscreen_logo.png.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable-xxhdpi/splashscreen_logo.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/raw_node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_feather.ttf.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/raw/node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_feather.ttf"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_clearicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/raw_node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_materialcommunityicons.ttf.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/raw/node_modules_expo_vectoricons_build_vendor_reactnativevectoricons_fonts_materialcommunityicons.ttf"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_searchicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-mdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-mdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_backicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/mipmap-xhdpi_ic_launcher_foreground.webp.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/mipmap-xhdpi/ic_launcher_foreground.webp"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png.flat",
+        "source": "com.godesk.godeskengineer.app-res-0:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_commonjs_assets_closeicon.png"
+    },
+    {
+        "merged": "com.godesk.godeskengineer.app-release-5:/drawable_rn_edit_text_material.xml.flat",
+        "source": "com.godesk.godeskengineer.app-main-6:/drawable/rn_edit_text_material.xml"
+    }
+]

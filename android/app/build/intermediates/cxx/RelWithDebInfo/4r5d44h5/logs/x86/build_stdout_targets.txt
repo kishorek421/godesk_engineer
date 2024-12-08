@@ -1,0 +1,618 @@
+ninja: Entering directory `C:\RN_Projects\godesk_engineer\android\app\.cxx\RelWithDebInfo\4r5d44h5\x86'
+[0/2] Re-checking globbed directories...
+[1/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/lottiereactnative-generated.cpp.o
+[2/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/EventEmitters.cpp.o
+[3/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/States.cpp.o
+[4/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/rnasyncstorageJSI-generated.cpp.o
+[5/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/ComponentDescriptors.cpp.o
+[6/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/Props.cpp.o
+[7/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/react/renderer/components/rnasyncstorage/ShadowNodes.cpp.o
+[8/73] Building CXX object rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir/rnasyncstorage-generated.cpp.o
+[9/73] Building CXX object CMakeFiles/appmodules.dir/OnLoad.cpp.o
+[10/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/ComponentDescriptors.cpp.o
+[11/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/States.cpp.o
+[12/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/lottiereactnativeJSI-generated.cpp.o
+[13/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/EventEmitters.cpp.o
+[14/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/EventEmitters.cpp.o
+[15/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/ShadowNodes.cpp.o
+[16/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/ShadowNodes.cpp.o
+[17/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/States.cpp.o
+[18/73] Building CXX object lottiereactnative_autolinked_build/CMakeFiles/react_codegen_lottiereactnative.dir/react/renderer/components/lottiereactnative/Props.cpp.o
+[19/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/bac033cd950586cef66695376748dd33/ComponentDescriptors.cpp.o
+[20/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/bac033cd950586cef66695376748dd33/rngesturehandler_codegenJSI-generated.cpp.o
+[21/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/rngesturehandler_codegen-generated.cpp.o
+[22/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/EventEmitters.cpp.o
+[23/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/ComponentDescriptors.cpp.o
+[24/73] Building CXX object rngesturehandler_codegen_autolinked_build/CMakeFiles/react_codegen_rngesturehandler_codegen.dir/react/renderer/components/rngesturehandler_codegen/Props.cpp.o
+[25/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/rnreanimated-generated.cpp.o
+[26/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/ShadowNodes.cpp.o
+[27/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/rnreanimatedJSI-generated.cpp.o
+[28/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/States.cpp.o
+[29/73] Building CXX object rnreanimated_autolinked_build/CMakeFiles/react_codegen_rnreanimated.dir/react/renderer/components/rnreanimated/Props.cpp.o
+[30/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/1e86e57d64093d8918fa233664a9eeb4/react/renderer/components/safeareacontext/EventEmitters.cpp.o
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:16:69: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNCSafeAreaProviderEventEmitter::onInsetsChange(OnInsetsChange $event) const {
+                                                                    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:17:34: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("insetsChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                 ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:17:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("insetsChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:18:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:21:38: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  insets.setProperty(runtime, "top", $event.insets.top);
+                                     ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:22:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  insets.setProperty(runtime, "right", $event.insets.right);
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:23:41: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  insets.setProperty(runtime, "bottom", $event.insets.bottom);
+                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:24:39: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  insets.setProperty(runtime, "left", $event.insets.left);
+                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:25:3: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  $payload.setProperty(runtime, "insets", insets);
+  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:29:35: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  frame.setProperty(runtime, "x", $event.frame.x);
+                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:30:35: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  frame.setProperty(runtime, "y", $event.frame.y);
+                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:31:39: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  frame.setProperty(runtime, "width", $event.frame.width);
+                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:32:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  frame.setProperty(runtime, "height", $event.frame.height);
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:33:3: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  $payload.setProperty(runtime, "frame", frame);
+  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-safe-area-context/android/build/generated/source/codegen/jni/react/renderer/components/safeareacontext/EventEmitters.cpp:35:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+15 warnings generated.
+[31/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/99334adf394f2f4bf8bb10b81fac6382/components/safeareacontext/RNCSafeAreaViewShadowNode.cpp.o
+[32/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/99334adf394f2f4bf8bb10b81fac6382/components/safeareacontext/RNCSafeAreaViewState.cpp.o
+[33/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/2e39a17780955ba1eddfa5c2732dc87d/jni/react/renderer/components/safeareacontext/States.cpp.o
+[34/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/f2c99203e3ec7f1ecce536faa8b18b92/components/safeareacontext/safeareacontextJSI-generated.cpp.o
+[35/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/1e86e57d64093d8918fa233664a9eeb4/react/renderer/components/safeareacontext/ShadowNodes.cpp.o
+[36/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/f2c99203e3ec7f1ecce536faa8b18b92/components/safeareacontext/ComponentDescriptors.cpp.o
+[37/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/73655ed30362a3a37c5a538eb074e483/generated/source/codegen/jni/safeareacontext-generated.cpp.o
+[38/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/57ba773affe7c625ab228d88ba668f25/renderer/components/rnscreens/RNSScreenStackHeaderConfigShadowNode.cpp.o
+[39/73] Building CXX object safeareacontext_autolinked_build/CMakeFiles/react_codegen_safeareacontext.dir/2e39a17780955ba1eddfa5c2732dc87d/jni/react/renderer/components/safeareacontext/Props.cpp.o
+[40/73] Linking CXX shared library C:\RN_Projects\godesk_engineer\android\app\build\intermediates\cxx\RelWithDebInfo\4r5d44h5\obj\x86\libreact_codegen_safeareacontext.so
+[41/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/cdef4ce7d474aa11165d9b1c5461bcee/cpp/react/renderer/components/rnscreens/RNSModalScreenShadowNode.cpp.o
+[42/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/7e52453185a10b0311649fa8917de732/react/renderer/components/rnscreens/RNSScreenStackHeaderConfigState.cpp.o
+[43/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/2c17a0e9a1d9e1a6451c0438344d7922/common/cpp/react/renderer/components/rnscreens/RNSScreenShadowNode.cpp.o
+[44/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/57ba773affe7c625ab228d88ba668f25/renderer/components/rnscreens/RNSScreenStackHeaderSubviewState.cpp.o
+[45/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/57ba773affe7c625ab228d88ba668f25/renderer/components/rnscreens/RNSScreenStackHeaderSubviewShadowNode.cpp.o
+[46/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/rnscreens.cpp.o
+[47/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/2c17a0e9a1d9e1a6451c0438344d7922/common/cpp/react/renderer/components/rnscreens/RNSScreenState.cpp.o
+[48/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/3ac0c13b4bd057ad92227b9303b262d3/jni/react/renderer/components/rnscreens/rnscreensJSI-generated.cpp.o
+[49/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/709c704ee4bb8fe50af3661b2c78068a/source/codegen/jni/react/renderer/components/rnscreens/States.cpp.o
+[50/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/EventEmitters.cpp.o
+[51/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/709c704ee4bb8fe50af3661b2c78068a/source/codegen/jni/react/renderer/components/rnscreens/ShadowNodes.cpp.o
+[52/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/fff0de545a6dc551b3465c26c8b8e348/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp.o
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:17:52: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onAppear(OnAppear $event) const {
+                                                   ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:19:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:21:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:26:58: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onDisappear(OnDisappear $event) const {
+                                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:28:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:30:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:35:58: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onDismissed(OnDismissed $event) const {
+                                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:36:31: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("dismissed", [$event=std::move($event)](jsi::Runtime &runtime) {
+                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:36:48: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("dismissed", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                               ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:37:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:38:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:38:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:39:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:44:84: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onNativeDismissCancelled(OnNativeDismissCancelled $event) const {
+                                                                                   ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:45:44: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("nativeDismissCancelled", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:45:61: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("nativeDismissCancelled", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                            ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:46:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:47:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:47:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:48:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:53:60: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onWillAppear(OnWillAppear $event) const {
+                                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:55:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:57:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:62:66: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onWillDisappear(OnWillDisappear $event) const {
+                                                                 ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:64:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:66:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:71:76: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onHeaderHeightChange(OnHeaderHeightChange $event) const {
+                                                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:72:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("headerHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:72:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("headerHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:73:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:74:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "headerHeight", $event.headerHeight);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:74:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "headerHeight", $event.headerHeight);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:75:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:80:76: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onTransitionProgress(OnTransitionProgress $event) const {
+                                                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:81:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("transitionProgress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:81:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("transitionProgress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:82:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:83:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "progress", $event.progress);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:83:47: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "progress", $event.progress);
+                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:84:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "closing", $event.closing);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:84:42: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "closing", $event.closing);
+                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:85:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "goingForward", $event.goingForward);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:85:47: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "goingForward", $event.goingForward);
+                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:86:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:91:66: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onGestureCancel(OnGestureCancel $event) const {
+                                                                 ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:93:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:95:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:100:86: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onHeaderBackButtonClicked(OnHeaderBackButtonClicked $event) const {
+                                                                                     ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:102:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:104:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:109:76: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSModalScreenEventEmitter::onSheetDetentChanged(OnSheetDetentChanged $event) const {
+                                                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:110:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("sheetDetentChanged", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:110:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("sheetDetentChanged", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:111:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:112:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "index", $event.index);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:112:44: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "index", $event.index);
+                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:113:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "isStable", $event.isStable);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:113:43: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "isStable", $event.isStable);
+                                          ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:114:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:122:47: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onAppear(OnAppear $event) const {
+                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:124:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:126:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:131:53: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onDisappear(OnDisappear $event) const {
+                                                    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:133:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:135:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:140:53: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onDismissed(OnDismissed $event) const {
+                                                    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:141:31: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("dismissed", [$event=std::move($event)](jsi::Runtime &runtime) {
+                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:141:48: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("dismissed", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                               ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:142:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:143:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:143:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:144:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:149:79: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onNativeDismissCancelled(OnNativeDismissCancelled $event) const {
+                                                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:150:44: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("nativeDismissCancelled", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:150:61: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("nativeDismissCancelled", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                            ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:151:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:152:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:152:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "dismissCount", $event.dismissCount);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:153:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:158:55: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onWillAppear(OnWillAppear $event) const {
+                                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:160:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:162:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:167:61: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onWillDisappear(OnWillDisappear $event) const {
+                                                            ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:169:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:171:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:176:71: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onHeaderHeightChange(OnHeaderHeightChange $event) const {
+                                                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:177:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("headerHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:177:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("headerHeightChange", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:178:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:179:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "headerHeight", $event.headerHeight);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:179:51: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "headerHeight", $event.headerHeight);
+                                                  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:180:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:185:71: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onTransitionProgress(OnTransitionProgress $event) const {
+                                                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:186:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("transitionProgress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:186:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("transitionProgress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:187:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:188:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "progress", $event.progress);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:188:47: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "progress", $event.progress);
+                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:189:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "closing", $event.closing);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:189:42: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "closing", $event.closing);
+                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:190:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "goingForward", $event.goingForward);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:190:47: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "goingForward", $event.goingForward);
+                                              ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:191:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:196:61: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onGestureCancel(OnGestureCancel $event) const {
+                                                            ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:198:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:200:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:205:81: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onHeaderBackButtonClicked(OnHeaderBackButtonClicked $event) const {
+                                                                                ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:207:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:209:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:214:71: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenEventEmitter::onSheetDetentChanged(OnSheetDetentChanged $event) const {
+                                                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:215:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("sheetDetentChanged", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:215:57: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("sheetDetentChanged", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:216:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:217:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "index", $event.index);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:217:44: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "index", $event.index);
+                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:218:1: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "isStable", $event.isStable);
+^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:218:43: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+$payload.setProperty(runtime, "isStable", $event.isStable);
+                                          ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:219:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:225:68: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenStackHeaderConfigEventEmitter::onAttached(OnAttached $event) const {
+                                                                   ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:227:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:229:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:234:68: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenStackHeaderConfigEventEmitter::onDetached(OnDetached $event) const {
+                                                                   ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:236:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:238:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:244:78: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSScreenStackEventEmitter::onFinishTransitioning(OnFinishTransitioning $event) const {
+                                                                             ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:246:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:248:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:253:60: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onSearchFocus(OnSearchFocus $event) const {
+                                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:255:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:257:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:262:58: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onSearchBlur(OnSearchBlur $event) const {
+                                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:264:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:266:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:271:72: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onSearchButtonPress(OnSearchButtonPress $event) const {
+                                                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:272:39: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("searchButtonPress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                      ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:272:56: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("searchButtonPress", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:273:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:274:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "text", $event.text);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:274:43: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "text", $event.text);
+                                          ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:275:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:280:72: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onCancelButtonPress(OnCancelButtonPress $event) const {
+                                                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:282:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:284:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:289:58: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onChangeText(OnChangeText $event) const {
+                                                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:290:32: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("changeText", [$event=std::move($event)](jsi::Runtime &runtime) {
+                               ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:290:49: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("changeText", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                                ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:291:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:292:5: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "text", $event.text);
+    ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:292:43: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    $payload.setProperty(runtime, "text", $event.text);
+                                          ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:293:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:298:48: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onClose(OnClose $event) const {
+                                               ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:300:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:302:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:307:46: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSSearchBarEventEmitter::onOpen(OnOpen $event) const {
+                                             ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:309:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-screens/android/build/generated/source/codegen/jni/react/renderer/components/rnscreens/EventEmitters.cpp:311:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+156 warnings generated.
+[53/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/RNVectorIconsSpec-generated.cpp.o
+[54/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/ComponentDescriptors.cpp.o
+[55/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/0e73647ea37f29cde2e7b8ef0406c43a/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp.o
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:30:44: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+void RNSVGImageEventEmitter::onLoad(OnLoad $event) const {
+                                           ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:31:26: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("load", [$event=std::move($event)](jsi::Runtime &runtime) {
+                         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:31:43: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  dispatchEvent("load", [$event=std::move($event)](jsi::Runtime &runtime) {
+                                          ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:32:10: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    auto $payload = jsi::Object(runtime);
+         ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:35:40: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  source.setProperty(runtime, "width", $event.source.width);
+                                       ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:36:41: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  source.setProperty(runtime, "height", $event.source.height);
+                                        ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:37:38: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  source.setProperty(runtime, "uri", $event.source.uri);
+                                     ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:38:3: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+  $payload.setProperty(runtime, "source", source);
+  ^
+C:/RN_Projects/godesk_engineer/node_modules/react-native-svg/android/build/generated/source/codegen/jni/react/renderer/components/rnsvg/EventEmitters.cpp:40:12: warning: '$' in identifier [-Wdollar-in-identifier-extension]
+    return $payload;
+           ^
+9 warnings generated.
+[56/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/a1eb1e13fe634019d3abcac45dcf9440/common/cpp/react/renderer/components/rnsvg/RNSVGImageShadowNode.cpp.o
+[57/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/709c704ee4bb8fe50af3661b2c78068a/source/codegen/jni/react/renderer/components/rnscreens/Props.cpp.o
+[58/73] Building CXX object rnscreens_autolinked_build/CMakeFiles/react_codegen_rnscreens.dir/3ac0c13b4bd057ad92227b9303b262d3/jni/react/renderer/components/rnscreens/ComponentDescriptors.cpp.o
+[59/73] Linking CXX shared library C:\RN_Projects\godesk_engineer\android\app\build\intermediates\cxx\RelWithDebInfo\4r5d44h5\obj\x86\libreact_codegen_rnscreens.so
+[60/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/50f299cf6cd6633d821a66b48cd8c234/react-native-svg/common/cpp/react/renderer/components/rnsvg/RNSVGImageState.cpp.o
+[61/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/903b19ec3ad52d00436d36443b3fed55/build/generated/source/codegen/jni/react/renderer/components/rnsvg/States.cpp.o
+[62/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/0e73647ea37f29cde2e7b8ef0406c43a/generated/source/codegen/jni/react/renderer/components/rnsvg/ShadowNodes.cpp.o
+[63/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/Props.cpp.o
+[64/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/States.cpp.o
+[65/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/baf2a8ed3acf4241fe524f598d30372c/source/codegen/jni/react/renderer/components/rnsvg/rnsvgJSI-generated.cpp.o
+[66/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/rnsvg.cpp.o
+[67/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/RNVectorIconsSpecJSI-generated.cpp.o
+[68/73] Building CXX object RNVectorIconsSpec_autolinked_build/CMakeFiles/react_codegen_RNVectorIconsSpec.dir/react/renderer/components/RNVectorIconsSpec/ShadowNodes.cpp.o
+[69/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/903b19ec3ad52d00436d36443b3fed55/build/generated/source/codegen/jni/react/renderer/components/rnsvg/Props.cpp.o
+[70/73] Building CXX object rnsvg_autolinked_build/CMakeFiles/react_codegen_rnsvg.dir/baf2a8ed3acf4241fe524f598d30372c/source/codegen/jni/react/renderer/components/rnsvg/ComponentDescriptors.cpp.o
+[71/73] Linking CXX shared library C:\RN_Projects\godesk_engineer\android\app\build\intermediates\cxx\RelWithDebInfo\4r5d44h5\obj\x86\libreact_codegen_rnsvg.so
+[72/73] Building CXX object CMakeFiles/appmodules.dir/C_/RN_Projects/godesk_engineer/android/app/build/generated/autolinking/src/main/jni/autolinking.cpp.o
+[73/73] Linking CXX shared library C:\RN_Projects\godesk_engineer\android\app\build\intermediates\cxx\RelWithDebInfo\4r5d44h5\obj\x86\libappmodules.so
