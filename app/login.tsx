@@ -60,6 +60,7 @@ const LoginScreen = () => {
       .post("/otp/send", { mobile })
       .then((response) => {
         if (response.data?.success) {
+          
           router.push({
             pathname: "/verify_otp",
             params: { mobile },
