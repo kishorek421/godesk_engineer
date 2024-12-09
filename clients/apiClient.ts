@@ -1,0 +1,59 @@
+import axios, { AxiosError } from "axios";
+import { BASE_URL } from "@/config/env";
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
+import { getItem, setItem } from "@/utils/secure_store";
+
+const apiClient = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+apiClient.interceptors.request.use(
+  async (config) => {
+    await setItem(
+      AUTH_TOKEN_KEY,
+      "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6IkRXcSt5V3hCYWFweXdTSDhyRWVCSng3S0RXS21oSlJzODZFMUs2Ni9GVFk9Iiwicm9sZSI6WyJDVVNUT01FUiJdLCJpZCI6ImE1ZTcyZjVjLTlhNmEtNDAzNi1iOTQ4LWI0NzVkZjBlY2FkZSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6IjgwZGM2MTU3LTZmZDUtNDU0NS1hZDRmLTYxYzNlNDI2NDg2MyIsIm9yZ0lkIjoiYzEzOGRjNTYtNzEyZi00NDMzLTk2MzItMzcyODE1MzIxM2E3Iiwib3JnRGVwYXJ0bWVudElkIjoiYTc5YzlhNWYtMDEzYS00Mjk0LWJiZWEtYTE0ZTkwNWFlZGNiIiwib3JnRGVzaWduYXRpb25JZCI6ImY1NWE4NzI2LTExZTgtNDlmZi05Y2UwLWM2NWU5MGM1MjRhYiJ9LCJlbWFpbCI6Imtpc2hvcmVAYmVsbHdldGhlci5vcmcuaW4iLCJ1c2VybmFtZSI6IlZhcnVuIiwic3ViIjoia2lzaG9yZUBiZWxsd2V0aGVyLm9yZy5pbiIsImlhdCI6MTczMzcwODE2NywiZXhwIjoxNzMzNzM2OTY3fQ.DTatWsnDrR54pKfMm5PI1natEFmx8Bksa4XHxE1xzR0JNTmI2Fkb3rVmzBEv53Byaj9zLr4kiFM-NqF7S42ujw");
+    // await setItem(
+    //   REFRESH_TOKEN_KEY,
+    //   "6eaa7cd1-ac70-48ce-bc1f-df1a299a747f",
+    // );
+    // await setItem(
+    //   AUTH_TOKEN_KEY,
+    //   "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6Ik5GVFdMNzltOTNLU3IvS1crdDNLRzI3YWxWT2l4bGg1a0FGVnhROG1VRlk9Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6IjliYTA0OWQxLTFiNTEtNGNlMS05MzkyLTViYTUyZjE1NWY0OSIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6ImUwZmJlZmNiLTFiZWYtNDhhNy1hNmVmLTlmZThhZTczYzk3ZiIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6IjY1MWYwYjNjLWM3ZDAtNGQyNi05NzEwLWE0NGJiZGFlMWQyZCJ9LCJlbWFpbCI6ImJoYXJhdGlwYXJpdDRAZ21haWwuY29tIiwidXNlcm5hbWUiOiJCaGFyYXRpIiwic3ViIjoiYmhhcmF0aXBhcml0NEBnbWFpbC5jb20iLCJpYXQiOjE3MzMyMjQyMzQsImV4cCI6MTczMzI1MzAzNH0.979q9XCjMS9FoenTFX3m0cSLfBxe4fWBdmLoGzOcsjCYbCI2Jn3Z-sqYKDnxJNxo2BL9HUw2sAPqDWhy38dgYQ");
+    let token = await getItem(AUTH_TOKEN_KEY);
+    if (token) {
+      try {
+        await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
+        // console.log(validateResponse);
+      } catch (e) {
+        console.error("token invalid");
+        try {
+          const refreshToken = await getItem(REFRESH_TOKEN_KEY);
+          console.log("refreshToken", refreshToken);
+          const response = await axios.get(
+            BASE_URL + "/login/refresh_token" + `?refreshToken=${refreshToken}`,
+          );
+          const newToken = response.data?.data?.accessToken;
+          await setItem(AUTH_TOKEN_KEY, newToken);
+          console.log("newToken", newToken);
+          token = newToken;
+        } catch (e) {
+          console.error("Refresh token error");
+          if (e && e instanceof AxiosError) {
+            console.log(e.response?.data);
+          }
+        }
+      }
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    console.log("error ->>>>>>>>>>>>>>>>>>>", error);
+    return Promise.reject(error);
+  },
+);
+
+export default apiClient;

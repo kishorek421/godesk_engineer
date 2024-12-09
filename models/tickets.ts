@@ -6,6 +6,11 @@ import {
 import { ConfigurationModel } from "./configurations";
 import { EmployeeDetailsModel } from "./employees";
 
+export interface LocationModel {
+  lat?: string;
+  long?: string;
+}
+
 export interface TicketListItemModel {
   id?: string;
   description?: string;
@@ -26,6 +31,7 @@ export interface TicketListItemModel {
   assignedToDetails?: EmployeeDetailsModel;
   ticketImages?: string[];
   lastAssignedToDetails?: AssignedToUserDetailsModel;
+  location?: LocationModel;
 }
 
 export interface AssignedToUserDetailsModel {
@@ -35,7 +41,6 @@ export interface AssignedToUserDetailsModel {
   lastName?: string;
   phoneNumber?: string;
 }
-
 
 export interface IssueTypeModel {
   id?: string;

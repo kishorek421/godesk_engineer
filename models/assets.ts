@@ -45,6 +45,14 @@ export interface AssetInUseListItemModel {
   createdAt?: string;
 }
 
+export interface AssignedToUserDetails {
+  userId?: string;
+  createdAt?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+}
+
 export interface AssetMasterListItemModel {
   id?: string;
   serialNo?: string;
@@ -53,12 +61,20 @@ export interface AssetMasterListItemModel {
   oemWarrantyDate?: string;
   extendedWarrantyDate?: string;
   uniqueIdentifier?: string;
+  uniqueIdentifierType?: string;
+  licensedType?: string;
+  impact?: string;
+  assetModelId?: string;
+  assetTypeId?: string;
   assetTypeDetails?: AssetTypeListItemModel;
   assetModelDetails?: AssetModelListItemModel;
   impactDetails?: ConfigurationModel;
   assetStatusDetails?: ConfigurationModel;
   uniqueIdentifierTypeDetails?: ConfigurationModel;
   licensedTypeDetails?: ConfigurationModel;
+  userAssignedToDetails?: AssignedToUserDetails;
+  customerDetails?: AssignedToUserDetails;
+  assignedTo?: string;
 }
 
 export interface IssueTypeListItemModel {

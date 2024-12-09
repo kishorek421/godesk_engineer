@@ -1,70 +1,165 @@
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
-import React, { useRef, useState } from 'react'
-import { VStack } from '../components/ui/vstack'
-import LottieView from 'lottie-react-native';
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
-import { Input, InputField } from '@/components/ui/input';
-import { isFormFieldInValid } from '@/utils/helper';
-import { ErrorModel } from '@/models/common';
-import { router } from 'expo-router';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Button, ButtonSpinner } from '@/components/ui/button';
-
+import React, { useRef, useState } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import LottieView from "lottie-react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { router } from "expo-router";
+import { VStack } from "../components/ui/vstack";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from "@/components/ui/form-control";
+import { Input, InputField } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import apiClient from "@/clients/apiClient";
+import { ErrorModel } from "@/models/common";
+import { isFormFieldInValid } from "@/utils/helper";
+import { setItem } from "@/utils/secure_store";
+import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
+import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 const LoginScreen = () => {
   const animationRef = useRef<LottieView>(null);
-
+  const [mobile, setMobileNumber] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
+  const [canValidateField, setCanValidateField] = useState(false);
+
+  const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
+
+  const setFieldValidationStatusFunc = (
+    fieldName: string,
+    isValid: boolean
+  ) => {
+    if (fieldValidationStatus[fieldName]) {
+      fieldValidationStatus[fieldName](isValid);
+    }
+  };
+  const handleSendOTP = async () => {
+    if (!mobile || !/^\d{10}$/.test(mobile)) {
+      setErrors([
+        {
+          field: "mobileNo",
+          message: "Please enter a valid 10-digit mobile number.",
+        },
+      ]);
+      return;
+    }
+
+    setIsLoading(true);
+    setErrors([]);
+
+    await apiClient
+      .post("/otp/send", { mobile })
+      .then((response) => {
+        if (response.data?.success) {
+          
+          router.push({
+            pathname: "/verify_otp",
+            params: { mobile },
+          });
+        } else {
+          setErrors([
+            {
+              field: "mobileNo",
+              message:
+                response.data?.message || "Failed to send OTP. Try again.",
+            },
+          ]);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          console.error("Error sending OTP:", error.response.data);
+        }
+        setErrors([
+          {
+            field: "mobileNo",
+            message: "An error occurred. Please try again.",
+          },
+        ]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   return (
-    <SafeAreaView className='bg-white'>
-      <View className='flex justify-between h-full'>
-        <View className='mt-1 px-4'>
+    <SafeAreaView className="bg-white">
+      <View className="flex justify-between h-full">
+        <View className="mt-1 px-4">
+          {/* Logo */}
           <View>
-            <View className='flex-row items-end'>
+            <View className="flex-row items-end">
               <Image
-                source={require('../assets/images/godesk.jpg')}
+                source={require("../assets/images/godesk.jpg")}
                 style={{
                   width: 30,
                   height: 30,
                 }}
               />
-              <Text className='font-bold text-secondary-950 ms-.5 mb-1.5'>
-                desk <Text className='text-primary-950'>Engineer</Text>
+              <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
+                desk <Text className="text-primary-950">Engineer</Text>
               </Text>
             </View>
-            {/* <Text className='font-bold text-secondary-950'>Employee</Text> */}
           </View>
-          <View className='mt-8'>
-            <Text className="text-2xl font-bold">
-              Hey, Welcome! 🎉
-            </Text>
+
+          {/* Welcome Text */}
+          <View className="mt-6">
+            <Text className="text-2xl font-bold">Hey, Welcome! 🎉</Text>
             <Text className="color-gray-400 text-sm">
               Let’s create something extraordinary!
             </Text>
           </View>
-          <View className='mt-10'>
+
+          {/* Mobile Number Input */}
+          <View className="mt-6">
             <FormControl
               isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
             >
-              <FormControlLabel className="mb-1">
-                <FormControlLabelText>Mobile Number</FormControlLabelText>
-              </FormControlLabel>
-              <Input
-                variant="outline"
-                size="md"
-                isDisabled={false}
-                isInvalid={false}
-                isReadOnly={false}
-
-              >
+              {/* <Input variant="outline" size="md" isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}>
                 <InputField
                   placeholder="Enter your mobile number"
-                  className='py-2'
-                  onChangeText={(e) => {
-                    // setEmail(e);
-                  }}
+                  className="py-2"
+                  keyboardType="numeric"
+                  maxLength={10}
+                  value={mobile}
+                  onChangeText={(text: string) => setMobileNumber(text)}
                 />
-              </Input>
+              </Input> */}
+              <PrimaryTextFormField
+                fieldName="Mobile Number "
+                label="Mobile Number "
+                placeholder="Enter your mobile number"
+                errors={errors}
+                setErrors={setErrors}
+                min={10}
+                max={10}
+                keyboardType="phone-pad"
+                filterExp={/^[0-9]*$/}
+                canValidateField={canValidateField}
+                setCanValidateField={setCanValidateField}
+                setFieldValidationStatus={setFieldValidationStatus}
+                validateFieldFunc={setFieldValidationStatusFunc}
+                customValidations={(value) => {
+                  // mobile no should start with 6-9
+                  const customRE = /^[6-9]/;
+                  if (!customRE.test(value)) {
+                    return "Mobile no. should start with 6-9";
+                  }
+                  return undefined;
+                }}
+                onChangeText={(text: string) =>{
+                   setMobileNumber(text)
+                }}
+              />
               <FormControlError>
                 <FormControlErrorText>
                   {isFormFieldInValid("mobileNo", errors)}
@@ -72,26 +167,21 @@ const LoginScreen = () => {
               </FormControlError>
             </FormControl>
           </View>
-          <View className='flex-row justify-between items-center mt-12'>
-            <Text className='font-bold text-primary-950 text-xl '>Login</Text>
-            <TouchableOpacity onPress={() => {
-              router.replace("(home)/home")
-            }}>
 
-              <Button className='bg-primary-950 rounded-full w-14 h-14 p-0' onPress={() => {
-                router.push("/verify_otp")
-              }}>
-                <AntDesign name="arrowright" size={20} color="white" />
-                {/* <ButtonSpinner className='text-white'/> */}
-              </Button>
-              {/* <View className='bg-primary-950 rounded-full p-4'>
-                <AntDesign name="arrowright" size={20} color="white" />
-
-              </View> */}
-            </TouchableOpacity>
+          {/* Login Button */}
+          <View className="flex-row justify-between items-center mt-12">
+            <Text className="font-bold text-primary-950 text-xl">Login</Text>
+            <Button
+              className="bg-primary-950 rounded-full w-14 h-14 p-0"
+              onPress={handleSendOTP}
+            >
+              <AntDesign name="arrowright" size={20} color="white" />
+            </Button>
           </View>
         </View>
-        <View className=''>
+
+        {/* Footer Animation */}
+        <View>
           <LottieView
             ref={animationRef}
             source={require("../assets/lottie/login.json")}
@@ -101,11 +191,18 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-          <Text className='mt-8 text-sm text-center px-8 '>By logging in, you agree to our <Text className='text-primary-950 font-bold'>Terms & Conditions</Text> and <Text className='font-bold text-primary-950'>Privacy Policy</Text></Text>
+          <Text className="mt-8 text-sm text-center px-8">
+            By logging in, you agree to our{" "}
+            <Text className="text-primary-950 font-bold">
+              Terms & Conditions
+            </Text>{" "}
+            and{" "}
+            <Text className="font-bold text-primary-950">Privacy Policy</Text>
+          </Text>
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default LoginScreen
+export default LoginScreen;
