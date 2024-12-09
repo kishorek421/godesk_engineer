@@ -2,7 +2,7 @@
   "expo": {
     "name": "godesk_engineer",
     "slug": "godesk_engineer",
-    "scheme": "godesk_engineer",
+    "scheme": "godeskengineer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
