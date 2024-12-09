@@ -204,6 +204,9 @@ const CheckInOutModal = ({
                     ? "Checked in successfully"
                     : "Checked in successfully",
               });
+              setSelfie("");
+              setErrors([]);
+              setErrorMsg("");
               onClose();
             })
             .catch((e) => {
