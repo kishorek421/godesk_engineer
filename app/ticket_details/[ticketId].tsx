@@ -21,7 +21,6 @@ import useAuth from "@/hooks/useAuth";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-import RouteMap from '../map/location';
 import * as Location from "expo-location";
 
 const TicketDetails = () => {
