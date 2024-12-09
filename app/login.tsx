@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -46,7 +47,7 @@ const LoginScreen = () => {
     if (!mobile || !/^\d{10}$/.test(mobile)) {
       setErrors([
         {
-          field: "mobileNo",
+          param: "mobile",
           message: "Please enter a valid 10-digit mobile number.",
         },
       ]);
@@ -59,8 +60,9 @@ const LoginScreen = () => {
     await apiClient
       .post("/otp/send", { mobile })
       .then((response) => {
+        console.log("response ", response.data.data);
+        
         if (response.data?.success) {
-          
           router.push({
             pathname: "/verify_otp",
             params: { mobile },
@@ -68,7 +70,7 @@ const LoginScreen = () => {
         } else {
           setErrors([
             {
-              field: "mobileNo",
+              param: "mobile",
               message:
                 response.data?.message || "Failed to send OTP. Try again.",
             },
@@ -76,17 +78,19 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
+        console.error("Error sending OTP:", error.response.data);
         if (error) {
           console.error("Error sending OTP:", error.response.data);
         }
         setErrors([
           {
-            field: "mobileNo",
+            param: "mobile",
             message: "An error occurred. Please try again.",
           },
         ]);
       })
       .finally(() => {
+        console.log("ending with");
         setIsLoading(false);
       });
   };
@@ -135,8 +139,8 @@ const LoginScreen = () => {
                 />
               </Input> */}
               <PrimaryTextFormField
-                fieldName="Mobile Number "
-                label="Mobile Number "
+                fieldName="mobile"
+                label="Mobile Number"
                 placeholder="Enter your mobile number"
                 errors={errors}
                 setErrors={setErrors}
@@ -156,13 +160,13 @@ const LoginScreen = () => {
                   }
                   return undefined;
                 }}
-                onChangeText={(text: string) =>{
-                   setMobileNumber(text)
+                onChangeText={(text: string) => {
+                  setMobileNumber(text);
                 }}
               />
               <FormControlError>
                 <FormControlErrorText>
-                  {isFormFieldInValid("mobileNo", errors)}
+                  {isFormFieldInValid("mobile", errors)}
                 </FormControlErrorText>
               </FormControlError>
             </FormControl>
@@ -175,7 +179,11 @@ const LoginScreen = () => {
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
               onPress={handleSendOTP}
             >
-              <AntDesign name="arrowright" size={20} color="white" />
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <AntDesign name="arrowright" size={20} color="white" />
+              )}
             </Button>
           </View>
         </View>
