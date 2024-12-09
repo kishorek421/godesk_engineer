@@ -47,6 +47,14 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to track your check in and check out location."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b26fa7c5-a714-4871-8a5b-8174a2974484"
+      }
+    }
   }
 }

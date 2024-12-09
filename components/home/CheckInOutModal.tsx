@@ -82,7 +82,7 @@ const CheckInOutModal = ({
  
     fetchPincode();
  
-    return () => clearInterval(timer); // Cleanup timer on component unmount
+    return () => clearInterval(timer); 
   }, []);
  
   const requestCameraPermissions = async () => {

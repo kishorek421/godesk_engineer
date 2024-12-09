@@ -12,24 +12,35 @@ import { Button } from '@/components/ui/button';
 import apiClient from '@/clients/apiClient';
 import { setItem } from '@/utils/secure_store';
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/storage_keys';
-
+import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
 
   const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
-  const [errors, setError] = useState<ErrorModel[]>([]);
 
+  const [canValidateField, setCanValidateField] = useState(false);
+  const [errors, setErrors] = useState<ErrorModel[]>([]);
+  const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
+
+  const setFieldValidationStatusFunc = (
+    fieldName: string,
+    isValid: boolean,
+  ) => {
+    if (fieldValidationStatus[fieldName]) {
+      fieldValidationStatus[fieldName](isValid);
+    }
+  };
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setError([{ field: "otp", message: "Please enter a valid 6-digit OTP." }]);
+      setErrors([{ field: "otp", message: "Please enter a valid 6-digit OTP." }]);
       return;
     }
 
     setIsLoading(true);
-    setError([]);
+    setErrors([]);
 
     try {
 
@@ -47,7 +58,7 @@ const VerifyOTPScreen = () => {
       });
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      setError([{ field: "otp", message: "An error occurred. Please try again." }]);
+      setErrors([{ field: "otp", message: "An error occurred. Please try again." }]);
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +88,7 @@ const VerifyOTPScreen = () => {
           </View>
 
           <View className="mt-6">
-            <FormControl isInvalid={isFormFieldInValid('otp', errors).length > 0}>
+            {/* <FormControl isInvalid={isFormFieldInValid('otp', errors).length > 0}>
               <FormControlLabel className="mb-1">
                 <FormControlLabelText>Enter OTP</FormControlLabelText>
               </FormControlLabel>
@@ -100,7 +111,39 @@ const VerifyOTPScreen = () => {
                   {isFormFieldInValid('otp', errors)}
                 </FormControlErrorText>
               </FormControlError>
-            </FormControl>
+            </FormControl> */}
+             <FormControl
+                        isInvalid={isFormFieldInValid("otp", errors).length > 0}
+                        className="mt-4 "
+                      >
+                        <PrimaryTextFormField
+                          fieldName="Enter OTP"
+                          label="Enter OTP"
+                          placeholder="Enter your OTP"
+                          // defaultValue={.orgMobile}
+                          errors={errors}
+                          setErrors={setErrors}
+                          min={6}
+                          max={6}
+                          keyboardType="phone-pad"
+                          filterExp={/^[0-9]*$/}
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          onChangeText={(e: any) => setOtp(e)}
+                        />
+                        {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
+                          <InputField
+                            placeholder="Enter customer otp"
+                            className="py-2"
+                            onChangeText={(e: any) => setOtp(e)}  // Ensure the OTP is set correctly
+                          />
+                        </Input> */}
+                        <FormControlError>
+                          <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
+                        </FormControlError>
+                      </FormControl>
           </View>
 
           <View className="flex-row justify-between items-center mt-12">

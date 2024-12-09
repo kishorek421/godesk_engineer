@@ -116,32 +116,32 @@ const TicketListLayout = () => {
   return (
     <>
       {/* Tab buttons to switch between different ticket types */}
-      {/* <View className="flex flex-row justify-between py-3 rounded-full w-full mt-4 px-4">
-       
-      </View> */}
+
       <FlatList
         horizontal
         data={tabs}
         showsHorizontalScrollIndicator={false}
-        renderItem={(item) => {
-          return <TouchableOpacity
-            onPress={() => setSelectedTab(item.index)}
-            className={`ms-4  py-3 rounded-full w-28 ${selectedTab === item.index ? "bg-primary-200" : "bg-gray-200"
+        keyExtractor={(item, index) => index.toString()} // Ensure a unique key for each item
+        renderItem={({ item, index }) => (
+          <TouchableOpacity
+            onPress={() => setSelectedTab(index)}
+            className={`ms-4 h-12 py-3 rounded-full w-28 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
               }`}
-            key={item.index}
+            key={index}
           >
             <Text
-              className={`text-center ${selectedTab === item.index
-                ? "text-primary-950 font-medium"
-                : "text-gray-500 font-normal text-sm"
+              className={` h-96 text-center ${selectedTab === index
+                  ? "text-primary-950 font-medium"
+                  : "text-gray-500 font-normal text-sm"
                 }`}
             >
-              {item.item}
+              {item}
             </Text>
           </TouchableOpacity>
-        }}
-        className="mt-6 "
+        )}
+        className="mt-6"
       />
+
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
          rounded-lg
@@ -152,22 +152,22 @@ const TicketListLayout = () => {
         </View>
       ) : (
         <FlatList
-        data={recentTickets}
-        renderItem={({ item }) => (
-          <TicketListItemLayout cn={`my-2`} ticketModel={item} />
-        )}
-        keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
-        onEndReached={() => {
-          if (!isLastPage) {
-            fetchTickets(currentPage + 1, selectedTab);
+          data={recentTickets}
+          renderItem={({ item }) => (
+            <TicketListItemLayout cn={`my-2 `} ticketModel={item} />
+          )}
+          keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
+          onEndReached={() => {
+            if (!isLastPage) {
+              fetchTickets(currentPage + 1, selectedTab);
+            }
+          }}
+          ListFooterComponent={
+            <View style={{ height: 500 }} />
           }
-        }}
-        ListFooterComponent={
-          <View style={{ height: 500 }} />
-        }
-        contentContainerStyle={{ paddingTop: 20 }} // Added top padding to create space between the button and list
-      />
-      
+          contentContainerStyle={{ paddingTop: 16 }}
+        />
+
       )}
     </>
   );
