@@ -9,6 +9,7 @@ import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
+import Toast from "react-native-toast-message";
 import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from "@/components/ui/form-control";
 import {
   bytesToMB,
@@ -176,151 +177,94 @@ const TicketDetails = () => {
       bottomSheetRef.current?.hide();
     }
   };
-  // Update ticket status function
-  const updateTicketStatus = async () => {
-    try {
-      console.log('ticketDetails.assignedToDetails?.id', ticketDetails.lastAssignedToDetails?.assignedTo);
-
-      setErrors([]);
-
-      // Validate if ticketId exists
-      if (!ticketId) {
-        console.error('Ticket ID is missing');
-        return;
-      }
-
-      if (!selectedTicketStatus?.key) {
-        setErrors([{ param: 'ticketStatus', message: 'Status is required' }]);
-      }
-     
-      if (assetImages.length === 0) {
-        setErrorValue(
-          "assetImages",
-          "",
-          "Atleast one asset image is required",
-          setErrors,
-        );
-      } else {
-        setErrorValue("assetImages", "", "", setErrors);
-      }
-     
-
-      // Ensure OTP and selected status are provided
-      if (!otp && (selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED')) {
-        setErrors((prevState: any) => {
-          return [...prevState, { param: 'otp', message: 'OTP is required' }];
-        });
-      }
-
-      if ((!otp && (selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED')) || !selectedTicketStatus?.key) {
-        return;
-      }
-          console.log('Selected Ticket Status:', selectedTicketStatus);
-
-    
-    
-
-      const validationPromises = Object.keys(fieldValidationStatus).map(
-        (key) =>
-          new Promise((resolve) => {
-            // Resolve each validation status based on field key
-            setFieldValidationStatus((prev: any) => ({
-              ...prev,
-              [key]: resolve,
-            }));
-          }),
-      );
-
-      setCanValidateField(true);
-
-      // Wait for all validations to complete
-      await Promise.all(validationPromises);
-
-      const allValid = errors
-        .map((error) => error.message?.length === 0)
-        .every((status) => status === true);
-
-      if (allValid) {
-        setIsLoading(true);
-
-        const formData = new FormData();
-
-        setIsLoading(true);
-
-        if (assetImages.length > 0) {
-          console.log(assetImages);
-          for (let i = 0; i < assetImages.length; i++) {
-            const assetImage = assetImages[i];
-
-            formData.append("assetImages", {
-              uri: assetImage,
-              type: "image/jpeg",
-              name: getFileName(assetImage, true),
-            } as any);
-          }
+  const validateInputs = (): { param: string; message: string }[] => {
+    const errors: { param: string; message: string }[] = [];
+  
+    // Validate ticket status
+    if (!selectedTicketStatus?.key) {
+      errors.push({ param: "ticketStatus", message: "Status is required" });
+    }
+  
+    if (!description) {
+      errors.push({ param: "description", message: "Description is required" });
+    }
+  
+     // Validate OTP for specific ticket statuses
+  if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) {
+    errors.push({ param: 'otp', message: 'OTP is required for the selected status' });
+  }
+  
+  
+    if (!latitude || !longitude) {
+      try {
+        if (!latitude || !longitude) {
+          errors.push({ param: "location", message: "Location is required but couldn't be fetched." });
         }
-
-        setErrors([]);
-
-        apiClient
-          .post(TICKET_UPLOADS, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((response) => {
-            const uploadedAssetImages = response.data.data;
-            console.log("uploadedAssetImages", uploadedAssetImages);
-
-            if (uploadedAssetImages) {
-              let ticketData = {
-                selectTicketStatusOptions  : selectTicketStatusOptions?.value,
-                description: ticketDetails.description,
-                assetImages: uploadedAssetImages,
-              };
-              // You can continue using ticketData here
-              console.log("Ticket data:", ticketData);
-            }
-          })
-          .catch((e) => {
-            let errors = e.response?.data?.errors;
-            console.log(errors);
-            setIsLoading(false);
-          });
+        if (!pincode) {
+          errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
+        }
+      } catch (error) {
+        console.error("Error validating location and pincode:", error);
+        errors.push({ param: "location", message: "An error occurred while fetching location and pincode." });
       }
+    }
+  
+    if (assetImages.length === 0) {
+      errors.push({ param: "assetImages", message: "At least one asset image is required" });
+    }
+  
+    return errors;
+  };
+  
+  const updateTicketStatus = async () => {
+    // Validate form inputs
+    const formErrors = validateInputs();
+    if (formErrors.length > 0) {
+      setErrors(formErrors);  // Set the errors state
+      return;  // Return early to prevent further execution if validation fails
+    }
+  
+    try {
+      // Prepare request payload
       const requestBody = {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
         toStatus: selectedTicketStatus.key,
         location: {
-          latitude: latitude || 19.4210814, // Use fetched latitude, fallback to default
-          longitude: longitude || 72.9167569, // Use fetched longitude, fallback to default
+          latitude: latitude,
+          longitude: longitude,
         },
-        description: ticketDetails.description,
+        description: description,
         pin: null,
       };
-
-      console.log('Request Body: ~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>>> ', JSON.stringify(requestBody));
-
-      // Step 3: Send the PUT request to update ticket status
-      const response = await apiClient.put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody);
-
+  
+      // Call API to update ticket status
+      const response = await apiClient.put(
+        `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
+        requestBody
+      );
+  
+      // Handle response
       if (response.status === 200) {
-        console.log('Ticket status updated successfully!', response);
-        fetchTicketDetails(); // Call the fetchTicketDetails function after updating
-        Alert.alert('Success', 'Ticket status updated successfully!', [{ text: 'OK' }]);
+        console.log("request body", requestBody);
+        Alert.alert("Success", "Ticket status updated successfully!", [{ text: "OK" }]);
+        fetchTicketDetails(); // Refresh ticket details after success
       } else {
-        console.error('Failed to update ticket status. Server responded with:', response.status);
-        Alert.alert('Failed', 'Failed to update ticket status', [{ text: 'OK' }]);
+        Alert.alert("Error", `Failed to update status: ${response.status}`);
       }
-    } catch (e) {
-      console.error('Failed to update ticket status.', e.response?.data || e);
+    } catch (error) {
+      console.error("Failed to update ticket status.", error);
+      Alert.alert("Error", "An unexpected error occurred while updating the ticket status.");
     }
   };
+  
+  
+  
   return isLoading ? (
     <LoadingBar />
   ) : (
-    <SafeAreaView>
+    <SafeAreaView className="flex-1">
+  
       <View>
         <Pressable
           onPress={() => {
@@ -331,9 +275,7 @@ const TicketDetails = () => {
               }
             })
           }}
-
         >
-
           <View className="flex-row items-center bg-white h-14 shadow-md px-4">
             {/* Back Button */}
             <View className="flex-row items-center flex-1">
@@ -350,9 +292,7 @@ const TicketDetails = () => {
           </View>
 
         </Pressable>
-
         <ScrollView>
-
           <View className="flex-1 bg-gray-100">
             <View className="p-4">
               <View className="w-full bg-white px-3 py-3 rounded-lg">
@@ -489,26 +429,26 @@ const TicketDetails = () => {
                           <FormControlErrorText>{isFormFieldInValid("ticketStatus", errors)}</FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <FormControl
+                     
+                       <FormControl
                         isInvalid={isFormFieldInValid("description", errors).length > 0}
                         className="mt-4 "
                       >
-                        <PrimaryTextFormField
+                        <PrimaryTextareaFormField
                           fieldName="description"
-                          label=" Description"
+                          label="Description"
                           placeholder="Write a short description about your issue"
+                          // defaultValue={.orgMobile}
                           errors={errors}
                           setErrors={setErrors}
                           min={10}
                           max={200}
-
                           filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
-                          onChangeText={(e: any) => setDescription(e)}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
-
+                          onChangeText={(e: any) => setDescription(e)}
                         />
                         <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("description", errors)}</FormControlErrorText>
@@ -606,7 +546,7 @@ const TicketDetails = () => {
                           <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <Button className="bg-primary-950 rounded-md mt-6 h-12"
+                      <Button className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
                         onPress={() => {
                           if (isLoading) return;
                           updateTicketStatus();
@@ -641,6 +581,7 @@ const TicketDetails = () => {
         bottomSheetRef={bottomSheetRef}
       />
         </ScrollView>
+
       </View>
     </SafeAreaView>
   );

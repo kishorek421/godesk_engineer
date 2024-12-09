@@ -35,7 +35,7 @@ const VerifyOTPScreen = () => {
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ field: "otp", message: "Please enter a valid 6-digit OTP." }]);
+      setErrors([{ param: "otp", message: "Please enter a valid 6-digit OTP." }]);
       return;
     }
 
@@ -58,7 +58,7 @@ const VerifyOTPScreen = () => {
       });
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      setErrors([{ field: "otp", message: "An error occurred. Please try again." }]);
+      setErrors([{ param: "otp", message: "An error occurred. Please try again." }]);
     } finally {
       setIsLoading(false);
     }
@@ -87,30 +87,6 @@ const VerifyOTPScreen = () => {
           </View>
 
           <View className="mt-6">
-            {/* <FormControl isInvalid={isFormFieldInValid('otp', errors).length > 0}>
-              <FormControlLabel className="mb-1">
-                <FormControlLabelText>Enter OTP</FormControlLabelText>
-              </FormControlLabel>
-              <Input
-                variant="outline"
-                size="md"
-                isInvalid={isFormFieldInValid('otp', errors).length > 0}
-              >
-                <InputField
-                  placeholder="Enter your OTP"
-                  keyboardType="numeric"
-                  className="py-2"
-                  maxLength={6}
-                  value={otp}
-                  onChangeText={(text: string) => setOtp(text)}
-                />
-              </Input>
-              <FormControlError>
-                <FormControlErrorText>
-                  {isFormFieldInValid('otp', errors)}
-                </FormControlErrorText>
-              </FormControlError>
-            </FormControl> */}
             <FormControl
               isInvalid={isFormFieldInValid("otp", errors).length > 0}
               className="mt-4 "
