@@ -35,7 +35,7 @@ interface CheckInOutProps {
   checkedInId?: string;
   onClose: () => void;
 }
- 
+
 const CheckInOutModal = ({
   status,
   bottomSheetRef,
@@ -48,43 +48,43 @@ const CheckInOutModal = ({
   );
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
- 
+
   const [selfie, setSelfie] = useState("");
- 
+
   const [errorMsg, setErrorMsg] = useState("");
- 
+
   const [cameraPermissionStatus, requestCameraPermission] =
     ImagePicker.useCameraPermissions();
- 
+
   const [isLoading, setIsLoading] = useState(false);
- 
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(moment().format("DD/MM/YYYY hh:mm:ss A"));
     }, 1000);
- 
+
     const fetchPincode = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.error("Permission to access location was denied");
         return;
       }
- 
+
       const location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
- 
+
       const [address] = await Location.reverseGeocodeAsync({
         latitude,
         longitude,
       });
       setPincode(address.postalCode ?? "");
     };
- 
+
     fetchPincode();
- 
-    return () => clearInterval(timer); 
+
+    return () => clearInterval(timer);
   }, []);
- 
+
   const requestCameraPermissions = async () => {
     if (cameraPermissionStatus?.granted) {
       return true;
@@ -119,15 +119,15 @@ const CheckInOutModal = ({
     );
     return false;
   };
- 
+
   const takePhoto = async () => {
     // setSelfie(
     //   "file:///Users/fci-1988/Library/Developer/CoreSimulator/Devices/2552B9A6-1492-49E4-88FE-BF21786D7E11/data/Containers/Data/Application/AE599E3E-E808-49A2-8A4A-FDE16DD81297/Library/Caches/ImagePicker/34E026E3-9107-4E08-BD66-54829AB346E1.png",
     // );
- 
+
     const permissionsGranted = await requestCameraPermissions();
     if (!permissionsGranted) return;
- 
+
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
       aspect: [4, 3],
@@ -135,7 +135,7 @@ const CheckInOutModal = ({
       base64: true,
       cameraType: ImagePicker.CameraType.front,
     });
- 
+
     if (!result.canceled) {
       const asset = result.assets[0];
       const fileSize = (asset.base64?.length ?? 0) * (3 / 4) - 2;
@@ -150,7 +150,7 @@ const CheckInOutModal = ({
       }
     }
   };
- 
+
   const chechInOut = async () => {
     if (selfie.length === 0) {
       setErrorValue("selfie", "", "Selfie is required", setErrors);
@@ -158,19 +158,20 @@ const CheckInOutModal = ({
     } else {
       setErrorValue("selfie", "", "", setErrors);
     }
- 
+
     setIsLoading(true);
- 
+
     const formData = new FormData();
- 
+
     formData.append("assetImages", {
       uri: selfie,
       type: "image/jpeg",
       name: getFileName(selfie, true),
     } as any);
- 
+
     setErrors([]);
- 
+    setErrorMsg("");
+
     apiClient
       .post(TICKET_UPLOADS, formData, {
         headers: {
@@ -180,7 +181,7 @@ const CheckInOutModal = ({
       .then((response) => {
         const uploadedSelfie = response.data.data;
         console.log("uploadedSelfie", uploadedSelfie);
- 
+
         if (uploadedSelfie && uploadedSelfie.length > 0) {
           const checkInOutModel: CreateCheckInOutModel = {
             date: moment().format("YYYY-MM-DD"),
@@ -211,12 +212,13 @@ const CheckInOutModal = ({
             })
             .catch((e) => {
               console.error(e.response?.data);
-              let errors = e.response?.data?.errors;
+              const errors = e.response?.data?.errors;
               if (errors) {
                 console.error("errors -> ", errors);
                 setErrors(errors);
+              } else {
+                setErrorMsg("Failed to check in");
               }
-              setErrorMsg("Failed to check in");
               setIsLoading(false);
             });
         } else {
@@ -229,13 +231,18 @@ const CheckInOutModal = ({
         }
       })
       .catch((e) => {
-        let errors = e.response?.data;
+        const errors = e.response?.data?.errors;
+        if (errors) {
+          console.error("errors -> ", errors);
+          setErrors(errors);
+        } else {
+          setErrorMsg("Failed to check in");
+        }
         console.log("errors ---->", errors);
         setIsLoading(false);
-        setErrorMsg("Failed to check in");
       });
   };
- 
+
   return (
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
       <View className="gap-4 p-4">
@@ -254,8 +261,8 @@ const CheckInOutModal = ({
           </View>
           <View className="flex-row justify-between">
             <FormControl
-              key="selfie"
-              isInvalid={isFormFieldInValid("selfie", errors).length > 0}
+              key="url"
+              isInvalid={isFormFieldInValid("url", errors).length > 0}
             >
               <View className="">
                 <Text className="font-semibold text-lg">Selfie</Text>
@@ -267,7 +274,7 @@ const CheckInOutModal = ({
                     className="mt-1"
                   >
                     <View
-                      className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px]
+                      className={`${isFormFieldInValid("url", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px]
                       border-dashed h-28 w-28
                 rounded-md mt-1 flex justify-center items-center `}
                     >
@@ -277,7 +284,7 @@ const CheckInOutModal = ({
                         >
                           <MaterialCommunityIcons
                             name="camera-plus"
-                            color={`${isFormFieldInValid("selfie", errors).length === 0 ? "#009c68" : "#b91c1c"}`}
+                            color={`${isFormFieldInValid("url", errors).length === 0 ? "#009c68" : "#b91c1c"}`}
                             size={18}
                           />
                         </View>
@@ -306,7 +313,7 @@ const CheckInOutModal = ({
               </View>
               <FormControlError>
                 <FormControlErrorText>
-                  {isFormFieldInValid("selfie", errors)}
+                  {isFormFieldInValid("url", errors)}
                 </FormControlErrorText>
               </FormControlError>
             </FormControl>
@@ -315,7 +322,7 @@ const CheckInOutModal = ({
               className="w-[150px] h-[150px]"
             /> */}
           </View>
-          {errorMsg && <Text className="mt-4 text-red-500">* {errorMsg}</Text>}
+          {errorMsg && <Text className="mt-4 text-red-700">* {errorMsg}</Text>}
           <Button
             className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {
@@ -333,5 +340,5 @@ const CheckInOutModal = ({
     </BottomSheet>
   );
 };
- 
+
 export default CheckInOutModal;
