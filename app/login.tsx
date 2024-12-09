@@ -1,10 +1,22 @@
 import React, { useRef, useState } from "react";
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+} from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { VStack } from "../components/ui/vstack";
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from "@/components/ui/form-control";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from "@/components/ui/form-control";
 import { Input, InputField } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import apiClient from "@/clients/apiClient";
@@ -24,39 +36,58 @@ const LoginScreen = () => {
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
-    isValid: boolean,
+    isValid: boolean
   ) => {
     if (fieldValidationStatus[fieldName]) {
       fieldValidationStatus[fieldName](isValid);
     }
   };
   const handleSendOTP = async () => {
-   
     if (!mobile || !/^\d{10}$/.test(mobile)) {
-      setErrors([{ field: "mobileNo", message: "Please enter a valid 10-digit mobile number." }]);
+      setErrors([
+        {
+          field: "mobileNo",
+          message: "Please enter a valid 10-digit mobile number.",
+        },
+      ]);
       return;
     }
 
     setIsLoading(true);
     setErrors([]);
 
-    await apiClient.post('/otp/send', { mobile }).then((response) => {
-      if (response.data?.success) {
-        router.push({
-          pathname: '/verify_otp',
-          params: { mobile },
-        });
-      } else {
-        setErrors([{ field: "mobileNo", message: response.data?.message || 'Failed to send OTP. Try again.' }]);
-      }
-    }).catch((error) => {
-      if (error) {
-        console.error('Error sending OTP:', error.response.data);
-      }
-      setErrors([{ field: "mobileNo", message: "An error occurred. Please try again." }]);
-    }).finally(() => {
-      setIsLoading(false);
-    });
+    await apiClient
+      .post("/otp/send", { mobile })
+      .then((response) => {
+        if (response.data?.success) {
+          router.push({
+            pathname: "/verify_otp",
+            params: { mobile },
+          });
+        } else {
+          setErrors([
+            {
+              field: "mobileNo",
+              message:
+                response.data?.message || "Failed to send OTP. Try again.",
+            },
+          ]);
+        }
+      })
+      .catch((error) => {
+        if (error) {
+          console.error("Error sending OTP:", error.response.data);
+        }
+        setErrors([
+          {
+            field: "mobileNo",
+            message: "An error occurred. Please try again.",
+          },
+        ]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -82,13 +113,16 @@ const LoginScreen = () => {
           {/* Welcome Text */}
           <View className="mt-6">
             <Text className="text-2xl font-bold">Hey, Welcome! 🎉</Text>
-            <Text className="color-gray-400 text-sm">Let’s create something extraordinary!</Text>
+            <Text className="color-gray-400 text-sm">
+              Let’s create something extraordinary!
+            </Text>
           </View>
 
           {/* Mobile Number Input */}
           <View className="mt-6">
-            <FormControl isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}>
-              
+            <FormControl
+              isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
+            >
               {/* <Input variant="outline" size="md" isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}>
                 <InputField
                   placeholder="Enter your mobile number"
@@ -100,29 +134,31 @@ const LoginScreen = () => {
                 />
               </Input> */}
               <PrimaryTextFormField
-                          fieldName="Mobile Number "
-                          label="Mobile Number "
-                          placeholder="Enter your mobile number"
-                          errors={errors}
-                          setErrors={setErrors}
-                          min={10}
-                          max={10}
-                          keyboardType="phone-pad"
-                          filterExp={/^[0-9]*$/}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          customValidations={(value) => {
-                            // mobile no should start with 6-9
-                            const customRE = /^[6-9]/;
-                            if (!customRE.test(value)) {
-                              return "Mobile no. should start with 6-9";
-                            }
-                            return undefined;
-                          }}
-                          onChangeText={(text: string) => setMobileNumber(text)}
-                        />
+                fieldName="Mobile Number "
+                label="Mobile Number "
+                placeholder="Enter your mobile number"
+                errors={errors}
+                setErrors={setErrors}
+                min={10}
+                max={10}
+                keyboardType="phone-pad"
+                filterExp={/^[0-9]*$/}
+                canValidateField={canValidateField}
+                setCanValidateField={setCanValidateField}
+                setFieldValidationStatus={setFieldValidationStatus}
+                validateFieldFunc={setFieldValidationStatusFunc}
+                customValidations={(value) => {
+                  // mobile no should start with 6-9
+                  const customRE = /^[6-9]/;
+                  if (!customRE.test(value)) {
+                    return "Mobile no. should start with 6-9";
+                  }
+                  return undefined;
+                }}
+                onChangeText={(text: string) =>{
+                   setMobileNumber(text)
+                }}
+              />
               <FormControlError>
                 <FormControlErrorText>
                   {isFormFieldInValid("mobileNo", errors)}
@@ -134,7 +170,10 @@ const LoginScreen = () => {
           {/* Login Button */}
           <View className="flex-row justify-between items-center mt-12">
             <Text className="font-bold text-primary-950 text-xl">Login</Text>
-            <Button className="bg-primary-950 rounded-full w-14 h-14 p-0" onPress={handleSendOTP}>
+            <Button
+              className="bg-primary-950 rounded-full w-14 h-14 p-0"
+              onPress={handleSendOTP}
+            >
               <AntDesign name="arrowright" size={20} color="white" />
             </Button>
           </View>
@@ -152,7 +191,11 @@ const LoginScreen = () => {
             }}
           />
           <Text className="mt-8 text-sm text-center px-8">
-            By logging in, you agree to our <Text className="text-primary-950 font-bold">Terms & Conditions</Text> and{" "}
+            By logging in, you agree to our{" "}
+            <Text className="text-primary-950 font-bold">
+              Terms & Conditions
+            </Text>{" "}
+            and{" "}
             <Text className="font-bold text-primary-950">Privacy Policy</Text>
           </Text>
         </View>

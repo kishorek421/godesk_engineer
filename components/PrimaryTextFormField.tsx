@@ -145,6 +145,8 @@ const PrimaryTextFormField = ({
             paddingHorizontal: 10, // Adjust horizontal padding
           }}
           onChangeText={(newValue) => {
+            console.log("newValue", newValue);
+            
             if (filterExp && !filterExp.test(newValue)) {
               return;
             }
