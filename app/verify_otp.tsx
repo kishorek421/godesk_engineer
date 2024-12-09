@@ -64,7 +64,6 @@ const VerifyOTPScreen = () => {
     }
   };
 
-
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
@@ -112,38 +111,38 @@ const VerifyOTPScreen = () => {
                 </FormControlErrorText>
               </FormControlError>
             </FormControl> */}
-             <FormControl
-                        isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                        className="mt-4 "
-                      >
-                        <PrimaryTextFormField
-                          fieldName="Enter OTP"
-                          label="Enter OTP"
-                          placeholder="Enter your OTP"
-                          // defaultValue={.orgMobile}
-                          errors={errors}
-                          setErrors={setErrors}
-                          min={6}
-                          max={6}
-                          keyboardType="phone-pad"
-                          filterExp={/^[0-9]*$/}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: any) => setOtp(e)}
-                        />
-                        {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
+            <FormControl
+              isInvalid={isFormFieldInValid("otp", errors).length > 0}
+              className="mt-4 "
+            >
+              <PrimaryTextFormField
+                fieldName="Enter OTP"
+                label="Enter OTP"
+                placeholder="Enter your OTP"
+                // defaultValue={.orgMobile}
+                errors={errors}
+                setErrors={setErrors}
+                min={6}
+                max={6}
+                keyboardType="phone-pad"
+                filterExp={/^[0-9]*$/}
+                canValidateField={canValidateField}
+                setCanValidateField={setCanValidateField}
+                setFieldValidationStatus={setFieldValidationStatus}
+                validateFieldFunc={setFieldValidationStatusFunc}
+                onChangeText={(e: any) => setOtp(e)}
+              />
+              {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
                           <InputField
                             placeholder="Enter customer otp"
                             className="py-2"
                             onChangeText={(e: any) => setOtp(e)}  // Ensure the OTP is set correctly
                           />
                         </Input> */}
-                        <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
+              <FormControlError>
+                <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
+              </FormControlError>
+            </FormControl>
           </View>
 
           <View className="flex-row justify-between items-center mt-12">

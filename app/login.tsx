@@ -95,7 +95,6 @@ const LoginScreen = () => {
         setIsLoading(false); // Ensure loading state is reset
       });
   };
-
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
