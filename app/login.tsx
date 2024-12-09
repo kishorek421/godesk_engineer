@@ -60,14 +60,16 @@ const LoginScreen = () => {
     await apiClient
       .post("/otp/send", { mobile })
       .then((response) => {
-        console.log("response ", response.data.data);
-        
+        console.log("Response:", response.data.data);
+
         if (response.data?.success) {
+          // Navigate to OTP verification page
           router.push({
             pathname: "/verify_otp",
-            params: { mobile },
+            params: { mobile }, // Use query for parameter passing
           });
         } else {
+          // Handle error from the API response
           setErrors([
             {
               param: "mobile",
@@ -78,10 +80,9 @@ const LoginScreen = () => {
         }
       })
       .catch((error) => {
-        console.error("Error sending OTP:", error.response.data);
-        if (error) {
-          console.error("Error sending OTP:", error.response.data);
-        }
+        console.error("Error sending OTP:", error.response?.data || error);
+
+        // Handle network or unexpected errors
         setErrors([
           {
             param: "mobile",
@@ -90,8 +91,8 @@ const LoginScreen = () => {
         ]);
       })
       .finally(() => {
-        console.log("ending with");
-        setIsLoading(false);
+        console.log("Request completed");
+        setIsLoading(false); // Ensure loading state is reset
       });
   };
 
@@ -211,6 +212,5 @@ const LoginScreen = () => {
       </View>
     </SafeAreaView>
   );
-};
-
+}
 export default LoginScreen;

@@ -22,7 +22,10 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import * as Location from "expo-location";
-
+import FeatherIcon from "@expo/vector-icons/Feather";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { HStack } from "@/components/ui/hstack";
+import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
@@ -41,13 +44,18 @@ const TicketDetails = () => {
     {},
   ); const [currentTime, setCurrentTime] = useState(
     moment().format("DD/MM/YYYY hh:mm:ss A"),
-  );
+  );const [assetImages, setAssetImages] = useState<string[]>([]);
+
+  const bottomSheetRef = useRef(null);
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [ticketStatusOptionsState, setTicketStatusOptions] = useState<ConfigurationModel[]>(ticketStatusOptions);
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const { user } = useAuth();
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-
+  const [description, setDescription] =useState<TicketListItemModel>({})
+  const [canClearForm, setCanClearForm] = useState(false);
   const [canValidateField, setCanValidateField] = useState(false);
 
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -60,7 +68,14 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-
+  const toggleImagePicker = () => {
+    setIsModalVisible(!isModalVisible);
+    if (!isModalVisible) {
+      bottomSheetRef.current?.show();
+    } else {
+      bottomSheetRef.current?.hide();
+    }
+  };
   const fetchTicketDetails = async () => {
     setIsLoading(true);
     if (typeof ticketId === 'string') {
@@ -230,7 +245,10 @@ const TicketDetails = () => {
               }
             })
           }}
-        ><View className="flex-row items-center bg-white h-14 shadow-md px-4">
+
+        >
+        
+          <View className="flex-row items-center bg-white h-14 shadow-md px-4">
             {/* Back Button */}
             <View className="flex-row items-center flex-1">
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
@@ -246,6 +264,7 @@ const TicketDetails = () => {
           </View>
 
         </Pressable>
+    
         <ScrollView>
 
           <View className="flex-1 bg-gray-100">
@@ -304,11 +323,39 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   <View className="w-full mt-3">
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex">
+                        <Text className="text-gray-500 text-md ">Description</Text>
+                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        {ticketDetails?.description ?? "-"}
+                        </Text>
+                      </View>
+                      <View className="flex items-end">
+                        <Text className="text-gray-500 text-md ">Assinged At</Text>
+                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        {ticketDetails.lastAssignedToDetails?.assignedAt
+                          ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).fromNow()
+                          : "-"}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+
+                  {/* <View className="w-full mt-3">
                     <Text className="text-gray-500 text-md ">Description</Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                       {ticketDetails?.description ?? "-"}
                     </Text>
+                    <View>
+                      <Text className="text-gray-500 text-md ">Assinged At</Text>
+                      <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        {ticketDetails.lastAssignedToDetails?.assignedAt
+                          ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).fromNow()
+                          : "-"}
+                      </Text>
+                   
                   </View>
+                  </View> */}
                   <View className="w-full mt-3">
                     <Text className="text-gray-500 text-md ">Issue Images</Text>
                     <View className="flex-row flex-wrap gap-3">
@@ -336,7 +383,7 @@ const TicketDetails = () => {
                       )}
                     </View>
                   </View>
-
+{/* 
                   <View className="w-full mt-4">
                     <View>
                       <Text className="text-gray-500 text-md ">Assinged At</Text>
@@ -346,7 +393,7 @@ const TicketDetails = () => {
                           : "-"}
                       </Text>
                     </View>
-                  </View>
+                  </View> */}
 
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
@@ -384,7 +431,107 @@ const TicketDetails = () => {
                           <FormControlErrorText>{isFormFieldInValid("ticketStatus", errors)}</FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-
+                      <PrimaryTextFormField
+          fieldName="description"
+          label="Issue Description"
+          placeholder="Write a short description about your issue"
+          errors={errors}
+          setErrors={setErrors}
+          min={10}
+          max={200}
+          
+          filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
+          onChangeText={(e: any) => setDescription(e)}
+          canValidateField={canValidateField}
+          setCanValidateField={setCanValidateField}
+          setFieldValidationStatus={setFieldValidationStatus}
+          validateFieldFunc={setFieldValidationStatusFunc}
+       
+        />
+        <FormControl
+          isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
+        >
+          <HStack className="justify-between mt-2 mb-1">
+            <Text className="font-medium">
+              Asset Images <Text className="text-red-400">*</Text>
+            </Text>
+            <Text className="text-gray-500">{assetImages.length}/3</Text>
+          </HStack>
+          <View className="flex-row flex-wrap">
+            {assetImages.map((uri, index) => (
+              <Pressable
+                onPress={() => {
+                  router.push({
+                    pathname: "/image_viewer/[uri]",
+                    params: {
+                      uri: uri,
+                    },
+                  });
+                }}
+                className="me-3 mt-2"
+                key={index}
+              >
+                <View>
+                  <Image
+                    source={{ uri: uri }}
+                    className="w-24 h-24 rounded-xl absolute"
+                  />
+                  <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
+                    <Pressable
+                      className="mt-2 me-2"
+                      onPress={() => {
+                        // setImagePath("");
+                        setAssetImages((prev) => {
+                          prev.splice(index, 1);
+                          return [...prev];
+                        });
+                      }}
+                    >
+                      <AntDesign name="closecircle" size={16} color="white" />
+                    </Pressable>
+                  </View>
+                </View>
+                {/* <HStack
+                key={index}
+                className="bg-white p-3 rounded-md justify-between mt-2"
+              >
+                <Text className="font-medium">{getFileName(uri)}</Text>
+                <AntIcon
+                  onPress={() => {
+                    setAssetImages((prevState) => {
+                      prevState.splice(index, 1);
+                      return [...prevState];
+                    });
+                  }}
+                  name="close"
+                  className="ms-2"
+                  color="black"
+                  size={18}
+                />
+              </HStack> */}
+              </Pressable>
+            ))}
+          </View>
+          {assetImages.length < 3 && (
+            <Button
+              className="bg-white mt-4"
+              onPress={() => toggleImagePicker()}
+            >
+              <FeatherIcon
+                name="plus-circle"
+                className="me-1"
+                color="black"
+                size={18}
+              />
+              <ButtonText className="text-black">Add Image</ButtonText>
+            </Button>
+          )}
+          <FormControlError className="mt-2">
+            <FormControlErrorText>
+              {isFormFieldInValid("assetImages", errors)}
+            </FormControlErrorText>
+          </FormControlError>
+        </FormControl>
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
@@ -429,11 +576,16 @@ const TicketDetails = () => {
                     </View>
                   )}
                 </View>
+                
               </View>
+              
             </View>
+            
           </View>
         </ScrollView>
+        
       </View>
+      
     </SafeAreaView>
   );
 };

@@ -193,8 +193,6 @@ const HomeScreen = () => {
                     fetchCheckInOutStatus(); 
                 }}
             />
-
-
         </SafeAreaView>
     );
 };
