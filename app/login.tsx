@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Linking,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -189,7 +190,7 @@ const LoginScreen = () => {
         </View>
 
         {/* Footer Animation */}
-        <View>
+        <View >
           <LottieView
             ref={animationRef}
             source={require("../assets/lottie/login.json")}
@@ -201,12 +202,44 @@ const LoginScreen = () => {
           />
           <Text className="mt-8 text-sm text-center px-8">
             By logging in, you agree to our{" "}
-            <Text className="text-primary-950 font-bold">
-              Terms & Conditions
-            </Text>{" "}
-            and{" "}
-            <Text className="font-bold text-primary-950">Privacy Policy</Text>
+            <Text
+            onPress={() => {
+              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+            }}
+            className="font-bold text-primary-950"
+          >
+            Terms & Conditions
+          </Text>{" "}
+          and{" "}
+          <Text
+            onPress={() => {
+              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+            }}
+            className="font-bold text-primary-950"
+          >
+            Privacy Policy
           </Text>
+          </Text>
+          {/* <Text className="px-12 text-center text-sm">
+          By logging in, you agree to our{" "}
+          <Text
+            onPress={() => {
+              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+            }}
+            className="font-bold text-primary-950"
+          >
+            Terms & Conditions
+          </Text>{" "}
+          and{" "}
+          <Text
+            onPress={() => {
+              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+            }}
+            className="font-bold text-primary-950"
+          >
+            Privacy Policy
+          </Text>
+        </Text> */}
         </View>
       </View>
     </SafeAreaView>

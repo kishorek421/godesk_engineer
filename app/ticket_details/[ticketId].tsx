@@ -10,7 +10,7 @@ import { getTicketLists } from "@/services/api/tickets_api_service";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import Toast from "react-native-toast-message";
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from "@/components/ui/form-control";
+import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText ,FormControlLabelAstrick} from "@/components/ui/form-control";
 import {
   bytesToMB,
   getFileName,
@@ -33,7 +33,7 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
-
+import {LocationState} from '../map/location';
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
@@ -45,7 +45,6 @@ const TicketDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-  const [feedbackMessage, setFeedbackMessage] = useState("");
   const [otp, setOtp] = useState("");
   const [selectedTicketStatus, setSelectedTicketStatus] = useState<ConfigurationModel>({});
   const [selectTicketStatusOptions, setSelectTicketStatusOptions] = useState<DropdownModel>(
@@ -60,11 +59,11 @@ const TicketDetails = () => {
   const { user } = useAuth();
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [description, setDescription] = useState<TicketListItemModel>({})
+  const [description, setDescription] =  useState<string | null>(null);
   const [canClearForm, setCanClearForm] = useState(false);
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-
+  const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean,
@@ -177,55 +176,35 @@ const TicketDetails = () => {
       bottomSheetRef.current?.hide();
     }
   };
+  
   const validateInputs = (): { param: string; message: string }[] => {
     const errors: { param: string; message: string }[] = [];
-  
-    // Validate ticket status
-    if (!selectedTicketStatus?.key) {
-      errors.push({ param: "ticketStatus", message: "Status is required" });
-    }
-  
-    if (!description) {
-      errors.push({ param: "description", message: "Description is required" });
-    }
-  
-     // Validate OTP for specific ticket statuses
-  if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) {
-    errors.push({ param: 'otp', message: 'OTP is required for the selected status' });
-  }
-  
-  
+    if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" });}
+    if (!description) {errors.push({ param: "description", message: "Please enter a description" });}    
+    if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) {errors.push({ param: 'otp', message: 'OTP is required for the selected status' });}
+    if (assetImages.length === 0) {errors.push({ param: "assetImages", message: "At least one asset image is required" });}
     if (!latitude || !longitude) {
-      try {
-        if (!latitude || !longitude) {
-          errors.push({ param: "location", message: "Location is required but couldn't be fetched." });
-        }
-        if (!pincode) {
-          errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
-        }
-      } catch (error) {
-        console.error("Error validating location and pincode:", error);
-        errors.push({ param: "location", message: "An error occurred while fetching location and pincode." });
+     
+      if (!latitude || !longitude) {
+        errors.push({ param: "location", message: "Location is required but couldn't be fetched." });
+        Alert.alert('Location Error', 'Unable to fetch current location. Please check your location permissions.');
+      }
+      if (!pincode) {
+        errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
       }
     }
-  
-    if (assetImages.length === 0) {
-      errors.push({ param: "assetImages", message: "At least one asset image is required" });
-    }
-  
-    return errors;
+    
+   return errors;
   };
   
   const updateTicketStatus = async () => {
-    // Validate form inputs
     const formErrors = validateInputs();
     if (formErrors.length > 0) {
-      setErrors(formErrors);  // Set the errors state
-      return;  // Return early to prevent further execution if validation fails
+      setErrors(formErrors);  
+      return; 
     }
   
     try {
-      // Prepare request payload
       const requestBody = {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
@@ -234,37 +213,38 @@ const TicketDetails = () => {
           latitude: latitude,
           longitude: longitude,
         },
+        pincode :pincode,
         description: description,
         pin: null,
       };
-  
-      // Call API to update ticket status
       const response = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
       );
-  
-      // Handle response
       if (response.status === 200) {
-        console.log("request body", requestBody);
-        Alert.alert("Success", "Ticket status updated successfully!", [{ text: "OK" }]);
-        fetchTicketDetails(); // Refresh ticket details after success
+        console.log("Request body", requestBody);
+        Alert.alert("Success", "Ticket status updated successfully!");
+        await fetchTicketDetails();
+         router.push({
+              pathname: "../home",
+              params: {
+                refresh: "true"
+              }
+            })
       } else {
         Alert.alert("Error", `Failed to update status: ${response.status}`);
       }
     } catch (error) {
       console.error("Failed to update ticket status.", error);
-      Alert.alert("Error", "An unexpected error occurred while updating the ticket status.");
+      Alert.alert("Error", "An unexpected error occurred.");
+    } finally {
+      setIsLoading(false);
     }
   };
-  
-  
-  
   return isLoading ? (
     <LoadingBar />
   ) : (
     <SafeAreaView className="flex-1">
-  
       <View>
         <Pressable
           onPress={() => {
@@ -275,7 +255,7 @@ const TicketDetails = () => {
               }
             })
           }}
-        >
+          >
           <View className="flex-row items-center bg-white h-14 shadow-md px-4">
             {/* Back Button */}
             <View className="flex-row items-center flex-1">
@@ -430,15 +410,12 @@ const TicketDetails = () => {
                         </FormControlError>
                       </FormControl>
                      
-                       <FormControl
-                        isInvalid={isFormFieldInValid("description", errors).length > 0}
-                        className="mt-4 "
-                      >
+                      <FormControl isInvalid={isFormFieldInValid("description", errors).length > 0}
+                        className="mt-4">
                         <PrimaryTextareaFormField
                           fieldName="description"
                           label="Description"
                           placeholder="Write a short description about your issue"
-                          // defaultValue={.orgMobile}
                           errors={errors}
                           setErrors={setErrors}
                           min={10}
@@ -450,11 +427,11 @@ const TicketDetails = () => {
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: any) => setDescription(e)}
                         />
-                        <FormControlError>
+                        {/* <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("description", errors)}</FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <FormControl
+                      <FormControl */}
                         isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
                       >
                         <HStack className="justify-between mt-2 mb-1">
@@ -486,7 +463,6 @@ const TicketDetails = () => {
                                   <Pressable
                                     className="mt-2 me-2"
                                     onPress={() => {
-                                      // setImagePath("");
                                       setAssetImages((prev) => {
                                         prev.splice(index, 1);
                                         return [...prev];
@@ -496,8 +472,7 @@ const TicketDetails = () => {
                                     <AntDesign name="closecircle" size={16} color="white" />
                                   </Pressable>
                                 </View>
-                              </View>
-                             
+                              </View>                            
                             </Pressable>
                           ))}
                         </View>
@@ -524,16 +499,16 @@ const TicketDetails = () => {
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
-                      >
+                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> Enter OTP only in case of Open and Close ticket</Text>
                         <PrimaryTextFormField
                           fieldName="Customer OTP"
                           label="Customer OTP"
                           placeholder="Enter customer otp"
-                          // defaultValue={.orgMobile}
                           errors={errors}
                           setErrors={setErrors}
                           min={6}
                           max={6}
+                          isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
                           canValidateField={canValidateField}

@@ -9,3 +9,4 @@ const Index = () => {
 }
 
 export default Index
+//const GOOGLE_MAPS_APIKEY = 'AIzaSyArnnwpKWaI9Rp_OSC9mn-L1gG0gtj8J5A';

@@ -102,6 +102,8 @@ const HomeScreen = () => {
                         <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
                             {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
                         </Text>
+                       {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
+                       {/* <Text><Link href={'/map/location'}>map</Link></Text> */}
                     </View>
                     {checkInOutStatusDetails.value !== "Checked Out" && (
                         <View className="me-4">
@@ -173,13 +175,6 @@ const HomeScreen = () => {
                         </View>
                     </Pressable>
                 )}
-                {/* (
-                    <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200 rounded-lg">
-                        <Text className="text-gray-400 text-md text-center">
-                            No InProgress Ticket found
-                        </Text>
-                    </View>
-                ) */}
                 <TicketListLayout />
             </View>
             <CheckInOutModal
@@ -197,3 +192,16 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+// Register background task for location updates
+// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+//     if (error) {
+//       console.error('Background location error:', error);
+//       return;
+//     }
+  
+//     if (data) {
+//       const { locations } = data;
+//       const { latitude, longitude } = locations[0].coords;
+//       console.log('Background location updated:', { latitude, longitude });
+//     }
+//   });
