@@ -182,7 +182,16 @@ const TicketDetails = () => {
     if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" });}
     if (!description) {errors.push({ param: "description", message: "Please enter a description" });}    
     if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) {errors.push({ param: 'otp', message: 'OTP is required for the selected status' });}
-    if (assetImages.length === 0) {errors.push({ param: "assetImages", message: "At least one asset image is required" });}
+    if (assetImages.length === 0) {
+      setErrorValue(
+        "assetImages",
+        "",
+        "Atleast one asset image is required",
+        setErrors,
+      );
+    } else {
+      setErrorValue("assetImages", "", "", setErrors);
+    }
     if (!latitude || !longitude) {
      
       if (!latitude || !longitude) {
@@ -429,9 +438,9 @@ const TicketDetails = () => {
                         />
                         {/* <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("description", errors)}</FormControlErrorText>
-                        </FormControlError>
+                        </FormControlError> */}
                       </FormControl>
-                      <FormControl */}
+                       <FormControl
                         isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
                       >
                         <HStack className="justify-between mt-2 mb-1">
