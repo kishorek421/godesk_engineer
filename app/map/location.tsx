@@ -33,7 +33,7 @@ const RouteMap = () => {
   const appState = useRef(AppState.currentState);
 
   useEffect(() => {
-    // Initialize Geocoder with API key
+  
     Geocoder.init(GOOGLE_MAPS_APIKEY);
 
     // Request location permissions and get the current location
@@ -230,7 +230,6 @@ const RouteMap = () => {
   );
 };
 
-// Register background task for location updates
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   if (error) {
     console.error('Background location error:', error);
@@ -238,7 +237,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   }
 
   if (data) {
-    const { locations } = data;
+    const { locations  } = data;
     const { latitude, longitude } = locations[0].coords;
     console.log('Background location updated:', { latitude, longitude });
 
