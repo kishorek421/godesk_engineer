@@ -27,7 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>godesk_engineer</string>
+          <string>godeskengineer</string>
           <string>com.godesk.godeskengineer</string>
         </array>
       </dict>
