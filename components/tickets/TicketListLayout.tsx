@@ -19,8 +19,8 @@ const TicketListLayout = () => {
   const [selectedTab, setSelectedTab] = useState(0);
 
   const tabs = [
-    "Opened",
     "Assigned",
+    "Opened",
     "Completed",
     "Not Closed",
   ];
@@ -47,7 +47,9 @@ const TicketListLayout = () => {
   const fetchTickets = async (nextCurrentPage: number, selectedTab: number) => {
     console.log("fetching tickets");
 
-    if (selectedTab === 0) {
+    setRecentTickets([]);
+
+    if (selectedTab === 1) {
       await apiClient.get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
         params: { pageNo: nextCurrentPage, pageSize: 10 },
       }).then((response) => {
