@@ -10,7 +10,7 @@ import { getTicketLists } from "@/services/api/tickets_api_service";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import Toast from "react-native-toast-message";
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText ,FormControlLabelAstrick} from "@/components/ui/form-control";
+import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText, FormControlLabelAstrick } from "@/components/ui/form-control";
 import {
   bytesToMB,
   getFileName,
@@ -21,7 +21,6 @@ import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import { ASSIGNED, TICKET_ASSIGNED, TICKET_CLOSED, TICKET_IN_PROGRESS, TICKET_OPENED, TICKET_STATUS } from "@/constants/configuration_keys";
 import moment from "moment";
-import CustomDropdown from '../../components/DropDown';
 import { ErrorModel, DropdownModel } from "@/models/common";
 import { error } from "ajv/dist/vocabularies/applicator/dependencies";
 import useAuth from "@/hooks/useAuth";
@@ -33,7 +32,7 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
-import {LocationState} from '../map/location';
+import { LocationState } from '../map/location';
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
@@ -59,7 +58,7 @@ const TicketDetails = () => {
   const { user } = useAuth();
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const [description, setDescription] =  useState<string | null>(null);
+  const [description, setDescription] = useState<string | null>(null);
   const [canClearForm, setCanClearForm] = useState(false);
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -72,7 +71,7 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-  
+
   const fetchTicketDetails = async () => {
     setIsLoading(true);
     if (typeof ticketId === 'string') {
@@ -154,20 +153,18 @@ const TicketDetails = () => {
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
-  // Handle ticket status selection
-  const handleSelectOption = async (option: string) => {
-    console.log('Selected option:', option);
-    if (option === 'OPENED') {
-      setSelectedTicketStatus({ key: 'OPENED', value: 'Open' });
-    } else if (option === 'CUSTOMER_NOT_AVAILABLE') {
-      setSelectedTicketStatus({ key: 'CUSTOMER_NOT_AVAILABLE', value: 'Customer Not Available' });
-    } else if (option === 'IN_PROGRESS') {
-      setSelectedTicketStatus({ key: 'IN_PROGRESS', value: 'InProgress' });
-    } else {
-      const selectedOption = ticketStatusOptions.find((item) => item.value === option);
-      setSelectedTicketStatus(selectedOption || {});
-    }
+  const predefinedStatuses: { [key: string]: ConfigurationModel } = {
+    OPENED: { key: "OPENED", value: "Open" },
+    CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
+    IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
   };
+
+  const handleSelectOption = async (option: string) => {
+    console.log("Selected option:", option);
+    const selectedTicketStatus = predefinedStatuses[option] || ticketStatusOptions.find((item) => item.value === option) || {};
+    setSelectedTicketStatus(selectedTicketStatus);
+  };
+
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -176,17 +173,14 @@ const TicketDetails = () => {
       bottomSheetRef.current?.hide();
     }
   };
-  
+
   const validateInputs = (): { param: string; message: string }[] => {
     const errors: { param: string; message: string }[] = [];
-    if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" });}
-    if (!description) {errors.push({ param: "description", message: "Please enter a description" });}    
-    if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) {errors.push({ param: 'otp', message: 'OTP is required for the selected status' });}
-    if (assetImages.length === 0) {
-      errors.push({ param: "assetImages", message: "At least one asset image is required" });
-    }
+    if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" }); }
+    if (!description) { errors.push({ param: "description", message: "Please enter a description" }); }
+    if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
+    if (assetImages.length === 0) { errors.push({ param: "assetImages", message: "At least one asset image is required" }); }
     if (!latitude || !longitude) {
-     
       if (!latitude || !longitude) {
         errors.push({ param: "location", message: "Location is required but couldn't be fetched." });
         Alert.alert('Location Error', 'Unable to fetch current location. Please check your location permissions.');
@@ -195,17 +189,16 @@ const TicketDetails = () => {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
       }
     }
-    
-   return errors;
+    return errors;
   };
-  
+
   const updateTicketStatus = async () => {
     const formErrors = validateInputs();
     if (formErrors.length > 0) {
-      setErrors(formErrors);  
-      return; 
+      setErrors(formErrors);
+      return;
     }
-  
+
     try {
       const requestBody = {
         ticketId,
@@ -215,7 +208,7 @@ const TicketDetails = () => {
           latitude: latitude,
           longitude: longitude,
         },
-        pincode :pincode,
+        pincode: pincode,
         description: description,
         pin: null,
       };
@@ -227,12 +220,12 @@ const TicketDetails = () => {
         console.log("Request body", requestBody);
         Alert.alert("Success", "Ticket status updated successfully!");
         await fetchTicketDetails();
-         router.push({
-              pathname: "../home",
-              params: {
-                refresh: "true"
-              }
-            })
+        router.push({
+          pathname: "../home",
+          params: {
+            refresh: "true"
+          }
+        })
       } else {
         Alert.alert("Error", `Failed to update status: ${response.status}`);
       }
@@ -257,22 +250,16 @@ const TicketDetails = () => {
               }
             })
           }}
-          >
+        >
           <View className="flex-row items-center bg-white h-14 shadow-md px-4">
-            {/* Back Button */}
             <View className="flex-row items-center flex-1">
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
-
-            {/* Title */}
             <View className="flex-1">
               <Text className="font-bold text-lg text-center">Ticket Details</Text>
             </View>
-
-            {/* Optional Right Side Placeholder */}
             <View className="flex-1"></View>
           </View>
-
         </Pressable>
         <ScrollView>
           <View className="flex-1 bg-gray-100">
@@ -389,10 +376,7 @@ const TicketDetails = () => {
                               ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
                               : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
                               { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
-                                ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] :
-                                  []
-                          )
-                            : []}
+                                ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] : []) : []}
                           selectedValue={selectTicketStatusOptions}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
@@ -411,7 +395,7 @@ const TicketDetails = () => {
                           <FormControlErrorText>{isFormFieldInValid("ticketStatus", errors)}</FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                     
+
                       <FormControl isInvalid={isFormFieldInValid("description", errors).length > 0}
                         className="mt-4">
                         <PrimaryTextareaFormField
@@ -433,7 +417,7 @@ const TicketDetails = () => {
                           <FormControlErrorText>{isFormFieldInValid("description", errors)}</FormControlErrorText>
                         </FormControlError> */}
                       </FormControl>
-                       <FormControl
+                      <FormControl
                         isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
                       >
                         <HStack className="justify-between mt-2 mb-1">
@@ -474,7 +458,7 @@ const TicketDetails = () => {
                                     <AntDesign name="closecircle" size={16} color="white" />
                                   </Pressable>
                                 </View>
-                              </View>                            
+                              </View>
                             </Pressable>
                           ))}
                         </View>
@@ -542,21 +526,21 @@ const TicketDetails = () => {
 
           </View>
           <ImagePickerComponent
-        onImagePicked={(uri, fileSizeBytes) => {
-          console.log("uri", uri);
-          const fileSizeMB = bytesToMB(fileSizeBytes);
-          if (fileSizeMB > 15) {
-            Toast.show({
-              type: "error",
-              text1: "Image larger than 15mb are not accepted.",
-            });
-            return;
-          }
-          setAssetImages((prevState) => [...prevState, uri]);
-        }}
-        setIsModalVisible={setIsModalVisible}
-        bottomSheetRef={bottomSheetRef}
-      />
+            onImagePicked={(uri, fileSizeBytes) => {
+              console.log("uri", uri);
+              const fileSizeMB = bytesToMB(fileSizeBytes);
+              if (fileSizeMB > 15) {
+                Toast.show({
+                  type: "error",
+                  text1: "Image larger than 15mb are not accepted.",
+                });
+                return;
+              }
+              setAssetImages((prevState) => [...prevState, uri]);
+            }}
+            setIsModalVisible={setIsModalVisible}
+            bottomSheetRef={bottomSheetRef}
+          />
         </ScrollView>
 
       </View>
