@@ -22,7 +22,6 @@ import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
-import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 const HomeScreen = () => {
   const { ticketId } = useLocalSearchParams();
@@ -49,20 +48,6 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    const requestPermission = async () => {
-      const { status } = await requestTrackingPermissionsAsync();
-      console.log("Tracking Permission Status:", status);
-      // Handle the status accordingly
-      if (status === "granted") {
-        // Proceed with tracking-related tasks
-      } else {
-        // Skip or limit tracking
-      }
-    };
-
-    // Request tracking permission before any data is collected
-    requestPermission();
-
     fetchInProgressTicketDetails();
     fetchUserDetails();
   }, []);
@@ -120,13 +105,13 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
-      <View className="p-1 mt-6">
+      <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
-            <Text className="text-md font-bold mx-2">
+            <Text className="mx-2 font-bold text-md">
               {getGreetingMessage()} 👋
             </Text>
-            <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
+            <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
             {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
@@ -135,7 +120,7 @@ const HomeScreen = () => {
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button
-                className="bg-primary-950 rounded-lg mx-2"
+                className="bg-primary-950 mx-2 rounded-lg"
                 onPress={() => {
                   toggleImagePicker();
                 }}
@@ -150,11 +135,11 @@ const HomeScreen = () => {
           )}
         </View>
         {isLoading ? (
-          <Text className="text-gray-500 text-center mt-6">Loading...</Text>
+          <Text className="mt-6 text-center text-gray-500">Loading...</Text>
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
-              className="w-full mt-4 px-4"
+              className="mt-4 px-4 w-full"
               onPress={() => {
                 router.push({
                   pathname: "/ticket_details/[ticketId]",
@@ -166,10 +151,10 @@ const HomeScreen = () => {
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
                     <View>
-                      <Text className="text-gray-900 font-bold">
+                      <Text className="font-bold text-gray-900">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="text-gray-500 text-[13px] mt-[1px]">
+                      <Text className="mt-[1px] text-[13px] text-gray-500">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
@@ -183,12 +168,12 @@ const HomeScreen = () => {
                       }
                     />
                   </View>
-                  <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
+                  <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
                   <View className="w-full">
-                    <View className="flex-row items-center justify-between">
+                    <View className="flex-row justify-between items-center">
                       <View className="flex">
                         <Text className="text-gray-500 text-md">Raised by</Text>
-                        <Text className="text-md text-gray-900 font-semibold mt-[2px]">
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
                           {inProgressTicketDetails.customerDetails?.lastName ??
@@ -197,7 +182,7 @@ const HomeScreen = () => {
                       </View>
                       <View className="flex items-end">
                         <Text className="text-gray-500 text-md">Raised At</Text>
-                        <Text className="text-md text-gray-900 font-semibold mt-[2px]">
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.createdAt
                             ? moment(
                                 Number.parseInt(

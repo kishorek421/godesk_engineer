@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -35,6 +35,22 @@ const LoginScreen = () => {
   const [canValidateField, setCanValidateField] = useState(false);
 
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
+
+  useEffect(() => {
+    const requestPermission = async () => {
+      const { status } = await requestTrackingPermissionsAsync();
+      console.log("Tracking Permission Status:", status);
+      // Handle the status accordingly
+      if (status === "granted") {
+        // Proceed with tracking-related tasks
+      } else {
+        // Skip or limit tracking
+      }
+    };
+
+    // Request tracking permission before any data is collected
+    requestPermission();
+  }, []);
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -110,7 +126,7 @@ const LoginScreen = () => {
                   height: 30,
                 }}
               />
-              <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
+              <Text className="mb-1.5 font-bold text-secondary-950 ms-.5">
                 desk <Text className="text-primary-950">Engineer</Text>
               </Text>
             </View>
@@ -118,8 +134,8 @@ const LoginScreen = () => {
 
           {/* Welcome Text */}
           <View className="mt-6">
-            <Text className="text-2xl font-bold">Hey, Welcome! 🎉</Text>
-            <Text className="color-gray-400 text-sm">
+            <Text className="font-bold text-2xl">Hey, Welcome! 🎉</Text>
+            <Text className="text-sm color-gray-400">
               Let’s create something extraordinary!
             </Text>
           </View>
@@ -177,7 +193,7 @@ const LoginScreen = () => {
           <View className="flex-row justify-between items-center mt-12">
             <Text className="font-bold text-primary-950 text-xl">Login</Text>
             <Button
-              className="bg-primary-950 rounded-full w-14 h-14 p-0"
+              className="bg-primary-950 p-0 rounded-full w-14 h-14"
               onPress={handleSendOTP}
             >
               {isLoading ? (
@@ -200,25 +216,25 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-          <Text className="mt-8 text-sm text-center px-8">
+          <Text className="mt-8 px-8 text-center text-sm">
             By logging in, you agree to our{" "}
             <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Terms & Conditions
-          </Text>{" "}
-          and{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Privacy Policy
-          </Text>
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Terms_And_conditions.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              Terms & Conditions
+            </Text>{" "}
+            and{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Engineer_Privacy_Policy.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              Privacy Policy
+            </Text>
           </Text>
           {/* <Text className="px-12 text-center text-sm">
           By logging in, you agree to our{" "}
@@ -246,3 +262,7 @@ const LoginScreen = () => {
   );
 }
 export default LoginScreen;
+function requestTrackingPermissionsAsync(): { status: any; } | PromiseLike<{ status: any; }> {
+  throw new Error("Function not implemented.");
+}
+
