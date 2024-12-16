@@ -11,197 +11,200 @@ import { CheckInOutStatusDetailsModel, UserDetailsModel } from '@/models/users';
 import { getGreetingMessage } from '@/utils/helper';
 import { Button, ButtonText } from '@/components/ui/button';
 import CheckInOutModal from '@/components/home/CheckInOutModal';
-
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
-    const { ticketId } = useLocalSearchParams();
-    const [inProgressTicketDetails, setInProgressTicketDetails] = useState<TicketListItemModel>({});
-    const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
-    const [isLoading, setIsLoading] = useState(true);
+  const { t, i18n } = useTranslation();
+  const { ticketId } = useLocalSearchParams();
+  const [inProgressTicketDetails, setInProgressTicketDetails] = useState<TicketListItemModel>({});
+  const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
+  const [isLoading, setIsLoading] = useState(true);
 
-    const { refresh } = useLocalSearchParams();
+  const { refresh } = useLocalSearchParams();
 
-    const bottomSheetRef = useRef(null);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+  const bottomSheetRef = useRef(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+ const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
+    useState<CheckInOutStatusDetailsModel>({});
 
-    const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-        useState<CheckInOutStatusDetailsModel>({});
+  const toggleImagePicker = () => {
+    setIsModalVisible(!isModalVisible);
+    if (!isModalVisible) {
+      bottomSheetRef.current?.show();
+    } else {
+      bottomSheetRef.current?.hide();
+    }
+  };
 
-    const toggleImagePicker = () => {
-        setIsModalVisible(!isModalVisible);
-        if (!isModalVisible) {
-            bottomSheetRef.current?.show();
-        } else {
+  useEffect(() => {
+    fetchInProgressTicketDetails();
+    fetchUserDetails();
+  }, []);
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage);
+      }
+    };
 
-            bottomSheetRef.current?.hide();
+    fetchLanguage();
+  }, []);
+  // const handleLanguageChange = (lang) => {
+  //   setSelectedLanguage(lang);
+  //   i18n.changeLanguage(lang); // Change the language in i18n
+  //   AsyncStorage.setItem('language', lang); // Save selected language to AsyncStorage
+  // };
+  const fetchCheckInOutStatus = async () => {
+    apiClient
+      .get(GET_CHECK_IN_OUT_STATUS)
+      .then((response) => {
+        console.log("checkInDetails", response.data.data);
+        const data = response.data?.data;
+        if (data) {
+          setCheckInOutStatusDetails(data);
         }
-      
-    };
+      })
+      .catch((e) => {
+        console.error(e.response.data);
+      });
+  };
 
-    useEffect(() => {
-        fetchInProgressTicketDetails();
-        fetchUserDetails();
-    }, []);
+  useEffect(() => {
+    fetchCheckInOutStatus();
+  }, []);
 
-    const fetchCheckInOutStatus = async () => {
-        apiClient
-            .get(GET_CHECK_IN_OUT_STATUS)
-            .then((response) => {
-                console.log("checkInDetails", response.data.data);
-                const data = response.data?.data;
-                if (data) {
-                    setCheckInOutStatusDetails(data);
-                }
-            })
-            .catch((e) => {
-                console.error(e.response.data);
-            });
-    };
+  const fetchInProgressTicketDetails = () => {
+    apiClient.get(GET_INPROGRESS_TICKETS_DETAILS)
+      .then((response) => {
+        const content = response.data?.data?.content;
+        console.log("inProgressTicketDetails", content);
 
-    useEffect(() => {
-        fetchCheckInOutStatus();
-    }, []);
+        if (content && content.length > 0) {
+          const ticketData = content[0] ?? {};
+          setInProgressTicketDetails(ticketData);
+        }
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching tickets", error);
+        setIsLoading(false);
+      });
+  };
 
-    const fetchInProgressTicketDetails = () => {
-        apiClient.get(GET_INPROGRESS_TICKETS_DETAILS)
-            .then((response) => {
-                const content = response.data?.data?.content;
-                console.log("inProgressTicketDetails", content);
+  const fetchUserDetails = () => {
+    apiClient.get(GET_USER_DETAILS)
+      .then((response) => {
+        console.log(response.data?.data);
+        const userData = response.data.data ?? {};
+        setUserDetails(userData);
+      })
+      .catch((error) => {
+        console.error("Error fetching user details", error);
+      });
+  };
 
-                if (content && content.length > 0) {
-                    const ticketData = content[0] ?? {};
-                    setInProgressTicketDetails(ticketData);
-                }
-                setIsLoading(false);
-            })
-            .catch((error) => {
-                console.error("Error fetching tickets", error);
-                setIsLoading(false);
-            });
-    };
-
-    const fetchUserDetails = () => {
-        apiClient.get(GET_USER_DETAILS)
-            .then((response) => {
-                console.log(response.data?.data);
-                const userData = response.data.data ?? {};
-                setUserDetails(userData);
-            })
-            .catch((error) => {
-                console.error("Error fetching user details", error);
-            });
-    };
-
-    return (
-        <SafeAreaView>
-            <View className="p-1 mt-6">
-                <View className='flex-row justify-between items-center'>
-                    <View className="flex px-4">
-                        <Text className="text-md font-bold mx-2">
-                            {getGreetingMessage()} 👋
-                        </Text>
-                        <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
-                            {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
-                        </Text>
-                       {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
-                       {/* <Text><Link href={'/map/location'}>map</Link></Text> */}
-                    </View>
-                    {checkInOutStatusDetails.value !== "Checked Out" && (
-                        <View className="me-4">
-                            <Button
-                                className="bg-primary-950 rounded-lg mx-2"
-                                onPress={() => {
-                                    toggleImagePicker();
-                                }}
-                            >
-                                <ButtonText>
-                                    {checkInOutStatusDetails.value === "Checked In"
-                                        ? "Check Out"
-                                        : "Check In"}
-                                </ButtonText>
-                            </Button>
-                        </View>
-                    )}
-                </View>
-                {isLoading ? (
-                    <Text className="text-gray-500 text-center mt-6">Loading...</Text>
-                ) : inProgressTicketDetails.id && (
-                    <Pressable
-                        className="w-full mt-4 px-4"
-                        onPress={() => {
-                            router.push({
-                                pathname: "/ticket_details/[ticketId]",
-                                params: { ticketId: inProgressTicketDetails.id ?? "" },
-                            });
-                        }}
-                    >
-                        <View className="bg-white px-4 py-3 rounded-lg w-full">
-                            <View className="flex">
-                                <View className="flex-row justify-between w-full">
-                                    <View>
-                                        <Text className="text-gray-900 font-bold">
-                                            {inProgressTicketDetails.ticketNo ?? "-"}
-                                        </Text>
-                                        <Text className="text-gray-500 text-[13px] mt-[1px]">
-                                            Issue in {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
-                                        </Text>
-                                    </View>
-                                    <TicketStatusComponent
-                                        statusKey={inProgressTicketDetails.statusDetails?.key ?? ""}
-                                        statusValue={inProgressTicketDetails.statusDetails?.value ?? ""}
-                                    />
-                                </View>
-                                <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
-                                <View className="w-full">
-                                    <View className="flex-row items-center justify-between">
-                                        <View className="flex">
-                                            <Text className="text-gray-500 text-md">
-                                                Raised by
-                                            </Text>
-                                            <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                                                {inProgressTicketDetails.customerDetails?.firstName ?? ""} {inProgressTicketDetails.customerDetails?.lastName ?? ""}
-                                            </Text>
-                                        </View>
-                                        <View className="flex items-end">
-                                            <Text className="text-gray-500 text-md">
-                                                Raised At
-                                            </Text>
-                                            <Text className="text-md text-gray-900 font-semibold mt-[2px]">
-                                                {inProgressTicketDetails.createdAt ? moment(Number.parseInt(inProgressTicketDetails.createdAt)).fromNow() : "-"}
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
-                    </Pressable>
-                )}
-                <TicketListLayout />
-            </View>
-            <CheckInOutModal
-                setIsModalVisible={setIsModalVisible}
-                bottomSheetRef={bottomSheetRef}
-                status={checkInOutStatusDetails.value}
-                checkedInId={checkInOutStatusDetails.id}
-                onClose={() => {
-                    toggleImagePicker(); 
-                    fetchCheckInOutStatus(); 
+  return (
+    <SafeAreaView>
+      <View className="p-1 mt-6">
+        <View className='flex-row justify-between items-center'>
+          <View className="flex px-4">
+            <Text className="text-md font-bold mx-2">
+              {getGreetingMessage()} 👋
+            </Text>
+            
+            <Text className="text-md text-primary-950 font-semibold mx-2 mt-[2px]">
+              {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
+            </Text>
+            <Text><Link href={'/sitemap'}>{t('sitemap')}</Link></Text>
+              <Text><Link href={'/data_storage/homescreen'}>language</Link></Text>
+          </View>
+          {checkInOutStatusDetails.value !== "Checked Out" && (
+            <View className="me-4">
+              <Button
+                className="bg-primary-950 rounded-lg mx-2"
+                onPress={() => {
+                  toggleImagePicker();
                 }}
-            />
-        </SafeAreaView>
-    );
+              >
+                <ButtonText>
+                  {checkInOutStatusDetails.value === "Checked In"
+                    ? t('checkOut')
+                    : t('checkIn')}
+                </ButtonText>
+              </Button>
+            </View>
+          )}
+        </View>
+        {isLoading ? (
+          <Text className="text-gray-500 text-center mt-6">{t('loading')}...</Text>
+        ) : inProgressTicketDetails.id && (
+          <Pressable
+            className="w-full mt-4 px-4"
+            onPress={() => {
+              router.push({
+                pathname: "/ticket_details/[ticketId]",
+                params: { ticketId: inProgressTicketDetails.id ?? "" },
+              });
+            }}
+          >
+            <View className="bg-white px-4 py-3 rounded-lg w-full">
+              <View className="flex">
+                <View className="flex-row justify-between w-full">
+                  <View>
+                    <Text className="text-gray-900 font-bold">
+                      {inProgressTicketDetails.ticketNo ?? "-"}
+                    </Text>
+                    <Text className="text-gray-500 text-[13px] mt-[1px]">
+                      {t('issueIn')} {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
+                    </Text>
+                  </View>
+                  <TicketStatusComponent
+                    statusKey={inProgressTicketDetails.statusDetails?.key ?? ""}
+                    statusValue={inProgressTicketDetails.statusDetails?.value ?? ""}
+                  />
+                </View>
+                <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
+                <View className="w-full">
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex">
+                      <Text className="text-gray-500 text-md">
+                        {t('raisedBy')}
+                      </Text>
+                      <Text className="text-md text-gray-900 font-semibold mt-[2px]">
+                        {inProgressTicketDetails.customerDetails?.firstName ?? ""} {inProgressTicketDetails.customerDetails?.lastName ?? ""}
+                      </Text>
+                    </View>
+                    <View className="flex items-end">
+                      <Text className="text-gray-500 text-md">
+                        {t('raisedAt')}
+                      </Text>
+                      <Text className="text-md text-gray-900 font-semibold mt-[2px]">
+                        {inProgressTicketDetails.createdAt ? moment(Number.parseInt(inProgressTicketDetails.createdAt)).fromNow() : "-"}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            </View>
+          </Pressable>
+        )}
+        <TicketListLayout />
+      </View>
+      <CheckInOutModal
+        setIsModalVisible={setIsModalVisible}
+        bottomSheetRef={bottomSheetRef}
+        status={checkInOutStatusDetails.value}
+        checkedInId={checkInOutStatusDetails.id}
+        onClose={() => {
+          toggleImagePicker(); 
+          fetchCheckInOutStatus(); 
+        }}
+      />
+    </SafeAreaView>
+  );
 };
 
 export default HomeScreen;
-// Register background task for location updates
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-//     if (error) {
-//       console.error('Background location error:', error);
-//       return;
-//     }
-  
-//     if (data) {
-//       const { locations } = data;
-//       const { latitude, longitude } = locations[0].coords;
-//       console.log('Background location updated:', { latitude, longitude });
-//     }
-//   });

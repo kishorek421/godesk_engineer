@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import {
   View,
   Text,
@@ -27,14 +27,28 @@ import { isFormFieldInValid } from "@/utils/helper";
 import { setItem } from "@/utils/secure_store";
 import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const LoginScreen = () => {
+  const { t ,i18n} = useTranslation(); // Access translations using `t`
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [canValidateField, setCanValidateField] = useState(false);
-
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
+  const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
+
+    fetchLanguage();
+  }, []);
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -44,12 +58,13 @@ const LoginScreen = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
+
   const handleSendOTP = async () => {
     if (!mobile || !/^\d{10}$/.test(mobile)) {
       setErrors([
         {
           param: "mobile",
-          message: "Please enter a valid 10-digit mobile number.",
+          message: t("Please enter a valid 10-digit mobile number."),
         },
       ]);
       return;
@@ -64,18 +79,19 @@ const LoginScreen = () => {
         console.log("Response:", response.data.data);
 
         if (response.data?.success) {
-          // Navigate to OTP verification page
+          setMobileNumber(''); //reset mobile no
           router.push({
             pathname: "/verify_otp",
-            params: { mobile }, // Use query for parameter passing
-          });
-        } else {
-          // Handle error from the API response
+            params: { mobile }, 
+           
+          });  
+         } else {
+         
           setErrors([
             {
               param: "mobile",
               message:
-                response.data?.message || "Failed to send OTP. Try again.",
+                response.data?.message || t("Failed to send OTP. Try again."),
             },
           ]);
         }
@@ -87,7 +103,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message: "An error occurred. Please try again.",
+            message: t("An error occurred. Please try again."),
           },
         ]);
       })
@@ -96,6 +112,7 @@ const LoginScreen = () => {
         setIsLoading(false); // Ensure loading state is reset
       });
   };
+ 
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
@@ -118,9 +135,9 @@ const LoginScreen = () => {
 
           {/* Welcome Text */}
           <View className="mt-6">
-            <Text className="text-2xl font-bold">Hey, Welcome! 🎉</Text>
+            <Text className="text-2xl font-bold">{t("welcome")}</Text>
             <Text className="color-gray-400 text-sm">
-              Let’s create something extraordinary!
+              {t(' Let’s create something extraordinary!')}
             </Text>
           </View>
 
@@ -129,20 +146,10 @@ const LoginScreen = () => {
             <FormControl
               isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
             >
-              {/* <Input variant="outline" size="md" isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}>
-                <InputField
-                  placeholder="Enter your mobile number"
-                  className="py-2"
-                  keyboardType="numeric"
-                  maxLength={10}
-                  value={mobile}
-                  onChangeText={(text: string) => setMobileNumber(text)}
-                />
-              </Input> */}
               <PrimaryTextFormField
                 fieldName="mobile"
-                label="Mobile Number"
-                placeholder="Enter your mobile number"
+                label={t("Mobile Number")}
+                placeholder={t("Enter your mobile number")}
                 errors={errors}
                 setErrors={setErrors}
                 min={10}
@@ -157,7 +164,7 @@ const LoginScreen = () => {
                   // mobile no should start with 6-9
                   const customRE = /^[6-9]/;
                   if (!customRE.test(value)) {
-                    return "Mobile no. should start with 6-9";
+                    return t("Mobile no. should start with 6-9");
                   }
                   return undefined;
                 }}
@@ -175,7 +182,7 @@ const LoginScreen = () => {
 
           {/* Login Button */}
           <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">Login</Text>
+            <Text className="font-bold text-primary-950 text-xl">{t("Login")}</Text>
             <Button
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
               onPress={handleSendOTP}
@@ -190,7 +197,7 @@ const LoginScreen = () => {
         </View>
 
         {/* Footer Animation */}
-        <View >
+        <View>
           <LottieView
             ref={animationRef}
             source={require("../assets/lottie/login.json")}
@@ -201,48 +208,28 @@ const LoginScreen = () => {
             }}
           />
           <Text className="mt-8 text-sm text-center px-8">
-            By logging in, you agree to our{" "}
+            {t('loginAgreement')}{" "}
             <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Terms & Conditions
-          </Text>{" "}
-          and{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Privacy Policy
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              {t("terms_conditions")}
+            </Text>{" "}
+            and{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              {t("privacy_policy")}
+            </Text>
           </Text>
-          </Text>
-          {/* <Text className="px-12 text-center text-sm">
-          By logging in, you agree to our{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Terms & Conditions
-          </Text>{" "}
-          and{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Privacy Policy
-          </Text>
-        </Text> */}
         </View>
       </View>
     </SafeAreaView>
   );
-}
+};
 export default LoginScreen;
