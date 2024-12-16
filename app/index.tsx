@@ -3,6 +3,9 @@ import React from 'react'
 import LoadingBar from '@/components/LoadingBar';
 
 const Index = () => {
+  // return (
+  //   <Redirect href="login" />
+  // )
   return (
     <View>
       <LoadingBar />

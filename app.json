@@ -17,7 +17,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.godesk.godeskengineer",
       "infoPlist": {
-        "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes"
+        "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes",
+        "NSUserTrackingUsageDescription": "We would like to track your activity to provide a better experience and personalized content."
       }
     },
     "android": {
@@ -45,6 +46,12 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to track your check in and check out location."
+        }
+      ],
+      [
+        "expo-tracking-transparency",
+        {
+          "userTrackingPermission": "We would like to track your activity to provide a better experience and personalized content."
         }
       ]
     ],
