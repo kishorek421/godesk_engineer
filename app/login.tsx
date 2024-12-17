@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { router } from "expo-router";
+import { router,Link } from "expo-router";
 import { VStack } from "../components/ui/vstack";
 import {
   FormControl,
@@ -139,6 +139,7 @@ const LoginScreen = () => {
             <Text className="color-gray-400 text-sm">
               {t(' Let’s create something extraordinary!')}
             </Text>
+            
           </View>
 
           {/* Mobile Number Input */}
@@ -217,7 +218,7 @@ const LoginScreen = () => {
             >
               {t("terms_conditions")}
             </Text>{" "}
-            and{" "}
+            {t('and')}{" "}
             <Text
               onPress={() => {
                 Linking.openURL("https://godesk.co.in/Privacy_Policy.html");

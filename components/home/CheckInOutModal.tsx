@@ -18,16 +18,12 @@ import {
   FormControlError,
   FormControlErrorText,
 } from "../ui/form-control";
-import {
-  TICKET_UPLOADS,
-  CHECK_IN_OUT,
-} from "@/constants/api_endpoints";
-import { router } from "expo-router";
+import { TICKET_UPLOADS, CHECK_IN_OUT } from "@/constants/api_endpoints";
 import Toast from "react-native-toast-message";
 import { CreateCheckInOutModel } from "@/models/users";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import apiClient from "@/clients/apiClient";
-
+import { useTranslation } from 'react-i18next';
 interface CheckInOutProps {
   setIsModalVisible: any;
   bottomSheetRef: any;
@@ -48,7 +44,7 @@ const CheckInOutModal = ({
   );
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-
+  const { t ,i18n} = useTranslation();
   const [selfie, setSelfie] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -82,7 +78,7 @@ const CheckInOutModal = ({
 
     fetchPincode();
 
-    return () => clearInterval(timer);
+    return () => clearInterval(timer); // Cleanup timer on component unmount
   }, []);
 
   const requestCameraPermissions = async () => {
@@ -170,7 +166,6 @@ const CheckInOutModal = ({
     } as any);
 
     setErrors([]);
-    setErrorMsg("");
 
     apiClient
       .post(TICKET_UPLOADS, formData, {
@@ -205,20 +200,16 @@ const CheckInOutModal = ({
                     ? "Checked in successfully"
                     : "Checked in successfully",
               });
-              setSelfie("");
-              setErrors([]);
-              setErrorMsg("");
               onClose();
             })
             .catch((e) => {
               console.error(e.response?.data);
-              const errors = e.response?.data?.errors;
+              let errors = e.response?.data?.errors;
               if (errors) {
                 console.error("errors -> ", errors);
                 setErrors(errors);
-              } else {
-                setErrorMsg("Failed to check in");
               }
+              setErrorMsg("Failed to check in");
               setIsLoading(false);
             });
         } else {
@@ -231,15 +222,10 @@ const CheckInOutModal = ({
         }
       })
       .catch((e) => {
-        const errors = e.response?.data?.errors;
-        if (errors) {
-          console.error("errors -> ", errors);
-          setErrors(errors);
-        } else {
-          setErrorMsg("Failed to check in");
-        }
+        let errors = e.response?.data;
         console.log("errors ---->", errors);
         setIsLoading(false);
+        setErrorMsg("Failed to check in");
       });
   };
 
@@ -248,24 +234,24 @@ const CheckInOutModal = ({
       <View className="gap-4 p-4">
         {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
         <Text className="font-bold text-xl">
-          {status === "Checked In" ? "Check Out" : "Check In"}
+          {status === "Checked In" ? t('checkOut') : t("checkIn")}
         </Text>
         <View className="gap-5">
           <View className="">
-            <Text className="font-semibold text-lg">Start at</Text>
+            <Text className="font-semibold text-lg">{t('startAt')}</Text>
             <Text className="mt-1 text-gray-700 text-md">{currentTime}</Text>
           </View>
           <View className="">
-            <Text className="font-semibold text-lg">Pincode</Text>
+            <Text className="font-semibold text-lg">{t('pincode')}</Text>
             <Text className="mt-1 text-gray-700 text-md">{pincode ?? "-"}</Text>
           </View>
           <View className="flex-row justify-between">
             <FormControl
-              key="url"
-              isInvalid={isFormFieldInValid("url", errors).length > 0}
+              key="selfie"
+              isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="font-semibold text-lg">Selfie</Text>
+                <Text className="font-semibold text-lg">{t('selfie')}</Text>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {
@@ -274,7 +260,7 @@ const CheckInOutModal = ({
                     className="mt-1"
                   >
                     <View
-                      className={`${isFormFieldInValid("url", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px]
+                      className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
                       border-dashed h-28 w-28
                 rounded-md mt-1 flex justify-center items-center `}
                     >
@@ -284,7 +270,7 @@ const CheckInOutModal = ({
                         >
                           <MaterialCommunityIcons
                             name="camera-plus"
-                            color={`${isFormFieldInValid("url", errors).length === 0 ? "#009c68" : "#b91c1c"}`}
+                            color={`${isFormFieldInValid("selfie", errors).length === 0 ? "#009c68" : "#b91c1c"}`}
                             size={18}
                           />
                         </View>
@@ -313,7 +299,7 @@ const CheckInOutModal = ({
               </View>
               <FormControlError>
                 <FormControlErrorText>
-                  {isFormFieldInValid("url", errors)}
+                  {isFormFieldInValid("selfie", errors)}
                 </FormControlErrorText>
               </FormControlError>
             </FormControl>
@@ -322,7 +308,7 @@ const CheckInOutModal = ({
               className="w-[150px] h-[150px]"
             /> */}
           </View>
-          {errorMsg && <Text className="mt-4 text-red-700">* {errorMsg}</Text>}
+          {errorMsg && <Text className="mt-4 text-red-500">* {errorMsg}</Text>}
           <Button
             className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {

@@ -282,7 +282,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
                       <Text className="text-gray-500 text-[13px] mt-[1px]">
-                      {t('issueIn')} {ticketDetails.issueTypeDetails?.name ?? "-"}
+                     issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
                     <TicketStatusComponent

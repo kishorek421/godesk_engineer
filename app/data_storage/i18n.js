@@ -24,7 +24,7 @@ i18n
           goodMorning: "Good Morning",
           goodAfternoon: "Good Afternoon",
           goodEvening: "Good Evening",
-          welcome: "Hey, Welcome! 🎉",
+          welcome: "Hey, Welcome! ",
           create_extraordinary: "Let’s create something extraordinary!",
           mobile_label: "Mobile Number",
           mobile_placeholder: "Enter your mobile number",
@@ -42,6 +42,7 @@ i18n
           "serialNo": "Serial No",
           "description": "Description",
           "assignedAt": "Assigned At",
+"assignedTo" :"Assigned To",
           "issueImages": "Issue Images",
           "status": "Status",
           "selectStatus": "Select Status",
@@ -53,13 +54,10 @@ i18n
           "enterCustomerOtp": "Enter customer OTP",
           "updateStatus": "Update Status",
           "updateTicketStatus": "Update Ticket Status",
-          "enterOtpForOpenClose": "Enter OTP only when opening or closing a ticket.",
-          "ticketStatus": {
-            "opened": "Opened",
-            "assigned": "Assigned",
-            "completed": "Completed",
-            "notClosed": "Not Closed"
-          }
+          "startAt": "Start at",
+          "pincode": "Pincode",
+          "selfie": "Selfie",
+          "and": "and"
         },
       },
       kn: {
@@ -75,7 +73,7 @@ i18n
           goodMorning: "ಶುಭೋದಯ",
           goodAfternoon: "ಶುಭ ಮಧ್ಯಾಹ್ನ",
           "goodEvening": "ಶುಭ ಸಾಯಂಕಾಲ",
-          welcome: "ಹಾಯ್, ಸ್ವಾಗತ! 🎉",
+          welcome: "ಹಾಯ್, ಸ್ವಾಗತ! ",
           " Let’s create something extraordinary!": "ನಾವು ಕೆಲವು ಅದ್ಭುತವಾದುದನ್ನು ರಚಿಸೋಣ!",
           "Mobile Number": "ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
           mobile_placeholder: "ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ",
@@ -99,6 +97,7 @@ i18n
           "serialNo": "ಸರಣಿ ಸಂಖ್ಯೆ",
           "description": "ವಿವರಣೆ",
           "assignedAt": "ಒತ್ತಿಸಲಾಗಿದೆ",
+          "assignedTo" :"ನೇಮಿತವಾಗಿದೆ",
           "issueImages": "ಸಮಸ್ಯೆಯ ಚಿತ್ರಗಳು",
           "status": "ಸ್ಥಿತಿ",
           "selectStatus": "ಸ್ಥಿತಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
@@ -118,13 +117,11 @@ i18n
           TICKET_ASSIGNED: "ಟಿಕೆಟ್ ನಿಯೋಜಿಸಲಾಗಿದೆ",
           ASSIGNED: "ನಿಯೋಜಿಸಲಾಗಿದೆ",
           DEFAULT: "ಅನಿಯೋಜಿತ",
-          "Asset Type" :"ಆಸ್ತಿ ಪ್ರಕಾರ",
-          "ticketStatus": {
-            "opened": "ತೆರೆದಿದೆ",
-            "assigned": "ನಿಯಮಿತವಾಗಿದೆ",
-            "completed": "ಪೂರೈಸಿದೆ",
-            "notClosed": "ಮುಚ್ಚಲಿಲ್ಲ"
-          }
+          "Asset Type": "ಆಸ್ತಿ ಪ್ರಕಾರ",
+          "startAt": "ಪ್ರಾರಂಭ",
+          "pincode": "ಪಿನ್‌ಕೋಡ್",
+          "selfie": "ಸೆಲ್ಫಿ",
+           "and": "ಮತ್ತು"
         },
       },
       te: {
@@ -141,7 +138,7 @@ i18n
           "goodMorning": "శుభోదయం",
           "goodAfternoon": "శుభ మధ్యాహ్నం",
           "goodEvening": "శుభ సాయంత్రం",
-          "welcome": "హాయ్, స్వాగతం! 🎉",
+          "welcome": "హాయ్, స్వాగతం! ",
           "otp_message": "{{mobile} }కు OTP పంపబడింది.",
           " Let’s create something extraordinary!": "మనం అద్భుతమైన దాన్ని సృష్టిద్దాం!",
           "Mobile Number": "మొబైల్ నంబరు",
@@ -165,6 +162,7 @@ i18n
           "serialNo": "సీరియల్ నంబర్",
           "description": "వివరణ",
           "assignedAt": "కేటాయించబడింది",
+          "assignedTo" :"నియమించబడ్డది",
           "issueImages": "సమస్య చిత్రాలు",
           "status": "స్థితి",
           "selectStatus": "స్థితిని ఎంచుకోండి",
@@ -184,13 +182,11 @@ i18n
           TICKET_ASSIGNED: "టికెట్ కేటాయించబడింది",
           ASSIGNED: "కేటాయించబడింది",
           DEFAULT: "కేటాయించబడలేదు",
-          "Asset Type" : "ఆస్తి రకం",
-          "ticketStatus": {
-            "opened": "తెరిచింది",
-            "assigned": "కేటాయించబడింది",
-            "completed": "పూర్తయింది",
-            "notClosed": "మూసిపెట్టలేదు"
-          }
+          "Asset Type": "ఆస్తి రకం",
+          "startAt": "ప్రారంభించు",
+          "pincode": "పిన్‌కోడ్",
+          "selfie": "సెల్ఫీ",
+          "and":"మరియు"
         },
 
 
