@@ -76,7 +76,7 @@ const LanguageSelectionScreen = () => {
         {/* Kannada Option */}
         <TouchableOpacity
           onPress={() => handleLanguageChange('kn')}
-          className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-md"
+          className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
           style={{
             backgroundColor: selectedLanguage === 'kn' ? '#f1f5f9' : '#fff',
           }}
@@ -92,7 +92,7 @@ const LanguageSelectionScreen = () => {
         {/* Telugu Option */}
         <TouchableOpacity
           onPress={() => handleLanguageChange('te')}
-          className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-md"
+          className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
           style={{
             backgroundColor: selectedLanguage === 'te' ? '#f1f5f9' : '#fff',
           }}
@@ -104,17 +104,35 @@ const LanguageSelectionScreen = () => {
           />
           <Text className="text-lg font-semibold text-gray-700 ml-4">తెలుగు</Text>
         </TouchableOpacity>
+        {/* <TouchableOpacity
+          onPress={() => handleLanguageChange('hi')}
+          className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
+          style={{
+            backgroundColor: selectedLanguage === 'hi' ? '#f1f5f9' : '#fff',
+          }}
+        >
+          <Ionicons
+            name={selectedLanguage === 'hi' ? 'radio-button-on' : 'radio-button-off'}
+            size={24}
+            color={selectedLanguage === 'hi' ? '#39a676' : '#ccc'}
+          />
+          <Text className="text-lg font-semibold text-gray-700 ml-4">Hindi</Text>
+        </TouchableOpacity> */}
       </View>
 
       {/* Done Button */}
-      <View className="mt-10">
+      <View className="flex-1">
+  {/* Other content of the screen */}
+  <View className="mt-10">
         <TouchableOpacity
           onPress={handleDone}
           className="bg-primary-950 w-full p-4 rounded-xl shadow-md"
         >
-          <Text className="text-lg font-bold text-center text-white">Done</Text>
-        </TouchableOpacity>
-      </View>
+       <Text className="text-lg font-bold text-center text-white">Done</Text>
+       </TouchableOpacity>
+  </View>
+</View>
+
     </View>
   );
 };
