@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';  // Import the translation hook
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
-  const { t, i18n } = useTranslation();  // Use translation hook
+  const { t, i18n } = useTranslation();  
 
   const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);

@@ -15,7 +15,7 @@ i18n
         translation: {
 
           welcomeMessage: "Welcome back!",
-          translate: "Translate",
+        
           checkIn: "Check In",
           checkOut: "Check Out",
           raisedBy: "Raised by",
@@ -42,7 +42,7 @@ i18n
           "serialNo": "Serial No",
           "description": "Description",
           "assignedAt": "Assigned At",
-"assignedTo" :"Assigned To",
+          "assignedTo": "Assigned To",
           "issueImages": "Issue Images",
           "status": "Status",
           "selectStatus": "Select Status",
@@ -54,7 +54,7 @@ i18n
           "enterCustomerOtp": "Enter customer OTP",
           "updateStatus": "Update Status",
           "updateTicketStatus": "Update Ticket Status",
-          "startAt": "Start at",
+          "startAt": "Starts At",
           "pincode": "Pincode",
           "selfie": "Selfie",
           "and": "and"
@@ -97,7 +97,7 @@ i18n
           "serialNo": "ಸರಣಿ ಸಂಖ್ಯೆ",
           "description": "ವಿವರಣೆ",
           "assignedAt": "ಒತ್ತಿಸಲಾಗಿದೆ",
-          "assignedTo" :"ನೇಮಿತವಾಗಿದೆ",
+          "assignedTo": "ನೇಮಿತವಾಗಿದೆ",
           "issueImages": "ಸಮಸ್ಯೆಯ ಚಿತ್ರಗಳು",
           "status": "ಸ್ಥಿತಿ",
           "selectStatus": "ಸ್ಥಿತಿಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
@@ -121,7 +121,7 @@ i18n
           "startAt": "ಪ್ರಾರಂಭ",
           "pincode": "ಪಿನ್‌ಕೋಡ್",
           "selfie": "ಸೆಲ್ಫಿ",
-           "and": "ಮತ್ತು"
+          "and": "ಮತ್ತು"
         },
       },
       te: {
@@ -162,7 +162,7 @@ i18n
           "serialNo": "సీరియల్ నంబర్",
           "description": "వివరణ",
           "assignedAt": "కేటాయించబడింది",
-          "assignedTo" :"నియమించబడ్డది",
+          "assignedTo": "నియమించబడ్డది",
           "issueImages": "సమస్య చిత్రాలు",
           "status": "స్థితి",
           "selectStatus": "స్థితిని ఎంచుకోండి",
@@ -186,7 +186,7 @@ i18n
           "startAt": "ప్రారంభించు",
           "pincode": "పిన్‌కోడ్",
           "selfie": "సెల్ఫీ",
-          "and":"మరియు"
+          "and": "మరియు"
         },
 
 

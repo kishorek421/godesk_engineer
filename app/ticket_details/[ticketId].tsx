@@ -228,7 +228,10 @@ const TicketDetails = () => {
       );
       if (response.status === 200) {
         console.log("Request body", requestBody);
-        Alert.alert("Success", "Ticket status updated successfully!");
+        Toast.show({
+          type: 'success',
+          text1: 'Ticket status updated successfully!',
+        });
         await fetchTicketDetails();
         router.push({
           pathname: "../home",

@@ -197,10 +197,15 @@ const CheckInOutModal = ({
                 type: "success",
                 text1:
                   status === "Checked In"
-                    ? "Checked in successfully"
+                    ? "Checked out successfully"
                     : "Checked in successfully",
               });
+              
+              setSelfie("");
+              setErrors([]);
+              setErrorMsg("");
               onClose();
+            
             })
             .catch((e) => {
               console.error(e.response?.data);
@@ -251,7 +256,7 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="font-semibold text-lg">{t('selfie')}</Text>
+                <Text className="font-semibold text-lg">{t('selfie')} <Text className="text-red-400 ">*</Text></Text>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {

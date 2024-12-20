@@ -64,7 +64,7 @@ const LoginScreen = () => {
       setErrors([
         {
           param: "mobile",
-          message: t("Please enter a valid 10-digit mobile number."),
+          message: ("Please enter a valid 10-digit mobile number."),
         },
       ]);
       return;
@@ -79,19 +79,21 @@ const LoginScreen = () => {
         console.log("Response:", response.data.data);
 
         if (response.data?.success) {
-          setMobileNumber(''); //reset mobile no
+          // setMobileNumber('');
+          //reset mobile no
           router.push({
             pathname: "/verify_otp",
             params: { mobile }, 
            
-          });  
+          });
+          setMobileNumber('');  
          } else {
          
           setErrors([
             {
               param: "mobile",
               message:
-                response.data?.message || t("Failed to send OTP. Try again."),
+                response.data?.message || "Failed to send OTP. Try again.",
             },
           ]);
         }
@@ -103,7 +105,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message: t("An error occurred. Please try again."),
+            message: "An error occurred. Please try again.",
           },
         ]);
       })
@@ -165,7 +167,7 @@ const LoginScreen = () => {
                   // mobile no should start with 6-9
                   const customRE = /^[6-9]/;
                   if (!customRE.test(value)) {
-                    return t("Mobile no. should start with 6-9");
+                    return ("Mobile no. should start with 6-9");
                   }
                   return undefined;
                 }}
@@ -208,7 +210,7 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-          <Text className="mt-8 text-sm text-center px-8">
+          <Text className="mt-8 text-sm text-center mb-8 px-8">
             {t('loginAgreement')}{" "}
             <Text
               onPress={() => {
