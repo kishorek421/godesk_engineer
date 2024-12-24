@@ -41,17 +41,6 @@ const HomeScreen = () => {
     fetchInProgressTicketDetails();
     fetchUserDetails();
   }, []);
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage);
-      }
-    };
-
-    fetchLanguage();
-  }, []);
   // const handleLanguageChange = (lang) => {
   //   setSelectedLanguage(lang);
   //   i18n.changeLanguage(lang); // Change the language in i18n
@@ -71,7 +60,6 @@ const HomeScreen = () => {
         console.error(e.response.data);
       });
   };
-
   useEffect(() => {
     fetchCheckInOutStatus();
   }, []);

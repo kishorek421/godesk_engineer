@@ -76,7 +76,6 @@ const TicketListLayout = () => {
         } else if (nextCurrentPage === 1) {
           setRecentTickets([]); // Reset tickets if no content found
         }
-
         const paginator = response?.data?.paginator;
         if (paginator) {
           const iCurrentPage = paginator.currentPage;

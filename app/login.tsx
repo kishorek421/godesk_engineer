@@ -132,7 +132,6 @@ const LoginScreen = () => {
               </Text>
             </View>
           </View>
-
           {/* Welcome Text */}
           <View className="mt-6">
             <Text className="text-2xl font-bold">{t("welcome")}</Text>

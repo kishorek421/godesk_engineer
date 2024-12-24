@@ -502,8 +502,8 @@ const TicketDetails = () => {
                           placeholder={t('enterCustomerOtp')}
                           errors={errors}
                           setErrors={setErrors}
-                          min={6}
-                          max={6}
+                          min={4}
+                          max={4}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
