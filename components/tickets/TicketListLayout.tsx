@@ -20,8 +20,9 @@ const TicketListLayout = () => {
   const [selectedTab, setSelectedTab] = useState(0);
  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const tabs = [
-    t('Opened'),
+  
     t('Assigned'),
+    t('Opened'),
     t('Completed'),
     t('Not Closed'),
   ];
