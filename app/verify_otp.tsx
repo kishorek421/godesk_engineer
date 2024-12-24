@@ -44,7 +44,7 @@ const VerifyOTPScreen = () => {
 
     try {
 
-      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}`).then(async (response) => {
+      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}&type='FIELD_ENGINEER'`).then(async (response) => {
         if (response.data?.success) {
           const loginData = response.data?.data;
           if (loginData && loginData.token) {
