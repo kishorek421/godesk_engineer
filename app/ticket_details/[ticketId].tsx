@@ -485,15 +485,15 @@ const TicketDetails = () => {
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
-                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> Enter OTP only in case of Open and Close ticket</Text>
+                      ><Text className="mt-1 mb-2 text-gray-500 text-sm">Note: Only when a ticket is open or closed, enter the OTP.  </Text>
                         <PrimaryTextFormField
                           fieldName="Customer OTP"
                           label="Customer OTP"
                           placeholder="Enter customer otp"
                           errors={errors}
                           setErrors={setErrors}
-                          min={6}
-                          max={6}
+                          min={4}
+                          max={4}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}

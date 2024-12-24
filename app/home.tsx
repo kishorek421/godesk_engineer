@@ -2,12 +2,14 @@ import {
   View,
   Text,
   FlatList,
+  BackHandler, 
+  ToastAndroid,
   SafeAreaView,
   TouchableOpacity,
   Pressable,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
-import { useLocalSearchParams, router, Link } from "expo-router";
+import { useLocalSearchParams, router, Link,useSegments } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
@@ -29,9 +31,10 @@ const HomeScreen = () => {
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
   const [isLoading, setIsLoading] = useState(true);
-
+  const [exitApp, setExitApp] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { refresh } = useLocalSearchParams();
-
+  const segments = useSegments(); 
   const bottomSheetRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -102,6 +105,43 @@ const HomeScreen = () => {
         console.error("Error fetching user details", error);
       });
   };
+ 
+  const handleDoubleClick = () => {
+    if (exitApp) {
+      BackHandler.exitApp(); // Exits the app
+    } else {
+      setExitApp(true);
+      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); // Optional feedback to user
+
+      // Reset the `exitApp` state after 2 seconds
+      timeoutRef.current = setTimeout(() => {
+        setExitApp(false);
+      }, 2000);
+    }
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if  (segments.join("/") === "home") {
+       
+        handleDoubleClick();
+        return true;
+      } else if (router.canGoBack()) {
+        router.back(); // Navigate back if possible
+        return true;
+      } else {
+        ToastAndroid.show("No screen to go back to!", ToastAndroid.SHORT);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      backHandler.remove(); 
+    };
+  }, [exitApp, segments]);
 
   return (
     <SafeAreaView>

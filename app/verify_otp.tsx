@@ -108,13 +108,7 @@ const VerifyOTPScreen = () => {
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: any) => setOtp(e)}
               />
-              {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
-                          <InputField
-                            placeholder="Enter customer otp"
-                            className="py-2"
-                            onChangeText={(e: any) => setOtp(e)}  // Ensure the OTP is set correctly
-                          />
-                        </Input> */}
+             
               <FormControlError>
                 <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
               </FormControlError>
