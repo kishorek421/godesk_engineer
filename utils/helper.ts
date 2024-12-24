@@ -44,7 +44,7 @@ export function getGreetingMessage() {
   } else if (currentHour >= 17 && currentHour < 21) {
     return t('goodEvening'); // Translated message key for Good Evening
   } else {
-    return t('hello'); // Translated message key for Hello
+    return t('hello'); 
   }
 }
 

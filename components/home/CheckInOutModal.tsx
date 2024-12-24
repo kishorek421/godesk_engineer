@@ -251,7 +251,7 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="font-semibold text-lg">{t('selfie')}</Text>
+                <Text className="font-semibold text-lg">{t('selfie')} <Text className="text-red-400 mt-1">*</Text></Text>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {

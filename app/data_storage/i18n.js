@@ -57,7 +57,8 @@ i18n
           "startAt": "Start at",
           "pincode": "Pincode",
           "selfie": "Selfie",
-          "and": "and"
+          "and": "and",
+          "hello":"Hello"
         },
       },
       kn: {
@@ -121,7 +122,8 @@ i18n
           "startAt": "ಪ್ರಾರಂಭ",
           "pincode": "ಪಿನ್‌ಕೋಡ್",
           "selfie": "ಸೆಲ್ಫಿ",
-           "and": "ಮತ್ತು"
+           "and": "ಮತ್ತು",
+             "hello":"ಹಾಯ್"
         },
       },
       te: {
@@ -186,7 +188,8 @@ i18n
           "startAt": "ప్రారంభించు",
           "pincode": "పిన్‌కోడ్",
           "selfie": "సెల్ఫీ",
-          "and":"మరియు"
+          "and":"మరియు",
+          "hello":"హాయ్"
         },
 
 

@@ -158,7 +158,7 @@ const HomeScreen = () => {
                       {inProgressTicketDetails.ticketNo ?? "-"}
                     </Text>
                     <Text className="text-gray-500 text-[13px] mt-[1px]">
-                      {t('issueIn')} {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
+                     Issue In {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                     </Text>
                   </View>
                   <TicketStatusComponent

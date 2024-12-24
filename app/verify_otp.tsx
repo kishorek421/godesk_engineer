@@ -58,25 +58,27 @@ const VerifyOTPScreen = () => {
     setErrors([]);
 
     try {
-      const response = await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}`);
-      if (response.data?.success) {
-        const loginData = response.data?.data;
-        if (loginData?.token) {
-          await setItem(AUTH_TOKEN_KEY, loginData.token);
-          await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
-          router.replace('/home');
+
+      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}&type='FIELD_ENGINEER'`).then(async (response) => {
+        if (response.data?.success) {
+          const loginData = response.data?.data;
+          if (loginData && loginData.token) {
+            await setItem(AUTH_TOKEN_KEY, loginData.token);
+            await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
+            router.replace('/home');
+          }
         }
-      } else {
-      
-        setErrors([{ param: "otp", message: response.data?.message || t('otpVerificationFailed') }]);
-      }
+      }).catch((e) => {
+        console.error(e.response.request);
+      });
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      setErrors([{ param: "otp", message: t('otpErrorMessage') }]);
+      setErrors([{ param: "otp", message: "An error occurred. Please try again." }]);
     } finally {
       setIsLoading(false);
     }
-  };    
+  };
+
 
   return (
     <SafeAreaView className="bg-white">
