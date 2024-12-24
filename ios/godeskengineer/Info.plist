@@ -61,6 +61,8 @@
     <string>Allow $(PRODUCT_NAME) to use your location to track your check in and check out location.</string>
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to use your location to track your check in and check out location.</string>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>We would like to track your activity to provide a better experience and personalized content.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>

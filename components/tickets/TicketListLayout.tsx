@@ -25,6 +25,7 @@ const TicketListLayout = () => {
     t('Opened'),
     t('Completed'),
     t('Not Closed'),
+
   ];
 
   useEffect(() => {
@@ -61,7 +62,9 @@ const TicketListLayout = () => {
   const fetchTickets = async (nextCurrentPage: number, selectedTab: number) => {
     console.log("fetching tickets");
 
-    if (selectedTab === 0) {
+    setRecentTickets([]);
+
+    if (selectedTab === 1) {
       await apiClient.get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
         params: { pageNo: nextCurrentPage, pageSize: 10 },
       }).then((response) => {
