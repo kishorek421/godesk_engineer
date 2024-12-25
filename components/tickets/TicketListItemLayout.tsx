@@ -3,15 +3,30 @@ import { TicketListItemModel } from "@/models/tickets";
 import TicketStatusComponent from "./TicketStatusComponent";
 import { router } from "expo-router";
 import moment from "moment";
-import React from "react";
-
+import React,{useEffect,useState} from "react";
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const TicketListItemLayout = ({
+  
   ticketModel,
   cn = "",
 }: {
   ticketModel: TicketListItemModel;
   cn?: string;
 }) => {
+  const { t, i18n } = useTranslation();
+   const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
+
+    fetchLanguage();
+  }, []);
   return (
     <Pressable
       onPress={() => {
@@ -32,7 +47,7 @@ const TicketListItemLayout = ({
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
               <Text className="text-gray-500 text-[13px] mt-[1px]">
-                Issue in {ticketModel.issueTypeDetails?.name ?? "-"}
+              {t('issueIn')} {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>
             <TicketStatusComponent
@@ -44,14 +59,14 @@ const TicketListItemLayout = ({
           <View className="w-full">
             <View className="flex-row items-center justify-between">
               <View className="flex">
-                <Text className="text-gray-500 text-md ">Raised by</Text>
+                <Text className="text-gray-500 text-md "> {t('raisedBy')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel?.customerDetails?.firstName ?? ""}{" "}
                   {ticketModel?.customerDetails?.lastName ?? ""}
                 </Text>
               </View>
               <View className="flex items-end">
-                <Text className="text-gray-500 text-md ">Raised At</Text>
+                <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel.createdAt
                     ? moment(Number.parseInt(ticketModel.createdAt)).fromNow()

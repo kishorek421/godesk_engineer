@@ -5,8 +5,10 @@ import {
   BackHandler, 
   ToastAndroid,
   SafeAreaView,
+  Image,
   TouchableOpacity,
-  Pressable,
+  ActivityIndicator,
+  Linking,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { useLocalSearchParams, router, Link,useSegments } from "expo-router";
@@ -38,71 +40,66 @@ const HomeScreen = () => {
   const bottomSheetRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-    useState<CheckInOutStatusDetailsModel>({});
-
-  const toggleImagePicker = () => {
-    setIsModalVisible(!isModalVisible);
-    if (!isModalVisible) {
-      bottomSheetRef.current?.show();
-    } else {
-      bottomSheetRef.current?.hide();
+  const setFieldValidationStatusFunc = (
+    fieldName: string,
+    isValid: boolean
+  ) => {
+    if (fieldValidationStatus[fieldName]) {
+      fieldValidationStatus[fieldName](isValid);
     }
   };
 
-  useEffect(() => {
-    fetchInProgressTicketDetails();
-    fetchUserDetails();
-  }, []);
+  const handleSendOTP = async () => {
+    if (!mobile || !/^\d{10}$/.test(mobile)) {
+      setErrors([
+        {
+          param: "mobile",
+          message: t("Please enter a valid 10-digit mobile number."),
+        },
+      ]);
+      return;
+    }
 
-  const fetchCheckInOutStatus = async () => {
-    apiClient
-      .get(GET_CHECK_IN_OUT_STATUS)
+    setIsLoading(true);
+    setErrors([]);
+
+    await apiClient
+      .post("/otp/send", { mobile })
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
-        const data = response.data?.data;
-        if (data) {
-          setCheckInOutStatusDetails(data);
+        console.log("Response:", response.data.data);
+
+        if (response.data?.success) {
+          setMobileNumber(''); //reset mobile no
+          router.push({
+            pathname: "/verify_otp",
+            params: { mobile }, 
+           
+          });  
+         } else {
+         
+          setErrors([
+            {
+              param: "mobile",
+              message:
+                response.data?.message || t("Failed to send OTP. Try again."),
+            },
+          ]);
         }
       })
-      .catch((e) => {
-        console.error(e.response.data);
-      });
-  };
-
-  useEffect(() => {
-    fetchCheckInOutStatus();
-  }, []);
-
-  const fetchInProgressTicketDetails = () => {
-    apiClient
-      .get(GET_INPROGRESS_TICKETS_DETAILS)
-      .then((response) => {
-        const content = response.data?.data?.content;
-        console.log("inProgressTicketDetails", content);
-
-        if (content && content.length > 0) {
-          const ticketData = content[0] ?? {};
-          setInProgressTicketDetails(ticketData);
-        }
-        setIsLoading(false);
-      })
       .catch((error) => {
-        console.error("Error fetching tickets", error);
-        setIsLoading(false);
-      });
-  };
+        console.error("Error sending OTP:", error.response?.data || error);
 
-  const fetchUserDetails = () => {
-    apiClient
-      .get(GET_USER_DETAILS)
-      .then((response) => {
-        console.log(response.data?.data);
-        const userData = response.data.data ?? {};
-        setUserDetails(userData);
+        // Handle network or unexpected errors
+        setErrors([
+          {
+            param: "mobile",
+            message: t("An error occurred. Please try again."),
+          },
+        ]);
       })
-      .catch((error) => {
-        console.error("Error fetching user details", error);
+      .finally(() => {
+        console.log("Request completed");
+        setIsLoading(false); // Ensure loading state is reset
       });
   };
  
@@ -144,128 +141,122 @@ const HomeScreen = () => {
   }, [exitApp, segments]);
 
   return (
-    <SafeAreaView>
-      <View className="mt-6 p-1">
-        <View className="flex-row justify-between items-center">
-          <View className="flex px-4">
-            <Text className="mx-2 font-bold text-md">
-              {getGreetingMessage()} 👋
-            </Text>
-            <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
-              {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
-            </Text>
-            {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
-            {/* <Text><Link href={'/map/location'}>map</Link></Text> */}
-          </View>
-          {checkInOutStatusDetails.value !== "Checked Out" && (
-            <View className="me-4">
-              <Button
-                className="bg-primary-950 mx-2 rounded-lg"
-                onPress={() => {
-                  toggleImagePicker();
+    <SafeAreaView className="bg-white">
+      <View className="flex justify-between h-full">
+        <View className="mt-1 px-4">
+          {/* Logo */}
+          <View>
+            <View className="flex-row items-end">
+              <Image
+                source={require("../assets/images/godesk.jpg")}
+                style={{
+                  width: 30,
+                  height: 30,
                 }}
-              >
-                <ButtonText>
-                  {checkInOutStatusDetails.value === "Checked In"
-                    ? "Check Out"
-                    : "Check In"}
-                </ButtonText>
-              </Button>
+              />
+              <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
+                desk <Text className="text-primary-950">Engineer</Text>
+              </Text>
             </View>
-          )}
-        </View>
-        {isLoading ? (
-          <Text className="mt-6 text-center text-gray-500">Loading...</Text>
-        ) : (
-          inProgressTicketDetails.id && (
-            <Pressable
-              className="mt-4 px-4 w-full"
-              onPress={() => {
-                router.push({
-                  pathname: "/ticket_details/[ticketId]",
-                  params: { ticketId: inProgressTicketDetails.id ?? "" },
-                });
-              }}
+          </View>
+          {/* Welcome Text */}
+          <View className="mt-6">
+            <Text className="text-2xl font-bold">{t("welcome")}</Text>
+            <Text className="color-gray-400 text-sm">
+              {t(' Let’s create something extraordinary!')}
+            </Text>
+            
+          </View>
+
+          {/* Mobile Number Input */}
+          <View className="mt-6">
+            <FormControl
+              isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
             >
-              <View className="bg-white px-4 py-3 rounded-lg w-full">
-                <View className="flex">
-                  <View className="flex-row justify-between w-full">
-                    <View>
-                      <Text className="font-bold text-gray-900">
-                        {inProgressTicketDetails.ticketNo ?? "-"}
-                      </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-500">
-                        Issue in{" "}
-                        {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
-                      </Text>
-                    </View>
-                    <TicketStatusComponent
-                      statusKey={
-                        inProgressTicketDetails.statusDetails?.key ?? ""
-                      }
-                      statusValue={
-                        inProgressTicketDetails.statusDetails?.value ?? ""
-                      }
-                    />
-                  </View>
-                  <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
-                  <View className="w-full">
-                    <View className="flex-row justify-between items-center">
-                      <View className="flex">
-                        <Text className="text-gray-500 text-md">Raised by</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
-                          {inProgressTicketDetails.customerDetails?.firstName ??
-                            ""}{" "}
-                          {inProgressTicketDetails.customerDetails?.lastName ??
-                            ""}
-                        </Text>
-                      </View>
-                      <View className="flex items-end">
-                        <Text className="text-gray-500 text-md">Raised At</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
-                          {inProgressTicketDetails.createdAt
-                            ? moment(
-                                Number.parseInt(
-                                  inProgressTicketDetails.createdAt
-                                )
-                              ).fromNow()
-                            : "-"}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </Pressable>
-          )
-        )}
-        <TicketListLayout />
+              <PrimaryTextFormField
+                fieldName="mobile"
+                label={t("Mobile Number")}
+                placeholder={t("Enter your mobile number")}
+                errors={errors}
+                setErrors={setErrors}
+                min={10}
+                max={10}
+                keyboardType="phone-pad"
+                filterExp={/^[0-9]*$/}
+                canValidateField={canValidateField}
+                setCanValidateField={setCanValidateField}
+                setFieldValidationStatus={setFieldValidationStatus}
+                validateFieldFunc={setFieldValidationStatusFunc}
+                customValidations={(value) => {
+                  // mobile no should start with 6-9
+                  const customRE = /^[6-9]/;
+                  if (!customRE.test(value)) {
+                    return t("Mobile no. should start with 6-9");
+                  }
+                  return undefined;
+                }}
+                onChangeText={(text: string) => {
+                  setMobileNumber(text);
+                }}
+              />
+              <FormControlError>
+                <FormControlErrorText>
+                  {isFormFieldInValid("mobile", errors)}
+                </FormControlErrorText>
+              </FormControlError>
+            </FormControl>
+          </View>
+
+          {/* Login Button */}
+          <View className="flex-row justify-between items-center mt-12">
+            <Text className="font-bold text-primary-950 text-xl">{t("Login")}</Text>
+            <Button
+              className="bg-primary-950 rounded-full w-14 h-14 p-0"
+              onPress={handleSendOTP}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <AntDesign name="arrowright" size={20} color="white" />
+              )}
+            </Button>
+          </View>
+        </View>
+
+        {/* Footer Animation */}
+        <View>
+          <LottieView
+            ref={animationRef}
+            source={require("../assets/lottie/login.json")}
+            autoPlay
+            loop
+            style={{
+              height: 200,
+            }}
+          />
+          <Text className="mt-8 text-sm text-center px-8">
+            {t('loginAgreement')}{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              {t("terms_conditions")}
+            </Text>{" "}
+            {t('and')}{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+              }}
+              className="font-bold text-primary-950"
+            >
+              {t("privacy_policy")}
+            </Text>
+          </Text>
+        </View>
       </View>
-      <CheckInOutModal
-        setIsModalVisible={setIsModalVisible}
-        bottomSheetRef={bottomSheetRef}
-        status={checkInOutStatusDetails.value}
-        checkedInId={checkInOutStatusDetails.id}
-        onClose={() => {
-          toggleImagePicker();
-          fetchCheckInOutStatus();
-        }}
-      />
     </SafeAreaView>
   );
 };
-
-export default HomeScreen;
-// Register background task for location updates
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-//     if (error) {
-//       console.error('Background location error:', error);
-//       return;
-//     }
-
-//     if (data) {
-//       const { locations } = data;
-//       const { latitude, longitude } = locations[0].coords;
-//       console.log('Background location updated:', { latitude, longitude });
-//     }
-//   });
+export default LoginScreen;
