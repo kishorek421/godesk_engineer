@@ -42,7 +42,7 @@ i18n
           "serialNo": "Serial No",
           "description": "Description",
           "assignedAt": "Assigned At",
-"assignedTo" :"Assigned To",
+          "assignedTo" :"Assigned To",
           "issueImages": "Issue Images",
           "status": "Status",
           "selectStatus": "Select Status",

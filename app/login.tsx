@@ -1,45 +1,39 @@
 
 import React, { useEffect, useRef, useState } from "react";
-
 import {
   View,
   Text,
   SafeAreaView,
   Image,
-  TouchableOpacity,
   ActivityIndicator,
   Linking,
 } from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { router,Link } from "expo-router";
-import { VStack } from "../components/ui/vstack";
+import { router } from "expo-router";
 import {
   FormControl,
-  FormControlLabel,
-  FormControlLabelText,
   FormControlError,
   FormControlErrorText,
 } from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import apiClient from "@/clients/apiClient";
 import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
-import { setItem } from "@/utils/secure_store";
-import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
+
 const LoginScreen = () => {
-  const { t ,i18n} = useTranslation(); // Access translations using `t`
+  const { t, i18n } = useTranslation(); // Access translations using `t`
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-  const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   useEffect(() => {
     const fetchLanguage = async () => {
       const storedLanguage = await AsyncStorage.getItem('language');
@@ -92,7 +86,7 @@ const LoginScreen = () => {
     setErrors([]);
 
     await apiClient
-      .post("/otp/send", { mobile })
+      .post("/otp/send", { mobile, "type": "FIELD_ENGINEER" })
       .then((response) => {
         console.log("Response:", response.data.data);
 
@@ -100,11 +94,11 @@ const LoginScreen = () => {
           setMobileNumber(''); //reset mobile no
           router.push({
             pathname: "/verify_otp",
-            params: { mobile }, 
-           
-          });  
-         } else {
-         
+            params: { mobile },
+
+          });
+        } else {
+
           setErrors([
             {
               param: "mobile",
@@ -130,7 +124,7 @@ const LoginScreen = () => {
         setIsLoading(false); // Ensure loading state is reset
       });
   };
- 
+
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
@@ -150,15 +144,13 @@ const LoginScreen = () => {
               </Text>
             </View>
           </View>
+          
           {/* Welcome Text */}
           <View className="mt-6">
-
             <Text className="text-2xl font-bold">{t("welcome")}</Text>
             <Text className="color-gray-400 text-sm">
               {t(' Let’s create something extraordinary!')}
-
             </Text>
-            
           </View>
 
           {/* Mobile Number Input */}
@@ -247,46 +239,6 @@ const LoginScreen = () => {
             >
               {t("privacy_policy")}
             </Text>
-
-<!--           <Text className="mt-8 px-8 text-center text-sm">
-            By logging in, you agree to our{" "}
-            <Text
-              onPress={() => {
-                Linking.openURL("https://godesk.co.in/Terms_And_conditions.html");
-              }}
-              className="font-bold text-primary-950"
-            >
-              Terms & Conditions
-            </Text>{" "}
-            and{" "}
-            <Text
-              onPress={() => {
-                Linking.openURL("https://godesk.co.in/Engineer_Privacy_Policy.html");
-              }}
-              className="font-bold text-primary-950"
-            >
-              Privacy Policy
-            </Text> -->
-   
-          {/* <Text className="px-12 text-center text-sm">
-          By logging in, you agree to our{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Terms & Conditions
-          </Text>{" "}
-          and{" "}
-          <Text
-            onPress={() => {
-              Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
-            }}
-            className="font-bold text-primary-950"
-          >
-            Privacy Policy
-
           </Text>
         </View>
       </View>
@@ -294,7 +246,3 @@ const LoginScreen = () => {
   );
 };
 export default LoginScreen;
-function requestTrackingPermissionsAsync(): { status: any; } | PromiseLike<{ status: any; }> {
-  throw new Error("Function not implemented.");
-}
-
