@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React,{ useEffect ,useState} from "react";
 import {
   ESCALATED,
   RAISED,
@@ -8,7 +8,8 @@ import {
   ASSIGNED,
   TICKET_ASSIGNED,
 } from "@/constants/configuration_keys";
-
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const TicketStatusComponent = ({
   statusKey,
   statusValue,
@@ -16,6 +17,19 @@ const TicketStatusComponent = ({
   statusKey?: string;
   statusValue?: string;
 }) => {
+  const { t, i18n } = useTranslation();
+const [selectedLanguage, setSelectedLanguage] = useState('en');
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
+
+    fetchLanguage();
+  }, []);
   const getStatusColor = (statusKey?: string): string => {
     switch (statusKey) {
       case ESCALATED:

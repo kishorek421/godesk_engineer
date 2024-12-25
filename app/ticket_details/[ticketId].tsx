@@ -17,6 +17,7 @@ import {
   isFormFieldInValid,
   setErrorValue,
 } from "@/utils/helper";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import { ASSIGNED, TICKET_ASSIGNED, TICKET_CLOSED, TICKET_IN_PROGRESS, TICKET_OPENED, TICKET_STATUS } from "@/constants/configuration_keys";
@@ -33,12 +34,14 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { LocationState } from '../map/location';
+import { useTranslation } from 'react-i18next';
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
     { key: "CANNOT_RESOLVE", value: "Cannot Resolve" },
     { key: "TICKET_CLOSED", value: "Close" },
   ];
+  const { t, i18n } = useTranslation();
   const { ticketId } = useLocalSearchParams();
   const [ticketDetails, setTicketDetails] = useState<TicketListItemModel>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +66,7 @@ const TicketDetails = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
+   const [selectedLanguage, setSelectedLanguage] = useState('en'); 
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean,
@@ -131,7 +135,13 @@ const TicketDetails = () => {
   // Update current time every second
   useEffect(() => {
     console.log('ticketId', ticketId);
-
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
     // Set navigation options
     navigation.setOptions({
       headerLeftContainerStyle: {
@@ -143,7 +153,7 @@ const TicketDetails = () => {
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
-
+    fetchLanguage();
     // Update current time every second
     const timer = setInterval(() => {
       setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
@@ -152,7 +162,7 @@ const TicketDetails = () => {
     // Cleanup timer on component unmount
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
-
+ 
   const predefinedStatuses: { [key: string]: ConfigurationModel } = {
     OPENED: { key: "OPENED", value: "Open" },
     CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
@@ -256,7 +266,7 @@ const TicketDetails = () => {
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
             <View className="flex-1">
-              <Text className="font-bold text-lg text-center">Ticket Details</Text>
+              <Text className="font-bold text-lg text-center">{t('ticketDetails')}</Text>
             </View>
             <View className="flex-1"></View>
           </View>
@@ -272,7 +282,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
                       <Text className="text-gray-500 text-[13px] mt-[1px]">
-                        Issue in {ticketDetails.issueTypeDetails?.name ?? "-"}
+                     issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
                     <TicketStatusComponent
@@ -284,14 +294,14 @@ const TicketDetails = () => {
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">Raised by</Text>
+                        <Text className="text-gray-500 text-md ">{t('raisedBy')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
                           {ticketDetails?.customerDetails?.lastName ?? ""}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">Raised At</Text>
+                        <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).fromNow()
@@ -303,13 +313,13 @@ const TicketDetails = () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">Serial No</Text>
+                        <Text className="text-gray-500 text-md ">{t('serialNo')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">Asset Type</Text>
+                        <Text className="text-gray-500 text-md ">{t('Asset Type')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
@@ -320,13 +330,13 @@ const TicketDetails = () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">Description</Text>
+                        <Text className="text-gray-500 text-md ">{t('description')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.description ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">Assinged At</Text>
+                        <Text className="text-gray-500 text-md ">{t('assignedAt')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.lastAssignedToDetails?.assignedAt
                             ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).fromNow()
@@ -336,7 +346,7 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   <View className="w-full mt-3">
-                    <Text className="text-gray-500 text-md ">Issue Images</Text>
+                    <Text className="text-gray-500 text-md ">{t('issueImages')}</Text>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
                         ticketDetails.ticketImages?.map((uri: any, index: any) => (
@@ -365,7 +375,7 @@ const TicketDetails = () => {
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
                     <View className='my-4'>
-                      <Text className="font-bold text-lg text-primary-950">Update Ticket Status</Text>
+                      <Text className="font-bold text-lg text-primary-950">{t('updateTicketStatus')}</Text>
                       <FormControl
                         isInvalid={isFormFieldInValid("ticketStatus", errors).length > 0}
                         className={`mt-4 `}
@@ -380,9 +390,9 @@ const TicketDetails = () => {
                           selectedValue={selectTicketStatusOptions}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
-                          placeholder="Select Status"
+                          placeholder={t('selectStatus')}
                           fieldName="selectTicketStatusOptions"
-                          label="Status to"
+                          label={t('status')}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
@@ -400,8 +410,8 @@ const TicketDetails = () => {
                         className="mt-4">
                         <PrimaryTextareaFormField
                           fieldName="description"
-                          label="Description"
-                          placeholder="Write a short description about your issue"
+                          label={t('description')}
+                          placeholder={t("writeShortDescription")}
                           errors={errors}
                           setErrors={setErrors}
                           min={10}
@@ -422,7 +432,7 @@ const TicketDetails = () => {
                       >
                         <HStack className="justify-between mt-2 mb-1">
                           <Text className="font-medium">
-                            Asset Images <Text className="text-red-400">*</Text>
+                           {t('assetImages')} <Text className="text-red-400">*</Text>
                           </Text>
                           <Text className="text-gray-500">{assetImages.length}/3</Text>
                         </HStack>
@@ -473,7 +483,7 @@ const TicketDetails = () => {
                               color="black"
                               size={18}
                             />
-                            <ButtonText className="text-black">Add Image</ButtonText>
+                            <ButtonText className="text-black">{t('addImage')}</ButtonText>
                           </Button>
                         )}
                         <FormControlError className="mt-2">
@@ -485,15 +495,15 @@ const TicketDetails = () => {
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
-                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> Enter OTP only in case of Open and Close ticket</Text>
+                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
                         <PrimaryTextFormField
                           fieldName="Customer OTP"
-                          label="Customer OTP"
-                          placeholder="Enter customer otp"
+                          label={t('customerOtp')}
+                          placeholder={t('enterCustomerOtp')}
                           errors={errors}
                           setErrors={setErrors}
-                          min={6}
-                          max={6}
+                          min={4}
+                          max={4}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
@@ -513,7 +523,7 @@ const TicketDetails = () => {
                           updateTicketStatus();
                         }}
                       >
-                        <ButtonText className="text-white">Update Status</ButtonText>
+                        <ButtonText className="text-white">{t('updateStatus')}</ButtonText>
                         {isLoading && <ActivityIndicator />}
                       </Button>
                     </View>

@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Image } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { VStack } from '../components/ui/vstack';
 import LottieView from 'lottie-react-native';
 import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
@@ -13,13 +13,16 @@ import apiClient from '@/clients/apiClient';
 import { setItem } from '@/utils/secure_store';
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/storage_keys';
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
+import { useTranslation } from 'react-i18next';  // Import the translation hook
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
+  const { t, i18n } = useTranslation();  // Use translation hook
 
   const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
-
+ const [selectedLanguage, setSelectedLanguage] = useState('en'); 
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -32,10 +35,22 @@ const VerifyOTPScreen = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
+
+    fetchLanguage();
+  }, []);
+
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ param: "otp", message: "Please enter a valid 6-digit OTP." }]);
+      setErrors([{ param: "otp", message: t('otpValidationMessage') }]);  // Use translation for error message
       return;
     }
 
@@ -44,6 +59,8 @@ const VerifyOTPScreen = () => {
 
     try {
 
+
+      
       await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}&type='FIELD_ENGINEER'`).then(async (response) => {
         if (response.data?.success) {
           const loginData = response.data?.data;
@@ -64,6 +81,7 @@ const VerifyOTPScreen = () => {
     }
   };
 
+
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
@@ -80,9 +98,9 @@ const VerifyOTPScreen = () => {
             </View>
           </View>
           <View className="mt-6">
-            <Text className="text-2xl font-bold">Check your mobile 📱</Text>
+            <Text className="text-2xl font-bold">{t('checkYourMobile')}</Text>  {/* Translated Text */}
             <Text className="color-gray-400 text-sm">
-              OTP has been sent to {mobile}.
+            {t('otp_message', { mobile })}.
             </Text>
           </View>
 
@@ -92,10 +110,9 @@ const VerifyOTPScreen = () => {
               className="mt-4 "
             >
               <PrimaryTextFormField
-                fieldName="Enter OTP"
-                label="Enter OTP"
-                placeholder="Enter your OTP"
-                // defaultValue={.orgMobile}
+                fieldName={t('enterOtp')}  // Translated text
+                label={t('enterOtp')}
+                placeholder={t('enterOtp')}
                 errors={errors}
                 setErrors={setErrors}
                 min={6}
@@ -108,13 +125,6 @@ const VerifyOTPScreen = () => {
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: any) => setOtp(e)}
               />
-              {/* <Input variant="outline" size="md" isDisabled={false} isReadOnly={false}>
-                          <InputField
-                            placeholder="Enter customer otp"
-                            className="py-2"
-                            onChangeText={(e: any) => setOtp(e)}  // Ensure the OTP is set correctly
-                          />
-                        </Input> */}
               <FormControlError>
                 <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
               </FormControlError>
@@ -122,10 +132,9 @@ const VerifyOTPScreen = () => {
           </View>
 
           <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">Verify OTP</Text>
+            <Text className="font-bold text-primary-950 text-xl">{t('verifyOtp')}</Text>  {/* Translated Text */}
             <Button
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
-
               onPress={handleVerifyOTP}
             >
               <AntDesign name="arrowright" size={20} color="white" />

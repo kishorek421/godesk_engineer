@@ -40,14 +40,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
           const response = await apiClient.get(GET_USER_DETAILS);
           setUser(response.data);
-          router.replace({ pathname: "/home" });
+          router.replace({ pathname: "/data_storage/[homescreen]" });
         } catch (error) {
           console.error("Failed to fetch user:", error);
           await clearStorage();
-          router.replace({ pathname: "/login" });
+          router.replace({ pathname: "/data_storage/[homescreen]" });
         }
       } else {
-        router.replace({ pathname: "/login" });
+        router.replace({ pathname: "/data_storage/[homescreen]" });
       }
       setLoading(false);
     };

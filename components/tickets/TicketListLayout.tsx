@@ -10,24 +10,39 @@ import {
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const TicketListLayout = () => {
-
+  const { t, i18n } = useTranslation();
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-
+ const [selectedLanguage, setSelectedLanguage] = useState('en');
   const tabs = [
-    "Assigned",
-    "Opened",
-    "Completed",
-    "Not Closed",
+  
+    t('Assigned'),
+    t('Opened'),
+    t('Completed'),
+    t('Not Closed'),
+
   ];
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
+   
   }, [selectedTab]);
+  useEffect(() => {
+    const fetchLanguage = async () => {
+      const storedLanguage = await AsyncStorage.getItem('language');
+      if (storedLanguage) {
+        setSelectedLanguage(storedLanguage);
+        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+      }
+    };
+
+    fetchLanguage();
+  }, []);
 
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {
@@ -65,7 +80,6 @@ const TicketListLayout = () => {
         } else if (nextCurrentPage === 1) {
           setRecentTickets([]); // Reset tickets if no content found
         }
-
         const paginator = response?.data?.paginator;
         if (paginator) {
           const iCurrentPage = paginator.currentPage;

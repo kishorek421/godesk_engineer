@@ -14,5 +14,5 @@
     "**/*.ts",
     "**/*.tsx",
     "nativewind-env.d.ts"
-  ]
+, "app/data_storage/i18n.js"  ]
 }
