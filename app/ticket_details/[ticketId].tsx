@@ -494,8 +494,9 @@ const TicketDetails = () => {
                       </FormControl>
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                        className="mt-4 "
-                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
+                        className="mt-4"
+                     >
+                        <Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
                         <PrimaryTextFormField
                           fieldName="Customer OTP"
                           label={t('customerOtp')}

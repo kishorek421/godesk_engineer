@@ -1,54 +1,44 @@
-import React, { useRef, useState,useEffect } from "react";
 import {
   View,
   Text,
+  FlatList,
+  BackHandler, 
+  ToastAndroid,
   SafeAreaView,
   Image,
   TouchableOpacity,
   ActivityIndicator,
   Linking,
 } from "react-native";
-import LottieView from "lottie-react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { router,Link } from "expo-router";
-import { VStack } from "../components/ui/vstack";
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlError,
-  FormControlErrorText,
-} from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocalSearchParams, router, Link,useSegments } from "expo-router";
+import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-import { ErrorModel } from "@/models/common";
-import { isFormFieldInValid } from "@/utils/helper";
-import { setItem } from "@/utils/secure_store";
-import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
-import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-const LoginScreen = () => {
-  const { t ,i18n} = useTranslation(); // Access translations using `t`
-  const animationRef = useRef<LottieView>(null);
-  const [mobile, setMobileNumber] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [errors, setErrors] = useState<ErrorModel[]>([]);
-  const [canValidateField, setCanValidateField] = useState(false);
-  const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-  const [selectedLanguage, setSelectedLanguage] = useState('en'); 
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
-      }
-    };
+import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
+import moment from "moment";
+import {
+  GET_CHECK_IN_OUT_STATUS,
+  GET_INPROGRESS_TICKETS_DETAILS,
+  GET_USER_DETAILS,
+} from "@/constants/api_endpoints";
+import TicketListLayout from "@/components/tickets/TicketListLayout";
+import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
+import { getGreetingMessage } from "@/utils/helper";
+import { Button, ButtonText } from "@/components/ui/button";
+import CheckInOutModal from "@/components/home/CheckInOutModal";
 
-    fetchLanguage();
-  }, []);
+const HomeScreen = () => {
+  const { ticketId } = useLocalSearchParams();
+  const [inProgressTicketDetails, setInProgressTicketDetails] =
+    useState<TicketListItemModel>({});
+  const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [exitApp, setExitApp] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const { refresh } = useLocalSearchParams();
+  const segments = useSegments(); 
+  const bottomSheetRef = useRef(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -113,6 +103,43 @@ const LoginScreen = () => {
       });
   };
  
+  const handleDoubleClick = () => {
+    if (exitApp) {
+      BackHandler.exitApp(); // Exits the app
+    } else {
+      setExitApp(true);
+      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); // Optional feedback to user
+
+      // Reset the `exitApp` state after 2 seconds
+      timeoutRef.current = setTimeout(() => {
+        setExitApp(false);
+      }, 2000);
+    }
+  };
+
+  useEffect(() => {
+    const backAction = () => {
+      if  (segments.join("/") === "home") {
+       
+        handleDoubleClick();
+        return true;
+      } else if (router.canGoBack()) {
+        router.back(); // Navigate back if possible
+        return true;
+      } else {
+        ToastAndroid.show("No screen to go back to!", ToastAndroid.SHORT);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      backHandler.remove(); 
+    };
+  }, [exitApp, segments]);
+
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
