@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, Image } from 'react-native';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState,useEffect } from 'react';
 import { VStack } from '../components/ui/vstack';
 import LottieView from 'lottie-react-native';
 import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
@@ -22,7 +22,7 @@ const VerifyOTPScreen = () => {
   const [otp, setOtp] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+ const [selectedLanguage, setSelectedLanguage] = useState('en'); 
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -58,6 +58,9 @@ const VerifyOTPScreen = () => {
     setErrors([]);
 
     try {
+
+
+      
       await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}&type='FIELD_ENGINEER'`).then(async (response) => {
         if (response.data?.success) {
           const loginData = response.data?.data;
@@ -68,11 +71,7 @@ const VerifyOTPScreen = () => {
           }
         }
       }).catch((e) => {
-        console.error(e.response.data);
-        const errors = e.response.data.errors;
-        if (errors) {
-          setErrors(errors);
-        }
+        console.error(e.response.request);
       });
     } catch (error) {
       console.error('Error verifying OTP:', error);
@@ -81,6 +80,7 @@ const VerifyOTPScreen = () => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <SafeAreaView className="bg-white">
@@ -98,9 +98,9 @@ const VerifyOTPScreen = () => {
             </View>
           </View>
           <View className="mt-6">
-            <Text className="text-2xl font-bold">{t('checkYourMobile')}</Text>
+            <Text className="text-2xl font-bold">{t('checkYourMobile')}</Text>  {/* Translated Text */}
             <Text className="color-gray-400 text-sm">
-              {t('otp_message', { mobile })}.
+            {t('otp_message', { mobile })}.
             </Text>
           </View>
 
@@ -110,7 +110,7 @@ const VerifyOTPScreen = () => {
               className="mt-4 "
             >
               <PrimaryTextFormField
-                fieldName='otp'
+                fieldName={t('enterOtp')}  // Translated text
                 label={t('enterOtp')}
                 placeholder={t('enterOtp')}
                 errors={errors}
@@ -132,7 +132,7 @@ const VerifyOTPScreen = () => {
           </View>
 
           <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">{t('verifyOtp')}</Text>
+            <Text className="font-bold text-primary-950 text-xl">{t('verifyOtp')}</Text>  {/* Translated Text */}
             <Button
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
               onPress={handleVerifyOTP}

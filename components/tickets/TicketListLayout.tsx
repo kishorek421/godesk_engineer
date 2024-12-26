@@ -32,17 +32,7 @@ const TicketListLayout = () => {
     fetchTickets(1, selectedTab);
    
   }, [selectedTab]);
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
-      }
-    };
-
-    fetchLanguage();
-  }, []);
+ 
 
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {

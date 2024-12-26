@@ -33,12 +33,13 @@ const LanguageSelectionScreen = () => {
   };
 
   return (
-      <View className="flex-1 bg-white p-5 mt-10">
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 p-5">
         {/* Header */}
         <View>
           <View className="flex-row items-end">
             <Image
-              source={require("../../assets/images/godesk.jpg")}
+              source={require('../../assets/images/godesk.jpg')}
               style={{ width: 30, height: 30 }}
             />
             <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
@@ -57,7 +58,6 @@ const LanguageSelectionScreen = () => {
         {/* Language Options */}
         <View className="flex-col items-center w-full px-4 mt-5 space-y-4">
           {/* English Option */}
-
           <TouchableOpacity
             onPress={() => handleLanguageChange('en')}
             className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-md"
@@ -104,35 +104,19 @@ const LanguageSelectionScreen = () => {
             />
             <Text className="text-lg font-semibold text-gray-700 ml-4">తెలుగు</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity
-          onPress={() => handleLanguageChange('hi')}
-          className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
-          style={{
-            backgroundColor: selectedLanguage === 'hi' ? '#f1f5f9' : '#fff',
-          }}
-        >
-          <Ionicons
-            name={selectedLanguage === 'hi' ? 'radio-button-on' : 'radio-button-off'}
-            size={24}
-            color={selectedLanguage === 'hi' ? '#39a676' : '#ccc'}
-          />
-          <Text className="text-lg font-semibold text-gray-700 ml-4">Hindi</Text>
-        </TouchableOpacity> */}
         </View>
 
         {/* Done Button */}
-        <View className="flex-1">
-          {/* Other content of the screen */}
-          <View className="mt-10">
-            <TouchableOpacity
-              onPress={handleDone}
-              className="bg-primary-950 w-full p-4 rounded-xl shadow-md"
-            >
-              <Text className="text-lg font-bold text-center text-white">Done</Text>
-            </TouchableOpacity>
-          </View>
+        <View className="mt-10">
+          <TouchableOpacity
+            onPress={handleDone}
+            className="bg-primary-950 w-full p-4 rounded-xl shadow-md"
+          >
+            <Text className="text-lg font-bold text-center text-white">Done</Text>
+          </TouchableOpacity>
         </View>
       </View>
+    </SafeAreaView>
   );
 };
 
