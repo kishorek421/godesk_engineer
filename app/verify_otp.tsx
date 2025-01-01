@@ -105,30 +105,23 @@ const VerifyOTPScreen = () => {
           </View>
 
           <View className="mt-6">
-            <FormControl
-              isInvalid={isFormFieldInValid("otp", errors).length > 0}
-              className="mt-4 "
-            >
-              <PrimaryTextFormField
-                fieldName={t('enterOtp')}  // Translated text
-                label={t('enterOtp')}
-                placeholder={t('enterOtp')}
-                errors={errors}
-                setErrors={setErrors}
-                min={6}
-                max={6}
-                keyboardType="phone-pad"
-                filterExp={/^[0-9]*$/}
-                canValidateField={canValidateField}
-                setCanValidateField={setCanValidateField}
-                setFieldValidationStatus={setFieldValidationStatus}
-                validateFieldFunc={setFieldValidationStatusFunc}
-                onChangeText={(e: any) => setOtp(e)}
-              />
-              <FormControlError>
-                <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
-              </FormControlError>
-            </FormControl>
+            <PrimaryTextFormField
+              fieldName='otp'
+              label={t('enterOtp')}
+              placeholder={t('enterOtp')}
+              errors={errors}
+              setErrors={setErrors}
+              min={6}
+              max={6}
+              keyboardType="phone-pad"
+              filterExp={/^[0-9]*$/}
+              canValidateField={canValidateField}
+              setCanValidateField={setCanValidateField}
+              setFieldValidationStatus={setFieldValidationStatus}
+              validateFieldFunc={setFieldValidationStatusFunc}
+              onChangeText={(e: string) => setOtp(e)}
+            />
+   
           </View>
 
           <View className="flex-row justify-between items-center mt-12">

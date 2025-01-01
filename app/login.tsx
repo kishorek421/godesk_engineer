@@ -89,7 +89,6 @@ const LoginScreen = () => {
       .post("/otp/send", { mobile, "type": "FIELD_ENGINEER" })
       .then((response) => {
         console.log("Response:", response.data.data);
-
         if (response.data?.success) {
           setMobileNumber(''); //reset mobile no
           router.push({
@@ -98,7 +97,6 @@ const LoginScreen = () => {
 
           });
         } else {
-
           setErrors([
             {
               param: "mobile",
@@ -110,6 +108,8 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         console.error("Error sending OTP:", error.response?.data || error);
+
+        // error.response?.data.errors
 
         // Handle network or unexpected errors
         setErrors([

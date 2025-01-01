@@ -35,6 +35,7 @@ import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { LocationState } from '../map/location';
 import { useTranslation } from 'react-i18next';
+
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
