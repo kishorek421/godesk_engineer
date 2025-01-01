@@ -67,7 +67,7 @@ const TicketDetails = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+   const [selectedLanguage, setSelectedLanguage] = useState('en'); 
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean,
@@ -163,7 +163,7 @@ const TicketDetails = () => {
     // Cleanup timer on component unmount
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
-
+ 
   const predefinedStatuses: { [key: string]: ConfigurationModel } = {
     OPENED: { key: "OPENED", value: "Open" },
     CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
@@ -199,6 +199,7 @@ const TicketDetails = () => {
       if (!pincode) {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
       }
+      
     }
     return errors;
   };
@@ -229,7 +230,10 @@ const TicketDetails = () => {
       );
       if (response.status === 200) {
         console.log("Request body", requestBody);
-        Alert.alert("Success", "Ticket status updated successfully!");
+        Toast.show({
+          type: 'success',
+          text1: 'Ticket status updated successfully!',
+        });
         await fetchTicketDetails();
         router.push({
           pathname: "../home",
@@ -283,7 +287,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
                       <Text className="text-gray-500 text-[13px] mt-[1px]">
-                        issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
+                     issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
                     <TicketStatusComponent
@@ -433,7 +437,7 @@ const TicketDetails = () => {
                       >
                         <HStack className="justify-between mt-2 mb-1">
                           <Text className="font-medium">
-                            {t('assetImages')} <Text className="text-red-400">*</Text>
+                           {t('assetImages')} <Text className="text-red-400">*</Text>
                           </Text>
                           <Text className="text-gray-500">{assetImages.length}/3</Text>
                         </HStack>
@@ -496,16 +500,15 @@ const TicketDetails = () => {
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
-                      >
-                        <Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
+                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
                         <PrimaryTextFormField
-                          fieldName="Customer OTP"
+                          fieldName="customerOTP"
                           label={t('customerOtp')}
                           placeholder={t('enterCustomerOtp')}
                           errors={errors}
                           setErrors={setErrors}
-                          min={6}
-                          max={6}
+                          min={4}
+                          max={4}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
@@ -513,7 +516,7 @@ const TicketDetails = () => {
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: any) => setOtp(e)}
+                          onChangeText={(e: s) => setOtp(e)}
                         />
                         <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>

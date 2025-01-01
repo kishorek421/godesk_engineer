@@ -4,13 +4,12 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from 'react'
 import { Stack } from 'expo-router'
 import { AuthProvider } from '@/context/AuthContext';
-
+import Toast from "react-native-toast-message";
 const RootLayout = () => {
     return (
         <GluestackUIProvider mode="light">
             <AuthProvider>
                 <Stack>
-                    <Stack.Screen name='index' options={{ headerShown: false }} />
                     <Stack.Screen name='home' options={{ headerShown: false }} />
                     <Stack.Screen name='login' options={{ headerShown: false }} />
                     <Stack.Screen name='verify_otp' options={{ headerShown: false }} />
@@ -28,6 +27,7 @@ const RootLayout = () => {
                         }}
                     />
                 </Stack>
+                <Toast />
             </AuthProvider>
         </GluestackUIProvider>
     );
