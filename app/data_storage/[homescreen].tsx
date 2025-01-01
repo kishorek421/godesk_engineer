@@ -60,7 +60,7 @@ const LanguageSelectionScreen = () => {
 
           <TouchableOpacity
             onPress={() => handleLanguageChange('en')}
-            className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-md"
+            className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-soft-1"
             style={{
               backgroundColor: selectedLanguage === 'en' ? '#f1f5f9' : '#fff',
             }}
