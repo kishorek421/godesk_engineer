@@ -17,4 +17,3 @@ export const getTicketLists = async (pageNo: number, pageSize: number, endpoint:
         throw error;
     }
 };
-

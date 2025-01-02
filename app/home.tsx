@@ -107,12 +107,13 @@ const HomeScreen = () => {
       });
   };
 
+
   const handleDoubleClick = () => {
     if (exitApp) {
       BackHandler.exitApp(); // Exits the app
     } else {
       setExitApp(true);
-      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); // Optional feedback to user
+      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); 
 
       // Reset the `exitApp` state after 2 seconds
       timeoutRef.current = setTimeout(() => {
@@ -154,6 +155,7 @@ const HomeScreen = () => {
             <Text className="mx-2 font-bold text-md">
               {getGreetingMessage()} 👋
             </Text>
+            <Text><Link href={'/sitemap'}>sitemap</Link></Text>
             <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
@@ -224,7 +226,7 @@ const HomeScreen = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md">{('raisedAt')}</Text>
+                        <Text className="text-gray-500 text-md">{t('raisedAt')}</Text>
                         <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.createdAt
                             ? moment(

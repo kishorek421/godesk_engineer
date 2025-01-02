@@ -47,7 +47,7 @@ const TicketListItemLayout = ({
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
               <Text className="text-gray-500 text-[13px] mt-[1px]">
-              {t('issueIn')} {ticketModel.issueTypeDetails?.name ?? "-"}
+              Issue In {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>
             <TicketStatusComponent

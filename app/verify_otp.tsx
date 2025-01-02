@@ -68,6 +68,8 @@ const VerifyOTPScreen = () => {
             await setItem(AUTH_TOKEN_KEY, loginData.token);
             await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
             router.replace('/home');
+            console.log("Request URL:", `/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`);
+
           }
         }
       }).catch((e) => {

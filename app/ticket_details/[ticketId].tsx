@@ -11,12 +11,7 @@ import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import Toast from "react-native-toast-message";
 import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText, FormControlLabelAstrick } from "@/components/ui/form-control";
-import {
-  bytesToMB,
-  getFileName,
-  isFormFieldInValid,
-  setErrorValue,
-} from "@/utils/helper";
+import { bytesToMB, getFileName, isFormFieldInValid, setErrorValue } from "@/utils/helper";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
@@ -66,7 +61,7 @@ const TicketDetails = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
-   const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean,
@@ -92,7 +87,6 @@ const TicketDetails = () => {
     }
   };
 
-  // Fetch ticket status options
   const loadTicketStatus = async () => {
     try {
       const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
@@ -105,7 +99,7 @@ const TicketDetails = () => {
     }
   };
 
-  // Fetch pincode based on current location
+
   const fetchPincode = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -122,7 +116,7 @@ const TicketDetails = () => {
         longitude,
       });
 
-      // Set latitude and longitude
+
       setLatitude(latitude);
       setLongitude(longitude);
       setPincode(address.postalCode ?? '');
@@ -132,37 +126,37 @@ const TicketDetails = () => {
     }
   };
 
-  // Update current time every second
+
   useEffect(() => {
     console.log('ticketId', ticketId);
     const fetchLanguage = async () => {
       const storedLanguage = await AsyncStorage.getItem('language');
       if (storedLanguage) {
         setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+        i18n.changeLanguage(storedLanguage);
       }
     };
-    // Set navigation options
+
     navigation.setOptions({
       headerLeftContainerStyle: {
         paddingStart: 10,
       },
     });
 
-    // Call necessary functions
+
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
     fetchLanguage();
-    // Update current time every second
+
     const timer = setInterval(() => {
       setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
     }, 1000);
 
-    // Cleanup timer on component unmount
+
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
- 
+
   const predefinedStatuses: { [key: string]: ConfigurationModel } = {
     OPENED: { key: "OPENED", value: "Open" },
     CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
@@ -198,7 +192,7 @@ const TicketDetails = () => {
       if (!pincode) {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
       }
-      
+
     }
     return errors;
   };
@@ -286,7 +280,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
                       <Text className="text-gray-500 text-[13px] mt-[1px]">
-                     issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
+                        issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
                     <TicketStatusComponent
@@ -380,63 +374,54 @@ const TicketDetails = () => {
                   {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
                     <View className='my-4'>
                       <Text className="font-bold text-lg text-primary-950">{t('updateTicketStatus')}</Text>
-                      <FormControl
-                        isInvalid={isFormFieldInValid("ticketStatus", errors).length > 0}
-                        className={`mt-4 `}
-                      >
-                        <PrimaryDropdownFormField
-                          options={ticketStatusOptions.length > 0 ? (
-                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
-                              ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
-                              : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
-                              { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
-                                ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] : []) : []}
-                          selectedValue={selectTicketStatusOptions}
-                          setSelectedValue={setSelectTicketStatusOptions}
-                          type="ticketStatusOptionsState"
-                          placeholder={t('selectStatus')}
-                          fieldName="selectTicketStatusOptions"
-                          label={t('status')}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          errors={errors}
-                          setErrors={setErrors}
-                          onSelect={handleSelectOption}
-                        />
-                        <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("ticketStatus", errors)}</FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
 
-                      <FormControl isInvalid={isFormFieldInValid("description", errors).length > 0}
-                        className="mt-4">
-                        <PrimaryTextareaFormField
-                          fieldName="description"
-                          label={t('description')}
-                          placeholder={t("writeShortDescription")}
-                          errors={errors}
-                          setErrors={setErrors}
-                          min={10}
-                          max={200}
-                          filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: any) => setDescription(e)}
-                        />
-                        {/* <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("description", errors)}</FormControlErrorText>
-                        </FormControlError> */}
-                      </FormControl>
+                      <PrimaryDropdownFormField
+                        className="mt-4"
+                        options={ticketStatusOptions.length > 0 ? (
+                          ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
+                            ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
+                            : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
+                            { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
+                              ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] : []) : []}
+                        selectedValue={selectTicketStatusOptions}
+                        setSelectedValue={setSelectTicketStatusOptions}
+                        type="ticketStatusOptionsState"
+                        placeholder={t('selectStatus')}
+                        fieldName="ticketStatus"
+                        label={t('status')}
+                        canValidateField={canValidateField}
+                        setCanValidateField={setCanValidateField}
+                        setFieldValidationStatus={setFieldValidationStatus}
+                        validateFieldFunc={setFieldValidationStatusFunc}
+                        errors={errors}
+                        setErrors={setErrors}
+                        onSelect={handleSelectOption}
+                      />
+                      <PrimaryTextareaFormField
+                        className="mt-4"
+                        fieldName="description"
+                        label={t('description')}
+                        placeholder={t("writeShortDescription")}
+                        errors={errors}
+                        setErrors={setErrors}
+                        min={10}
+                        max={200}
+
+                        filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
+                        canValidateField={canValidateField}
+                        setCanValidateField={setCanValidateField}
+                        setFieldValidationStatus={setFieldValidationStatus}
+                        validateFieldFunc={setFieldValidationStatusFunc}
+                        onChangeText={(e: any) => setDescription(e)}
+
+                      />
+
                       <FormControl
                         isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
                       >
                         <HStack className="justify-between mt-2 mb-1">
                           <Text className="font-medium">
-                           {t('assetImages')} <Text className="text-red-400">*</Text>
+                            {t('assetImages')} <Text className="text-red-400">*</Text>
                           </Text>
                           <Text className="text-gray-500">{assetImages.length}/3</Text>
                         </HStack>
@@ -496,31 +481,26 @@ const TicketDetails = () => {
                           </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <FormControl
-                        isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                        className="mt-4 "
-                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
-                        <PrimaryTextFormField
-                          fieldName="customerOTP"
-                          label={t('customerOtp')}
-                          placeholder={t('enterCustomerOtp')}
-                          errors={errors}
-                          setErrors={setErrors}
-                          min={4}
-                          max={4}
-                          isRequired={false}
-                          keyboardType="phone-pad"
-                          filterExp={/^[0-9]*$/}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: s) => setOtp(e)}
-                        />
-                        <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
+                      <Text className="mt-2 mb-1 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
+                      <PrimaryTextFormField
+                        className="mt-4"
+                        fieldName="otp"
+                        label={t('customerOtp')}
+                        placeholder={t('enterCustomerOtp')}
+                        errors={errors}
+                        setErrors={setErrors}
+                        min={4}
+                        max={4}
+                        isRequired={false}
+                        keyboardType="phone-pad"
+                        filterExp={/^[0-9]*$/}
+                        canValidateField={canValidateField}
+                        setCanValidateField={setCanValidateField}
+                        setFieldValidationStatus={setFieldValidationStatus}
+                        validateFieldFunc={setFieldValidationStatusFunc}
+                        onChangeText={(e: string) => setOtp(e)}
+                      />
+
                       <Button className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
                         onPress={() => {
                           if (isLoading) return;

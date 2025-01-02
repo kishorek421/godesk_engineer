@@ -12,7 +12,7 @@ export async function setItem(key: string, value: string) {
 export async function getItem(key: string) {
   try {
     const value = await AsyncStorage.getItem(key);
-    //console.log(`Retrieved token for key: ${key} -> ${value}`);
+    console.log(`Retrieved token for key: ${key} -> ${value}`);
     return value;
   } catch (e) {
     console.error('Failed to retrieve the token:', e);
