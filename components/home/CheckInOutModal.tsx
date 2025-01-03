@@ -44,7 +44,7 @@ const CheckInOutModal = ({
   );
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-  const { t ,i18n} = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selfie, setSelfie] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -197,7 +197,7 @@ const CheckInOutModal = ({
                 type: "success",
                 text1:
                   status === "Checked In"
-                    ? "Checked in successfully"
+                    ? "Checked out successfully"
                     : "Checked in successfully",
               });
               onClose();
