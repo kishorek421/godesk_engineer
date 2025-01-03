@@ -19,7 +19,7 @@ apiClient.interceptors.request.use(
     if (token) {
       try {
         console.log("BASE_URL", BASE_URL);
-        
+       
         await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
         // console.log(validateResponse);
       } catch (e) {
