@@ -157,7 +157,7 @@ const HomeScreen = () => {
             <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
-            
+           
           </View>
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
@@ -224,7 +224,7 @@ const HomeScreen = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md">{('raisedAt')}</Text>
+                        <Text className="text-gray-500 text-md">{t('raisedAt')}</Text>
                         <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.createdAt
                             ? moment(

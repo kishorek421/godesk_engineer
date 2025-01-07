@@ -11,6 +11,7 @@ import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import { useTranslation } from 'react-i18next';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const TicketListLayout = () => {
   const { t, i18n } = useTranslation();
@@ -23,8 +24,10 @@ const TicketListLayout = () => {
   
     t('Assigned'),
     t('Opened'),
+    t('Work Completed'),
     t('Completed'),
     t('Not Closed'),
+   
 
   ];
 
@@ -41,9 +44,12 @@ const TicketListLayout = () => {
       case 1:
         return GET_ASSIGNED_TICKETS_LIST;
       case 2:
-        return GET_CLOSED_TICKETS_LIST;
+          return GET_ASSIGNED_TICKETS_LIST;
       case 3:
+        return GET_CLOSED_TICKETS_LIST;
+      case 4:
         return GET_NOT_COMPLETED_TICKETS_LIST;
+    
       default:
         return "";
     }
@@ -68,7 +74,7 @@ const TicketListLayout = () => {
             setRecentTickets((prevState: any) => [...prevState, ...content]);
           }
         } else if (nextCurrentPage === 1) {
-          setRecentTickets([]); // Reset tickets if no content found
+          setRecentTickets([]); 
         }
         const paginator = response?.data?.paginator;
         if (paginator) {
@@ -83,7 +89,36 @@ const TicketListLayout = () => {
       }).catch((e) => {
         console.error(e.response.data);
       });
-    } else {
+    } else if (selectedTab === 2) {
+        await apiClient.get("/tickets/users/getTicketsByStatusKey?status=WORK_COMPLETED", {
+          params: { pageNo: nextCurrentPage, pageSize: 10 },
+        }).then((response) => {
+          const content = response?.data?.data?.content ?? [];
+          console.log("Fetched Tickets: ", content);
+  
+          if (content && content.length > 0) {
+            if (nextCurrentPage === 1) {
+              setRecentTickets(content);
+            } else {
+              setRecentTickets((prevState: any) => [...prevState, ...content]);
+            }
+          } else if (nextCurrentPage === 1) {
+            setRecentTickets([]); // Reset tickets if no content found
+          }
+          const paginator = response?.data?.paginator;
+          if (paginator) {
+            const iCurrentPage = paginator.currentPage;
+            setIsLastPage(paginator.lastPage ?? true);
+            if (iCurrentPage) {
+              setCurrentPage(iCurrentPage);
+            }
+          } else {
+            setIsLastPage(true);
+          }
+        }).catch((e) => {
+          console.error(e.response.data);
+        });
+      } else {
       // Get the correct endpoint based on the tab number
       const endpoint = getEndPoint(selectedTab);
 
@@ -99,7 +134,7 @@ const TicketListLayout = () => {
               setRecentTickets((prevState: any) => [...prevState, ...content]);
             }
           } else if (nextCurrentPage === 1) {
-            setRecentTickets([]); // Reset tickets if no content found
+            setRecentTickets([]); 
           }
 
           const paginator = response?.data?.paginator;
@@ -131,7 +166,7 @@ const TicketListLayout = () => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-4 h-12 py-3 rounded-full w-28 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
+            className={`ms-4 h-12 py-2 rounded-full w-32 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
               }`}
             key={index}
           >

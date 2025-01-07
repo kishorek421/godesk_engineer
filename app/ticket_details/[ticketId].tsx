@@ -40,7 +40,7 @@ const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
     { key: "CANNOT_RESOLVE", value: "Cannot Resolve" },
-    { key: "TICKET_CLOSED", value: "Close" },
+    { key: "WORK_COMPLETED", value: "Work Completed" },
   ];
   const { t, i18n } = useTranslation();
   const { ticketId } = useLocalSearchParams();
@@ -76,6 +76,7 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
+  
 
   const fetchTicketDetails = async () => {
     setIsLoading(true);
@@ -106,7 +107,7 @@ const TicketDetails = () => {
     }
   };
 
-  // Fetch pincode based on current location
+
   const fetchPincode = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -123,7 +124,6 @@ const TicketDetails = () => {
         longitude,
       });
 
-      // Set latitude and longitude
       setLatitude(latitude);
       setLongitude(longitude);
       setPincode(address.postalCode ?? '');
@@ -140,27 +140,26 @@ const TicketDetails = () => {
       const storedLanguage = await AsyncStorage.getItem('language');
       if (storedLanguage) {
         setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+        i18n.changeLanguage(storedLanguage);
       }
     };
-    // Set navigation options
+
     navigation.setOptions({
       headerLeftContainerStyle: {
         paddingStart: 10,
       },
     });
 
-    // Call necessary functions
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
     fetchLanguage();
-    // Update current time every second
+
     const timer = setInterval(() => {
       setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
     }, 1000);
 
-    // Cleanup timer on component unmount
+
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
  
@@ -168,6 +167,7 @@ const TicketDetails = () => {
     OPENED: { key: "OPENED", value: "Open" },
     CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
     IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
+    TICKET_CLOSED:{ key: "TICKET_CLOSED", value: "Close" },
   };
 
   const handleSelectOption = async (option: string) => {
@@ -378,7 +378,7 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   {/* Conditionally render Update Ticket Status section */}
-                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress") && (
+                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work_Completed") && (
                     <View className='my-4'>
                       <Text className="font-bold text-lg text-primary-950">{t('updateTicketStatus')}</Text>
                       <FormControl
@@ -386,12 +386,17 @@ const TicketDetails = () => {
                         className={`mt-4 `}
                       >
                         <PrimaryDropdownFormField
-                          options={ticketStatusOptions.length > 0 ? (
-                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
-                              ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
-                              : ticketDetails.statusDetails?.key === ASSIGNED ? [{ value: "OPENED", label: "Open" },
-                              { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" },] :
-                                ticketDetails.statusDetails?.key === "OPENED" ? [{ value: "IN_PROGRESS", label: "InProgress" }] : []) : []}
+                        options={ticketStatusOptions.length > 0 ? (
+                          ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ? 
+                            ticketStatusOptions.map((option: ConfigurationModel) => option.value || "") 
+                            : ticketDetails.statusDetails?.key === ASSIGNED 
+                              ? [{ value: "OPENED", label: "Open" }, { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" }]
+                              : ticketDetails.statusDetails?.key === "OPENED" 
+                                ? [{ value: "IN_PROGRESS", label: "InProgress" }]
+                                : ticketDetails.statusDetails?.key === "WORK_COMPLETED"
+                                  ? [{ value: "TICKET_CLOSED", label: "Close" }]
+                                  : []) 
+                          : []}
                           selectedValue={selectTicketStatusOptions}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
@@ -516,7 +521,7 @@ const TicketDetails = () => {
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: s) => setOtp(e)}
+                          onChangeText={(e: string) => setOtp(e)}
                         />
                         <FormControlError>
                           <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
