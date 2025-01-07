@@ -1,8 +1,9 @@
 // RefreshContext.js
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { createContext, useState, ReactNode } from "react";
 
 interface RefreshContextProps {
   refreshFlag: boolean;
+  setRefreshFlag: any;
   triggerRefresh: () => void;
 }
 
@@ -20,7 +21,9 @@ export const RefreshProvider = ({ children }: RefreshProviderProps) => {
   const triggerRefresh = () => setRefreshFlag((prev) => !prev);
 
   return (
-    <RefreshContext.Provider value={{ refreshFlag, triggerRefresh }}>
+    <RefreshContext.Provider
+      value={{ refreshFlag, setRefreshFlag, triggerRefresh }}
+    >
       {children}
     </RefreshContext.Provider>
   );
