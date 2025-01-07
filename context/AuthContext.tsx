@@ -36,11 +36,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       // router.replace({ pathname: "/route/map_view_screen" });
       const token = await getItem(AUTH_TOKEN_KEY);
       console.log("token", token);
+      const refreshToken = await getItem(REFRESH_TOKEN_KEY);
+      console.log("refreshToken", refreshToken);
       if (token) {
         try {
           const response = await apiClient.get(GET_USER_DETAILS);
           setUser(response.data);
-          router.replace({ pathname: "/data_storage/[homescreen]" });
+          router.replace({ pathname: "/home" });
         } catch (error) {
           console.error("Failed to fetch user:", error);
           await clearStorage();

@@ -38,11 +38,11 @@ export function getGreetingMessage() {
   const currentHour = moment().hour();
   const { t, i18n } = useTranslation();
   if (currentHour >= 5 && currentHour < 12) {
-    return t('goodMorning'); // Translated message key for Good Morning
+    return t('goodMorning'); 
   } else if (currentHour >= 12 && currentHour < 17) {
-    return t('goodAfternoon'); // Translated message key for Good Afternoon
+    return t('goodAfternoon'); 
   } else if (currentHour >= 17 && currentHour < 21) {
-    return t('goodEvening'); // Translated message key for Good Evening
+    return t('goodEvening'); 
   } else {
     return t('hello'); 
   }

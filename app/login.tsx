@@ -39,7 +39,7 @@ const LoginScreen = () => {
       const storedLanguage = await AsyncStorage.getItem('language');
       if (storedLanguage) {
         setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
+        i18n.changeLanguage(storedLanguage); // Set the language
       }
     };
 
@@ -52,9 +52,9 @@ const LoginScreen = () => {
       console.log("Tracking Permission Status:", status);
       // Handle the status accordingly
       if (status === "granted") {
-        // Proceed with tracking-related tasks
+        // console.log("Tracking Permission Granted");
       } else {
-        // Skip or limit tracking
+
       }
     };
 
@@ -144,7 +144,7 @@ const LoginScreen = () => {
               </Text>
             </View>
           </View>
-          
+
           {/* Welcome Text */}
           <View className="mt-6">
             <Text className="text-2xl font-bold">{t("welcome")}</Text>
