@@ -1,35 +1,42 @@
-import { View, Text, SafeAreaView, Image } from 'react-native';
-import React, { useRef, useState,useEffect } from 'react';
-import { VStack } from '../components/ui/vstack';
-import LottieView from 'lottie-react-native';
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText } from '@/components/ui/form-control';
-import { Input, InputField } from '@/components/ui/input';
-import { isFormFieldInValid } from '@/utils/helper';
-import { ErrorModel } from '@/models/common';
-import { router, useLocalSearchParams, useRouter } from 'expo-router';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import { Button } from '@/components/ui/button';
-import apiClient from '@/clients/apiClient';
-import { setItem } from '@/utils/secure_store';
-import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from '@/constants/storage_keys';
+import { View, Text, SafeAreaView, Image } from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { VStack } from "../components/ui/vstack";
+import LottieView from "lottie-react-native";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+} from "@/components/ui/form-control";
+import { Input, InputField } from "@/components/ui/input";
+import { isFormFieldInValid } from "@/utils/helper";
+import { ErrorModel } from "@/models/common";
+import { router, useLocalSearchParams, useRouter } from "expo-router";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { Button } from "@/components/ui/button";
+import apiClient from "@/clients/apiClient";
+import { setItem } from "@/utils/secure_store";
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-import { useTranslation } from 'react-i18next';  // Import the translation hook
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from "react-i18next"; // Import the translation hook
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { P } from "@expo/html-elements";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
-  const { t, i18n } = useTranslation();  // Use translation hook
+  const { t, i18n } = useTranslation(); // Use translation hook
 
-  const [otp, setOtp] = useState<string>('');
+  const [otp, setOtp] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
- const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
-    isValid: boolean,
+    isValid: boolean
   ) => {
     if (fieldValidationStatus[fieldName]) {
       fieldValidationStatus[fieldName](isValid);
@@ -37,7 +44,7 @@ const VerifyOTPScreen = () => {
   };
   useEffect(() => {
     const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
+      const storedLanguage = await AsyncStorage.getItem("language");
       if (storedLanguage) {
         setSelectedLanguage(storedLanguage);
         i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
@@ -47,10 +54,9 @@ const VerifyOTPScreen = () => {
     fetchLanguage();
   }, []);
 
-
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ param: "otp", message: t('otpValidationMessage') }]);  // Use translation for error message
+      setErrors([{ param: "otp", message: t("otpValidationMessage") }]); // Use translation for error message
       return;
     }
 
@@ -58,29 +64,34 @@ const VerifyOTPScreen = () => {
     setErrors([]);
 
     try {
-
-
-      
-      await apiClient.get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`).then(async (response) => {
-        if (response.data?.success) {
-          const loginData = response.data?.data;
-          if (loginData && loginData.token) {
-            await setItem(AUTH_TOKEN_KEY, loginData.token);
-            await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
-            router.replace('/home');
+      await apiClient
+        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`)
+        .then(async (response) => {
+          if (response.data?.success) {
+            const loginData = response.data?.data;
+            if (loginData && loginData.token) {
+              await setItem(AUTH_TOKEN_KEY, loginData.token);
+              await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
+              router.replace("/home");
+            }
           }
-        }
-      }).catch((e) => {
-        console.error(e.response.request);
-      });
+        })
+        .catch((e) => {
+          console.error(e.response.request);
+          const errors = e.response.data.errors;
+          if (errors) {
+            setErrors(errors);
+          }
+        });
     } catch (error) {
-      console.error('Error verifying OTP:', error);
-      setErrors([{ param: "otp", message: "An error occurred. Please try again." }]);
+      console.error("Error verifying OTP:", error);
+      setErrors([
+        { param: "otp", message: "An error occurred. Please try again." },
+      ]);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <SafeAreaView className="bg-white">
@@ -89,7 +100,7 @@ const VerifyOTPScreen = () => {
           <View>
             <View className="flex-row items-end">
               <Image
-                source={require('../assets/images/godesk.jpg')}
+                source={require("../assets/images/godesk.jpg")}
                 style={{ width: 30, height: 30 }}
               />
               <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
@@ -98,17 +109,17 @@ const VerifyOTPScreen = () => {
             </View>
           </View>
           <View className="mt-6">
-            <Text className="text-2xl font-bold">{t('checkYourMobile')}</Text>  {/* Translated Text */}
+            <Text className="text-2xl font-bold">{t("checkYourMobile")}</Text>
             <Text className="color-gray-400 text-sm">
-            {t('otp_message', { mobile })}.
+              {t("otp_message", { mobile })}.
             </Text>
           </View>
 
           <View className="mt-6">
             <PrimaryTextFormField
-              fieldName='otp'
-              label={t('enterOtp')}
-              placeholder={t('enterOtp')}
+              fieldName="otp"
+              label={t("enterOtp")}
+              placeholder={t("enterOtp")}
               errors={errors}
               setErrors={setErrors}
               min={6}
@@ -121,11 +132,12 @@ const VerifyOTPScreen = () => {
               validateFieldFunc={setFieldValidationStatusFunc}
               onChangeText={(e: string) => setOtp(e)}
             />
-   
           </View>
 
           <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">{t('verifyOtp')}</Text>  {/* Translated Text */}
+            <Text className="font-bold text-primary-950 text-xl">
+              {t("verifyOtp")}
+            </Text>
             <Button
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
               onPress={handleVerifyOTP}
@@ -138,7 +150,7 @@ const VerifyOTPScreen = () => {
         <View>
           <LottieView
             ref={animationRef}
-            source={require('../assets/lottie/login.json')}
+            source={require("../assets/lottie/login.json")}
             autoPlay
             loop
             style={{ height: 200 }}
