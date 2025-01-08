@@ -32,6 +32,7 @@ export interface TicketListItemModel {
   ticketImages?: string[];
   lastAssignedToDetails?: AssignedToUserDetailsModel;
   location?: LocationModel;
+  
 }
 
 export interface AssignedToUserDetailsModel {

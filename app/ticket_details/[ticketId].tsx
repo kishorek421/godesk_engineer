@@ -67,7 +67,7 @@ const TicketDetails = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
-   const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean,
@@ -76,7 +76,7 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-  
+
 
   const fetchTicketDetails = async () => {
     setIsLoading(true);
@@ -162,12 +162,12 @@ const TicketDetails = () => {
 
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
- 
+
   const predefinedStatuses: { [key: string]: ConfigurationModel } = {
     OPENED: { key: "OPENED", value: "Open" },
     CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
     IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
-    TICKET_CLOSED:{ key: "TICKET_CLOSED", value: "Close" },
+    TICKET_CLOSED: { key: "TICKET_CLOSED", value: "Close" },
   };
 
   const handleSelectOption = async (option: string) => {
@@ -189,7 +189,7 @@ const TicketDetails = () => {
     const errors: { param: string; message: string }[] = [];
     if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" }); }
     if (!description) { errors.push({ param: "description", message: "Please enter a description" }); }
-    if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
+    if ((selectedTicketStatus?.key === 'IN_PROGRESS' || selectedTicketStatus?.key === 'SPARE_REQUIRED' || selectedTicketStatus?.key === 'CANNOT_RESOLVE' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
     if (assetImages.length === 0) { errors.push({ param: "assetImages", message: "At least one asset image is required" }); }
     if (!latitude || !longitude) {
       if (!latitude || !longitude) {
@@ -199,7 +199,7 @@ const TicketDetails = () => {
       if (!pincode) {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
       }
-      
+
     }
     return errors;
   };
@@ -287,7 +287,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
                       <Text className="text-gray-500 text-[13px] mt-[1px]">
-                     issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
+                        issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
                     <TicketStatusComponent
@@ -377,6 +377,12 @@ const TicketDetails = () => {
                       )}
                     </View>
                   </View>
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 text-md ">{t('Service Type')}</Text>
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                    </Text>
+                  </View>
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work_Completed") && (
                     <View className='my-4'>
@@ -386,17 +392,17 @@ const TicketDetails = () => {
                         className={`mt-4 `}
                       >
                         <PrimaryDropdownFormField
-                        options={ticketStatusOptions.length > 0 ? (
-                          ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ? 
-                            ticketStatusOptions.map((option: ConfigurationModel) => option.value || "") 
-                            : ticketDetails.statusDetails?.key === ASSIGNED 
-                              ? [{ value: "OPENED", label: "Open" }, { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" }]
-                              : ticketDetails.statusDetails?.key === "OPENED" 
-                                ? [{ value: "IN_PROGRESS", label: "InProgress" }]
-                                : ticketDetails.statusDetails?.key === "WORK_COMPLETED"
-                                  ? [{ value: "TICKET_CLOSED", label: "Close" }]
-                                  : []) 
-                          : []}
+                          options={ticketStatusOptions.length > 0 ? (
+                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
+                              ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
+                              : ticketDetails.statusDetails?.key === ASSIGNED
+                                ? [{ value: "OPENED", label: "Open" }, { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" }]
+                                : ticketDetails.statusDetails?.key === "OPENED"
+                                  ? [{ value: "IN_PROGRESS", label: "InProgress" }]
+                                  : ticketDetails.statusDetails?.key === "WORK_COMPLETED"
+                                    ? [{ value: "TICKET_CLOSED", label: "Close" }]
+                                    : [])
+                            : []}
                           selectedValue={selectTicketStatusOptions}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
@@ -442,7 +448,7 @@ const TicketDetails = () => {
                       >
                         <HStack className="justify-between mt-2 mb-1">
                           <Text className="font-medium">
-                           {t('assetImages')} <Text className="text-red-400">*</Text>
+                            {t('assetImages')} <Text className="text-red-400">*</Text>
                           </Text>
                           <Text className="text-gray-500">{assetImages.length}/3</Text>
                         </HStack>
