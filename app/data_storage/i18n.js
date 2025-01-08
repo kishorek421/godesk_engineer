@@ -63,7 +63,7 @@ i18n
       },
       kn: {
         translation: {
-
+          "Service Type":"ಸೇವೆಯ ಪ್ರಕಾರ",
           welcomeMessage: "ಹಿಂತಿರುಗಿದ ಸ್ವಾಗತ!",
           translate: "ಅನುವಾದಿಸಿ",
           checkIn: "ಚೆಕ್ ಇನ್",
@@ -129,6 +129,7 @@ i18n
       te: {
 
         "translation": {
+          "Service Type":"సేవా రకం",
           "getGreetingMessage": "శుభ మధ్యాహ్నం",
           "welcomeMessage": "తిరిగి స్వాగతం!",
           "translate": "అనువదించు",
