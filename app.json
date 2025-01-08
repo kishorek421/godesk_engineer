@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "godesk_engineer",
-    "slug": "godesk_engineer",
+    "slug": "godesk-engineer",
     "scheme": "godeskengineer",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,7 +27,11 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "CAMERA"
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "com.google.android.gms.permission.AD_ID"
       ],
       "package": "com.godesk.godeskengineer"
     },
@@ -60,8 +64,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "b26fa7c5-a714-4871-8a5b-8174a2974484"
+        "projectId": "e1dcbd56-8c2d-4966-a417-2795689c0e99"
       }
-    }
+    },
+    "owner": "kishorek1227"
   }
 }
