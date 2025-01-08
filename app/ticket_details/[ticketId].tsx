@@ -189,7 +189,7 @@ const TicketDetails = () => {
     const errors: { param: string; message: string }[] = [];
     if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" }); }
     if (!description) { errors.push({ param: "description", message: "Please enter a description" }); }
-    if ((selectedTicketStatus?.key === 'OPENED' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
+    if ((selectedTicketStatus?.key === 'IN_PROGRESS' || selectedTicketStatus?.key === 'SPARE_REQUIRED'|| selectedTicketStatus?.key === 'CANNOT_RESOLVE'|| selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
     if (assetImages.length === 0) { errors.push({ param: "assetImages", message: "At least one asset image is required" }); }
     if (!latitude || !longitude) {
       if (!latitude || !longitude) {
