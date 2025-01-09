@@ -95,6 +95,7 @@ const TicketDetails = () => {
   };
 
   // Fetch ticket status options
+  
   const loadTicketStatus = async () => {
     try {
       const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
@@ -222,8 +223,9 @@ const TicketDetails = () => {
         },
         pincode: pincode,
         description: description,
-        pin: null,
+        pin: [ 'IN_PROGRESS', 'SPARE_REQUIRED','CANNOT_RESOLVE','TICKET_CLOSED'].includes(selectedTicketStatus.key??"")? ticketDetails.pin || null : null,
       };
+      console.log('Request body:', requestBody);
       const response = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
@@ -384,7 +386,7 @@ const TicketDetails = () => {
                     </Text>
                   </View>
                   {/* Conditionally render Update Ticket Status section */}
-                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work_Completed") && (
+                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work Completed") && (
                     <View className='my-4'>
                       <Text className="font-bold text-lg text-primary-950">{t('updateTicketStatus')}</Text>
                       <FormControl
