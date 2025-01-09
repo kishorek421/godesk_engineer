@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View, TouchableOpacity } from "react-native";
+import { FlatList, Text, View, TouchableOpacity,RefreshControl } from "react-native";
 import TicketListItemLayout from "@/components/tickets/TicketListItemLayout";
 import {
   GET_ASSIGNED_TICKETS_LIST,
@@ -11,7 +11,7 @@ import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import { useTranslation } from 'react-i18next';
-
+import useRefresh from "@/hooks/useRefresh";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const TicketListLayout = () => {
   const { t, i18n } = useTranslation();
@@ -19,6 +19,8 @@ const TicketListLayout = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
+ 
+  const [refreshing, setRefreshing] = useState(true);
  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const tabs = [
   
@@ -36,7 +38,7 @@ const TicketListLayout = () => {
    
   }, [selectedTab]);
  
-
+ 
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {
       case 0:
@@ -61,6 +63,7 @@ const TicketListLayout = () => {
     setRecentTickets([]);
 
     if (selectedTab === 1) {
+      setRefreshing(true);
       await apiClient.get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
         params: { pageNo: nextCurrentPage, pageSize: 10 },
       }).then((response) => {
@@ -85,11 +88,15 @@ const TicketListLayout = () => {
           }
         } else {
           setIsLastPage(true);
+         
+        setRefreshing(false);
         }
       }).catch((e) => {
+        setRefreshing(false);
         console.error(e.response.data);
       });
     } else if (selectedTab === 2) {
+      setRefreshing(true);
         await apiClient.get("/tickets/users/getTicketsByStatusKey?status=WORK_COMPLETED", {
           params: { pageNo: nextCurrentPage, pageSize: 10 },
         }).then((response) => {
@@ -114,8 +121,11 @@ const TicketListLayout = () => {
             }
           } else {
             setIsLastPage(true);
+          
+            setRefreshing(false);
           }
         }).catch((e) => {
+          setRefreshing(false);
           console.error(e.response.data);
         });
       } else {
@@ -146,9 +156,12 @@ const TicketListLayout = () => {
             }
           } else {
             setIsLastPage(true);
+           
+            setRefreshing(false);
           }
         })
         .catch((e: any) => {
+          setRefreshing(false);
           console.error("Error fetching tickets:", e);
         });
     }
@@ -207,6 +220,11 @@ const TicketListLayout = () => {
             <View style={{ height: 500 }} />
           }
           contentContainerStyle={{ paddingTop: 16 }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => {
+              fetchTickets(1, selectedTab);
+            }} />
+          }
         />
 
       )}

@@ -16,6 +16,9 @@ const TicketListItemLayout = ({
 }) => {
   const { t, i18n } = useTranslation();
    const [selectedLanguage, setSelectedLanguage] = useState('en'); 
+  //  const { refreshFlag, setRefreshFlag } = useRefresh();
+   const [refreshing, setRefreshing] = useState(true);
+ 
   useEffect(() => {
     const fetchLanguage = async () => {
       const storedLanguage = await AsyncStorage.getItem('language');
@@ -27,6 +30,7 @@ const TicketListItemLayout = ({
 
     fetchLanguage();
   }, []);
+ 
   return (
     <Pressable
       onPress={() => {
