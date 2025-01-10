@@ -223,7 +223,10 @@ const TicketDetails = () => {
         },
         pincode: pincode,
         description: description,
-        pin: [ 'IN_PROGRESS', 'SPARE_REQUIRED','CANNOT_RESOLVE','TICKET_CLOSED'].includes(selectedTicketStatus.key??"")? ticketDetails.pin || null : null,
+        pin: ['IN_PROGRESS', 'SPARE_REQUIRED', 'CANNOT_RESOLVE', 'TICKET_CLOSED']
+        .includes(selectedTicketStatus.key ?? "")
+        ? ticketDetails.pin ?? null
+        : null,      
       };
       console.log('Request body:', requestBody);
       const response = await apiClient.put(
