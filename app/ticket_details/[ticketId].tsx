@@ -212,7 +212,6 @@ const TicketDetails = () => {
       return;
     }
 
-    try {
       const requestBody = {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
@@ -225,36 +224,47 @@ const TicketDetails = () => {
         description: description,
         pin: ['IN_PROGRESS', 'SPARE_REQUIRED', 'CANNOT_RESOLVE', 'TICKET_CLOSED']
         .includes(selectedTicketStatus.key ?? "")
-        ? ticketDetails.pin ?? null
+        ? otp ?? null
         : null,      
       };
       console.log('Request body:', requestBody);
-      const response = await apiClient.put(
+     await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
-      );
-      if (response.status === 200) {
-        console.log("Request body", requestBody);
+      ).then(async (response) => {
+        console.log("response.data", response.data);
+        if (response.status === 200) {
+          console.log("Request body", requestBody);
+          Toast.show({
+            type: 'success',
+            text1: 'Ticket status updated successfully!',
+          });
+          await fetchTicketDetails();
+          router.push({
+            pathname: "../home",
+            params: {
+              refresh: "true"
+            }
+          })
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: `Failed to update status: ${response.status}`,
+          });
+        }
+      }).catch((e) => {
+        console.error("Failed to update ticket status.", e?.response?.data);
+        const errors = e.response?.data?.errors;
+        if (errors) {
+          setErrors(errors);
+        }
         Toast.show({
-          type: 'success',
-          text1: 'Ticket status updated successfully!',
+          type: 'error',
+          text1: "An unexpected error occurred.",
         });
-        await fetchTicketDetails();
-        router.push({
-          pathname: "../home",
-          params: {
-            refresh: "true"
-          }
-        })
-      } else {
-        Alert.alert("Error", `Failed to update status: ${response.status}`);
-      }
-    } catch (error) {
-      console.error("Failed to update ticket status.", error);
-      Alert.alert("Error", "An unexpected error occurred.");
-    } finally {
-      setIsLoading(false);
-    }
+      }).finally(() => {
+        setIsLoading(false);
+      });
   };
   return isLoading ? (
     <LoadingBar />
