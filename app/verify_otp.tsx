@@ -1,6 +1,13 @@
-import { View, Text, SafeAreaView, Image } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
-import { VStack } from "../components/ui/vstack";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  Image,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { VStack } from "@/components/ui/vstack";
 import LottieView from "lottie-react-native";
 import {
   FormControl,
@@ -22,10 +29,13 @@ import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import { useTranslation } from "react-i18next"; // Import the translation hook
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { P } from "@expo/html-elements";
+import Toast from "react-native-toast-message";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
   const { t, i18n } = useTranslation(); // Use translation hook
-
+  const [timer, setTimer] = useState(120); // 120 seconds (2 minutes)
+  const [isDisabled, setIsDisabled] = useState(true);
+  
   const [otp, setOtp] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const animationRef = useRef<LottieView>(null);
@@ -53,7 +63,17 @@ const VerifyOTPScreen = () => {
 
     fetchLanguage();
   }, []);
+  useEffect(() => {
+    if (timer > 0) {
+      const interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
 
+      return () => clearInterval(interval); // Cleanup on unmount
+    } else {
+      setIsDisabled(false);
+    }
+  }, [timer]);
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
       setErrors([{ param: "otp", message: t("otpValidationMessage") }]); // Use translation for error message
@@ -92,6 +112,40 @@ const VerifyOTPScreen = () => {
       setIsLoading(false);
     }
   };
+  const getTime = () => {
+    try {
+      return ` ${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, "0")}`;
+    } catch (e) {
+      return "";
+    }
+  };
+  const handleSendOTP = async () => {
+    setIsLoading(true);
+    setErrors([]);
+    await apiClient
+    .post("/otp/send", { mobile, type: "FIELD_ENGINEER" })
+    .then((response) => {
+      console.log("Response:", response.data.data);
+
+      if (response.data?.success) {
+        // Navigate to OTP verification page
+        Toast.show({
+          type: "success",
+          text1: "OTP sent successfully",
+        });
+
+        setTimer(120); // Reset the timer to 2 minutes
+        setIsDisabled(true);
+      }
+    })
+    .catch((error) => {
+      console.error("Error sending OTP:", error.response?.data || error);
+    })
+    .finally(() => {
+      console.log("Request completed");
+      setIsLoading(false); // Ensure loading state is reset
+    });
+};
 
   return (
     <SafeAreaView className="bg-white">
@@ -132,7 +186,38 @@ const VerifyOTPScreen = () => {
               validateFieldFunc={setFieldValidationStatusFunc}
               onChangeText={(e: string) => setOtp(e)}
             />
+            
+
+
           </View>
+          <View className="flex-row justify-center mt-8">
+              <View className="flex-row">
+                <Text className="text-gray-700">Didn't Receive OTP? </Text>
+                <View className="flew-row">
+                  <Pressable
+                    onPress={() => {
+                      handleSendOTP();
+                    }}
+                    disabled={isDisabled}
+                  >
+                    <Text
+                      className={`${isDisabled ? "text-gray-500 " : "text-primary-950 font-semibold"}`}
+                    >
+                      Resend OTP
+                      {isDisabled && (
+                        <Text className="text-gray-600 font-normal">
+                          {" "}
+                          in
+                          <Text className="font-semibold underline text-primary-950">
+                            {getTime()}
+                          </Text>
+                        </Text>
+                      )}
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
 
           <View className="flex-row justify-between items-center mt-12">
             <Text className="font-bold text-primary-950 text-xl">
