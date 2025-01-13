@@ -6,14 +6,13 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'en',
-    debug: true,
+    // debug: true,
     interpolation: {
       escapeValue: false,
     },
     resources: {
       en: {
         translation: {
-
           welcomeMessage: "Welcome back!",
           translate: "Translate",
           checkIn: "Check In",
@@ -49,9 +48,9 @@ i18n
           "writeShortDescription": "Write a short description about your issue",
           "assetImages": "Asset Images",
           "addImage": "Add Image",
-          "enterOtpForOpenClose": "Enter OTP only in case of Open and Close ticket",
-          "customerOtp": "Customer OTP",
-          "enterCustomerOtp": "Enter customer OTP",
+          "enterOtpForOpenClose": "Enter customer PIN for in-progress and close ticket",
+          "customerOtp": "Customer Pin",
+          "enterCustomerOtp": "Enter customer pin",
           "updateStatus": "Update Status",
           "updateTicketStatus": "Update Ticket Status",
           "startAt": "Start at",
@@ -106,11 +105,11 @@ i18n
           "assetImages": "ಆಸ್ತಿ ಚಿತ್ರಗಳು",
           "addImage": "ಚಿತ್ರವನ್ನು ಸೇರಿಸಿ",
           "enterOtpForOpenClose": "ಟಿಕೆಟ್ ತೆರೆಯಲು ಮತ್ತು ಮುಚ್ಚಲು ಮಾತ್ರ OTP ನಮೂದಿಸಿ",
-          "customerOtp": "ಗ್ರಾಹಕ OTP",
-          "enterCustomerOtp": "ಗ್ರಾಹಕ OTP ಅನ್ನು ನಮೂದಿಸಿ",
+          "customerOtp": "ಗ್ರಾಹಕ ಪಿನ್",
+          "enterCustomerOtp": "ಗ್ರಾಹಕ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಿ",
           "updateStatus": "ಸ್ಥಿತಿಯನ್ನು ನವೀಕರಿಸಿ",
           "updateTicketStatus": "ಟಿಕೆಟ್ ಸ್ಥಿತಿಯನ್ನು ನವೀಕರಿಸಿ",
-          "enterOtpForOpenClose": "ಟಿಕೆಟ್ ತೆರೆಯಲು ಮತ್ತು ಮುಚ್ಚಲು ಮಾತ್ರ OTP ನಮೂದಿಸಿ",
+          "enterOtpForOpenClose": "ಮಧ್ಯಂತರ ಅಥವಾ ಟಿಕೆಟ್ ಮುಚ್ಚಲು ಗ್ರಾಹಕರ ಪಿನ್ ನಮೂದಿಸಿ",
           ESCALATED: "ಏರಿಸಲಾಗಿದೆ",
           RAISED: "ಏರಿಸಲಾಗಿದೆ",
           TICKET_IN_PROGRESS: "ಟಿಕೆಟ್ ಪ್ರಗತಿಯಲ್ಲಿ",
@@ -173,11 +172,11 @@ i18n
           "assetImages": "ఆస్తి చిత్రాలు",
           "addImage": "చిత్రం జోడించండి",
           "enterOtpForOpenClose": "టికెట్ ఓపెన్ మరియు క్లోజ్ చేయడానికి మాత్రమే OTP నమోదు చేయండి",
-          "customerOtp": "కస్టమర్ OTP",
-          "enterCustomerOtp": "కస్టమర్ OTPను నమోదు చేయండి",
+          "customerOtp": "కస్టమర్ పిన్",
+          "enterCustomerOtp": "కస్టమర్ పిన్ నమోదు చేయండి",
           "updateStatus": "స్థితిని నవీకరించండి",
           "updateTicketStatus": "టికెట్ స్థితిని నవీకరించండి",
-          "enterOtpForOpenClose": "టికెట్ ఓపెన్ మరియు క్లోజ్ చేయడానికి మాత్రమే OTP నమోదు చేయండి",
+          "enterOtpForOpenClose": "మధ్యంతర లేదా టికెట్ మూసివేయడానికి కస్టమర్ పిన్ ను నమోదు చేయండి",
           ESCALATED: "పెంపొందించబడింది",
           RAISED: "పెంపొందించబడింది",
           TICKET_IN_PROGRESS: "టికెట్ ప్రగతిలో ఉంది",

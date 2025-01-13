@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-import { GET_CONFIGURATIONS_BY_CATEGORY, GET_TICKET_DETAILS, UPDATE_TICKET_STATUS, TICKET_UPLOADS } from "@/constants/api_endpoints";
+import { GET_CONFIGURATIONS_BY_CATEGORY, GET_TICKET_DETAILS, UPDATE_TICKET_STATUS, TICKET_UPLOADS,GET_CUSTOMER_DETAILS,GET_USER_DETAILS,GET_CUSTOMER_LEAD_DETAILS } from "@/constants/api_endpoints";
 import LoadingBar from "@/components/LoadingBar";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import { getTicketLists } from "@/services/api/tickets_api_service";
@@ -35,6 +35,9 @@ import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { LocationState } from '../map/location';
 import { useTranslation } from 'react-i18next';
+import { UserDetailsModel } from "@/models/users";
+import { CustomerDetailsModel,CustomerLeadDetailsModel } from "@/models/customers";
+import { AssetMasterListItemModel } from "@/models/assets";
 
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
@@ -65,6 +68,9 @@ const TicketDetails = () => {
   const [description, setDescription] = useState<string | null>(null);
   const [canClearForm, setCanClearForm] = useState(false);
   const [canValidateField, setCanValidateField] = useState(false);
+  const [customerLeadDetailsModel, setCustomerLeadDetailsModel] =
+  useState<CustomerDetailsModel>({});
+
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
@@ -109,32 +115,33 @@ const TicketDetails = () => {
   };
 
 
-  const fetchPincode = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({});
-      const { latitude, longitude } = location.coords;
-
-      const [address] = await Location.reverseGeocodeAsync({
-        latitude,
-        longitude,
-      });
-
-      setLatitude(latitude);
-      setLongitude(longitude);
-      setPincode(address.postalCode ?? '');
-      console.log('Fetched Location:', latitude, longitude);
-    } catch (error) {
-      console.error('Error fetching pincode:', error);
+const fetchPincode = async () => {
+  try {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      console.error('Permission to access location was denied');
+      return;
     }
-  };
+    const location = await Location.getCurrentPositionAsync({});
+    let { latitude, longitude } = location.coords;  
+    latitude = Math.abs(latitude);
+    longitude = Math.abs(longitude);
 
-  // Update current time every second
+    const [address] = await Location.reverseGeocodeAsync(
+      { latitude, longitude }
+    );
+    setLatitude(latitude);
+    setLongitude(longitude);
+    setPincode(address?.postalCode ?? '');  
+
+    console.log('Fetched Location:', latitude, longitude);
+  } catch (error) {
+    console.error('Error fetching pincode:', error);
+  }
+};
+
+
+ 
   useEffect(() => {
     console.log('ticketId', ticketId);
     const fetchLanguage = async () => {
@@ -150,7 +157,7 @@ const TicketDetails = () => {
         paddingStart: 10,
       },
     });
-
+    
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
@@ -194,8 +201,15 @@ const TicketDetails = () => {
     if (assetImages.length === 0) { errors.push({ param: "assetImages", message: "At least one asset image is required" }); }
     if (!latitude || !longitude) {
       if (!latitude || !longitude) {
-        errors.push({ param: "location", message: "Location is required but couldn't be fetched." });
-        Alert.alert('Location Error', 'Unable to fetch current location. Please check your location permissions.');
+        errors.push({ 
+          param: "location", 
+          message: "Location is required but couldn't be fetched." 
+        });
+      
+        Alert.alert(
+          'Location Error', 
+          'Unable to fetch current location. Please check your location permissions.'
+        );
       }
       if (!pincode) {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
@@ -260,7 +274,7 @@ const TicketDetails = () => {
         }
         Toast.show({
           type: 'error',
-          text1: "An unexpected error occurred.",
+          text1: "Incorrect pin! Please try again.",
         });
       }).finally(() => {
         setIsLoading(false);
@@ -324,7 +338,7 @@ const TicketDetails = () => {
                         <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
-                            ? moment(ticketDetails.createdAt).fromNow()
+                            ? moment(ticketDetails.createdAt).format("DD-MM-YYYY")
                             : "-"}
                         </Text>
                       </View>
@@ -359,7 +373,7 @@ const TicketDetails = () => {
                         <Text className="text-gray-500 text-md ">{t('assignedAt')}</Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.lastAssignedToDetails?.assignedAt
-                            ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).fromNow()
+                            ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).format("DD-MM-YYYY")
                             : "-"}
                         </Text>
                       </View>
@@ -398,6 +412,19 @@ const TicketDetails = () => {
                       {ticketDetails.serviceTypeDetails?.value ?? "-"}
                     </Text>
                   </View>
+                  <View className="flex mt-3">
+                  <Text className="text-gray-500 text-md ">Customer phone</Text>
+                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                    {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
+                  </Text>
+                  </View>
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 text-md ">Customer Details</Text>
+                    
+                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                  {ticketDetails.assetInUseDetails?.customerDetails?.address ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.areaName??'-'}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.cityName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.stateName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.pincode ?? "-"}
+                  </Text>
+                  </View>
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work Completed") && (
                     <View className='my-4'>
@@ -418,7 +445,7 @@ const TicketDetails = () => {
                                     ? [{ value: "TICKET_CLOSED", label: "Close" }]
                                     : [])
                             : []}
-                          selectedValue={selectTicketStatusOptions}
+                          selectedValue={selectTicketStatusOptions.value}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
                           placeholder={t('selectStatus')}

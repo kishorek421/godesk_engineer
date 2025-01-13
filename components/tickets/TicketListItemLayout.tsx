@@ -73,7 +73,7 @@ const TicketListItemLayout = ({
                 <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel.createdAt
-                    ? moment(Number.parseInt(ticketModel.createdAt)).fromNow()
+                    ? moment(Number.parseInt(ticketModel.createdAt)).format("DD-MM-YYYY")
                     : "-"}
                 </Text>
               </View>

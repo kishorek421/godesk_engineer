@@ -218,6 +218,7 @@ const TicketListLayout = () => {
           }}
           ListFooterComponent={
             <View style={{ height: 500 }} />
+            
           }
           contentContainerStyle={{ paddingTop: 16 }}
           refreshControl={

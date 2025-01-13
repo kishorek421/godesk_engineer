@@ -219,8 +219,9 @@ const HomeScreen = () => {
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
                           {inProgressTicketDetails.customerDetails?.lastName ??
-                            ""}
+                            ""} 
                         </Text>
+                      
                       </View>
                       <View className="flex items-end">
                         <Text className="text-gray-500 text-md">{t('raisedAt')}</Text>
@@ -230,7 +231,7 @@ const HomeScreen = () => {
                                 Number.parseInt(
                                   inProgressTicketDetails.createdAt
                                 )
-                              ).fromNow()
+                              ).format("DD-MM-YYYY")
                             : "-"}
                         </Text>
                       </View>

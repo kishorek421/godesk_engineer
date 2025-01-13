@@ -2,10 +2,11 @@ import {
   AssetInUseListItemModel,
   AssetSubTypeListItemModel,
   AssetInUseCustomerDetailsModel,
+  AssetMasterListItemModel,
 } from "./assets";
 import { ConfigurationModel } from "./configurations";
 import { EmployeeDetailsModel } from "./employees";
-
+import { CustomerDetailsModel } from "./customers";
 export interface LocationModel {
   lat?: string;
   long?: string;
@@ -33,6 +34,7 @@ export interface TicketListItemModel {
   lastAssignedToDetails?: AssignedToUserDetailsModel;
   location?: LocationModel;
   pin?: string;
+  customersDetails?:CustomerDetailsModel;
 }
 
 export interface AssignedToUserDetailsModel {
