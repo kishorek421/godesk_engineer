@@ -35,9 +35,8 @@ import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { LocationState } from '../map/location';
 import { useTranslation } from 'react-i18next';
-import { UserDetailsModel } from "@/models/users";
 import { CustomerDetailsModel,CustomerLeadDetailsModel } from "@/models/customers";
-import { AssetMasterListItemModel } from "@/models/assets";
+
 
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
@@ -144,13 +143,7 @@ const fetchPincode = async () => {
  
   useEffect(() => {
     console.log('ticketId', ticketId);
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage);
-      }
-    };
+   
 
     navigation.setOptions({
       headerLeftContainerStyle: {
@@ -161,7 +154,7 @@ const fetchPincode = async () => {
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
-    fetchLanguage();
+   
 
     const timer = setInterval(() => {
       setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
@@ -413,13 +406,13 @@ const fetchPincode = async () => {
                     </Text>
                   </View>
                   <View className="flex mt-3">
-                  <Text className="text-gray-500 text-md ">Customer phone</Text>
+                  <Text className="text-gray-500 text-md ">{t('Customer mobileNo ')}</Text>
                   <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                     {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
                   </Text>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">Customer Details</Text>
+                    <Text className="text-gray-500 text-md ">{t('Customer address')}</Text>
                     
                   <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                   {ticketDetails.assetInUseDetails?.customerDetails?.address ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.areaName??'-'}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.cityName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.stateName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.pincode ?? "-"}

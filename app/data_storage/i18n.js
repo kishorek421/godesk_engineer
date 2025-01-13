@@ -122,7 +122,9 @@ i18n
           "pincode": "ಪಿನ್‌ಕೋಡ್",
           "selfie": "ಸೆಲ್ಫಿ",
            "and": "ಮತ್ತು",
-             "hello":"ಹಾಯ್"
+             "hello":"ಹಾಯ್",
+             "Customer mobileNo": "ಗ್ರಾಹಕ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ",
+             "Customer address":" ಗ್ರಾಹಕ ವಿಳಾಸ"
         },
       },
       te: {
@@ -189,7 +191,9 @@ i18n
           "pincode": "పిన్‌కోడ్",
           "selfie": "సెల్ఫీ",
           "and":"మరియు",
-          "hello":"హాయ్"
+          "hello":"హాయ్",
+         " Customer mobileNo": "కస్టమర్ మొబైల్ నంబర్",
+"Customer address":" కస్టమర్ చిరునామా"
         },
 
 

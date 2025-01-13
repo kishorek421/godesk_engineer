@@ -19,17 +19,7 @@ const TicketStatusComponent = ({
 }) => {
   const { t, i18n } = useTranslation();
 const [selectedLanguage, setSelectedLanguage] = useState('en');
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
-      }
-    };
 
-    fetchLanguage();
-  }, []);
   const getStatusColor = (statusKey?: string): string => {
     switch (statusKey) {
       case ESCALATED:
