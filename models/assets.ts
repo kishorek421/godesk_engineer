@@ -1,5 +1,5 @@
 import { ConfigurationModel } from "./configurations";
-
+import { AreaListItemModel } from "./geolocations";
 export interface AssetTypeListItemModel {
   id?: string;
   name?: string;
@@ -34,6 +34,9 @@ export interface AssetInUseCustomerDetailsModel {
   branchName?: string;
   firstName?: string;
   lastName?: string;
+  mobileNumber?: string;
+  address?: string;
+  areaDetails?:AreaListItemModel;
 }
 
 export interface AssetInUseListItemModel {
@@ -43,6 +46,7 @@ export interface AssetInUseListItemModel {
   statusDetails?: ConfigurationModel;
   customerDetails?: AssetInUseCustomerDetailsModel;
   createdAt?: string;
+  
 }
 
 export interface AssignedToUserDetails {

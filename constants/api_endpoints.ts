@@ -17,7 +17,7 @@ export const GET_INPROGRESS_TICKETS_DETAILS ="/tickets/getInProgressTicketDetail
 export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus"
 
 //user list
-
+export const GET_CUSTOMER_LEAD_DETAILS = "/customers/leads/view";
 export const GET_USER_DETAILS = "/users/view";
 export const GET_CUSTOMER_DETAILS = "/customers/list";
 

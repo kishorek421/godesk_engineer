@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   Pressable,
+  ActivityIndicator
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { VStack } from "@/components/ui/vstack";
@@ -227,7 +228,11 @@ const VerifyOTPScreen = () => {
               className="bg-primary-950 rounded-full w-14 h-14 p-0"
               onPress={handleVerifyOTP}
             >
-              <AntDesign name="arrowright" size={20} color="white" />
+               {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <AntDesign name="arrowright" size={20} color="white" />
+              )}
             </Button>
           </View>
         </View>
