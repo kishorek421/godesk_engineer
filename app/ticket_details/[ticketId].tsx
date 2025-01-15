@@ -1,26 +1,58 @@
-import { Pressable, ScrollView, Text, TouchableOpacity, View, Image, Alert, ActivityIndicator, SafeAreaView } from "react-native";
+import {
+  Pressable,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  Alert,
+  ActivityIndicator,
+  SafeAreaView,
+} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-import { GET_CONFIGURATIONS_BY_CATEGORY, GET_TICKET_DETAILS, UPDATE_TICKET_STATUS, TICKET_UPLOADS,GET_CUSTOMER_DETAILS,GET_USER_DETAILS,GET_CUSTOMER_LEAD_DETAILS } from "@/constants/api_endpoints";
+import {
+  GET_CONFIGURATIONS_BY_CATEGORY,
+  GET_TICKET_DETAILS,
+  UPDATE_TICKET_STATUS,
+  TICKET_UPLOADS,
+  GET_CUSTOMER_DETAILS,
+  GET_USER_DETAILS,
+  GET_CUSTOMER_LEAD_DETAILS,
+} from "@/constants/api_endpoints";
 import LoadingBar from "@/components/LoadingBar";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
 import Toast from "react-native-toast-message";
-import { FormControl, FormControlLabel, FormControlLabelText, FormControlError, FormControlErrorText, FormControlLabelAstrick } from "@/components/ui/form-control";
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorText,
+  FormControlLabelAstrick,
+} from "@/components/ui/form-control";
 import {
   bytesToMB,
   getFileName,
   isFormFieldInValid,
   setErrorValue,
 } from "@/utils/helper";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
-import { ASSIGNED, TICKET_ASSIGNED, TICKET_CLOSED, TICKET_IN_PROGRESS, TICKET_OPENED, TICKET_STATUS } from "@/constants/configuration_keys";
+import {
+  ASSIGNED,
+  TICKET_ASSIGNED,
+  TICKET_CLOSED,
+  TICKET_IN_PROGRESS,
+  TICKET_OPENED,
+  TICKET_STATUS,
+} from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
 import { error } from "ajv/dist/vocabularies/applicator/dependencies";
@@ -33,10 +65,12 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
-import { LocationState } from '../map/location';
-import { useTranslation } from 'react-i18next';
-import { CustomerDetailsModel,CustomerLeadDetailsModel } from "@/models/customers";
-
+import { LocationState } from "../map/location";
+import { useTranslation } from "react-i18next";
+import {
+  CustomerDetailsModel,
+  CustomerLeadDetailsModel,
+} from "@/models/customers";
 
 const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
@@ -51,15 +85,18 @@ const TicketDetails = () => {
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [otp, setOtp] = useState("");
-  const [selectedTicketStatus, setSelectedTicketStatus] = useState<ConfigurationModel>({});
-  const [selectTicketStatusOptions, setSelectTicketStatusOptions] = useState<DropdownModel>(
-    {},
-  ); const [currentTime, setCurrentTime] = useState(
-    moment().format("DD/MM/YYYY hh:mm:ss A"),
-  ); const [assetImages, setAssetImages] = useState<string[]>([]);
+  const [selectedTicketStatus, setSelectedTicketStatus] =
+    useState<ConfigurationModel>({});
+  const [selectTicketStatusOptions, setSelectTicketStatusOptions] =
+    useState<DropdownModel>({});
+  const [currentTime, setCurrentTime] = useState(
+    moment().format("DD/MM/YYYY hh:mm:ss A")
+  );
+  const [assetImages, setAssetImages] = useState<string[]>([]);
   const bottomSheetRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [ticketStatusOptionsState, setTicketStatusOptions] = useState<ConfigurationModel[]>(ticketStatusOptions);
+  const [ticketStatusOptionsState, setTicketStatusOptions] =
+    useState<ConfigurationModel[]>(ticketStatusOptions);
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const { user } = useAuth();
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -68,28 +105,31 @@ const TicketDetails = () => {
   const [canClearForm, setCanClearForm] = useState(false);
   const [canValidateField, setCanValidateField] = useState(false);
   const [customerLeadDetailsModel, setCustomerLeadDetailsModel] =
-  useState<CustomerDetailsModel>({});
+    useState<CustomerDetailsModel>({});
 
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-  const [currentLocation, setCurrentLocation] = useState<LocationState | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [currentLocation, setCurrentLocation] = useState<LocationState | null>(
+    null
+  );
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const setFieldValidationStatusFunc = (
     fieldName: string,
-    isValid: boolean,
+    isValid: boolean
   ) => {
     if (fieldValidationStatus[fieldName]) {
       fieldValidationStatus[fieldName](isValid);
     }
   };
 
-
   const fetchTicketDetails = async () => {
     setIsLoading(true);
-    if (typeof ticketId === 'string') {
+    if (typeof ticketId === "string") {
       try {
-        const response = await apiClient.get(GET_TICKET_DETAILS + `?ticketId=${ticketId}`);
+        const response = await apiClient.get(
+          GET_TICKET_DETAILS + `?ticketId=${ticketId}`
+        );
         const ticketData = response.data.data ?? {};
-        console.log('ticketData ~~~~~~~~~~~~~~~~~~~~~~~~', response.data.data);
+        console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
         setTicketDetails(ticketData);
       } catch (e) {
         console.error(e);
@@ -100,80 +140,81 @@ const TicketDetails = () => {
   };
 
   // Fetch ticket status options
-  
+
   const loadTicketStatus = async () => {
     try {
       const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
         params: { category: TICKET_STATUS },
       });
-      console.log('response.data?.data ', response.data?.data);
+      console.log("response.data?.data ", response.data?.data);
       setTicketStatusOptions(response.data?.data ?? []);
     } catch (e) {
       console.error(e);
     }
   };
 
+  const fetchPincode = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+      let { latitude, longitude } = location.coords;
+      latitude = Math.abs(latitude);
+      longitude = Math.abs(longitude);
 
-const fetchPincode = async () => {
-  try {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      console.error('Permission to access location was denied');
-      return;
+      const [address] = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+      setLatitude(latitude);
+      setLongitude(longitude);
+      setPincode(address?.postalCode ?? "");
+
+      console.log("Fetched Location:", latitude, longitude);
+    } catch (error) {
+      console.error("Error fetching pincode:", error);
     }
-    const location = await Location.getCurrentPositionAsync({});
-    let { latitude, longitude } = location.coords;  
-    latitude = Math.abs(latitude);
-    longitude = Math.abs(longitude);
+  };
 
-    const [address] = await Location.reverseGeocodeAsync(
-      { latitude, longitude }
-    );
-    setLatitude(latitude);
-    setLongitude(longitude);
-    setPincode(address?.postalCode ?? '');  
-
-    console.log('Fetched Location:', latitude, longitude);
-  } catch (error) {
-    console.error('Error fetching pincode:', error);
-  }
-};
-
-
- 
   useEffect(() => {
-    console.log('ticketId', ticketId);
-   
+    console.log("ticketId", ticketId);
 
     navigation.setOptions({
       headerLeftContainerStyle: {
         paddingStart: 10,
       },
     });
-    
+
     fetchTicketDetails();
     loadTicketStatus();
     fetchPincode();
-   
 
     const timer = setInterval(() => {
-      setCurrentTime(moment().format('DD/MM/YYYY hh:mm:ss A'));
+      setCurrentTime(moment().format("DD/MM/YYYY hh:mm:ss A"));
     }, 1000);
-
 
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
   const predefinedStatuses: { [key: string]: ConfigurationModel } = {
     OPENED: { key: "OPENED", value: "Open" },
-    CUSTOMER_NOT_AVAILABLE: { key: "CUSTOMER_NOT_AVAILABLE", value: "Customer Not Available" },
+    CUSTOMER_NOT_AVAILABLE: {
+      key: "CUSTOMER_NOT_AVAILABLE",
+      value: "Customer Not Available",
+    },
     IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
     TICKET_CLOSED: { key: "TICKET_CLOSED", value: "Close" },
   };
 
   const handleSelectOption = async (option: string) => {
     console.log("Selected option:", option);
-    const selectedTicketStatus = predefinedStatuses[option] || ticketStatusOptions.find((item) => item.value === option) || {};
+    const selectedTicketStatus =
+      predefinedStatuses[option] ||
+      ticketStatusOptions.find((item) => item.value === option) ||
+      {};
     setSelectedTicketStatus(selectedTicketStatus);
   };
 
@@ -188,21 +229,46 @@ const fetchPincode = async () => {
 
   const validateInputs = (): { param: string; message: string }[] => {
     const errors: { param: string; message: string }[] = [];
-    if (!selectedTicketStatus?.key) { errors.push({ param: "ticketStatus", message: "Status is required" }); }
-    if (!description) { errors.push({ param: "description", message: "Please enter a description" }); }
-    if ((selectedTicketStatus?.key === 'IN_PROGRESS' || selectedTicketStatus?.key === 'SPARE_REQUIRED' || selectedTicketStatus?.key === 'CANNOT_RESOLVE' || selectedTicketStatus?.key === 'TICKET_CLOSED') && !otp) { errors.push({ param: 'otp', message: 'OTP is required for the selected status' }); }
-    if (assetImages.length === 0) { errors.push({ param: "assetImages", message: "At least one asset image is required" }); }
+    if (!selectedTicketStatus?.key) {
+      errors.push({ param: "ticketStatus", message: "Status is required" });
+    }
+    if (!description) {
+      errors.push({
+        param: "description",
+        message: "Please enter a description",
+      });
+    }
+    if (
+      (selectedTicketStatus?.key === "IN_PROGRESS" ||
+        selectedTicketStatus?.key === "SPARE_REQUIRED" ||
+        selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
+        selectedTicketStatus?.key === "TICKET_CLOSED") &&
+      !otp
+    ) {
+      errors.push({
+        param: "otp",
+        message: "Pin is required for the selected status",
+      });
+    }
+    if (assetImages.length === 0) {
+      errors.push({
+        param: "assetImages",
+        message: "At least one asset image is required",
+      });
+    }
     if (!latitude || !longitude) {
       if (!latitude || !longitude) {
-        errors.push({ 
-          param: "location", 
-          message: "Location is required but couldn't be fetched." 
+        errors.push({
+          param: "location",
+          message: "Location is required but couldn't be fetched.",
         });
       }
       if (!pincode) {
-        errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
+        errors.push({
+          param: "pincode",
+          message: "Pincode is required but couldn't be fetched.",
+        });
       }
-
     }
     return errors;
   };
@@ -214,86 +280,97 @@ const fetchPincode = async () => {
       return;
     }
 
-      const requestBody = {
-        ticketId,
-        assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-        toStatus: selectedTicketStatus.key,
-        location: {
-          latitude: latitude,
-          longitude: longitude,
-        },
-        pincode: pincode,
-        description: description,
-        pin: ['IN_PROGRESS', 'SPARE_REQUIRED', 'CANNOT_RESOLVE', 'TICKET_CLOSED']
-        .includes(selectedTicketStatus.key ?? "")
-        ? otp ?? null
-        : null,      
-      };
-      console.log('Request body:', requestBody);
-     await apiClient.put(
-        `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
-        requestBody
-      ).then(async (response) => {
+    const requestBody = {
+      ticketId,
+      assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+      toStatus: selectedTicketStatus.key,
+      location: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+      pincode: pincode,
+      description: description,
+      pin: [
+        "IN_PROGRESS",
+        "SPARE_REQUIRED",
+        "CANNOT_RESOLVE",
+        "TICKET_CLOSED",
+      ].includes(selectedTicketStatus.key ?? "")
+        ? (otp ?? null)
+        : null,
+    };
+    
+    console.log("Request body:", requestBody);
+
+    await apiClient
+      .put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody)
+      .then(async (response) => {
         console.log("response.data", response.data);
         if (response.status === 200) {
           console.log("Request body", requestBody);
           Toast.show({
-            type: 'success',
-            text1: 'Ticket status updated successfully!',
+            type: "success",
+            text1: "Ticket status updated successfully!",
           });
           await fetchTicketDetails();
           router.push({
             pathname: "../home",
             params: {
-              refresh: "true"
-            }
-          })
+              refresh: "true",
+            },
+          });
         } else {
           Toast.show({
-            type: 'error',
+            type: "error",
             text1: `Failed to update status: ${response.status}`,
           });
         }
-      }).catch((e) => {
+      })
+      .catch((e) => {
         console.error("Failed to update ticket status.", e?.response?.data);
-      
+
         const errors = e.response?.data?.errors;
-      
+
         if (errors) {
-          setErrors(errors.filter((error: ErrorModel) => error.param !== undefined));
+          setErrors(
+            errors.filter((error: ErrorModel) => error.param !== null)
+          );
         }
 
         let msg = "";
 
         for (let error of errors) {
-          if (error.param === undefined) {
+          console.log("error ->>>>.", error);
+          
+          if (error.param === null) {
             msg += error.message + "\n";
           }
         }
 
         if (msg.length !== 0) {
           Toast.show({
-            type: 'error',
+            type: "error",
             text1: msg,
           });
         } else {
           const message = e.response?.data?.message;
           if (message) {
             Toast.show({
-              type: 'error',
+              type: "error",
               text1: message,
             });
           } else {
             Toast.show({
-              type: 'error',
+              type: "error",
               text1: "An unexpected error occurred. Please try again.",
             });
           }
         }
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
-    };
+  };
   return isLoading ? (
     <LoadingBar />
   ) : (
@@ -304,9 +381,9 @@ const fetchPincode = async () => {
             router.push({
               pathname: "../home",
               params: {
-                refresh: "true"
-              }
-            })
+                refresh: "true",
+              },
+            });
           }}
         >
           <View className="flex-row items-center bg-white h-14 shadow-md px-4">
@@ -314,7 +391,9 @@ const fetchPincode = async () => {
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
             <View className="flex-1">
-              <Text className="font-bold text-lg text-center">{t('ticketDetails')}</Text>
+              <Text className="font-bold text-lg text-center">
+                {t("ticketDetails")}
+              </Text>
             </View>
             <View className="flex-1"></View>
           </View>
@@ -342,17 +421,23 @@ const fetchPincode = async () => {
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">{t('raisedBy')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("raisedBy")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
                           {ticketDetails?.customerDetails?.lastName ?? ""}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("raisedAt")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
-                            ? moment(ticketDetails.createdAt).format("DD-MM-YYYY")
+                            ? moment(ticketDetails.createdAt).format(
+                                "DD-MM-YYYY"
+                              )
                             : "-"}
                         </Text>
                       </View>
@@ -361,13 +446,17 @@ const fetchPincode = async () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">{t('serialNo')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("serialNo")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">{t('Asset Type')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("Asset Type")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
@@ -378,93 +467,155 @@ const fetchPincode = async () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">{t('description')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("description")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails?.description ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">{t('assignedAt')}</Text>
+                        <Text className="text-gray-500 text-md ">
+                          {t("assignedAt")}
+                        </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.lastAssignedToDetails?.assignedAt
-                            ? moment(ticketDetails.lastAssignedToDetails?.assignedAt).format("DD-MM-YYYY")
+                            ? moment(
+                                ticketDetails.lastAssignedToDetails?.assignedAt
+                              ).format("DD-MM-YYYY")
                             : "-"}
                         </Text>
                       </View>
                     </View>
                   </View>
                   <View className="w-full mt-3">
-                    <Text className="text-gray-500 text-md ">{t('issueImages')}</Text>
+                    <Text className="text-gray-500 text-md ">
+                      {t("issueImages")}
+                    </Text>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
-                        ticketDetails.ticketImages?.map((uri: any, index: any) => (
-                          <Pressable
-                            key={index}
-                            onPress={() => {
-                              router.push({
-                                pathname: "/image_viewer/[uri]",
-                                params: {
-                                  uri: uri,
-                                },
-                              });
-                            }}
-                          >
-                            <Image
-                              source={{ uri: uri }}
-                              className="w-24 h-24 rounded-xl mt-2"
-                            />
-                          </Pressable>
-                        ))
+                        ticketDetails.ticketImages?.map(
+                          (uri: any, index: any) => (
+                            <Pressable
+                              key={index}
+                              onPress={() => {
+                                router.push({
+                                  pathname: "/image_viewer/[uri]",
+                                  params: {
+                                    uri: uri,
+                                  },
+                                });
+                              }}
+                            >
+                              <Image
+                                source={{ uri: uri }}
+                                className="w-24 h-24 rounded-xl mt-2"
+                              />
+                            </Pressable>
+                          )
+                        )
                       ) : (
                         <Text>-</Text>
                       )}
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">{t('Service Type')}</Text>
+                    <Text className="text-gray-500 text-md ">
+                      {t("Service Type")}
+                    </Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                       {ticketDetails.serviceTypeDetails?.value ?? "-"}
                     </Text>
                   </View>
                   <View className="flex mt-3">
-                  <Text className="text-gray-500 text-md ">{t('Customer mobileNo ')}</Text>
-                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                    {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
-                  </Text>
+                    <Text className="text-gray-500 text-md ">
+                      {t("Customer mobileNo ")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.mobileNumber ?? "-"}
+                    </Text>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">{t('Customer address')}</Text>
-                    
-                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                  {ticketDetails.assetInUseDetails?.customerDetails?.address ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.areaName??'-'}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.cityName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.stateName ?? "-"}, {ticketDetails.assetInUseDetails?.customerDetails?.areaDetails?.pincode ?? "-"}
-                  </Text>
+                    <Text className="text-gray-500 text-md ">
+                      {t("Customer address")}
+                    </Text>
+
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.address ?? "-"}
+                      ,{" "}
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.areaDetails?.areaName ?? "-"}
+                      ,{" "}
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.areaDetails?.cityName ?? "-"}
+                      ,{" "}
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.areaDetails?.stateName ?? "-"}
+                      ,{" "}
+                      {ticketDetails.assetInUseDetails?.customerDetails
+                        ?.areaDetails?.pincode ?? "-"}
+                    </Text>
                   </View>
                   {/* Conditionally render Update Ticket Status section */}
-                  {(ticketDetails.statusDetails?.value === "Opened" || ticketDetails.statusDetails?.value === "Assigned" || ticketDetails.statusDetails?.value === "InProgress" || ticketDetails.statusDetails?.value === "Work Completed") && (
-                    <View className='my-4'>
-                      <Text className="font-bold text-lg text-primary-950">{t('updateTicketStatus')}</Text>
+                  {(ticketDetails.statusDetails?.value === "Opened" ||
+                    ticketDetails.statusDetails?.value === "Assigned" ||
+                    ticketDetails.statusDetails?.value === "InProgress" ||
+                    ticketDetails.statusDetails?.value ===
+                      "Work Completed") && (
+                    <View className="my-4">
+                      <Text className="font-bold text-lg text-primary-950">
+                        {t("updateTicketStatus")}
+                      </Text>
                       <FormControl
-                        isInvalid={isFormFieldInValid("ticketStatus", errors).length > 0}
+                        isInvalid={
+                          isFormFieldInValid("ticketStatus", errors).length > 0
+                        }
                         className={`mt-4 `}
                       >
                         <PrimaryDropdownFormField
-                          options={ticketStatusOptions.length > 0 ? (
-                            ticketDetails.statusDetails?.key === TICKET_IN_PROGRESS ?
-                              ticketStatusOptions.map((option: ConfigurationModel) => option.value || "")
-                              : ticketDetails.statusDetails?.key === ASSIGNED
-                                ? [{ value: "OPENED", label: "Open" }, { value: "CUSTOMER_NOT_AVAILABLE", label: "Customer not available" }]
-                                : ticketDetails.statusDetails?.key === "OPENED"
-                                  ? [{ value: "IN_PROGRESS", label: "InProgress" }]
-                                  : ticketDetails.statusDetails?.key === "WORK_COMPLETED"
-                                    ? [{ value: "TICKET_CLOSED", label: "Close" }]
-                                    : [])
-                            : []}
+                          options={
+                            ticketStatusOptions.length > 0
+                              ? ticketDetails.statusDetails?.key ===
+                                TICKET_IN_PROGRESS
+                                ? ticketStatusOptions.map(
+                                    (option: ConfigurationModel) =>
+                                      option.value || ""
+                                  )
+                                : ticketDetails.statusDetails?.key === ASSIGNED
+                                  ? [
+                                      { value: "OPENED", label: "Open" },
+                                      {
+                                        value: "CUSTOMER_NOT_AVAILABLE",
+                                        label: "Customer not available",
+                                      },
+                                    ]
+                                  : ticketDetails.statusDetails?.key ===
+                                      "OPENED"
+                                    ? [
+                                        {
+                                          value: "IN_PROGRESS",
+                                          label: "InProgress",
+                                        },
+                                      ]
+                                    : ticketDetails.statusDetails?.key ===
+                                        "WORK_COMPLETED"
+                                      ? [
+                                          {
+                                            value: "TICKET_CLOSED",
+                                            label: "Close",
+                                          },
+                                        ]
+                                      : []
+                              : []
+                          }
                           selectedValue={selectTicketStatusOptions.value}
                           setSelectedValue={setSelectTicketStatusOptions}
                           type="ticketStatusOptionsState"
-                          placeholder={t('selectStatus')}
+                          placeholder={t("selectStatus")}
                           fieldName="selectTicketStatusOptions"
-                          label={t('status')}
+                          label={t("status")}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
@@ -474,15 +625,21 @@ const fetchPincode = async () => {
                           onSelect={handleSelectOption}
                         />
                         <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("ticketStatus", errors)}</FormControlErrorText>
+                          <FormControlErrorText>
+                            {isFormFieldInValid("ticketStatus", errors)}
+                          </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
 
-                      <FormControl isInvalid={isFormFieldInValid("description", errors).length > 0}
-                        className="mt-4">
+                      <FormControl
+                        isInvalid={
+                          isFormFieldInValid("description", errors).length > 0
+                        }
+                        className="mt-4"
+                      >
                         <PrimaryTextareaFormField
                           fieldName="description"
-                          label={t('description')}
+                          label={t("description")}
                           placeholder={t("writeShortDescription")}
                           errors={errors}
                           setErrors={setErrors}
@@ -500,13 +657,18 @@ const fetchPincode = async () => {
                         </FormControlError> */}
                       </FormControl>
                       <FormControl
-                        isInvalid={isFormFieldInValid("assetImages", errors).length > 0}
+                        isInvalid={
+                          isFormFieldInValid("assetImages", errors).length > 0
+                        }
                       >
                         <HStack className="justify-between mt-2 mb-1">
                           <Text className="font-medium">
-                            {t('assetImages')} <Text className="text-red-400">*</Text>
+                            {t("assetImages")}{" "}
+                            <Text className="text-red-400">*</Text>
                           </Text>
-                          <Text className="text-gray-500">{assetImages.length}/3</Text>
+                          <Text className="text-gray-500">
+                            {assetImages.length}/3
+                          </Text>
                         </HStack>
                         <View className="flex-row flex-wrap">
                           {assetImages.map((uri, index) => (
@@ -537,7 +699,11 @@ const fetchPincode = async () => {
                                       });
                                     }}
                                   >
-                                    <AntDesign name="closecircle" size={16} color="white" />
+                                    <AntDesign
+                                      name="closecircle"
+                                      size={16}
+                                      color="white"
+                                    />
                                   </Pressable>
                                 </View>
                               </View>
@@ -555,7 +721,9 @@ const fetchPincode = async () => {
                               color="black"
                               size={18}
                             />
-                            <ButtonText className="text-black">{t('addImage')}</ButtonText>
+                            <ButtonText className="text-black">
+                              {t("addImage")}
+                            </ButtonText>
                           </Button>
                         )}
                         <FormControlError className="mt-2">
@@ -567,11 +735,15 @@ const fetchPincode = async () => {
                       <FormControl
                         isInvalid={isFormFieldInValid("otp", errors).length > 0}
                         className="mt-4 "
-                      ><Text className="mt-1 mb-2 text-gray-500 text-sm"> {t('enterOtpForOpenClose')}</Text>
+                      >
+                        <Text className="mt-1 mb-2 text-gray-500 text-sm">
+                          {" "}
+                          {t("enterOtpForOpenClose")}
+                        </Text>
                         <PrimaryTextFormField
                           fieldName="customerOTP"
-                          label={t('customerOtp')}
-                          placeholder={t('enterCustomerOtp')}
+                          label={t("customerOtp")}
+                          placeholder={t("enterCustomerOtp")}
                           errors={errors}
                           setErrors={setErrors}
                           min={4}
@@ -586,26 +758,28 @@ const fetchPincode = async () => {
                           onChangeText={(e: string) => setOtp(e)}
                         />
                         <FormControlError>
-                          <FormControlErrorText>{isFormFieldInValid("otp", errors)}</FormControlErrorText>
+                          <FormControlErrorText>
+                            {isFormFieldInValid("otp", errors)}
+                          </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <Button className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
+                      <Button
+                        className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
                         onPress={() => {
                           if (isLoading) return;
                           updateTicketStatus();
                         }}
                       >
-                        <ButtonText className="text-white">{t('updateStatus')}</ButtonText>
+                        <ButtonText className="text-white">
+                          {t("updateStatus")}
+                        </ButtonText>
                         {isLoading && <ActivityIndicator />}
                       </Button>
                     </View>
                   )}
                 </View>
-
               </View>
-
             </View>
-
           </View>
           <ImagePickerComponent
             onImagePicked={(uri, fileSizeBytes) => {
@@ -624,7 +798,6 @@ const fetchPincode = async () => {
             bottomSheetRef={bottomSheetRef}
           />
         </ScrollView>
-
       </View>
     </SafeAreaView>
   );
