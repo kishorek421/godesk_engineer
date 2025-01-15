@@ -67,19 +67,15 @@ const TicketListLayout = () => {
       await apiClient.get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
         params: { pageNo: nextCurrentPage, pageSize: 10 },
       }).then((response) => {
-        const content = response?.data?.data?.content ?? [];
-        console.log("Fetched Tickets: ", content);
-
-        if (content && content.length > 0) {
-          if (nextCurrentPage === 1) {
-            setRecentTickets(content);
-          } else {
-            setRecentTickets((prevState: any) => [...prevState, ...content]);
-          }
-        } else if (nextCurrentPage === 1) {
-          setRecentTickets([]); 
+        let content = response.data?.data?.content ?? [];
+        console.log("content ticket////////////------------>", content);
+        if (nextCurrentPage === 1) {
+          setRecentTickets(content);
+        } else {
+          setRecentTickets((prevState) => [...prevState, ...content]);
         }
-        const paginator = response?.data?.paginator;
+        let paginator = response.data?.data?.paginator;
+        
         if (paginator) {
           const iCurrentPage = paginator.currentPage;
           setIsLastPage(paginator.lastPage ?? true);
@@ -87,7 +83,7 @@ const TicketListLayout = () => {
             setCurrentPage(iCurrentPage);
           }
         } else {
-          setIsLastPage(true);
+         
          
         setRefreshing(false);
         }
@@ -100,19 +96,15 @@ const TicketListLayout = () => {
         await apiClient.get("/tickets/users/getTicketsByStatusKey?status=WORK_COMPLETED", {
           params: { pageNo: nextCurrentPage, pageSize: 10 },
         }).then((response) => {
-          const content = response?.data?.data?.content ?? [];
-          console.log("Fetched Tickets: ", content);
-  
-          if (content && content.length > 0) {
-            if (nextCurrentPage === 1) {
-              setRecentTickets(content);
-            } else {
-              setRecentTickets((prevState: any) => [...prevState, ...content]);
-            }
-          } else if (nextCurrentPage === 1) {
-            setRecentTickets([]); // Reset tickets if no content found
+          let content = response.data?.data?.content ?? [];
+          console.log("content ticket////////////------------>", content);
+          if (nextCurrentPage === 1) {
+            setRecentTickets(content);
+          } else {
+            setRecentTickets((prevState) => [...prevState, ...content]);
           }
-          const paginator = response?.data?.paginator;
+          let paginator = response.data?.data?.paginator;
+          console.log("Paginator: ", paginator);
           if (paginator) {
             const iCurrentPage = paginator.currentPage;
             setIsLastPage(paginator.lastPage ?? true);
@@ -120,7 +112,7 @@ const TicketListLayout = () => {
               setCurrentPage(iCurrentPage);
             }
           } else {
-            setIsLastPage(true);
+          
           
             setRefreshing(false);
           }
@@ -134,7 +126,7 @@ const TicketListLayout = () => {
 
       getTicketLists(nextCurrentPage, 10, endpoint)
         .then((response: any) => {
-          const content = response?.data?.data?.content ?? [];
+        let content = response.data?.data?.content ?? [];
           console.log("Fetched Tickets: ", content);
 
           if (content && content.length > 0) {
@@ -147,7 +139,7 @@ const TicketListLayout = () => {
             setRecentTickets([]); 
           }
 
-          const paginator = response?.data?.paginator;
+          let paginator = response.data?.data?.paginator;
           if (paginator) {
             const iCurrentPage = paginator.currentPage;
             setIsLastPage(paginator.lastPage ?? true);
@@ -155,7 +147,7 @@ const TicketListLayout = () => {
               setCurrentPage(iCurrentPage);
             }
           } else {
-            setIsLastPage(true);
+           
            
             setRefreshing(false);
           }
@@ -175,7 +167,8 @@ const TicketListLayout = () => {
         horizontal
         data={tabs}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()} // Ensure a unique key for each item
+        keyExtractor={(item, index) => index.toString()} 
+        // Ensure a unique key for each item
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
