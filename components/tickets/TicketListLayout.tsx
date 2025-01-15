@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Text, View, TouchableOpacity,RefreshControl } from "react-native";
+import {
+  FlatList,
+  Text,
+  View,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
 import TicketListItemLayout from "@/components/tickets/TicketListItemLayout";
 import {
   GET_ASSIGNED_TICKETS_LIST,
@@ -10,35 +16,30 @@ import {
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import useRefresh from "@/hooks/useRefresh";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const TicketListLayout = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
- 
-  const [refreshing, setRefreshing] = useState(true);
- const [selectedLanguage, setSelectedLanguage] = useState('en');
-  const tabs = [
-  
-    t('Assigned'),
-    t('Opened'),
-    t('Work Completed'),
-    t('Completed'),
-    t('Not Closed'),
-   
 
+  const [refreshing, setRefreshing] = useState(true);
+
+  const tabs = [
+    t("Assigned"),
+    t("Opened"),
+    t("Work Completed"),
+    t("Completed"),
+    t("Not Closed"),
   ];
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
-   
   }, [selectedTab]);
- 
- 
+
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {
       case 0:
@@ -46,12 +47,12 @@ const TicketListLayout = () => {
       case 1:
         return GET_ASSIGNED_TICKETS_LIST;
       case 2:
-          return GET_ASSIGNED_TICKETS_LIST;
+        return GET_ASSIGNED_TICKETS_LIST;
       case 3:
         return GET_CLOSED_TICKETS_LIST;
       case 4:
         return GET_NOT_COMPLETED_TICKETS_LIST;
-    
+
       default:
         return "";
     }
@@ -64,38 +65,41 @@ const TicketListLayout = () => {
 
     if (selectedTab === 1) {
       setRefreshing(true);
-      await apiClient.get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
-        params: { pageNo: nextCurrentPage, pageSize: 10 },
-      }).then((response) => {
-        let content = response.data?.data?.content ?? [];
-        console.log("content ticket////////////------------>", content);
-        if (nextCurrentPage === 1) {
-          setRecentTickets(content);
-        } else {
-          setRecentTickets((prevState) => [...prevState, ...content]);
-        }
-        let paginator = response.data?.data?.paginator;
-        
-        if (paginator) {
-          const iCurrentPage = paginator.currentPage;
-          setIsLastPage(paginator.lastPage ?? true);
-          if (iCurrentPage) {
-            setCurrentPage(iCurrentPage);
+      await apiClient
+        .get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
+          params: { pageNo: nextCurrentPage, pageSize: 10 },
+        })
+        .then((response) => {
+          let content = response.data?.data?.content ?? [];
+          console.log("content ticket////////////------------>", content);
+          if (nextCurrentPage === 1) {
+            setRecentTickets(content);
+          } else {
+            setRecentTickets((prevState) => [...prevState, ...content]);
           }
-        } else {
-         
-         
-        setRefreshing(false);
-        }
-      }).catch((e) => {
-        setRefreshing(false);
-        console.error(e.response.data);
-      });
+          let paginator = response.data?.data?.paginator;
+
+          if (paginator) {
+            const iCurrentPage = paginator.currentPage;
+            setIsLastPage(paginator.lastPage ?? true);
+            if (iCurrentPage) {
+              setCurrentPage(iCurrentPage);
+            }
+          }
+        })
+        .catch((e) => {
+          console.error(e.response.data);
+        })
+        .finally(() => {
+          setRefreshing(false);
+        });
     } else if (selectedTab === 2) {
       setRefreshing(true);
-        await apiClient.get("/tickets/users/getTicketsByStatusKey?status=WORK_COMPLETED", {
+      await apiClient
+        .get("/tickets/users/getTicketsByStatusKey?status=WORK_COMPLETED", {
           params: { pageNo: nextCurrentPage, pageSize: 10 },
-        }).then((response) => {
+        })
+        .then((response) => {
           let content = response.data?.data?.content ?? [];
           console.log("content ticket////////////------------>", content);
           if (nextCurrentPage === 1) {
@@ -111,22 +115,21 @@ const TicketListLayout = () => {
             if (iCurrentPage) {
               setCurrentPage(iCurrentPage);
             }
-          } else {
-          
-          
-            setRefreshing(false);
           }
-        }).catch((e) => {
-          setRefreshing(false);
+        })
+        .catch((e) => {
           console.error(e.response.data);
+        })
+        .finally(() => {
+          setRefreshing(false);
         });
-      } else {
+    } else {
       // Get the correct endpoint based on the tab number
       const endpoint = getEndPoint(selectedTab);
 
       getTicketLists(nextCurrentPage, 10, endpoint)
         .then((response: any) => {
-        let content = response.data?.data?.content ?? [];
+          let content = response.data?.data?.content ?? [];
           console.log("Fetched Tickets: ", content);
 
           if (content && content.length > 0) {
@@ -136,7 +139,7 @@ const TicketListLayout = () => {
               setRecentTickets((prevState: any) => [...prevState, ...content]);
             }
           } else if (nextCurrentPage === 1) {
-            setRecentTickets([]); 
+            setRecentTickets([]);
           }
 
           let paginator = response.data?.data?.paginator;
@@ -146,15 +149,13 @@ const TicketListLayout = () => {
             if (iCurrentPage) {
               setCurrentPage(iCurrentPage);
             }
-          } else {
-           
-           
-            setRefreshing(false);
           }
         })
         .catch((e: any) => {
-          setRefreshing(false);
           console.error("Error fetching tickets:", e);
+        })
+        .finally(() => {
+          setRefreshing(false);
         });
     }
   };
@@ -167,20 +168,22 @@ const TicketListLayout = () => {
         horizontal
         data={tabs}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item, index) => index.toString()} 
+        keyExtractor={(item, index) => index.toString()}
         // Ensure a unique key for each item
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-4 h-12 py-2 rounded-full w-32 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
-              }`}
+            className={`ms-4 h-12 py-2 rounded-full w-32 ${
+              selectedTab === index ? "bg-primary-200" : "bg-gray-200"
+            }`}
             key={index}
           >
             <Text
-              className={` h-96 text-center ${selectedTab === index
+              className={` h-96 text-center ${
+                selectedTab === index
                   ? "text-primary-950 font-medium"
                   : "text-gray-500 font-normal text-sm"
-                }`}
+              }`}
             >
               {item}
             </Text>
@@ -190,9 +193,11 @@ const TicketListLayout = () => {
       />
 
       {recentTickets.length === 0 ? (
-        <View className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
+        <View
+          className="flex h-32 justify-center items-center mt-4 mx-4 bg-gray-200
          rounded-lg
-       ">
+       "
+        >
           <Text className="text-gray-400 text-md text-center">
             No tickets found
           </Text>
@@ -203,24 +208,25 @@ const TicketListLayout = () => {
           renderItem={({ item }) => (
             <TicketListItemLayout cn={`my-2 `} ticketModel={item} />
           )}
-          keyExtractor={(_: any, index: { toString: () => any; }) => index.toString()}
+          keyExtractor={(_: any, index: { toString: () => any }) =>
+            index.toString()
+          }
           onEndReached={() => {
             if (!isLastPage) {
               fetchTickets(currentPage + 1, selectedTab);
             }
           }}
-          ListFooterComponent={
-            <View style={{ height: 500 }} />
-            
-          }
+          ListFooterComponent={<View style={{ height: 500 }} />}
           contentContainerStyle={{ paddingTop: 16 }}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={() => {
-              fetchTickets(1, selectedTab);
-            }} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => {
+                fetchTickets(1, selectedTab);
+              }}
+            />
           }
         />
-
       )}
     </>
   );

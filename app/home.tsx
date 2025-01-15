@@ -27,15 +27,13 @@ import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
 import { useTranslation } from 'react-i18next';
 const HomeScreen = () => {
-  const { ticketId } = useLocalSearchParams();
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
   const [isLoading, setIsLoading] = useState(true);
   const [exitApp, setExitApp] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { refresh } = useLocalSearchParams();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const bottomSheetRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const segments = useSegments(); 
