@@ -258,29 +258,37 @@ const fetchPincode = async () => {
         console.error("Failed to update ticket status.", e?.response?.data);
       
         const errors = e.response?.data?.errors;
-        const message = e.response?.data?.message;
       
         if (errors) {
-          setErrors(errors);
+          setErrors(errors.filter((error: ErrorModel) => error.param !== undefined));
         }
-      
-        // Handle specific messages
-        if (message === "ERROR") {
+
+        let msg = "";
+
+        for (let error of errors) {
+          if (error.param === undefined) {
+            msg += error.message + "\n";
+          }
+        }
+
+        if (msg.length !== 0) {
           Toast.show({
             type: 'error',
-            text1: "Incorrect pin! Please try again.",
-          });
-        } else if (message === "Already opened") {
-          Toast.show({
-            type: 'error',
-            text1: "Please complete your currently opened ticket to open another ticket.",
+            text1: msg,
           });
         } else {
-          // Generic error message
-          Toast.show({
-            type: 'error',
-            text1: "An unexpected error occurred. Please try again.",
-          });
+          const message = e.response?.data?.message;
+          if (message) {
+            Toast.show({
+              type: 'error',
+              text1: message,
+            });
+          } else {
+            Toast.show({
+              type: 'error',
+              text1: "An unexpected error occurred. Please try again.",
+            });
+          }
         }
       }).finally(() => {
         setIsLoading(false);
