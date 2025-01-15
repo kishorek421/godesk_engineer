@@ -53,17 +53,7 @@ const VerifyOTPScreen = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem("language");
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set language from AsyncStorage
-      }
-    };
-
-    fetchLanguage();
-  }, []);
+  
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {

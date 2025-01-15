@@ -34,18 +34,7 @@ const LoginScreen = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [selectedLanguage, setSelectedLanguage] = useState('en');
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const storedLanguage = await AsyncStorage.getItem('language');
-      if (storedLanguage) {
-        setSelectedLanguage(storedLanguage);
-        i18n.changeLanguage(storedLanguage); // Set the language
-      }
-    };
-
-    fetchLanguage();
-  }, []);
-
+ 
   useEffect(() => {
     const requestPermission = async () => {
       const { status } = await requestTrackingPermissionsAsync();
