@@ -321,7 +321,7 @@ const CheckInOutModal = ({
             }}
           >
             <ButtonText>
-              {status === "Checked In" ? "t(Check Out)" : "t(Check In)"}
+              {status === "Checked In" ? t('Check Out') : t('Check In')}
             </ButtonText>
             {isLoading && <ActivityIndicator color="white" className="ms-1" />}
           </Button>
