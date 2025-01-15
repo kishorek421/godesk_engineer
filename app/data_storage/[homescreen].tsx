@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import i18n from './i18n';
-import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { getItem, setItem } from '@/utils/secure_store';
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import i18n from "../../config/i18n";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons"; // For Radio Buttons
+import { getItem, setItem } from "@/utils/secure_store";
 
 const LanguageSelectionScreen = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const router = useRouter();
 
   useEffect(() => {
     const fetchLanguage = async () => {
-      const storedLanguage = await getItem('language');
+      const storedLanguage = await getItem("language");
       if (storedLanguage) {
         setSelectedLanguage(storedLanguage);
         i18n.changeLanguage(storedLanguage);
       } else {
-        i18n.changeLanguage('en');
+        i18n.changeLanguage("en");
       }
     };
     fetchLanguage();
@@ -28,8 +28,8 @@ const LanguageSelectionScreen = () => {
 
   const handleDone = async () => {
     i18n.changeLanguage(selectedLanguage);
-    await setItem('language', selectedLanguage);
-    router.push('/login');
+    await setItem("language", selectedLanguage);
+    router.push("/login");
   };
 
   return (
@@ -57,52 +57,64 @@ const LanguageSelectionScreen = () => {
       {/* Language Options */}
       <View className="flex-col items-center w-full px-4 mt-5 space-y-4">
         {/* English Option */}
-      
+
         <TouchableOpacity
-          onPress={() => handleLanguageChange('en')}
+          onPress={() => handleLanguageChange("en")}
           className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-md"
           style={{
-            backgroundColor: selectedLanguage === 'en' ? '#f1f5f9' : '#fff',
+            backgroundColor: selectedLanguage === "en" ? "#f1f5f9" : "#fff",
           }}
         >
           <Ionicons
-            name={selectedLanguage === 'en' ? 'radio-button-on' : 'radio-button-off'}
+            name={
+              selectedLanguage === "en" ? "radio-button-on" : "radio-button-off"
+            }
             size={24}
-            color={selectedLanguage === 'en' ? '#39a676' : '#ccc'}
+            color={selectedLanguage === "en" ? "#39a676" : "#ccc"}
           />
-          <Text className="text-lg font-semibold text-gray-700 ml-4">English</Text>
+          <Text className="text-lg font-semibold text-gray-700 ml-4">
+            English
+          </Text>
         </TouchableOpacity>
-      
+
         {/* Kannada Option */}
         <TouchableOpacity
-          onPress={() => handleLanguageChange('kn')}
+          onPress={() => handleLanguageChange("kn")}
           className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
           style={{
-            backgroundColor: selectedLanguage === 'kn' ? '#f1f5f9' : '#fff',
+            backgroundColor: selectedLanguage === "kn" ? "#f1f5f9" : "#fff",
           }}
         >
           <Ionicons
-            name={selectedLanguage === 'kn' ? 'radio-button-on' : 'radio-button-off'}
+            name={
+              selectedLanguage === "kn" ? "radio-button-on" : "radio-button-off"
+            }
             size={24}
-            color={selectedLanguage === 'kn' ? '#39a676' : '#ccc'}
+            color={selectedLanguage === "kn" ? "#39a676" : "#ccc"}
           />
-          <Text className="text-lg font-semibold text-gray-700 ml-4">ಕನ್ನಡ</Text>
+          <Text className="text-lg font-semibold text-gray-700 ml-4">
+            ಕನ್ನಡ
+          </Text>
         </TouchableOpacity>
 
         {/* Telugu Option */}
         <TouchableOpacity
-          onPress={() => handleLanguageChange('te')}
+          onPress={() => handleLanguageChange("te")}
           className="flex-row items-center w-full p-4 border mt-10 border-gray-300 rounded-xl shadow-md"
           style={{
-            backgroundColor: selectedLanguage === 'te' ? '#f1f5f9' : '#fff',
+            backgroundColor: selectedLanguage === "te" ? "#f1f5f9" : "#fff",
           }}
         >
           <Ionicons
-            name={selectedLanguage === 'te' ? 'radio-button-on' : 'radio-button-off'}
+            name={
+              selectedLanguage === "te" ? "radio-button-on" : "radio-button-off"
+            }
             size={24}
-            color={selectedLanguage === 'te' ? '#39a676' : '#ccc'}
+            color={selectedLanguage === "te" ? "#39a676" : "#ccc"}
           />
-          <Text className="text-lg font-semibold text-gray-700 ml-4">తెలుగు</Text>
+          <Text className="text-lg font-semibold text-gray-700 ml-4">
+            తెలుగు
+          </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity
           onPress={() => handleLanguageChange('hi')}
@@ -122,17 +134,18 @@ const LanguageSelectionScreen = () => {
 
       {/* Done Button */}
       <View className="flex-1">
-  {/* Other content of the screen */}
-  <View className="mt-10">
-        <TouchableOpacity
-          onPress={handleDone}
-          className="bg-primary-950 w-full p-4 rounded-xl shadow-md"
-        >
-       <Text className="text-lg font-bold text-center text-white">Done</Text>
-       </TouchableOpacity>
-  </View>
-</View>
-
+        {/* Other content of the screen */}
+        <View className="mt-10">
+          <TouchableOpacity
+            onPress={handleDone}
+            className="bg-primary-950 w-full p-4 rounded-xl shadow-md"
+          >
+            <Text className="text-lg font-bold text-center text-white">
+              Done
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };

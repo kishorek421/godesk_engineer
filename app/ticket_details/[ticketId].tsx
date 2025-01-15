@@ -198,11 +198,6 @@ const fetchPincode = async () => {
           param: "location", 
           message: "Location is required but couldn't be fetched." 
         });
-      
-        Alert.alert(
-          'Location Error', 
-          'Unable to fetch current location. Please check your location permissions.'
-        );
       }
       if (!pincode) {
         errors.push({ param: "pincode", message: "Pincode is required but couldn't be fetched." });
@@ -261,18 +256,36 @@ const fetchPincode = async () => {
         }
       }).catch((e) => {
         console.error("Failed to update ticket status.", e?.response?.data);
+      
         const errors = e.response?.data?.errors;
+        const message = e.response?.data?.message;
+      
         if (errors) {
           setErrors(errors);
         }
-        Toast.show({
-          type: 'error',
-          text1: "Incorrect pin! Please try again.",
-        });
+      
+        // Handle specific messages
+        if (message === "ERROR") {
+          Toast.show({
+            type: 'error',
+            text1: "Incorrect pin! Please try again.",
+          });
+        } else if (message === "Already opened") {
+          Toast.show({
+            type: 'error',
+            text1: "Please complete your currently opened ticket to open another ticket.",
+          });
+        } else {
+          // Generic error message
+          Toast.show({
+            type: 'error',
+            text1: "An unexpected error occurred. Please try again.",
+          });
+        }
       }).finally(() => {
         setIsLoading(false);
       });
-  };
+    };
   return isLoading ? (
     <LoadingBar />
   ) : (
