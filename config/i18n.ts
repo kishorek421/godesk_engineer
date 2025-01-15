@@ -1,8 +1,8 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import en from "../locals/en.json";
-import kn from "../locals/kn.json";
-import te from "../locals/te.json";
+import en from "../locales/en.json";
+import kn from "../locales/kn.json";
+import te from "../locales/te.json";
 
 i18n.use(initReactI18next).init({
   lng: "en", // Default language
