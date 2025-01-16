@@ -1,24 +1,6 @@
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  Pressable,
-  ActivityIndicator
-} from "react-native";
+import {View,Text,SafeAreaView,Image,Pressable,ActivityIndicator} from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { VStack } from "@/components/ui/vstack";
 import LottieView from "lottie-react-native";
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlError,
-  FormControlErrorText,
-} from "@/components/ui/form-control";
-import { Input, InputField } from "@/components/ui/input";
-import { isFormFieldInValid } from "@/utils/helper";
 import { ErrorModel } from "@/models/common";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -27,20 +9,20 @@ import apiClient from "@/clients/apiClient";
 import { setItem } from "@/utils/secure_store";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-import { useTranslation } from "react-i18next"; // Import the translation hook
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { P } from "@expo/html-elements";
+import { useTranslation } from "react-i18next"; 
 import Toast from "react-native-toast-message";
+
 const VerifyOTPScreen = () => {
+
   const { mobile } = useLocalSearchParams();
-  const { t, i18n } = useTranslation(); // Use translation hook
-  const [timer, setTimer] = useState(120); // 120 seconds (2 minutes)
-  const [isDisabled, setIsDisabled] = useState(true);
-  
-  const [otp, setOtp] = useState<string>("");
+  const { t, i18n } = useTranslation(); 
+  const [timer, setTimer] = useState(120); 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [otp, setOtp] = useState<string>("");
   const animationRef = useRef<LottieView>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -60,17 +42,17 @@ const VerifyOTPScreen = () => {
         setTimer((prevTimer) => prevTimer - 1);
       }, 1000);
 
-      return () => clearInterval(interval); // Cleanup on unmount
+      return () => clearInterval(interval); 
     } else {
       setIsDisabled(false);
     }
   }, [timer]);
+
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ param: "otp", message: t("otpValidationMessage") }]); // Use translation for error message
+      setErrors([{ param: "otp", message: t("otpValidationMessage") }]); 
       return;
     }
-
     setIsLoading(true);
     setErrors([]);
 
@@ -117,15 +99,12 @@ const VerifyOTPScreen = () => {
     .post("/otp/send", { mobile, type: "FIELD_ENGINEER" })
     .then((response) => {
       console.log("Response:", response.data.data);
-
       if (response.data?.success) {
-        // Navigate to OTP verification page
         Toast.show({
           type: "success",
           text1: "OTP sent successfully",
         });
-
-        setTimer(120); // Reset the timer to 2 minutes
+        setTimer(120); 
         setIsDisabled(true);
       }
     })
@@ -134,7 +113,7 @@ const VerifyOTPScreen = () => {
     })
     .finally(() => {
       console.log("Request completed");
-      setIsLoading(false); // Ensure loading state is reset
+      setIsLoading(false); 
     });
 };
 
@@ -177,9 +156,6 @@ const VerifyOTPScreen = () => {
               validateFieldFunc={setFieldValidationStatusFunc}
               onChangeText={(e: string) => setOtp(e)}
             />
-            
-
-
           </View>
           <View className="flex-row justify-center mt-8">
               <View className="flex-row">

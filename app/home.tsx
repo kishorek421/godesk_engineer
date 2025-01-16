@@ -1,44 +1,31 @@
-import {
-  View,
-  Text,
-  BackHandler, 
-  ToastAndroid,
-  FlatList,
-  SafeAreaView,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import {View,Text,BackHandler, ToastAndroid,SafeAreaView,Pressable,} from "react-native";
 import React, { useState, useEffect, useRef } from "react";
-import { useLocalSearchParams, router, Link } from "expo-router";
+import { router, Link,useSegments } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import moment from "moment";
-import { useRouter, useSegments } from "expo-router";
-import {
-  GET_CHECK_IN_OUT_STATUS,
-  GET_INPROGRESS_TICKETS_DETAILS,
-  GET_USER_DETAILS,
-} from "@/constants/api_endpoints";
+import { GET_CHECK_IN_OUT_STATUS,GET_INPROGRESS_TICKETS_DETAILS,GET_USER_DETAILS} from "@/constants/api_endpoints";
 import TicketListLayout from "@/components/tickets/TicketListLayout";
 import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
 import { useTranslation } from 'react-i18next';
+
 const HomeScreen = () => {
-  const [inProgressTicketDetails, setInProgressTicketDetails] =
-    useState<TicketListItemModel>({});
-  const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
+ 
   const [isLoading, setIsLoading] = useState(true);
   const [exitApp, setExitApp] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { t } = useTranslation();
   const bottomSheetRef = useRef(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const segments = useSegments(); 
-  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-    useState<CheckInOutStatusDetailsModel>({});
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [checkInOutStatusDetails, setCheckInOutStatusDetails] = useState<CheckInOutStatusDetailsModel>({});
+  const [inProgressTicketDetails, setInProgressTicketDetails] =  useState<TicketListItemModel>({});
+  const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
 
     const toggleImagePicker = () => {
       setIsModalVisible(!isModalVisible);
@@ -107,12 +94,10 @@ const HomeScreen = () => {
 
   const handleDoubleClick = () => {
     if (exitApp) {
-      BackHandler.exitApp(); // Exits the app
+      BackHandler.exitApp(); 
     } else {
       setExitApp(true);
-      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); // Optional feedback to user
-
-      // Reset the `exitApp` state after 2 seconds
+      ToastAndroid.show("Press again to exit", ToastAndroid.SHORT); 
       timeoutRef.current = setTimeout(() => {
         setExitApp(false);
       }, 2000);
@@ -122,11 +107,10 @@ const HomeScreen = () => {
   useEffect(() => {
     const backAction = () => {
       if  (segments.join("/") === "home") {
-       
         handleDoubleClick();
         return true;
       } else if (router.canGoBack()) {
-        router.back(); // Navigate back if possible
+        router.back(); 
         return true;
       } else {
         ToastAndroid.show("No screen to go back to!", ToastAndroid.SHORT);
@@ -138,16 +122,15 @@ const HomeScreen = () => {
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      backHandler.remove(); // Cleanup event listener
+      backHandler.remove(); 
     };
   }, [exitApp, segments]);
-
-
 
   return (
     <SafeAreaView>
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
+
           <View className="flex px-4">
             <Text className="mx-2 font-bold text-md">
               {getGreetingMessage()} 👋
@@ -162,8 +145,7 @@ const HomeScreen = () => {
                 className="bg-primary-950 mx-2 rounded-lg"
                 onPress={() => {
                   toggleImagePicker();
-                }}
-              >
+                }}>
                <ButtonText>
                   {checkInOutStatusDetails.value === "Checked In"
                     ? t('checkOut')
@@ -240,6 +222,7 @@ const HomeScreen = () => {
             </Pressable>
           )
         )}
+
          <CheckInOutModal
         setIsModalVisible={setIsModalVisible}
         bottomSheetRef={bottomSheetRef}
@@ -252,24 +235,9 @@ const HomeScreen = () => {
         }}
       />
         <TicketListLayout />
-       
       </View>
-      
     </SafeAreaView>
   );
 };
 
 export default HomeScreen;
-// Register background task for location updates
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-//     if (error) {
-//       console.error('Background location error:', error);
-//       return;
-//     }
-
-//     if (data) {
-//       const { locations } = data;
-//       const { latitude, longitude } = locations[0].coords;
-//       console.log('Background location updated:', { latitude, longitude });
-//     }
-//   });
