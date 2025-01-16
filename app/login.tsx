@@ -1,13 +1,5 @@
-
 import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  Image,
-  ActivityIndicator,
-  Linking,
-} from "react-native";
+import {View,Text,SafeAreaView,Image,ActivityIndicator,Linking} from "react-native";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
@@ -22,7 +14,6 @@ import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import { useTranslation } from 'react-i18next';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 const LoginScreen = () => {
@@ -39,15 +30,11 @@ const LoginScreen = () => {
     const requestPermission = async () => {
       const { status } = await requestTrackingPermissionsAsync();
       console.log("Tracking Permission Status:", status);
-      // Handle the status accordingly
       if (status === "granted") {
-        // console.log("Tracking Permission Granted");
       } else {
-
+        console.log("Tracking permission denied");
       }
     };
-
-    // Request tracking permission before any data is collected
     requestPermission();
   }, []);
 
@@ -97,10 +84,6 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         console.error("Error sending OTP:", error.response?.data || error);
-
-        // error.response?.data.errors
-
-        // Handle network or unexpected errors
         setErrors([
           {
             param: "mobile",
@@ -110,15 +93,14 @@ const LoginScreen = () => {
       })
       .finally(() => {
         console.log("Request completed");
-        setIsLoading(false); // Ensure loading state is reset
+        setIsLoading(false); 
       });
   };
 
   return (
     <SafeAreaView className="bg-white">
       <View className="flex justify-between h-full">
-        <View className="mt-1 px-4">
-          {/* Logo */}
+        <View className="mt-1 px-4"> 
           <View>
             <View className="flex-row items-end">
               <Image
@@ -133,8 +115,6 @@ const LoginScreen = () => {
               </Text>
             </View>
           </View>
-
-          {/* Welcome Text */}
           <View className="mt-6">
             <Text className="text-2xl font-bold">{t("welcome")}</Text>
             
@@ -142,8 +122,6 @@ const LoginScreen = () => {
               {t(' Let’s create something extraordinary!')}
             </Text>
           </View>
-
-          {/* Mobile Number Input */}
           <View className="mt-6">
             <FormControl
               isInvalid={isFormFieldInValid("mobileNo", errors).length > 0}
@@ -182,7 +160,6 @@ const LoginScreen = () => {
             </FormControl>
           </View>
 
-          {/* Login Button */}
           <View className="flex-row justify-between items-center mt-12">
             <Text className="font-bold text-primary-950 text-xl">{t("Login")}</Text>
             <Button
@@ -198,7 +175,6 @@ const LoginScreen = () => {
           </View>
         </View>
 
-        {/* Footer Animation */}
         <View>
           <LottieView
             ref={animationRef}
@@ -209,7 +185,6 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-
           <Text className="mt-8 text-sm text-center px-8">
             {t('loginAgreement')}{" "}
             <Text

@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     }
     const loadUser = async () => {
-      // router.replace({ pathname: "/route/map_view_screen" });
+
       const token = await getItem(AUTH_TOKEN_KEY);
       console.log("token", token);
       const refreshToken = await getItem(REFRESH_TOKEN_KEY);

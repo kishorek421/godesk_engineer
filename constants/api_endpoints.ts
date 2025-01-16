@@ -14,7 +14,8 @@ export const GET_TICKET_DETAILS = "/tickets/getTicketById";
 export const GET_CLOSED_TICKETS_LIST = "/tickets/getClosedTicketsList";
 export const GET_NOT_COMPLETED_TICKETS_LIST = "tickets/getOnHoldTicketsList";
 export const GET_INPROGRESS_TICKETS_DETAILS ="/tickets/getInProgressTicketDetails";
-export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus"
+export const UPDATE_TICKET_STATUS ="/tickets/updateTicketStatus";
+export const GET_WORK_COMPLETED_TICKETS_LIST = "/tickets/getWorkCompletedTicketsList";
 
 //user list
 export const GET_CUSTOMER_LEAD_DETAILS = "/customers/leads/view";
