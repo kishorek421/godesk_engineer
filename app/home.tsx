@@ -12,6 +12,11 @@ import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
 import { useTranslation } from 'react-i18next';
+import {
+  hasServicesEnabledAsync,
+  requestForegroundPermissionsAsync,
+} from "expo-location";
+import Toast from "react-native-toast-message";
 
 const HomeScreen = () => {
  
@@ -141,11 +146,22 @@ const HomeScreen = () => {
           </View>
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
-              <Button
-                className="bg-primary-950 mx-2 rounded-lg"
-                onPress={() => {
-                  toggleImagePicker();
-                }}>
+               <Button
+                    className="bg-primary-950 rounded-lg"
+                    onPress={async () => {
+                      const { status } =
+                        await requestForegroundPermissionsAsync();
+                      if (status === "granted") {
+                        toggleImagePicker();
+                      } else {
+                        Toast.show({
+                          type: "error",
+                          text1:
+                            "Allow location permission to Check In/Check Out",
+                        });
+                      }
+                    }}
+                  >
                <ButtonText>
                   {checkInOutStatusDetails.value === "Checked In"
                     ? t('checkOut')
