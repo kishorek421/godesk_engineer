@@ -23,17 +23,16 @@ apiClient.interceptors.request.use(
         await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
         // console.log(validateResponse);
       } catch (e) {
-        if (e instanceof AxiosError) {
-          console.error("token invalid", e.response?.data);
-        }
+        console.error("token invalid");
         try {
           const refreshToken = await getItem(REFRESH_TOKEN_KEY);
           console.log("refreshToken", refreshToken);
-          const response = await axios.post(BASE_URL + "/auth/refresh-token", {
-            token: refreshToken,
-          });
-          const newToken = response.data.token;
+          const response = await axios.get(
+            BASE_URL + "/login/refresh_token" + `?refreshToken=${refreshToken}`,
+          );
+          const newToken = response.data?.data?.accessToken;
           await setItem(AUTH_TOKEN_KEY, newToken);
+          console.log("newToken", newToken);
           token = newToken;
         } catch (e) {
           console.error("Refresh token error");
@@ -44,7 +43,7 @@ apiClient.interceptors.request.use(
       }
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("no token", token);
+    console.log(" token", token);
     
     return config;
   },
