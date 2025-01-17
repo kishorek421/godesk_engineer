@@ -46,7 +46,7 @@ const TicketDetails = () => {
   const ticketStatusOptions: ConfigurationModel[] = [
     { key: "SPARE_REQUIRED", value: "Spare Required" },
     { key: "CANNOT_RESOLVE", value: "Cannot Resolve" },
-    { key: "WORK_COMPLETED", value: "Work Completed" },
+    {  key: "TICKET_CLOSED", value: "Close" },
   ];
   const { t, i18n } = useTranslation();
 
@@ -441,7 +441,7 @@ const TicketDetails = () => {
                           {ticketDetails.lastAssignedToDetails?.assignedAt
                             ? moment(
                               ticketDetails.lastAssignedToDetails?.assignedAt
-                            ).format("DD-MM-YYYY")
+                            ).format("DD-MM-YYYY hh:mm A")
                             : "-"}
                         </Text>
                       </View>
@@ -724,6 +724,7 @@ const TicketDetails = () => {
                         <ButtonText className="text-white">
                           {t("updateStatus")}
                         </ButtonText>
+                        {isLoading && <ActivityIndicator color="white" className="ms-1" />}
                       </Button>
                       </View>
                     )}

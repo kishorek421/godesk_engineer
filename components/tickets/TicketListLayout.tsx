@@ -30,7 +30,7 @@ const TicketListLayout = () => {
   const tabs = [
     t("Assigned"),
     t("Opened"),
-    t("Work Completed"),
+    // t("Work Completed"),
     t("Completed"),
     t("Not Closed"),
   ];
@@ -45,11 +45,11 @@ const TicketListLayout = () => {
         return GET_ASSIGNED_TICKETS_LIST;
       case 1:
         return GET_ASSIGNED_TICKETS_LIST;
+      // case 2:
+      //   return GET_WORK_COMPLETED_TICKETS_LIST;
       case 2:
-        return GET_WORK_COMPLETED_TICKETS_LIST;
-      case 3:
         return GET_CLOSED_TICKETS_LIST;
-      case 4:
+      case 3:
         return GET_NOT_COMPLETED_TICKETS_LIST;
       default:
         return "";
