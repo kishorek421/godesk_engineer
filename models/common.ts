@@ -31,9 +31,13 @@ export interface PaginatedData<T> {
   pagination: PaginatorModel
 }
 
+export interface UIDropdownModel {
+  label: string; value: string
+}
 
 export interface DropdownProps {
-    options: (string | { label: string; value: string })[]; 
-    placeholder: string;
-    onSelect: (selected: string) => void;
-  }
+  options: (string | { label: string; value: string })[];
+  placeholder: string;
+  onSelect: (selected: string) => void;
+}
+

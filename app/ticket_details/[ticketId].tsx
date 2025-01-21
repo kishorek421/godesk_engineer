@@ -6,6 +6,7 @@ import apiClient from "@/clients/apiClient";
 import {
   GET_CONFIGURATIONS_BY_CATEGORY,
   GET_TICKET_DETAILS,
+  TICKET_UPLOADS,
   UPDATE_TICKET_STATUS,
 } from "@/constants/api_endpoints";
 import LoadingBar from "@/components/LoadingBar";
@@ -20,6 +21,7 @@ import {
 import SubmitButton from "@/components/SubmitButton";
 import {
   bytesToMB,
+  getFileName,
   isFormFieldInValid,
 } from "@/utils/helper";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
@@ -40,14 +42,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { useTranslation } from "react-i18next";
+import { Axios, AxiosError } from "axios";
 
 const TicketDetails = () => {
-
-  const ticketStatusOptions: ConfigurationModel[] = [
-    { key: "SPARE_REQUIRED", value: "Spare Required" },
-    { key: "CANNOT_RESOLVE", value: "Cannot Resolve" },
-    {  key: "TICKET_CLOSED", value: "Close" },
-  ];
   const { t, i18n } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +60,7 @@ const TicketDetails = () => {
   const [assetImages, setAssetImages] = useState<string[]>([]);
   const bottomSheetRef = useRef(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [ticketStatusOptionsState, setTicketStatusOptions] = useState<ConfigurationModel[]>(ticketStatusOptions);
+  const [ticketStatusOptionsState, setTicketStatusOptions] = useState<ConfigurationModel[]>([]);
   const [description, setDescription] = useState<string | null>(null);
 
   const [pincode, setPincode] = useState<string | undefined>(undefined);
@@ -106,7 +103,7 @@ const TicketDetails = () => {
       const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
         params: { category: TICKET_STATUS },
       });
-      console.log("response.data?.data ", response.data?.data);
+      console.log("response.data?.data --- ticket status ----->>>> ", response.data?.data);
       setTicketStatusOptions(response.data?.data ?? []);
     } catch (e) {
       console.error(e);
@@ -159,22 +156,20 @@ const TicketDetails = () => {
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
-  const predefinedStatuses: { [key: string]: ConfigurationModel } = {
-    OPENED: { key: "OPENED", value: "Open" },
-    CUSTOMER_NOT_AVAILABLE: {
-      key: "CUSTOMER_NOT_AVAILABLE",
-      value: "Customer Not Available",
-    },
-    IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
-    TICKET_CLOSED: { key: "TICKET_CLOSED", value: "Close" },
-  };
+  // const predefinedStatuses: { [key: string]: ConfigurationModel } = {
+  //   OPENED: { key: "OPENED", value: "Open" },
+  //   CUSTOMER_NOT_AVAILABLE: {
+  //     key: "CUSTOMER_NOT_AVAILABLE",
+  //     value: "Customer Not Available",
+  //   },
+  //   IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
+  //   TICKET_CLOSED: { key: "TICKET_CLOSED", value: "Close" },
+  // };
 
   const handleSelectOption = async (option: string) => {
     console.log("Selected option:", option);
-    const selectedTicketStatus =
-      predefinedStatuses[option] ||
-      ticketStatusOptions.find((item) => item.value === option) ||
-      {};
+    const selectedTicketStatus = ticketStatusOptionsState.find((item) => item.key === option) ?? {};
+    console.log("selectedTicketStatus", selectedTicketStatus);
     setSelectedTicketStatus(selectedTicketStatus);
   };
 
@@ -234,102 +229,199 @@ const TicketDetails = () => {
   };
 
   const updateTicketStatus = async () => {
-      const formErrors = validateInputs();
-      if (formErrors.length > 0) {
-        setErrors(formErrors);
-        return;
+    const formErrors = validateInputs();
+    if (formErrors.length > 0) {
+      setErrors(formErrors);
+
+    }
+    setIsLoading(true);
+
+    const formData = new FormData();
+
+    setIsLoading(true);
+
+    if (assetImages.length > 0) {
+      console.log(assetImages);
+      for (let i = 0; i < assetImages.length; i++) {
+        const assetImage = assetImages[i];
+        // --@ts-ignore --
+        formData.append("assetImages", {
+          uri: assetImage,
+          type: "image/jpeg",
+          name: getFileName(assetImage, true),
+        } as any);
       }
-    const requestBody = {
-      ticketId,
-      assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-      toStatus: selectedTicketStatus.key,
-      location: {
-        latitude: latitude,
-        longitude: longitude,
-      },
-      pincode: pincode,
-      description: description,
-      pin: [
-        "IN_PROGRESS",
-        "SPARE_REQUIRED",
-        "CANNOT_RESOLVE",
-        "TICKET_CLOSED",
-      ].includes(selectedTicketStatus.key ?? "")
-        ? (otp ?? null)
-        : null,
-    };
+    }
 
-    console.log("Request body:", requestBody);
-
-    await apiClient
-      .put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody)
+    apiClient
+      .post(TICKET_UPLOADS, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
       .then(async (response) => {
-        console.log("response.data", response.data);
-        if (response.status === 200) {
-          console.log("Request body", requestBody);
-          Toast.show({
-            type: "success",
-            text1: "Ticket status updated successfully!",
-          });
-          await fetchTicketDetails();
-          router.push({
-            pathname: "../home",
-            params: {
-              refresh: "true",
+        const uploadedAssetImages = response.data.data;
+        console.log("uploadedAssetImages", uploadedAssetImages);
+
+        if (uploadedAssetImages) {
+          const requestBody = {
+            ticketId,
+            assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+            toStatus: selectedTicketStatus.key,
+            location: {
+              latitude: latitude,
+              longitude: longitude,
             },
-          });
+            pincode: pincode,
+            description: description,
+            pin: [
+              "IN_PROGRESS",
+              "SPARE_REQUIRED",
+              "CANNOT_RESOLVE",
+              "TICKET_CLOSED",
+            ].includes(selectedTicketStatus.key ?? "")
+              ? (otp ?? null)
+              : null,
+            assetImages: uploadedAssetImages,
+          };
+
+          console.log("Request body:", requestBody);
+
+          await apiClient
+            .put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody)
+            .then(async (response) => {
+              console.log("response.data", response.data);
+              if (response.status === 200) {
+                console.log("Request body", requestBody);
+                Toast.show({
+                  type: "success",
+                  text1: "Ticket status updated successfully!",
+                });
+                await fetchTicketDetails();
+                router.push({
+                  pathname: "../home",
+                  params: {
+                    refresh: "true",
+                  },
+                });
+              } else {
+                Toast.show({
+                  type: "error",
+                  text1: `Failed to update status: ${response.status}`,
+                });
+              }
+            })
+            .catch((e) => {
+              console.error("Failed to update ticket status.", e?.response?.data);
+
+              const errors = e.response?.data?.errors;
+
+              if (errors) {
+                setErrors(
+                  errors.filter((error: ErrorModel) => error.param !== null)
+                );
+              }
+
+              let msg = "";
+
+              for (let error of errors) {
+                console.log("error ->>>>.", error);
+
+                if (error.param === null) {
+                  msg += error.message + "\n";
+                }
+              }
+
+              if (msg.length !== 0) {
+                Toast.show({
+                  type: "error",
+                  text1: msg,
+                });
+              } else {
+                const message = e.response?.data?.message;
+                if (message) {
+                  Toast.show({
+                    type: "error",
+                    text1: message,
+                  });
+                } else {
+                  Toast.show({
+                    type: "error",
+                    text1: "An unexpected error occurred. Please try again.",
+                  });
+                }
+              }
+            })
+            .finally(() => {
+              setIsLoading(false);
+            });
         } else {
-          Toast.show({
-            type: "error",
-            text1: `Failed to update status: ${response.status}`,
-          });
+          setIsLoading(false);
         }
       })
-      .catch((e) => {
-        console.error("Failed to update ticket status.", e?.response?.data);
-
-        const errors = e.response?.data?.errors;
-
-        if (errors) {
-          setErrors(
-            errors.filter((error: ErrorModel) => error.param !== null)
-          );
-        }
-
-        let msg = "";
-
-        for (let error of errors) {
-          console.log("error ->>>>.", error);
-
-          if (error.param === null) {
-            msg += error.message + "\n";
-          }
-        }
-
-        if (msg.length !== 0) {
-          Toast.show({
-            type: "error",
-            text1: msg,
-          });
-        } else {
-          const message = e.response?.data?.message;
-          if (message) {
-            Toast.show({
-              type: "error",
-              text1: message,
-            });
-          } else {
-            Toast.show({
-              type: "error",
-              text1: "An unexpected error occurred. Please try again.",
-            });
-          }
-        }
-      })
-      .finally(() => {
+      .catch((e: any) => {
+        let errors = e.response?.data?.errors;
+        console.log(errors);
         setIsLoading(false);
       });
   };
+
+  const getTicketStatusOptions = (statusKey?: string, customerTypeKey?: string): (string | { label: any; value: any })[] => {
+    if (ticketDetails.statusDetails?.key === ASSIGNED) {
+      return [
+        { value: "OPENED", label: "Open" },
+        {
+          value: "CUSTOMER_NOT_AVAILABLE",
+          label: "Customer not available",
+        },
+      ]
+    }
+    if (ticketDetails.statusDetails?.key === "OPENED") {
+      return [
+        {
+          value: "IN_PROGRESS",
+          label: "InProgress",
+        },
+        {
+          value: "CUSTOMER_NOT_AVAILABLE",
+          label: "Customer not available",
+        },
+      ]
+    }
+    if (ticketDetails.statusDetails?.key === "IN_PROGRESS") {
+      if (customerTypeKey === "B2C_USER") {
+        return [
+          {
+            value: "WORK_COMPLETED",
+            label: "Work Completed",
+          },
+          { value: "SPARE_REQUIRED", label: "Spare Required" },
+          { value: "CANNOT_RESOLVE", label: "Cannot Resolve" },
+        ]
+      } else {
+        return [
+          {
+            value: "TICKET_CLOSED",
+            label: "Close",
+          },
+          { value: "SPARE_REQUIRED", label: "Spare Required" },
+          { value: "CANNOT_RESOLVE", label: "Cannot Resolve" },
+        ]
+      }
+    }
+    if (ticketDetails.statusDetails?.key === "PAID") {
+      if (customerTypeKey === "B2C_USER") {
+        return [
+          {
+            value: "TICKET_CLOSED",
+            label: "Close",
+          },
+        ]
+      }
+    }
+    return [];
+  }
+
   return isLoading ? (
     <LoadingBar />
   ) : (
@@ -522,7 +614,9 @@ const TicketDetails = () => {
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
                     ticketDetails.statusDetails?.value ===
-                    "Work Completed") && (
+                    "Work Completed" ||
+                    ticketDetails.statusDetails?.value ===
+                    "Paid") && (
                       <View className="my-4">
                         <Text className="font-bold text-lg text-primary-950">
                           {t("updateTicketStatus")}
@@ -535,39 +629,7 @@ const TicketDetails = () => {
                         >
                           <PrimaryDropdownFormField
                             options={
-                              ticketStatusOptions.length > 0
-                                ? ticketDetails.statusDetails?.key ===
-                                  TICKET_IN_PROGRESS
-                                  ? ticketStatusOptions.map(
-                                    (option: ConfigurationModel) =>
-                                      option.value || ""
-                                  )
-                                  : ticketDetails.statusDetails?.key === ASSIGNED
-                                    ? [
-                                      { value: "OPENED", label: "Open" },
-                                      {
-                                        value: "CUSTOMER_NOT_AVAILABLE",
-                                        label: "Customer not available",
-                                      },
-                                    ]
-                                    : ticketDetails.statusDetails?.key ===
-                                      "OPENED"
-                                      ? [
-                                        {
-                                          value: "IN_PROGRESS",
-                                          label: "InProgress",
-                                        },
-                                      ]
-                                      : ticketDetails.statusDetails?.key ===
-                                        "WORK_COMPLETED"
-                                        ? [
-                                          {
-                                            value: "TICKET_CLOSED",
-                                            label: "Close",
-                                          },
-                                        ]
-                                        : []
-                                : []
+                              getTicketStatusOptions(ticketDetails.statusDetails?.key, ticketDetails.userTypeDetails?.key)
                             }
                             selectedValue={selectTicketStatusOptions.value}
                             setSelectedValue={setSelectTicketStatusOptions}
@@ -714,18 +776,17 @@ const TicketDetails = () => {
                             </FormControlErrorText>
                           </FormControlError>
                         </FormControl>
-                        
                         <Button
-                        className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
-                        onPress={() => {
-                          if (isLoading) return;
-                          updateTicketStatus();
-                        }}>
-                        <ButtonText className="text-white">
-                          {t("updateStatus")}
-                        </ButtonText>
-                        {isLoading && <ActivityIndicator color="white" className="ms-1" />}
-                      </Button>
+                          className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
+                          onPress={() => {
+                            if (isLoading) return;
+                            updateTicketStatus();
+                          }}>
+                          <ButtonText >
+                            {t("updateStatus")}
+                          </ButtonText>
+                          {isLoading && <ActivityIndicator color="white" className="ms-1" />}
+                        </Button>
                       </View>
                     )}
                 </View>
