@@ -206,6 +206,10 @@ const TicketDetails = () => {
       });
     }
     if (assetImages.length === 0) {
+      (selectedTicketStatus?.key === "IN_PROGRESS" ||
+       selectedTicketStatus?.key === "SPARE_REQUIRED" ||
+       selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
+       selectedTicketStatus?.key === "TICKET_CLOSED") &&
       errors.push({
         param: "assetImages",
         message: "At least one asset image is required",
@@ -234,7 +238,7 @@ const TicketDetails = () => {
       setErrors(formErrors);
 
     }
-    setIsLoading(true);
+    // setIsLoading(true);
 
     const formData = new FormData();
 
@@ -264,7 +268,7 @@ const TicketDetails = () => {
         console.log("uploadedAssetImages", uploadedAssetImages);
 
         if (uploadedAssetImages) {
-          const requestBody = {
+            const requestBody = {
             ticketId,
             assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
             toStatus: selectedTicketStatus.key,
@@ -282,8 +286,8 @@ const TicketDetails = () => {
             ].includes(selectedTicketStatus.key ?? "")
               ? (otp ?? null)
               : null,
-            assetImages: uploadedAssetImages,
-          };
+            assetImages: uploadedAssetImages ?? [],
+            };
 
           console.log("Request body:", requestBody);
 
@@ -572,10 +576,10 @@ const TicketDetails = () => {
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500 text-md ">
-                      {t("Service Type")}
+                      {t("User Type")}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                      {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                      {ticketDetails.userTypeDetails?.value ?? "-"}
                     </Text>
                   </View>
                   <View className="flex mt-3">
@@ -613,10 +617,7 @@ const TicketDetails = () => {
                   {(ticketDetails.statusDetails?.value === "Opened" ||
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
-                    ticketDetails.statusDetails?.value ===
-                    "Work Completed" ||
-                    ticketDetails.statusDetails?.value ===
-                    "Paid") && (
+                    ticketDetails.statusDetails?.value ==="Paid") && (
                       <View className="my-4">
                         <Text className="font-bold text-lg text-primary-950">
                           {t("updateTicketStatus")}
@@ -677,7 +678,6 @@ const TicketDetails = () => {
                           <HStack className="justify-between mt-2 mb-1">
                             <Text className="font-medium">
                               {t("assetImages")}{" "}
-                              <Text className="text-red-400">*</Text>
                             </Text>
                             <Text className="text-gray-500">
                               {assetImages.length}/3
