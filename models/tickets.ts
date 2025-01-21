@@ -35,6 +35,7 @@ export interface TicketListItemModel {
   location?: LocationModel;
   pin?: string;
   customersDetails?:CustomerDetailsModel;
+  userTypeDetails?: ConfigurationModel;
 }
 
 export interface AssignedToUserDetailsModel {

@@ -154,19 +154,14 @@ const CheckInOutModal = ({
     } else {
       setErrorValue("selfie", "", "", setErrors);
     }
-
     setIsLoading(true);
-
     const formData = new FormData();
-
     formData.append("assetImages", {
       uri: selfie,
       type: "image/jpeg",
       name: getFileName(selfie, true),
     } as any);
-
     setErrors([]);
-
     apiClient
       .post(TICKET_UPLOADS, formData, {
         headers: {
@@ -318,8 +313,7 @@ const CheckInOutModal = ({
             onPress={() => {
               if (isLoading) return;
               chechInOut();
-            }}
-          >
+            }}>
             <ButtonText>
               {status === "Checked In" ? t('Check Out') : t('Check In')}
             </ButtonText>

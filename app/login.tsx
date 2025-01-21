@@ -60,9 +60,10 @@ const LoginScreen = () => {
 
     setIsLoading(true);
     setErrors([]);
+   
 
-    await apiClient
-      .post("/otp/send", { mobile, "type": "FIELD_ENGINEER" })
+ await apiClient
+      .post("/otp/send", { mobile, "type": "FIELD_ENGINEER"})
       .then((response) => {
         console.log("Response:", response.data.data);
         if (response.data?.success) {

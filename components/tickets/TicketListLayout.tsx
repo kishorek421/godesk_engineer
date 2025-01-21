@@ -11,6 +11,7 @@ import {
   GET_ASSIGNED_TICKETS_LIST,
   GET_CLOSED_TICKETS_LIST,
   GET_NOT_COMPLETED_TICKETS_LIST,
+  GET_PAID_TICKETS_LIST,
   GET_WORK_COMPLETED_TICKETS_LIST,
 } from "@/constants/api_endpoints";
 import { getTicketLists } from "@/services/api/tickets_api_service";
@@ -30,10 +31,16 @@ const TicketListLayout = () => {
   const tabs = [
     t("Assigned"),
     t("Opened"),
-    // t("Work Completed"),
+    t("Work Completed"),
+    t("Paid"),
     t("Completed"),
     t("Not Closed"),
   ];
+
+  // const  isB2C_USER = true;
+  // if ( isB2C_USER) {
+  //   setSelectedTab(2); 
+  // }
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -45,11 +52,13 @@ const TicketListLayout = () => {
         return GET_ASSIGNED_TICKETS_LIST;
       case 1:
         return GET_ASSIGNED_TICKETS_LIST;
-      // case 2:
-      //   return GET_WORK_COMPLETED_TICKETS_LIST;
       case 2:
-        return GET_CLOSED_TICKETS_LIST;
+        return GET_WORK_COMPLETED_TICKETS_LIST;
       case 3:
+        return GET_PAID_TICKETS_LIST;
+      case 4:
+        return GET_CLOSED_TICKETS_LIST;
+      case 5:
         return GET_NOT_COMPLETED_TICKETS_LIST;
       default:
         return "";
