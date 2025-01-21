@@ -572,10 +572,10 @@ const TicketDetails = () => {
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500 text-md ">
-                      {t("Service Type")}
+                      {t("User Type")}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                      {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                      {ticketDetails.userTypeDetails?.value ?? "-"}
                     </Text>
                   </View>
                   <View className="flex mt-3">
