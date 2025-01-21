@@ -233,143 +233,110 @@ const TicketDetails = () => {
   };
 
   const updateTicketStatus = async () => {
-    const formErrors = validateInputs();
-    if (formErrors.length > 0) {
-      setErrors(formErrors);
-
-    }
-    // setIsLoading(true);
-
-    const formData = new FormData();
-
-    setIsLoading(true);
-
-    if (assetImages.length > 0) {
-      console.log(assetImages);
-      for (let i = 0; i < assetImages.length; i++) {
-        const assetImage = assetImages[i];
-        // --@ts-ignore --
-        formData.append("assetImages", {
-          uri: assetImage,
-          type: "image/jpeg",
-          name: getFileName(assetImage, true),
-        } as any);
+    try {
+      const formErrors = validateInputs();
+      if (formErrors.length > 0) {
+        setErrors(formErrors);
+        return; 
       }
-    }
-
-    apiClient
-      .post(TICKET_UPLOADS, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(async (response) => {
-        const uploadedAssetImages = response.data.data;
-        console.log("uploadedAssetImages", uploadedAssetImages);
-
-        if (uploadedAssetImages) {
-            const requestBody = {
-            ticketId,
-            assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-            toStatus: selectedTicketStatus.key,
-            location: {
-              latitude: latitude,
-              longitude: longitude,
-            },
-            pincode: pincode,
-            description: description,
-            pin: [
-              "IN_PROGRESS",
-              "SPARE_REQUIRED",
-              "CANNOT_RESOLVE",
-              "TICKET_CLOSED",
-            ].includes(selectedTicketStatus.key ?? "")
-              ? (otp ?? null)
-              : null,
-            assetImages: uploadedAssetImages ?? [],
-            };
-
-          console.log("Request body:", requestBody);
-
-          await apiClient
-            .put(`${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`, requestBody)
-            .then(async (response) => {
-              console.log("response.data", response.data);
-              if (response.status === 200) {
-                console.log("Request body", requestBody);
-                Toast.show({
-                  type: "success",
-                  text1: "Ticket status updated successfully!",
-                });
-                await fetchTicketDetails();
-                router.push({
-                  pathname: "../home",
-                  params: {
-                    refresh: "true",
-                  },
-                });
-              } else {
-                Toast.show({
-                  type: "error",
-                  text1: `Failed to update status: ${response.status}`,
-                });
-              }
-            })
-            .catch((e) => {
-              console.error("Failed to update ticket status.", e?.response?.data);
-
-              const errors = e.response?.data?.errors;
-
-              if (errors) {
-                setErrors(
-                  errors.filter((error: ErrorModel) => error.param !== null)
-                );
-              }
-
-              let msg = "";
-
-              for (let error of errors) {
-                console.log("error ->>>>.", error);
-
-                if (error.param === null) {
-                  msg += error.message + "\n";
-                }
-              }
-
-              if (msg.length !== 0) {
-                Toast.show({
-                  type: "error",
-                  text1: msg,
-                });
-              } else {
-                const message = e.response?.data?.message;
-                if (message) {
-                  Toast.show({
-                    type: "error",
-                    text1: message,
-                  });
-                } else {
-                  Toast.show({
-                    type: "error",
-                    text1: "An unexpected error occurred. Please try again.",
-                  });
-                }
-              }
-            })
-            .finally(() => {
-              setIsLoading(false);
-            });
-        } else {
-          setIsLoading(false);
+  
+      setIsLoading(true);
+  
+      let uploadedAssetImages: string[] = [];
+  
+      if (assetImages.length > 0) {
+        console.log("Uploading asset images:", assetImages);
+  
+        const formData = new FormData();
+        for (let i = 0; i < assetImages.length; i++) {
+          const assetImage = assetImages[i];
+          formData.append("assetImages", {
+            uri: assetImage,
+            type: "image/jpeg",
+            name: getFileName(assetImage, true),
+          } as unknown as Blob);
         }
-      })
-      .catch((e: any) => {
-        let errors = e.response?.data?.errors;
-        console.log(errors);
-        setIsLoading(false);
-      });
+        const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+  
+        if (uploadResponse.status !== 200) {
+          throw new Error("Image upload failed");
+        }
+  
+        uploadedAssetImages = uploadResponse.data.data || [];
+        console.log("Uploaded asset images:", uploadedAssetImages);
+      }
+      const requestBody = {
+        ticketId,
+        assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+        toStatus: selectedTicketStatus.key,
+        location: {
+          latitude,
+          longitude,
+        },
+        pincode,
+        description,
+        pin: ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
+          selectedTicketStatus.key ?? ""
+        )
+          ? otp ?? null
+          : null,
+        assetImages: uploadedAssetImages, 
+      };
+  
+      console.log("Request body:", requestBody);
+      const updateResponse = await apiClient.put(
+        `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
+        requestBody
+      );
+  
+      if (updateResponse.status === 200) {
+        console.log("Ticket status updated successfully");
+        Toast.show({
+          type: "success",
+          text1: "Ticket status updated successfully!",
+        });
+  
+        await fetchTicketDetails();
+        router.push({
+          pathname: "../home",
+          params: { refresh: "true" },
+        });
+      } else {
+        throw new Error(`Failed to update status: ${updateResponse.status}`);
+      }
+    } catch (error: any) {
+      console.error("Failed to update ticket status.", error?.response?.data);
+  
+      if (error?.response?.data?.errors) {
+        setErrors(error.response.data.errors.filter((err: any) => err.param !== null));
+  
+        const errorMessages = error.response.data.errors
+          .filter((err: any) => err.param === null)
+          .map((err: any) => err.message)
+          .join("\n");
+  
+        if (errorMessages) {
+          Toast.show({
+            type: "error",
+            text1: errorMessages,
+          });
+        }
+      } else {
+        Toast.show({
+          type: "error",
+          text1: error.response?.data?.message || "An unexpected error occurred. Please try again.",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
+  
   const getTicketStatusOptions = (statusKey?: string, customerTypeKey?: string): (string | { label: any; value: any })[] => {
     if (ticketDetails.statusDetails?.key === ASSIGNED) {
       return [
