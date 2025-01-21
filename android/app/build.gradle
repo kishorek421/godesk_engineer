@@ -97,8 +97,8 @@ android {
         applicationId 'com.godesk.godeskengineer'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
-        versionName "1.0.1"
+        versionCode 13
+        versionName "1.0.4"
     }
     signingConfigs {
         debug {

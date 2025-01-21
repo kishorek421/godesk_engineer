@@ -487,7 +487,7 @@ const TicketDetails = () => {
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).format(
-                              "DD-MM-YYYY"
+                              "DD-MM-YYYY hh:mm a"
                             )
                             : "-"}
                         </Text>

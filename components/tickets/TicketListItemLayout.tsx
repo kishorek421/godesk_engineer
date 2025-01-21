@@ -41,7 +41,7 @@ const TicketListItemLayout = ({
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
               <Text className="text-gray-500 text-[13px] mt-[1px]">
-              issue In {ticketModel.issueTypeDetails?.name ?? "-"}
+              Issue In {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>
             <TicketStatusComponent
@@ -53,7 +53,7 @@ const TicketListItemLayout = ({
           <View className="w-full">
             <View className="flex-row items-center justify-between">
               <View className="flex">
-                <Text className="text-gray-500 text-md "> {t('raisedBy')}</Text>
+                <Text className="text-gray-500 text-md ">{t('raisedBy')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel?.customerDetails?.firstName ?? ""}{" "}
                   {ticketModel?.customerDetails?.lastName ?? ""}
@@ -63,7 +63,7 @@ const TicketListItemLayout = ({
                 <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel.createdAt
-                    ? moment(Number.parseInt(ticketModel.createdAt)).format("DD-MM-YYYY")
+                    ? moment(Number.parseInt(ticketModel.createdAt)).format("DD-MM-YYYY hh:mm a")
                     : "-"}
                 </Text>
               </View>
