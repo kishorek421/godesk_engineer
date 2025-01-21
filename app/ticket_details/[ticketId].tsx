@@ -614,8 +614,6 @@ const TicketDetails = () => {
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
                     ticketDetails.statusDetails?.value ===
-                    "Work Completed" ||
-                    ticketDetails.statusDetails?.value ===
                     "Paid") && (
                       <View className="my-4">
                         <Text className="font-bold text-lg text-primary-950">
