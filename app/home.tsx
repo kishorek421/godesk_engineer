@@ -227,7 +227,7 @@ const HomeScreen = () => {
                                 Number.parseInt(
                                   inProgressTicketDetails.createdAt
                                 )
-                              ).format("DD-MM-YYYY")
+                              ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
                         </Text>
                       </View>

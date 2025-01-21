@@ -36,7 +36,7 @@
     <string>1</string>
     <key>LSRequiresIPhoneOS</key>
     <true/>
-     <key>NSAppTransportSecurity</key>
+    <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
       <true/>
@@ -63,6 +63,8 @@
     <string>Allow $(PRODUCT_NAME) to use your location to track your check in and check out location.</string>
     <key>NSUserTrackingUsageDescription</key>
     <string>We would like to track your activity to provide a better experience and personalized content.</string>
+     <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow access to photos to upload damaged asset images for reporting purposes.</string>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
