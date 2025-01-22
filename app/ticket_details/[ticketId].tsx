@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView } from "react-native";
+import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView,RefreshControl, } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
@@ -69,7 +69,7 @@ const TicketDetails = () => {
 
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -206,14 +206,17 @@ const TicketDetails = () => {
       });
     }
     if (assetImages.length === 0) {
-      (selectedTicketStatus?.key === "IN_PROGRESS" ||
-       selectedTicketStatus?.key === "SPARE_REQUIRED" ||
-       selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
-       selectedTicketStatus?.key === "TICKET_CLOSED") &&
+      if (
+      selectedTicketStatus?.key === "IN_PROGRESS" ||
+      selectedTicketStatus?.key === "SPARE_REQUIRED" ||
+      selectedTicketStatus?.key === "CANNOT_RESOLVE" || selectedTicketStatus?.key === "WORK_COMPLETED"||
+      selectedTicketStatus?.key === "TICKET_CLOSED"
+      ) {
       errors.push({
         param: "assetImages",
         message: "At least one asset image is required",
       });
+      }
     }
     if (!latitude || !longitude) {
       if (!latitude || !longitude) {
@@ -221,6 +224,7 @@ const TicketDetails = () => {
           param: "location",
           message: "Location is required but couldn't be fetched.",
         });
+
       }
       if (!pincode) {
         errors.push({
@@ -261,12 +265,7 @@ const TicketDetails = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-  
-        if (uploadResponse.status !== 200) {
-          throw new Error("Image upload failed");
-        }
-  
-        uploadedAssetImages = uploadResponse.data.data || [];
+          uploadedAssetImages = uploadResponse.data.data || [];
         console.log("Uploaded asset images:", uploadedAssetImages);
       }
       const requestBody = {
@@ -294,7 +293,7 @@ const TicketDetails = () => {
       );
   
       if (updateResponse.status === 200) {
-        console.log("Ticket status updated successfully");
+       // console.log("Ticket status updated successfully");
         Toast.show({
           type: "success",
           text1: "Ticket status updated successfully!",
@@ -309,7 +308,8 @@ const TicketDetails = () => {
         throw new Error(`Failed to update status: ${updateResponse.status}`);
       }
     } catch (error: any) {
-      console.error("Failed to update ticket status.", error?.response?.data);
+      console.error("Failed to update ticket status.", error);
+      
   
       if (error?.response?.data?.errors) {
         setErrors(error.response.data.errors.filter((err: any) => err.param !== null));
@@ -392,6 +392,12 @@ const TicketDetails = () => {
     }
     return [];
   }
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   return isLoading ? (
     <LoadingBar />
@@ -420,7 +426,9 @@ const TicketDetails = () => {
             <View className="flex-1"></View>
           </View>
         </Pressable>
-        <ScrollView>
+        <ScrollView  refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
           <View className="flex-1 bg-gray-100">
             <View className="p-4">
               <View className="w-full bg-white px-3 py-3 rounded-lg">
@@ -512,7 +520,7 @@ const TicketDetails = () => {
                   </View>
                   <View className="w-full mt-3">
                     <Text className="text-gray-500 text-md ">
-                      {t("issueImages")}
+                        {t("issueImages")}{" "}
                     </Text>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
@@ -645,6 +653,9 @@ const TicketDetails = () => {
                           <HStack className="justify-between mt-2 mb-1">
                             <Text className="font-medium">
                               {t("assetImages")}{" "}
+                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED","WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
+                        <Text className="text-red-500">*</Text>
+                        )}
                             </Text>
                             <Text className="text-gray-500">
                               {assetImages.length}/3
