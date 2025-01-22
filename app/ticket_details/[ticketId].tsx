@@ -209,7 +209,7 @@ const TicketDetails = () => {
       if (
       selectedTicketStatus?.key === "IN_PROGRESS" ||
       selectedTicketStatus?.key === "SPARE_REQUIRED" ||
-      selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
+      selectedTicketStatus?.key === "CANNOT_RESOLVE" || selectedTicketStatus?.key === "WORK_COMPLETED"||
       selectedTicketStatus?.key === "TICKET_CLOSED"
       ) {
       errors.push({
@@ -645,7 +645,7 @@ const TicketDetails = () => {
                           <HStack className="justify-between mt-2 mb-1">
                             <Text className="font-medium">
                               {t("assetImages")}{" "}
-                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus.key ?? "") && (
+                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED","WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
                         <Text className="text-red-500">*</Text>
                         )}
                             </Text>
