@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView } from "react-native";
+import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView,RefreshControl, } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
@@ -69,7 +69,7 @@ const TicketDetails = () => {
 
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-
+  const [refreshing, setRefreshing] = React.useState(false);
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -392,6 +392,12 @@ const TicketDetails = () => {
     }
     return [];
   }
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   return isLoading ? (
     <LoadingBar />
@@ -420,7 +426,9 @@ const TicketDetails = () => {
             <View className="flex-1"></View>
           </View>
         </Pressable>
-        <ScrollView>
+        <ScrollView  refreshControl={
+      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+    }>
           <View className="flex-1 bg-gray-100">
             <View className="p-4">
               <View className="w-full bg-white px-3 py-3 rounded-lg">
