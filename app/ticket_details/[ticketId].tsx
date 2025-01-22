@@ -240,7 +240,7 @@ const TicketDetails = () => {
         return; 
       }
   
-      setIsLoading(true);
+     // setIsLoading(true);
   
       let uploadedAssetImages: string[] = [];
   
