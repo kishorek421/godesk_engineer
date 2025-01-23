@@ -124,7 +124,7 @@ const VerifyOTPScreen = () => {
           <View>
             <View className="flex-row items-end">
               <Image
-                source={require("../assets/images/godesk.jpg")}
+                source={require("../assets/images/godesk.png")}
                 style={{ width: 30, height: 30 }}
               />
               <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">

@@ -105,7 +105,7 @@ const LoginScreen = () => {
           <View>
             <View className="flex-row items-end">
               <Image
-                source={require("../assets/images/godesk.jpg")}
+                source={require("../assets/images/godesk.png")}
                 style={{
                   width: 30,
                   height: 30,
