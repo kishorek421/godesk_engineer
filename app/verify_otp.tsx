@@ -58,7 +58,7 @@ const VerifyOTPScreen = () => {
 
     try {
       await apiClient
-        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER `)
+        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`)
         .then(async (response) => {
           if (response.data?.success) {
             const loginData = response.data?.data;
@@ -70,7 +70,7 @@ const VerifyOTPScreen = () => {
           }
         })
         .catch((e) => {
-          console.error(e.response.request);
+          console.error(e.response.data);
           const errors = e.response.data.errors;
           if (errors) {
             setErrors(errors);
