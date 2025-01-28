@@ -103,6 +103,7 @@ const VerifyOTPScreen = () => {
         Toast.show({
           type: "success",
           text1: "OTP sent successfully",
+          visibilityTime: 5000,
         });
         setTimer(120); 
         setIsDisabled(true);

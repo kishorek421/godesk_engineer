@@ -126,7 +126,7 @@ const CheckInOutModal = ({
 
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-      aspect: [4, 3],
+      // aspect: [4, 3],
       quality: 1,
       base64: true,
       cameraType: ImagePicker.CameraType.front,
@@ -142,6 +142,7 @@ const CheckInOutModal = ({
         Toast.show({
           type: "error",
           text1: "Image more than 15 mb not accepeted",
+          visibilityTime: 5000,
         });
       }
     }
@@ -194,6 +195,7 @@ const CheckInOutModal = ({
                   status === "Checked In"
                     ? "Checked out successfully"
                     : "Checked in successfully",
+                    visibilityTime: 5000,
               });
               setSelfie("");
               setErrors([]);
@@ -216,6 +218,8 @@ const CheckInOutModal = ({
           Toast.show({
             type: "error",
             text1: "Failed to upload your selfie",
+            visibilityTime: 5000,
+            
           });
           setErrorMsg("Failed to check in");
         }

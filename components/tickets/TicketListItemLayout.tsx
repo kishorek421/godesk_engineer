@@ -3,6 +3,7 @@ import { TicketListItemModel } from "@/models/tickets";
 import TicketStatusComponent from "./TicketStatusComponent";
 import { router } from "expo-router";
 import moment from "moment";
+import Entypo from "@expo/vector-icons/Entypo";
 import React,{useEffect,useState} from "react";
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,9 +19,15 @@ const TicketListItemLayout = ({
    const [selectedLanguage, setSelectedLanguage] = useState('en'); 
   //  const { refreshFlag, setRefreshFlag } = useRefresh();
    const [refreshing, setRefreshing] = useState(true);
- 
-  
- 
+   const getHelpText = (statusKey?: string): string => {
+    switch (statusKey) {
+      case "WORK_COMPLETED":
+        return "Once payment is done, you’ll close the ticket.";
+        default:
+          return "";
+    }
+  }
+
   return (
     <Pressable
       onPress={() => {
@@ -70,6 +77,17 @@ const TicketListItemLayout = ({
             </View>
           </View>
         </View>
+        {["Work Completed"].includes(ticketModel.statusDetails?.value ?? "") && (
+          <>
+            <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
+            <View className=" py-1 flex-row justify-start items-center ">
+              <Entypo name="bell" size={16} color="#eab308" />
+              <Text className="text-yellow-500 text-sm ms-1">
+                {getHelpText(ticketModel.statusDetails?.key)}
+              </Text>
+            </View>
+          </>
+        )}
       </View>
     </Pressable>
   );

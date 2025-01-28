@@ -143,7 +143,7 @@ const HomeScreen = () => {
             <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
-           
+           {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
           </View>
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
@@ -159,6 +159,7 @@ const HomeScreen = () => {
                           type: "error",
                           text1:
                             "Allow location permission to Check In/Check Out",
+                            visibilityTime: 5000,
                         });
                       }
                     }}

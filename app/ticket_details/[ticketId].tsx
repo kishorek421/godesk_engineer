@@ -43,6 +43,7 @@ import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { useTranslation } from "react-i18next";
 import { Axios, AxiosError } from "axios";
+import { Icon } from "@/components/ui/icon";
 
 const TicketDetails = () => {
   const { t, i18n } = useTranslation();
@@ -297,6 +298,7 @@ const TicketDetails = () => {
         Toast.show({
           type: "success",
           text1: "Ticket status updated successfully!",
+          visibilityTime: 5000,
         });
   
         await fetchTicketDetails();
@@ -323,12 +325,14 @@ const TicketDetails = () => {
           Toast.show({
             type: "error",
             text1: errorMessages,
+            visibilityTime: 5000,
           });
         }
       } else {
         Toast.show({
           type: "error",
           text1: error.response?.data?.message || "An unexpected error occurred. Please try again.",
+          visibilityTime: 5000,
         });
       }
     } finally {
@@ -561,10 +565,22 @@ const TicketDetails = () => {
                     <Text className="text-gray-500 text-md ">
                       {t("Customer mobileNo ")}
                     </Text>
-                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.mobileNumber ?? "-"}
-                    </Text>
+                    <View className="flex-row ">
+                    <FeatherIcon className="mt-[2px]" name="phone" size={16} color="black" />
+                    <Pressable
+                      onPress={() => {
+                      const phoneNumber = ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
+                      if (phoneNumber) {
+                        router.push(`tel:${phoneNumber}`);
+                      }
+                      }}
+                    > 
+                      <Text className="text-md text-gray-900 font-semibold mt-[2px] mx-2">
+                      {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
+                      </Text>
+                   
+                    </Pressable>
+                    </View>
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500 text-md ">
@@ -779,6 +795,7 @@ const TicketDetails = () => {
                 Toast.show({
                   type: "error",
                   text1: "Image larger than 15mb are not accepted.",
+                  visibilityTime: 5000,
                 });
                 return;
               }

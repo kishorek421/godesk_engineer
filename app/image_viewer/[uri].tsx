@@ -21,7 +21,7 @@ const ImageViewer = () => {
         </Pressable>
       </View>
       <View className="h-full flex justify-center items-center p-4">
-        <Image className=" w-full h-96" source={{ uri: uri.toString() }} />
+        <Image className=" w-full h-full p-6" source={{ uri: uri.toString() }} />
       </View>
     </View>
   );

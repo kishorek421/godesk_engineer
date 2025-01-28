@@ -34,7 +34,7 @@ const TicketListLayout = () => {
     t("Work Completed"),
     t("Paid"),
     t("Completed"),
-    t("Not Closed"),
+    t("On Hold"),
   ];
 
   // const  isB2C_USER = true;
