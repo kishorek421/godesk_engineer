@@ -13,6 +13,9 @@
   },
   "dependencies": {
     "@babel/plugin-transform-template-literals": "^7.25.9",
+    "@expo-google-fonts/lexend": "^0.2.3",
+    "@expo-google-fonts/poppins": "^0.2.3",
+    "@expo-google-fonts/roboto": "^0.2.3",
     "@expo/html-elements": "^0.10.1",
     "@gluestack-ui/actionsheet": "^0.2.45",
     "@gluestack-ui/button": "^1.0.7",
@@ -45,6 +48,7 @@
     "expo-location": "^18.0.2",
     "expo-notifications": "^0.29.11",
     "expo-router": "~4.0.8",
+    "expo-splash-screen": "^0.29.21",
     "expo-status-bar": "~2.0.0",
     "expo-task-manager": "^12.0.3",
     "expo-tracking-transparency": "~5.1.0",

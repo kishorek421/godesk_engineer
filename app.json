@@ -52,6 +52,7 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to track your check in and check out location."
         }
       ],
+        "expo-font",
       [
         "expo-tracking-transparency",
         {

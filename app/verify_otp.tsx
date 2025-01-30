@@ -58,7 +58,7 @@ const VerifyOTPScreen = () => {
 
     try {
       await apiClient
-        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER `)
+        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`)
         .then(async (response) => {
           if (response.data?.success) {
             const loginData = response.data?.data;
@@ -70,7 +70,7 @@ const VerifyOTPScreen = () => {
           }
         })
         .catch((e) => {
-          console.error(e.response.request);
+          console.error(e.response.data);
           const errors = e.response.data.errors;
           if (errors) {
             setErrors(errors);
@@ -103,7 +103,6 @@ const VerifyOTPScreen = () => {
         Toast.show({
           type: "success",
           text1: "OTP sent successfully",
-          visibilityTime: 5000,
         });
         setTimer(120); 
         setIsDisabled(true);
@@ -128,14 +127,14 @@ const VerifyOTPScreen = () => {
                 source={require("../assets/images/godesk.jpg")}
                 style={{ width: 30, height: 30 }}
               />
-              <Text className="font-bold text-secondary-950 ms-.5 mb-1.5">
-                desk <Text className="text-primary-950">Engineer</Text>
+              <Text className="font-bold text-secondary-950 font-regular ms-.5 mb-1.5">
+                desk <Text className="text-primary-950 font-regular">Engineer</Text>
               </Text>
             </View>
           </View>
           <View className="mt-6">
-            <Text className="text-2xl font-bold">{t("checkYourMobile")}</Text>
-            <Text className="color-gray-400 text-sm">
+            <Text className="text-2xl font-bold font-regular">{t("checkYourMobile")}</Text>
+            <Text className="color-gray-400 text-sm font-regular">
               {t("otp_message", { mobile })}.
             </Text>
           </View>
@@ -160,7 +159,7 @@ const VerifyOTPScreen = () => {
           </View>
           <View className="flex-row justify-center mt-8">
               <View className="flex-row">
-                <Text className="text-gray-700">Didn't Receive OTP? </Text>
+                <Text className="text-gray-700 font-regular">Didn't Receive OTP? </Text>
                 <View className="flew-row">
                   <Pressable
                     onPress={() => {
@@ -173,10 +172,10 @@ const VerifyOTPScreen = () => {
                     >
                       Resend OTP
                       {isDisabled && (
-                        <Text className="text-gray-600 font-normal">
+                        <Text className="text-gray-600 font-regular font-normal">
                           {" "}
                           in
-                          <Text className="font-semibold underline text-primary-950">
+                          <Text className="font-semibold underline font-regular text-primary-950">
                             {getTime()}
                           </Text>
                         </Text>
@@ -187,23 +186,25 @@ const VerifyOTPScreen = () => {
               </View>
             </View>
 
-          <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">
-              {t("verifyOtp")}
-            </Text>
+            <View className=" mt-12">
             <Button
-              className="bg-primary-950 rounded-full w-14 h-14 p-0"
+              className=" flex justify-center items-center bg-primary-950 rounded-md  w-full h-12 p-0"
               onPress={handleVerifyOTP}
             >
-               {isLoading ? (
-                <ActivityIndicator color="white" />
+              <Text className="font-bold font-regular text-white text-xl">{t('verifyOtp')}</Text>
+              {isLoading ? (
+                <ActivityIndicator color="white" className="ms-1" />
               ) : (
-                <AntDesign name="arrowright" size={20} color="white" />
+                <AntDesign
+                  name="arrowright"
+                  size={20}
+                  color="white"
+                  className="ms-1"
+                />
               )}
             </Button>
-          </View>
         </View>
-
+</View>
         <View>
           <LottieView
             ref={animationRef}

@@ -44,10 +44,10 @@ const TicketListItemLayout = ({
         <View className="flex">
           <View className="flex-row justify-between w-full">
             <View>
-              <Text className="text-gray-900 font-bold">
+              <Text className="text-[#5c379e]  font-bold">
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
-              <Text className="text-gray-500 text-[13px] mt-[1px]">
+              <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
               Issue In {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>
@@ -60,14 +60,14 @@ const TicketListItemLayout = ({
           <View className="w-full">
             <View className="flex-row items-center justify-between">
               <View className="flex">
-                <Text className="text-gray-500 text-md ">{t('raisedBy')}</Text>
+                <Text className="text-gray-500 text-md font-regular">{t('raisedBy')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel?.customerDetails?.firstName ?? ""}{" "}
                   {ticketModel?.customerDetails?.lastName ?? ""}
                 </Text>
               </View>
               <View className="flex items-end">
-                <Text className="text-gray-500 text-md ">{t('raisedAt')}</Text>
+                <Text className="text-gray-500 text-md font-regular ">{t('raisedAt')}</Text>
                 <Text className="text-md text-gray-900 font-semibold mt-[2px]">
                   {ticketModel.createdAt
                     ? moment(Number.parseInt(ticketModel.createdAt)).format("DD-MM-YYYY hh:mm a")
@@ -82,7 +82,7 @@ const TicketListItemLayout = ({
             <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
             <View className=" py-1 flex-row justify-start items-center ">
               <Entypo name="bell" size={16} color="#eab308" />
-              <Text className="text-yellow-500 text-sm ms-1">
+              <Text className="text-yellow-500 text-sm font-regular ms-1">
                 {getHelpText(ticketModel.statusDetails?.key)}
               </Text>
             </View>

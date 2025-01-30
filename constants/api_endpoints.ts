@@ -26,3 +26,5 @@ export const GET_CUSTOMER_DETAILS = "/customers/list";
 // check in out
 export const CHECK_IN_OUT = "/attendanceTransaction/createORUpdateAttendanceTransaction";
 export const GET_CHECK_IN_OUT_STATUS = "/attendanceTransaction/checkAttendanceStatusByEmployeeId";
+export const GET_ORDER_PRODUCTS_OF_TICKET  =
+  "/orderAndPayment/getOrderProductsOfTicket";

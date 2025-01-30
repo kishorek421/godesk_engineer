@@ -179,13 +179,13 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
         <TouchableOpacity style={styles.option} onPress={pickImage}>
           <View className="flex-row w-full justify-center items-center">
             <Entypo name="folder-images" size={20} color="black" />
-            <Text className="ms-2 text-lg">Pick an Image from Gallery</Text>
+            <Text className="ms-2 text-lg font-regular">Pick an Image from Gallery</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={takePhoto}>
           <View className="flex-row w-full justify-center items-center">
             <Entypo name="camera" size={20} color="black" />
-            <Text className="ms-2 text-lg">Take a Photo</Text>
+            <Text className="ms-2 text-lg font-regular">Take a Photo</Text>
           </View>
         </TouchableOpacity>
       </View>

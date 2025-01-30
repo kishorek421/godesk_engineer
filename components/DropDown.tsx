@@ -59,7 +59,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
                     className="py-3 border-b border-gray-200"
                     onPress={() => handleSelect(item)}
                   >
-                    <Text className="text-base text-gray-800">{displayText}</Text>
+                    <Text className="text-base text-gray-800 font-regular">{displayText}</Text>
                   </TouchableOpacity>
                 );
               }}

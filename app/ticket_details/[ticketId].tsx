@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView,RefreshControl, } from "react-native";
+import { Pressable, ScrollView, Text, View, Image, ActivityIndicator, SafeAreaView, RefreshControl, FlatList } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
@@ -8,10 +8,11 @@ import {
   GET_TICKET_DETAILS,
   TICKET_UPLOADS,
   UPDATE_TICKET_STATUS,
+  GET_ORDER_PRODUCTS_OF_TICKET
 } from "@/constants/api_endpoints";
 import LoadingBar from "@/components/LoadingBar";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
-import { Button, ButtonText } from "@/components/ui/button";
+import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
 import Toast from "react-native-toast-message";
 import {
   FormControl,
@@ -44,11 +45,15 @@ import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import { useTranslation } from "react-i18next";
 import { Axios, AxiosError } from "axios";
 import { Icon } from "@/components/ui/icon";
+import {
+  OrderProductsForTicketModel,
+  RazorPayOrderForTicket,
+} from "@/models/payments";
 
 const TicketDetails = () => {
   const { t, i18n } = useTranslation();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [otp, setOtp] = useState("");
@@ -71,7 +76,9 @@ const TicketDetails = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
-
+  const [paymentProducts, setPaymentProducts] = useState<
+    OrderProductsForTicketModel[]
+  >([]);
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -91,6 +98,8 @@ const TicketDetails = () => {
         const ticketData = response.data.data ?? {};
         console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
         setTicketDetails(ticketData);
+        getPaymentProducts();
+        setPaymentProducts(ticketData.paymentProducts ?? []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -208,15 +217,15 @@ const TicketDetails = () => {
     }
     if (assetImages.length === 0) {
       if (
-      selectedTicketStatus?.key === "IN_PROGRESS" ||
-      selectedTicketStatus?.key === "SPARE_REQUIRED" ||
-      selectedTicketStatus?.key === "CANNOT_RESOLVE" || selectedTicketStatus?.key === "WORK_COMPLETED"||
-      selectedTicketStatus?.key === "TICKET_CLOSED"
+        selectedTicketStatus?.key === "IN_PROGRESS" ||
+        selectedTicketStatus?.key === "SPARE_REQUIRED" ||
+        selectedTicketStatus?.key === "CANNOT_RESOLVE" || selectedTicketStatus?.key === "WORK_COMPLETED" ||
+        selectedTicketStatus?.key === "TICKET_CLOSED"
       ) {
-      errors.push({
-        param: "assetImages",
-        message: "At least one asset image is required",
-      });
+        errors.push({
+          param: "assetImages",
+          message: "At least one asset image is required",
+        });
       }
     }
     if (!latitude || !longitude) {
@@ -236,22 +245,34 @@ const TicketDetails = () => {
     }
     return errors;
   };
-
+  const getPaymentProducts = () => {
+    apiClient
+      .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
+      .then((response) => {
+        setPaymentProducts(response.data?.data ?? []);
+        setIsLoading(false);
+        console.log("payments", response.data?.data ?? [])
+      })
+      .catch((e) => {
+        console.error(e);
+        setIsLoading(false);
+      });
+  };
   const updateTicketStatus = async () => {
     try {
       const formErrors = validateInputs();
       if (formErrors.length > 0) {
         setErrors(formErrors);
-        return; 
+        return;
       }
-  
-     // setIsLoading(true);
-  
+
+      // setIsLoading(true);
+
       let uploadedAssetImages: string[] = [];
-  
+
       if (assetImages.length > 0) {
         console.log("Uploading asset images:", assetImages);
-  
+
         const formData = new FormData();
         for (let i = 0; i < assetImages.length; i++) {
           const assetImage = assetImages[i];
@@ -266,7 +287,7 @@ const TicketDetails = () => {
             "Content-Type": "multipart/form-data",
           },
         });
-          uploadedAssetImages = uploadResponse.data.data || [];
+        uploadedAssetImages = uploadResponse.data.data || [];
         console.log("Uploaded asset images:", uploadedAssetImages);
       }
       const requestBody = {
@@ -284,23 +305,23 @@ const TicketDetails = () => {
         )
           ? otp ?? null
           : null,
-        assetImages: uploadedAssetImages, 
+        assetImages: uploadedAssetImages,
       };
-  
+
       console.log("Request body:", requestBody);
       const updateResponse = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
       );
-  
+
       if (updateResponse.status === 200) {
-       // console.log("Ticket status updated successfully");
+        // console.log("Ticket status updated successfully");
         Toast.show({
           type: "success",
           text1: "Ticket status updated successfully!",
           visibilityTime: 5000,
         });
-  
+
         await fetchTicketDetails();
         router.push({
           pathname: "../home",
@@ -311,16 +332,16 @@ const TicketDetails = () => {
       }
     } catch (error: any) {
       console.error("Failed to update ticket status.", error);
-      
-  
+
+
       if (error?.response?.data?.errors) {
         setErrors(error.response.data.errors.filter((err: any) => err.param !== null));
-  
+
         const errorMessages = error.response.data.errors
           .filter((err: any) => err.param === null)
           .map((err: any) => err.message)
           .join("\n");
-  
+
         if (errorMessages) {
           Toast.show({
             type: "error",
@@ -339,8 +360,8 @@ const TicketDetails = () => {
       setIsLoading(false);
     }
   };
-  
-  
+
+
   const getTicketStatusOptions = (statusKey?: string, customerTypeKey?: string): (string | { label: any; value: any })[] => {
     if (ticketDetails.statusDetails?.key === ASSIGNED) {
       return [
@@ -423,26 +444,26 @@ const TicketDetails = () => {
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
             <View className="flex-1">
-              <Text className="font-bold text-lg text-center">
+              <Text className="font-bold font-regular text-lg text-center">
                 {t("ticketDetails")}
               </Text>
             </View>
             <View className="flex-1"></View>
           </View>
         </Pressable>
-        <ScrollView  refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }>
+        <ScrollView refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
           <View className="flex-1 bg-gray-100">
             <View className="p-4">
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
                     <View>
-                      <Text className="text-gray-900 font-bold">
+                      <Text className="text-gray-900  font-bold">
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
-                      <Text className="text-gray-500 text-[13px] mt-[1px]">
+                      <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
                         issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
@@ -455,19 +476,19 @@ const TicketDetails = () => {
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 font-regular text-md ">
                           {t("raisedBy")}
                         </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
                           {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
                           {ticketDetails?.customerDetails?.lastName ?? ""}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 font-regular text-md ">
                           {t("raisedAt")}
                         </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).format(
                               "DD-MM-YYYY hh:mm a"
@@ -480,15 +501,15 @@ const TicketDetails = () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 font-regular text-md ">
                           {t("serialNo")}
                         </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                        <Text className="text-md text-gray-900 font-semibold   mt-[2px]">
                           {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 text-md font-regular">
                           {t("Asset Type")}
                         </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
@@ -501,7 +522,7 @@ const TicketDetails = () => {
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 font-regular text-md ">
                           {t("description")}
                         </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
@@ -509,7 +530,7 @@ const TicketDetails = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md ">
+                        <Text className="text-gray-500 text-md font-regular ">
                           {t("assignedAt")}
                         </Text>
                         <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
@@ -523,8 +544,8 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   <View className="w-full mt-3">
-                    <Text className="text-gray-500 text-md ">
-                        {t("issueImages")}{" "}
+                    <Text className="text-gray-500 text-md font-regular">
+                      {t("issueImages")}{" "}
                     </Text>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
@@ -554,7 +575,7 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">
+                    <Text className="text-gray-500 font-regular text-md ">
                       {t("User Type")}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
@@ -562,28 +583,28 @@ const TicketDetails = () => {
                     </Text>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">
+                    <Text className="text-gray-500 font-regular text-md ">
                       {t("Customer mobileNo ")}
                     </Text>
-                    <View className="flex-row ">
-                    <FeatherIcon className="mt-[2px]" name="phone" size={16} color="black" />
-                    <Pressable
-                      onPress={() => {
-                      const phoneNumber = ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
-                      if (phoneNumber) {
-                        router.push(`tel:${phoneNumber}`);
-                      }
-                      }}
-                    > 
-                      <Text className="text-md text-gray-900 font-semibold mt-[2px] mx-2">
-                      {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
-                      </Text>
-                   
-                    </Pressable>
+                    <View className="flex-row  ">
+                      <FeatherIcon className="mt-[2px]" name="phone" size={16} color="black" />
+                      <Pressable
+                        onPress={() => {
+                          const phoneNumber = ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
+                          if (phoneNumber) {
+                            router.push(`tel:${phoneNumber}`);
+                          }
+                        }}
+                      >
+                        <Text className="text-md text-primary-950 font-semibold mt-[2px] mx-2">
+                          {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
+                        </Text>
+
+                      </Pressable>
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md ">
+                    <Text className="text-gray-500 text-md font-regular">
                       {t("Customer address")}
                     </Text>
 
@@ -604,13 +625,53 @@ const TicketDetails = () => {
                         ?.areaDetails?.pincode ?? "-"}
                     </Text>
                   </View>
+
+                  {ticketDetails.statusDetails?.key === "SPARE_REQUIRED" || ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
+                    <View className="flex mt-3">
+                      <Text className="text-gray-500 text-md font-regular ">
+                        Spare Required Details
+                      </Text>
+                      <View className="mt-2">
+                        {paymentProducts.map((item) => (
+                          <View key={item.id}>
+                            <View className="flex-row justify-between w-full items-center mt-2">
+                              <View>
+                                <Text className="font-semibold text-gray-800">
+                                  {item.itemDetails?.productTypeDetails?.key ===
+                                    "TICKET_SPARES"
+                                    ? "Spare Details"
+                                    : item.itemDetails?.productTypeDetails
+                                      ?.value ?? "-"}
+                                </Text>
+                                {item.itemDetails?.productDetails
+                                  ?.assetTypeDetails?.name && (
+                                    <View className="">
+                                      <Text className="text-[#cf9009] text-sm font-regular">
+                                        {item.itemDetails?.productDetails
+                                          ?.assetTypeDetails?.name ?? "-"}{" "}
+                                        ,{" "}{item.itemDetails?.productDetails
+                                          ?.assetModelDetails?.modelName ?? "-"}
+                                          ,{" "}{item.itemDetails?.productDetails
+                                          ?.assetSubTypeDetails?.name ?? "-"}                                         
+                                      </Text>
+                                    </View>
+                                  )}
+                              </View>
+                            </View>
+                            <View className="h-0.5 bg-gray-100 w-full my-2" />
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
-                    ticketDetails.statusDetails?.value ==="Paid") && (
+                    ticketDetails.statusDetails?.value === "Paid") && (
                       <View className="my-4">
-                        <Text className="font-bold text-lg text-primary-950">
+                        <Text className="font-bold text-lg font-regular text-primary-950">
                           {t("updateTicketStatus")}
                         </Text>
                         <FormControl
@@ -669,11 +730,11 @@ const TicketDetails = () => {
                           <HStack className="justify-between mt-2 mb-1">
                             <Text className="font-medium">
                               {t("assetImages")}{" "}
-                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED","WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
-                        <Text className="text-red-500">*</Text>
-                        )}
+                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED", "WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
+                                <Text className="text-red-500 font-regular">*</Text>
+                              )}
                             </Text>
-                            <Text className="text-gray-500">
+                            <Text className="text-gray-500 font-regular">
                               {assetImages.length}/3
                             </Text>
                           </HStack>
@@ -728,7 +789,7 @@ const TicketDetails = () => {
                                 color="black"
                                 size={18}
                               />
-                              <ButtonText className="text-black">
+                              <ButtonText className="text-black font-regular">
                                 {t("addImage")}
                               </ButtonText>
                             </Button>
@@ -743,7 +804,7 @@ const TicketDetails = () => {
                           isInvalid={isFormFieldInValid("otp", errors).length > 0}
                           className="mt-4 "
                         >
-                          <Text className="mt-1 mb-2 text-gray-500 text-sm">
+                          <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
                             {" "}
                             {t("enterOtpForOpenClose")}
                           </Text>
@@ -770,17 +831,27 @@ const TicketDetails = () => {
                             </FormControlErrorText>
                           </FormControlError>
                         </FormControl>
+                        {/* <Button
+                      className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
+                      onPress={() => {
+                      if (isLoading) return;
+                      updateTicketStatus();
+                      }}>
+                      <ButtonText >
+                      {t("updateStatus")}
+                      </ButtonText>
+                      {isLoading && <ActivityIndicator color="white" className="ms-1" />}
+                    </Button> */}
                         <Button
-                          className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
+                          className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
                           onPress={() => {
                             if (isLoading) return;
                             updateTicketStatus();
                           }}>
-                          <ButtonText >
-                            {t("updateStatus")}
-                          </ButtonText>
-                          {isLoading && <ActivityIndicator color="white" className="ms-1" />}
+                          <Text className="font-bold text-white text-xl font-regular"> {t("updateStatus")}</Text>
+                          {isLoading && <ButtonSpinner className="text-white ms-2" />}
                         </Button>
+
                       </View>
                     )}
                 </View>

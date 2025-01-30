@@ -13,6 +13,7 @@ import { ErrorModel } from "@/models/common";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as ImagePicker from "expo-image-picker";
 import { Button, ButtonText } from "../ui/button";
+import { primaryColor } from "@/constants/colors";
 import {
   FormControl,
   FormControlError,
@@ -236,17 +237,17 @@ const CheckInOutModal = ({
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
       <View className="gap-4 p-4">
         {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
-        <Text className="font-bold text-xl">
+        <Text className="font-bold font-regular text-xl">
           {status === "Checked In" ? t('checkOut') : t("checkIn")}
         </Text>
         <View className="gap-5">
           <View className="">
-            <Text className="font-semibold text-lg">{t('startAt')}</Text>
-            <Text className="mt-1 text-gray-700 text-md">{currentTime}</Text>
+            <Text className="font-semibold text-lg font-regular">{t('startAt')}</Text>
+            <Text className="mt-1 text-gray-700 text-md font-regular">{currentTime}</Text>
           </View>
           <View className="">
-            <Text className="font-semibold text-lg">{t('pincode')}</Text>
-            <Text className="mt-1 text-gray-700 text-md">{pincode ?? "-"}</Text>
+            <Text className="font-semibold text-lg font-regular">{t('pincode')}</Text>
+            <Text className="mt-1 text-gray-700 text-md font-regular">{pincode ?? "-"}</Text>
           </View>
           <View className="flex-row justify-between">
             <FormControl
@@ -254,7 +255,7 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="font-semibold text-lg">{t('selfie')} <Text className="text-red-400 mt-1">*</Text></Text>
+                <Text className="font-semibold font-regular text-lg">{t('selfie')} <Text className="text-red-400 mt-1 font-regular">*</Text></Text>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {
@@ -273,7 +274,7 @@ const CheckInOutModal = ({
                         >
                           <MaterialCommunityIcons
                             name="camera-plus"
-                            color={`${isFormFieldInValid("selfie", errors).length === 0 ? "#009c68" : "#b91c1c"}`}
+                            color={`${isFormFieldInValid("selfie", errors).length === 0 ?primaryColor : "#b91c1c"}`}
                             size={18}
                           />
                         </View>
@@ -311,7 +312,7 @@ const CheckInOutModal = ({
               className="w-[150px] h-[150px]"
             /> */}
           </View>
-          {errorMsg && <Text className="mt-4 text-red-500">* {errorMsg}</Text>}
+          {errorMsg && <Text className="mt-4 text-red-500 font-regular">* {errorMsg}</Text>}
           <Button
             className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {

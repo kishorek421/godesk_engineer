@@ -12,7 +12,7 @@ import { CustomerDetailsModel } from "@/models/customers";
 import { UserDetailsModel } from "@/models/users";
 import apiClient from "@/clients/apiClient";
 import i18n from "@/config/i18n";
-
+import { primaryColor } from "@/constants/colors";
 interface AuthContextProps {
   user: CustomerDetailsModel | undefined;
   loading: boolean;
@@ -75,35 +75,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   return (
     <AuthContext.Provider value={{ user, loading, logout }}>
       <ThemeProvider
-        value={{
-          fonts: {
-            regular: {
-              fontFamily: "open-sans",
-              fontWeight: "bold",
-            },
-            medium: {
-              fontFamily: "open-sans",
-              fontWeight: "bold",
-            },
-            bold: {
-              fontFamily: "open-sans",
-              fontWeight: "bold",
-            },
-            heavy: {
-              fontFamily: "open-sans",
-              fontWeight: "bold",
-            },
+       value={{
+        fonts: {
+          regular: {
+            fontFamily: "sans",
+            fontWeight: "400",
           },
-          dark: false,
-          colors: {
-            primary: "#009c68",
-            background: "#f2f2f2",
-            card: "#fff",
-            text: "#000",
-            border: "",
-            notification: "",
+          medium: {
+            fontFamily: "sans",
+            fontWeight: "500",
           },
-        }}
+          bold: {
+            fontFamily: "sans",
+            fontWeight: "700",
+          },
+          heavy: {
+            fontFamily: "sans",
+            fontWeight: "900",
+          },
+        },
+        dark: false,
+        colors: {
+          primary: primaryColor,
+          background: "#f2f2f2",
+          card: "#fff",
+          text: "#000",
+          border: "",
+          notification: "",
+        },
+      }}
       >
         {children}
       </ThemeProvider>
