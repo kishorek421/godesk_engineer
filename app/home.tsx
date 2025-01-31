@@ -213,10 +213,10 @@ const HomeScreen = () => {
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
-            <Text className="mx-2 font-bold text-md">
+            <Text className="mx-2  font-regular text-md">
               {getGreetingMessage()} 👋
             </Text>
-            <Text className="mx-2 mt-[2px] font-semibold text-md text-primary-950">
+            <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
           </View>
@@ -246,7 +246,7 @@ const HomeScreen = () => {
           )}
         </View>
         {isLoading ? (
-          <Text className="mt-6 text-center text-gray-500">Loading...</Text>
+          <Text className="mt-6 text-center font-regular text-gray-500">Loading...</Text>
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -265,7 +265,7 @@ const HomeScreen = () => {
                       <Text className="font-bold text-gray-900">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-500">
+                      <Text className="mt-[1px] text-[13px] text-gray-500 font-regular">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
@@ -283,9 +283,7 @@ const HomeScreen = () => {
                   <View className="w-full">
                     <View className="flex-row justify-between items-center">
                       <View className="flex">
-                        <Text className="text-gray-500 text-md">
-                          {t("raisedBy")}
-                        </Text>
+                        <Text className="text-gray-500 font-regular text-md">{t('raisedBy')}</Text>
                         <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
@@ -294,9 +292,7 @@ const HomeScreen = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md">
-                          {t("raisedAt")}
-                        </Text>
+                        <Text className="text-gray-500 font-regular text-md">{t('raisedAt')}</Text>
                         <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                           {inProgressTicketDetails.createdAt
                             ? moment(

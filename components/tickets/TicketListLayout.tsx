@@ -34,13 +34,9 @@ const TicketListLayout = () => {
     t("Work Completed"),
     t("Paid"),
     t("Completed"),
-    t("Not Closed"),
+    t("On Hold"),
   ];
 
-  // const  isB2C_USER = true;
-  // if ( isB2C_USER) {
-  //   setSelectedTab(2); 
-  // }
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -67,9 +63,6 @@ const TicketListLayout = () => {
 
   const fetchTickets = async (nextCurrentPage: number, selectedTab: number) => {
     console.log("fetching tickets");
-
-    setRecentTickets([]);
-
     if (selectedTab === 1) {
       setRefreshing(true);
       await apiClient
@@ -82,7 +75,7 @@ const TicketListLayout = () => {
           if (nextCurrentPage === 1) {
             setRecentTickets(content);
           } else {
-            setRecentTickets((prevState) => [...prevState, ...content]);
+            setRecentTickets((prevState: TicketListItemModel[]) => [...prevState, ...content]);
           }
           let paginator = response.data?.data?.paginator;
 
@@ -101,6 +94,7 @@ const TicketListLayout = () => {
           setRefreshing(false);
         });
     } else {
+      setRefreshing(true);
       const endpoint = getEndPoint(selectedTab);
       getTicketLists(nextCurrentPage, 10, endpoint)
         .then((response: any) => {
@@ -111,7 +105,7 @@ const TicketListLayout = () => {
             if (nextCurrentPage === 1) {
               setRecentTickets(content);
             } else {
-              setRecentTickets((prevState: any) => [...prevState, ...content]);
+              setRecentTickets((prevState: TicketListItemModel[]) => [...prevState, ...content]);
             }
           } else if (nextCurrentPage === 1) {
             setRecentTickets([]);
@@ -144,13 +138,13 @@ const TicketListLayout = () => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-4 h-12 py-2 rounded-full w-32 mb-8 ${
+            className={`ms-2 h-12 py-2 rounded-full w-36 mb-8 ${
               selectedTab === index ? "bg-primary-200" : "bg-gray-200"
             }`}
             key={index}
           >
             <Text
-              className={` h-96 text-center ${
+              className={` h-96 text-center font-regular ${
                 selectedTab === index
                   ? "text-primary-950 font-medium"
                   : "text-gray-500 font-normal text-sm"
@@ -163,8 +157,8 @@ const TicketListLayout = () => {
         className="mt-6"
       />
       {recentTickets.length === 0 ? (
-        <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 rounded-lg">
-          <Text className="text-gray-400 text-md text-center">
+        <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
+          <Text className="text-gray-400 text-md text-center font-regular">
             No tickets found
           </Text>
         </View>
@@ -183,7 +177,7 @@ const TicketListLayout = () => {
             }
           }}
           ListFooterComponent={<View style={{ height: 600 }} />}
-          contentContainerStyle={{ paddingTop: 16 }}
+          // contentContainerStyle={{ paddingTop: 16 }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

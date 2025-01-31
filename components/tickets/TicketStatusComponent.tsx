@@ -40,7 +40,7 @@ const [selectedLanguage, setSelectedLanguage] = useState('en');
   };
   return (
     <View className={`py-2 px-4 rounded-lg ${getStatusColor(statusKey)}`}>
-      <Text className={`${getStatusColor(statusKey)}`}>
+      <Text className={`${getStatusColor(statusKey)} font-regular`}>
         {statusValue ?? "-"}
       </Text>
     </View>
