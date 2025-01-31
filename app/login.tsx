@@ -111,15 +111,15 @@ const LoginScreen = () => {
                   height: 30,
                 }}
               />
-              <Text className="mb-1.5 font-bold text-secondary-950 ms-.5">
-                desk <Text className="text-primary-950">Engineer</Text>
+              <Text className="mb-1.5 font-bold text-secondary-950 ms-.5 font-regular">
+                desk <Text className="text-primary-950 font-regular">Engineer</Text>
               </Text>
             </View>
           </View>
           <View className="mt-6">
-            <Text className="text-2xl font-bold">{t("welcome")}</Text>
+            <Text className="text-2xl font-bold font-regular">{t("welcome")}</Text>
             
-            <Text className="color-gray-400 text-sm">
+            <Text className="color-gray-400 text-sm font-regular">
               {t(' Let’s create something extraordinary!')}
             </Text>
           </View>
@@ -161,21 +161,25 @@ const LoginScreen = () => {
             </FormControl>
           </View>
 
-          <View className="flex-row justify-between items-center mt-12">
-            <Text className="font-bold text-primary-950 text-xl">{t("Login")}</Text>
+          <View className=" mt-12">
             <Button
-              className="bg-primary-950 p-0 rounded-full w-14 h-14"
+              className=" flex justify-center items-center bg-primary-950 rounded-md  w-full h-12 p-0"
               onPress={handleSendOTP}
             >
+              <Text className="font-bold text-white text-xl font-regular">{t('Login')}</Text>
               {isLoading ? (
-                <ActivityIndicator color="white" />
+                <ActivityIndicator color="white" className="ms-1" />
               ) : (
-                <AntDesign name="arrowright" size={20} color="white" />
+                <AntDesign
+                  name="arrowright"
+                  size={20}
+                  color="white"
+                  className="ms-1"
+                />
               )}
             </Button>
-          </View>
         </View>
-
+        </View>
         <View>
           <LottieView
             ref={animationRef}
@@ -186,13 +190,13 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-          <Text className="mt-8 text-sm text-center px-8">
-            {t('loginAgreement')}{" "}
+         <Text className="px-12 text-center text-sm font-regular">
+          {t('loginAgreement')}{" "}
             <Text
               onPress={() => {
-                Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
+                Linking.openURL("https://godesk.co.in/Terms_And_conditions.html");
               }}
-              className="font-bold text-primary-950"
+              className="font-bold text-[#667085]"
             >
               {t("terms_conditions")}
             </Text>{" "}
@@ -201,7 +205,7 @@ const LoginScreen = () => {
               onPress={() => {
                 Linking.openURL("https://godesk.co.in/Privacy_Policy.html");
               }}
-              className="font-bold text-primary-950"
+              className="font-bold text-[#667085]"
             >
               {t("privacy_policy")}
             </Text>

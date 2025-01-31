@@ -1,34 +1,126 @@
 import { View, Text } from 'react-native'
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import React from 'react'
-import { Stack } from 'expo-router'
+import React from 'react';
+import { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import { useFonts } from "expo-font";
 import { AuthProvider } from '@/context/AuthContext';
 import Toast from "react-native-toast-message";
-const RootLayout = () => {
+import {
+    Lexend_400Regular,
+    Lexend_500Medium,
+    Lexend_600SemiBold,
+    Lexend_700Bold,
+  } from "@expo-google-fonts/lexend";
+  import {
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+  } from "@expo-google-fonts/poppins";
+  import {
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
+  } from "@expo-google-fonts/roboto";
+import { clearStorage, getItem, setItem } from "@/utils/secure_store";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
+const APP_VERSION = "1.0.10";
+  async function checkAppVersion() {
+  const storedVersion = await getItem("app_version");
+  if (storedVersion !== APP_VERSION) {
+    await clearStorage(); // Clear old storage if the version is outdated
+    await setItem("app_version", APP_VERSION); // Update the version
+  }
+}
+  export default function RootLayout() {
+    const [loaded] = useFonts({
+        // Regular: Lexend_400Regular,
+        // Medium: Lexend_500Medium,
+        // SemiBold: Lexend_600SemiBold,
+        // Bold: Lexend_700Bold,
+        Regular: Poppins_400Regular,
+        Medium: Poppins_500Medium,
+        SemiBold: Poppins_600SemiBold,
+        Bold: Poppins_700Bold,
+        // Regular:Roboto_400Regular,
+        // Medium:Roboto_500Medium,
+        // SemiBold:Roboto_500Medium,
+        // Bold:Roboto_700Bold,
+      });
+      useEffect(() => {
+        checkAppVersion();
+        if (loaded) {
+          SplashScreen.hideAsync();
+        }
+      }, [loaded]);
+    
+      if (!loaded) {
+        return null;
+      }
+
+    
     return (
         <GluestackUIProvider mode="light">
             <AuthProvider>
                 <Stack>
 
-                      <Stack.Screen name='index' options={{ headerShown: false }} />
+                      <Stack.Screen name='index' options={{ headerShown: false,headerTitleStyle: {
+                      fontFamily: "Bold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    } }} />
 
                    
 
-                    <Stack.Screen name='home' options={{ headerShown: false }} />
-                    <Stack.Screen name='login' options={{ headerShown: false }} />
-                    <Stack.Screen name='verify_otp' options={{ headerShown: false }} />
+                    <Stack.Screen name='home' options={{ headerShown: false ,headerTitleStyle: {
+                      fontFamily: "Bold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    }}} />
+                    <Stack.Screen name='login' options={{ headerShown: false,headerTitleStyle: {
+                      fontFamily: "Bold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    } }} />
+                    <Stack.Screen name='verify_otp' options={{ headerShown: false ,headerTitleStyle: {
+                      fontFamily: "Bold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    }}} />
                     <Stack.Screen name='ticket_details/[ticketId]' options={{
-                        headerShown: false,
+                        headerShown: false,headerTitleStyle: {
+                            fontFamily: "Bold",
+                          },
+                          headerBackTitleStyle: {
+                            fontFamily: "Regular",
+                          }
                     }} />
                     <Stack.Screen name='data_storage/[homescreen]' options={{
-                        headerShown: false,
+                        headerShown: false,headerTitleStyle: {
+                            fontFamily: "Bold",
+                          },
+                          headerBackTitleStyle: {
+                            fontFamily: "Regular",
+                          }
                     }} />
                     <Stack.Screen
                         name="image_viewer/[uri]"
                         options={{
                             presentation: "modal",
-                            headerShown: false,
+                            headerShown: false,headerTitleStyle: {
+                                fontFamily: "Bold",
+                              },
+                              headerBackTitleStyle: {
+                                fontFamily: "Regular",
+                              }
                         }}
                     />
                 </Stack>
@@ -38,4 +130,3 @@ const RootLayout = () => {
     );
 }
 
-export default RootLayout
