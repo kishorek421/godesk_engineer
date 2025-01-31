@@ -38,7 +38,7 @@ const LanguageSelectionScreen = () => {
         <View>
           <View className="flex-row items-end">
             <Image
-              source={require('../../assets/images/godesk.png')}
+              source={require('../../assets/images/icon.png')}
               style={{ width: 30, height: 30 }}
             />
             <Text className="font-bold text-secondary-950 ms-.5 font-regular mb-1.5">
