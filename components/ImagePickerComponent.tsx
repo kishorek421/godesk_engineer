@@ -116,7 +116,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      //aspect: [4, 3],
+      aspect: [4, 3],
       quality: 1,
       base64: true,
     });
@@ -138,7 +138,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
 
     let result = await ImagePicker.launchCameraAsync({
       allowsEditing: true,
-    //  aspect: [4, 3],
+     aspect: [4, 3],
       quality: 1,
       base64: true,
     });

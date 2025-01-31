@@ -77,8 +77,9 @@ const TicketDetails = () => {
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
   const [paymentProducts, setPaymentProducts] = useState<
-    OrderProductsForTicketModel[]
+    OrderProductsForTicketModel[] | any[]
   >([]);
+  const [paymentMethod,setPaymentMethod] = useState<string | null>(null);
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -459,401 +460,429 @@ const TicketDetails = () => {
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
-                    <View>
-                      <Text className="text-gray-900  font-bold">
-                        {ticketDetails?.ticketNo ?? "-"}
-                      </Text>
-                      <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                        issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
-                      </Text>
-                    </View>
-                    <TicketStatusComponent
-                      statusKey={ticketDetails.statusDetails?.key}
-                      statusValue={ticketDetails.statusDetails?.value}
-                    />
+                  <View>
+                    <Text className="text-gray-900  font-bold">
+                    {ticketDetails?.ticketNo ?? "-"}
+                    </Text>
+                    <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
+                    issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
+                    </Text>
+                  </View>
+                  <TicketStatusComponent
+                    statusKey={ticketDetails.statusDetails?.key}
+                    statusValue={ticketDetails.statusDetails?.value}
+                  />
                   </View>
                   <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
                   <View className="w-full">
-                    <View className="flex-row items-center justify-between">
-                      <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("raisedBy")}
-                        </Text>
-                        <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
-                          {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
-                          {ticketDetails?.customerDetails?.lastName ?? ""}
-                        </Text>
-                      </View>
-                      <View className="flex items-end">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("raisedAt")}
-                        </Text>
-                        <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
-                          {ticketDetails.createdAt
-                            ? moment(ticketDetails.createdAt).format(
-                              "DD-MM-YYYY hh:mm a"
-                            )
-                            : "-"}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View className="w-full mt-3">
-                    <View className="flex-row items-center justify-between">
-                      <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("serialNo")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold   mt-[2px]">
-                          {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
-                        </Text>
-                      </View>
-                      <View className="flex items-end">
-                        <Text className="text-gray-500 text-md font-regular">
-                          {t("Asset Type")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                          {ticketDetails.assetInUseDetails?.assetMasterDetails
-                            ?.assetTypeDetails?.name ?? "-"}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View className="w-full mt-3">
-                    <View className="flex-row items-center justify-between">
-                      <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("description")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                          {ticketDetails?.description ?? "-"}
-                        </Text>
-                      </View>
-                      <View className="flex items-end">
-                        <Text className="text-gray-500 text-md font-regular ">
-                          {t("assignedAt")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                          {ticketDetails.lastAssignedToDetails?.assignedAt
-                            ? moment(
-                              ticketDetails.lastAssignedToDetails?.assignedAt
-                            ).format("DD-MM-YYYY hh:mm A")
-                            : "-"}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                  <View className="w-full mt-3">
-                    <Text className="text-gray-500 text-md font-regular">
-                      {t("issueImages")}{" "}
-                    </Text>
-                    <View className="flex-row flex-wrap gap-3">
-                      {(ticketDetails.ticketImages ?? []).length > 0 ? (
-                        ticketDetails.ticketImages?.map(
-                          (uri: any, index: any) => (
-                            <Pressable
-                              key={index}
-                              onPress={() => {
-                                router.push({
-                                  pathname: "/image_viewer/[uri]",
-                                  params: {
-                                    uri: uri,
-                                  },
-                                });
-                              }}
-                            >
-                              <Image
-                                source={{ uri: uri }}
-                                className="w-24 h-24 rounded-xl mt-2"
-                              />
-                            </Pressable>
-                          )
-                        )
-                      ) : (
-                        <Text>-</Text>
-                      )}
-                    </View>
-                  </View>
-                  <View className="flex mt-3">
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex">
                     <Text className="text-gray-500 font-regular text-md ">
-                      {t("User Type")}
+                      {t("raisedBy")}
+                    </Text>
+                    <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
+                      {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
+                      {ticketDetails?.customerDetails?.lastName ?? ""}
+                    </Text>
+                    </View>
+                    <View className="flex items-end">
+                    <Text className="text-gray-500 font-regular text-md ">
+                      {t("raisedAt")}
+                    </Text>
+                    <Text className="text-md text-gray-900  font-semibold  mt-[2px]">
+                      {ticketDetails.createdAt
+                      ? moment(ticketDetails.createdAt).format(
+                        "DD-MM-YYYY hh:mm a"
+                      )
+                      : "-"}
+                    </Text>
+                    </View>
+                  </View>
+                  </View>
+                  <View className="w-full mt-3">
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex">
+                    <Text className="text-gray-500 font-regular text-md ">
+                      {t("serialNo")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold   mt-[2px]">
+                      {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
+                    </Text>
+                    </View>
+                    <View className="flex items-end">
+                    <Text className="text-gray-500 text-md font-regular">
+                      {t("Asset Type")}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                      {ticketDetails.userTypeDetails?.value ?? "-"}
+                      {ticketDetails.assetInUseDetails?.assetMasterDetails
+                      ?.assetTypeDetails?.name ?? "-"}
                     </Text>
+                    </View>
                   </View>
-                  <View className="flex mt-3">
+                  </View>
+                  <View className="w-full mt-3">
+                  <View className="flex-row items-center justify-between">
+                    <View className="flex">
                     <Text className="text-gray-500 font-regular text-md ">
-                      {t("Customer mobileNo ")}
+                      {t("description")}
                     </Text>
-                    <View className="flex-row  ">
-                      <FeatherIcon className="mt-[2px]" name="phone" size={16} color="black" />
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails?.description ?? "-"}
+                    </Text>
+                    </View>
+                    <View className="flex items-end">
+                    <Text className="text-gray-500 text-md font-regular ">
+                      {t("assignedAt")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.lastAssignedToDetails?.assignedAt
+                      ? moment(
+                        ticketDetails.lastAssignedToDetails?.assignedAt
+                      ).format("DD-MM-YYYY hh:mm A")
+                      : "-"}
+                    </Text>
+                    </View>
+                  </View>
+                  </View>
+                  <View className="w-full mt-3">
+                  <Text className="text-gray-500 text-md font-regular">
+                    {t("issueImages")}{" "}
+                  </Text>
+                  <View className="flex-row flex-wrap gap-3">
+                    {(ticketDetails.ticketImages ?? []).length > 0 ? (
+                    ticketDetails.ticketImages?.map(
+                      (uri: any, index: any) => (
                       <Pressable
+                        key={index}
                         onPress={() => {
-                          const phoneNumber = ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
-                          if (phoneNumber) {
-                            router.push(`tel:${phoneNumber}`);
-                          }
+                        router.push({
+                          pathname: "/image_viewer/[uri]",
+                          params: {
+                          uri: uri,
+                          },
+                        });
                         }}
                       >
-                        <Text className="text-md text-primary-950 font-semibold mt-[2px] mx-2">
-                          {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
-                        </Text>
-
+                        <Image
+                        source={{ uri: uri }}
+                        className="w-24 h-24 rounded-xl mt-2"
+                        />
                       </Pressable>
-                    </View>
+                      )
+                    )
+                    ) : (
+                    <Text>-</Text>
+                    )}
+                  </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md font-regular">
-                      {t("Customer address")}
+                  <Text className="text-gray-500 font-regular text-md ">
+                    {t("User Type")}
+                  </Text>
+                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                    {ticketDetails.userTypeDetails?.value ?? "-"}
+                  </Text>
+                  </View>
+                  <View className="flex mt-3">
+                  <Text className="text-gray-500 font-regular text-md ">
+                    {t("Customer mobileNo ")}
+                  </Text>
+                  <View className="flex-row  ">
+                    <FeatherIcon className="mt-[2px]" name="phone" size={16} color="black" />
+                    <Pressable
+                    onPress={() => {
+                      const phoneNumber = ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
+                      if (phoneNumber) {
+                      router.push(`tel:${phoneNumber}`);
+                      }
+                    }}
+                    >
+                    <Text className="text-md text-primary-950 font-semibold mt-[2px] mx-2">
+                      {ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "-"}
                     </Text>
 
-                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.address ?? "-"}
-                      ,{" "}
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.areaDetails?.areaName ?? "-"}
-                      ,{" "}
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.areaDetails?.cityName ?? "-"}
-                      ,{" "}
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.areaDetails?.stateName ?? "-"}
-                      ,{" "}
-                      {ticketDetails.assetInUseDetails?.customerDetails
-                        ?.areaDetails?.pincode ?? "-"}
-                    </Text>
+                    </Pressable>
+                  </View>
+                  </View>
+                  <View className="flex mt-3">
+                  <Text className="text-gray-500 text-md font-regular">
+                    {t("Customer address")}
+                  </Text>
+
+                  <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                    {ticketDetails.assetInUseDetails?.customerDetails
+                    ?.address ?? "-"}
+                    ,{" "}
+                    {ticketDetails.assetInUseDetails?.customerDetails
+                    ?.areaDetails?.areaName ?? "-"}
+                    ,{" "}
+                    {ticketDetails.assetInUseDetails?.customerDetails
+                    ?.areaDetails?.cityName ?? "-"}
+                    ,{" "}
+                    {ticketDetails.assetInUseDetails?.customerDetails
+                    ?.areaDetails?.stateName ?? "-"}
+                    ,{" "}
+                    {ticketDetails.assetInUseDetails?.customerDetails
+                    ?.areaDetails?.pincode ?? "-"}
+                  </Text>
                   </View>
 
-                  {ticketDetails.statusDetails?.key === "SPARE_REQUIRED" || ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
-                    <View className="flex mt-3">
-                      <Text className="text-gray-500 text-md font-regular ">
-                        Spare Required Details
-                      </Text>
-                      <View className="mt-2">
-                        {paymentProducts.map((item) => (
-                          <View key={item.id}>
-                            <View className="flex-row justify-between w-full items-center mt-2">
-                              <View>
-                                <Text className="font-semibold text-gray-800">
-                                  {item.itemDetails?.productTypeDetails?.key ===
-                                    "TICKET_SPARES"
-                                    ? "Spare Details"
-                                    : item.itemDetails?.productTypeDetails
-                                      ?.value ?? "-"}
-                                </Text>
-                                {item.itemDetails?.productDetails
-                                  ?.assetTypeDetails?.name && (
-                                    <View className="">
-                                      <Text className="text-[#cf9009] text-sm font-regular">
-                                        {item.itemDetails?.productDetails
-                                          ?.assetTypeDetails?.name ?? "-"}{" "}
-                                        ,{" "}{item.itemDetails?.productDetails
-                                          ?.assetModelDetails?.modelName ?? "-"}
-                                          ,{" "}{item.itemDetails?.productDetails
-                                          ?.assetSubTypeDetails?.name ?? "-"}                                         
-                                      </Text>
-                                    </View>
-                                  )}
-                              </View>
-                            </View>
-                            <View className="h-0.5 bg-gray-100 w-full my-2" />
-                          </View>
-                        ))}
+                  {ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 text-md font-regular ">
+                    Spare Required Details
+                    </Text>
+                    <View className="mt-2">
+                    {paymentProducts.length > 0 && (
+                      paymentProducts.map((item) => (
+                      <View key={item.id}>
+                        <View className="flex-row justify-between w-full items-center mt-2">
+                        <View>   
+                            {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
+                            <Text className="text-[#cf9009] text-sm">
+                            {item.itemDetails?.productDetails
+                              ?.assetTypeDetails?.name ?? "-"}{" "}
+                            {item.itemDetails?.productDetails
+                              ?.assetModelDetails?.modelName ?? "-"}{" "}
+                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                            </Text>
+                            )}
+                        </View>
+                        </View>
                       </View>
+                      ))
+                    )}
+                    </View>
+                  </View>
+                  )}     {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
+                    <View className="mt-4">
+                      <Text className="font-medium text-md">{t("Payment Method")}</Text>
+                      <View className="flex-row mt-2">
+                        <Pressable
+                          className="flex-row items-center mr-4"
+                          onPress={() =>
+                            setPaymentMethod(paymentMethod === "offline" ? "" : "offline")
+                          }
+                        >
+                          <View
+                            className={`w-5 h-5 rounded-sm border-2 ${
+                              paymentMethod === "offline" ? "border-primary-950" : "border-gray-400"
+                            } flex items-center justify-center`}
+                          >
+                            {paymentMethod === "offline" && (
+                              <View className="w-3 h-3 rounded-sm bg-primary-950" />
+                            )}
+                          </View>
+                          <Text className="ml-2 text-md text-gray-900">
+                            {t("customer want to pay cash")}
+                          </Text>
+                        </Pressable>
+                        <Pressable
+                          className="flex-row items-center"
+                          onPress={() =>
+                            setPaymentMethod(paymentMethod === "online" ? "" : "online")
+                          }
+                        >
+                          <View
+                            className={`w-5 h-5 rounded-sm border-2 ${
+                              paymentMethod === "online" ? "border-primary-950" : "border-gray-400"
+                            } flex items-center justify-center`}
+                          >
+                            {paymentMethod === "online" && (
+                              <View className="w-3 h-3 rounded-sm bg-primary-950" />
+                            )}
+                          </View>
+                          <Text className="ml-2 text-md text-gray-900">{t("Pay Online")}</Text>
+                        </Pressable>
+                      </View>
+                      {paymentMethod && (
+                        <Text className="mt-2 text-md text-gray-900">
+                          {t("Selected Payment Method")}:{" "}
+                          {paymentMethod === "offline" ? t("customer want to pay cash") : t("Pay Online")}
+                        </Text>
+                      )}
                     </View>
                   )}
-
+                  
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
-                    ticketDetails.statusDetails?.value === "Assigned" ||
-                    ticketDetails.statusDetails?.value === "InProgress" ||
-                    ticketDetails.statusDetails?.value === "Paid") && (
-                      <View className="my-4">
-                        <Text className="font-bold text-lg font-regular text-primary-950">
-                          {t("updateTicketStatus")}
-                        </Text>
-                        <FormControl
-                          isInvalid={
-                            isFormFieldInValid("ticketStatus", errors).length > 0
-                          }
-                          className={`mt-4 `}
-                        >
-                          <PrimaryDropdownFormField
-                            options={
-                              getTicketStatusOptions(ticketDetails.statusDetails?.key, ticketDetails.userTypeDetails?.key)
-                            }
-                            selectedValue={selectTicketStatusOptions.value}
-                            setSelectedValue={setSelectTicketStatusOptions}
-                            type="ticketStatusOptionsState"
-                            placeholder={t("selectStatus")}
-                            fieldName="selectTicketStatusOptions"
-                            label={t("status")}
-                            canValidateField={canValidateField}
-                            setCanValidateField={setCanValidateField}
-                            setFieldValidationStatus={setFieldValidationStatus}
-                            validateFieldFunc={setFieldValidationStatusFunc}
-                            errors={errors}
-                            setErrors={setErrors}
-                            onSelect={handleSelectOption}
-                          />
-                          <FormControlError>
-                            <FormControlErrorText>
-                              {isFormFieldInValid("ticketStatus", errors)}
-                            </FormControlErrorText>
-                          </FormControlError>
-                        </FormControl>
+                  ticketDetails.statusDetails?.value === "Assigned" ||
+                  ticketDetails.statusDetails?.value === "InProgress" ||
+                  ticketDetails.statusDetails?.value === "Paid") && (
+                    <View className="my-4">
+                    <Text className="font-bold text-lg font-regular text-primary-950">
+                      {t("updateTicketStatus")}
+                    </Text>
+                    <FormControl
+                      isInvalid={
+                      isFormFieldInValid("ticketStatus", errors).length > 0
+                      }
+                      className={`mt-4 `}
+                    >
+                      <PrimaryDropdownFormField
+                      options={
+                        getTicketStatusOptions(ticketDetails.statusDetails?.key, ticketDetails.userTypeDetails?.key)
+                      }
+                      selectedValue={selectTicketStatusOptions.value}
+                      setSelectedValue={setSelectTicketStatusOptions}
+                      type="ticketStatusOptionsState"
+                      placeholder={t("selectStatus")}
+                      fieldName="selectTicketStatusOptions"
+                      label={t("status")}
+                      canValidateField={canValidateField}
+                      setCanValidateField={setCanValidateField}
+                      setFieldValidationStatus={setFieldValidationStatus}
+                      validateFieldFunc={setFieldValidationStatusFunc}
+                      errors={errors}
+                      setErrors={setErrors}
+                      onSelect={handleSelectOption}
+                      />
+                      <FormControlError>
+                      <FormControlErrorText>
+                        {isFormFieldInValid("ticketStatus", errors)}
+                      </FormControlErrorText>
+                      </FormControlError>
+                    </FormControl>
 
-                        <FormControl
-                          isInvalid={isFormFieldInValid("description", errors).length > 0}
-                          className="mt-4">
-                          <PrimaryTextareaFormField
-                            fieldName="description"
-                            label={t("description")}
-                            placeholder={t("writeShortDescription")}
-                            errors={errors}
-                            setErrors={setErrors}
-                            min={10}
-                            max={200}
-                            filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
-                            canValidateField={canValidateField}
-                            setCanValidateField={setCanValidateField}
-                            setFieldValidationStatus={setFieldValidationStatus}
-                            validateFieldFunc={setFieldValidationStatusFunc}
-                            onChangeText={(e: any) => setDescription(e)}
-                          />
-                        </FormControl>
-                        <FormControl
-                          isInvalid={
-                            isFormFieldInValid("assetImages", errors).length > 0}>
-                          <HStack className="justify-between mt-2 mb-1">
-                            <Text className="font-medium">
-                              {t("assetImages")}{" "}
-                              {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED", "WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
-                                <Text className="text-red-500 font-regular">*</Text>
-                              )}
-                            </Text>
-                            <Text className="text-gray-500 font-regular">
-                              {assetImages.length}/3
-                            </Text>
-                          </HStack>
-                          <View className="flex-row flex-wrap">
-                            {assetImages.map((uri, index) => (
-                              <Pressable
-                                onPress={() => {
-                                  router.push({
-                                    pathname: "/image_viewer/[uri]",
-                                    params: {
-                                      uri: uri,
-                                    },
-                                  });
-                                }}
-                                className="me-3 mt-2"
-                                key={index}
-                              >
-                                <View>
-                                  <Image
-                                    source={{ uri: uri }}
-                                    className="w-24 h-24 rounded-xl absolute"
-                                  />
-                                  <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
-                                    <Pressable
-                                      className="mt-2 me-2"
-                                      onPress={() => {
-                                        setAssetImages((prev) => {
-                                          prev.splice(index, 1);
-                                          return [...prev];
-                                        });
-                                      }}
-                                    >
-                                      <AntDesign
-                                        name="closecircle"
-                                        size={16}
-                                        color="white"
-                                      />
-                                    </Pressable>
-                                  </View>
-                                </View>
-                              </Pressable>
-                            ))}
-                          </View>
-                          {assetImages.length < 3 && (
-                            <Button
-                              className="bg-gray-200 mt-4"
-                              onPress={() => toggleImagePicker()}
-                            >
-                              <FeatherIcon
-                                name="plus-circle"
-                                className="me-1"
-                                color="black"
-                                size={18}
-                              />
-                              <ButtonText className="text-black font-regular">
-                                {t("addImage")}
-                              </ButtonText>
-                            </Button>
-                          )}
-                          <FormControlError className="mt-2">
-                            <FormControlErrorText>
-                              {isFormFieldInValid("assetImages", errors)}
-                            </FormControlErrorText>
-                          </FormControlError>
-                        </FormControl>
-                        <FormControl
-                          isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                          className="mt-4 "
+                    <FormControl
+                      isInvalid={isFormFieldInValid("description", errors).length > 0}
+                      className="mt-4">
+                      <PrimaryTextareaFormField
+                      fieldName="description"
+                      label={t("description")}
+                      placeholder={t("writeShortDescription")}
+                      errors={errors}
+                      setErrors={setErrors}
+                      min={10}
+                      max={200}
+                      filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
+                      canValidateField={canValidateField}
+                      setCanValidateField={setCanValidateField}
+                      setFieldValidationStatus={setFieldValidationStatus}
+                      validateFieldFunc={setFieldValidationStatusFunc}
+                      onChangeText={(e: any) => setDescription(e)}
+                      />
+                    </FormControl>
+                    <FormControl
+                      isInvalid={
+                      isFormFieldInValid("assetImages", errors).length > 0}>
+                      <HStack className="justify-between mt-2 mb-1">
+                      <Text className="font-medium">
+                        {t("assetImages")}{" "}
+                        {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED", "WORK_COMPLETED"].includes(selectedTicketStatus.key ?? "") && (
+                        <Text className="text-red-500 font-regular">*</Text>
+                        )}
+                      </Text>
+                      <Text className="text-gray-500 font-regular">
+                        {assetImages.length}/3
+                      </Text>
+                      </HStack>
+                      <View className="flex-row flex-wrap">
+                      {assetImages.map((uri, index) => (
+                        <Pressable
+                        onPress={() => {
+                          router.push({
+                          pathname: "/image_viewer/[uri]",
+                          params: {
+                            uri: uri,
+                          },
+                          });
+                        }}
+                        className="me-3 mt-2"
+                        key={index}
                         >
-                          <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
-                            {" "}
-                            {t("enterOtpForOpenClose")}
-                          </Text>
-                          <PrimaryTextFormField
-                            fieldName="customerOTP"
-                            label={t("customerOtp")}
-                            placeholder={t("enterCustomerOtp")}
-                            errors={errors}
-                            setErrors={setErrors}
-                            min={4}
-                            max={4}
-                            isRequired={false}
-                            keyboardType="phone-pad"
-                            filterExp={/^[0-9]*$/}
-                            canValidateField={canValidateField}
-                            setCanValidateField={setCanValidateField}
-                            setFieldValidationStatus={setFieldValidationStatus}
-                            validateFieldFunc={setFieldValidationStatusFunc}
-                            onChangeText={(e: string) => setOtp(e)}
+                        <View>
+                          <Image
+                          source={{ uri: uri }}
+                          className="w-24 h-24 rounded-xl absolute"
                           />
-                          <FormControlError>
-                            <FormControlErrorText>
-                              {isFormFieldInValid("otp", errors)}
-                            </FormControlErrorText>
-                          </FormControlError>
-                        </FormControl>
-                        {/* <Button
-                      className="bg-primary-950 rounded-md mt-6 h-12 mb-8"
+                          <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
+                          <Pressable
+                            className="mt-2 me-2"
+                            onPress={() => {
+                            setAssetImages((prev) => {
+                              prev.splice(index, 1);
+                              return [...prev];
+                            });
+                            }}
+                          >
+                            <AntDesign
+                            name="closecircle"
+                            size={16}
+                            color="white"
+                            />
+                          </Pressable>
+                          </View>
+                        </View>
+                        </Pressable>
+                      ))}
+                      </View>
+                      {assetImages.length < 3 && (
+                      <Button
+                        className="bg-gray-200 mt-4"
+                        onPress={() => toggleImagePicker()}
+                      >
+                        <FeatherIcon
+                        name="plus-circle"
+                        className="me-1"
+                        color="black"
+                        size={18}
+                        />
+                        <ButtonText className="text-black font-regular">
+                        {t("addImage")}
+                        </ButtonText>
+                      </Button>
+                      )}
+                      <FormControlError className="mt-2">
+                      <FormControlErrorText>
+                        {isFormFieldInValid("assetImages", errors)}
+                      </FormControlErrorText>
+                      </FormControlError>
+                    </FormControl>
+                    <FormControl
+                      isInvalid={isFormFieldInValid("otp", errors).length > 0}
+                      className="mt-4 "
+                    >
+                      <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
+                      {" "}
+                      {t("enterOtpForOpenClose")}
+                      </Text>
+                      <PrimaryTextFormField
+                      fieldName="customerOTP"
+                      label={t("customerOtp")}
+                      placeholder={t("enterCustomerOtp")}
+                      errors={errors}
+                      setErrors={setErrors}
+                      min={4}
+                      max={4}
+                      isRequired={false}
+                      keyboardType="phone-pad"
+                      filterExp={/^[0-9]*$/}
+                      canValidateField={canValidateField}
+                      setCanValidateField={setCanValidateField}
+                      setFieldValidationStatus={setFieldValidationStatus}
+                      validateFieldFunc={setFieldValidationStatusFunc}
+                      onChangeText={(e: string) => setOtp(e)}
+                      />
+                      <FormControlError>
+                      <FormControlErrorText>
+                        {isFormFieldInValid("otp", errors)}
+                      </FormControlErrorText>
+                      </FormControlError>
+                    </FormControl>
+                   
+                    <Button
+                      className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
                       onPress={() => {
                       if (isLoading) return;
                       updateTicketStatus();
                       }}>
-                      <ButtonText >
-                      {t("updateStatus")}
-                      </ButtonText>
-                      {isLoading && <ActivityIndicator color="white" className="ms-1" />}
-                    </Button> */}
-                        <Button
-                          className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
-                          onPress={() => {
-                            if (isLoading) return;
-                            updateTicketStatus();
-                          }}>
-                          <Text className="font-bold text-white text-xl font-regular"> {t("updateStatus")}</Text>
-                          {isLoading && <ButtonSpinner className="text-white ms-2" />}
-                        </Button>
+                      <Text className="font-bold text-white text-xl font-regular"> {t("updateStatus")}</Text>
+                      {isLoading && <ButtonSpinner className="text-white ms-2" />}
+                    </Button>
 
-                      </View>
-                    )}
+                    </View>
+                  )}
                 </View>
               </View>
             </View>

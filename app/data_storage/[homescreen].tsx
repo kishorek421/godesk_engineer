@@ -67,7 +67,7 @@ const LanguageSelectionScreen = () => {
               size={24}
               color={selectedLanguage === lang ? '#39a676' : '#ccc'}
               />
-              <Text className="text-lg font-semibold font-regular text-gray-700 ml-4">
+              <Text className="text-lg font-semibold  text-gray-700 ml-4">
               {lang === 'en' ? 'English' : lang === 'kn' ? 'ಕನ್ನಡ' : 'తెలుగు'}
               </Text>
             </TouchableOpacity>

@@ -34,13 +34,9 @@ const TicketListLayout = () => {
     t("Work Completed"),
     t("Paid"),
     t("Completed"),
-    t("Not Closed"),
+    t("On Hold"),
   ];
 
-  // const  isB2C_USER = true;
-  // if ( isB2C_USER) {
-  //   setSelectedTab(2); 
-  // }
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -142,7 +138,7 @@ const TicketListLayout = () => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-4 h-12 py-2 rounded-full w-32 mb-8 ${
+            className={`ms-2 h-12 py-2 rounded-full w-36 mb-8 ${
               selectedTab === index ? "bg-primary-200" : "bg-gray-200"
             }`}
             key={index}
