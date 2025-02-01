@@ -213,7 +213,7 @@ const HomeScreen = () => {
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
-            <Text className="mx-2  font-regular text-md">
+            <Text className="mx-2  font-medium text-md leading-5">
               {getGreetingMessage()} 👋
             </Text>
             <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
@@ -246,7 +246,9 @@ const HomeScreen = () => {
           )}
         </View>
         {isLoading ? (
-          <Text className="mt-6 text-center font-regular text-gray-500">Loading...</Text>
+          <Text className="mt-6 text-center font-regular text-gray-500">
+            Loading...
+          </Text>
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -260,31 +262,35 @@ const HomeScreen = () => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                  <View className="flex-row justify-between w-full">
+                  <View className="flex-row justify-between w-full items-center">
                     <View>
-                      <Text className="font-bold text-gray-900">
+                      <Text className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-500 font-regular">
+                      <Text className="mt-[1px] text-[13px] text-gray-900 font-regular">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
-                    <TicketStatusComponent
-                      statusKey={
-                        inProgressTicketDetails.statusDetails?.key ?? ""
-                      }
-                      statusValue={
-                        inProgressTicketDetails.statusDetails?.value ?? ""
-                      }
-                    />
+                    <View>
+                      <TicketStatusComponent
+                        statusKey={
+                          inProgressTicketDetails.statusDetails?.key ?? ""
+                        }
+                        statusValue={
+                          inProgressTicketDetails.statusDetails?.value ?? ""
+                        }
+                      />
+                    </View>
                   </View>
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
                   <View className="w-full">
                     <View className="flex-row justify-between items-center">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md">{t('raisedBy')}</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
+                        <Text className="text-gray-500 font-regular text-md">
+                          {t("raisedBy")}
+                        </Text>
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
                           {inProgressTicketDetails.customerDetails?.lastName ??
@@ -292,8 +298,10 @@ const HomeScreen = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 font-regular text-md">{t('raisedAt')}</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
+                        <Text className="text-gray-500 font-regular text-md">
+                          {t("raisedAt")}
+                        </Text>
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
                                 Number.parseInt(
@@ -310,7 +318,6 @@ const HomeScreen = () => {
             </Pressable>
           )
         )}
-
         <CheckInOutModal
           setIsModalVisible={setIsModalVisible}
           bottomSheetRef={bottomSheetRef}

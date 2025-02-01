@@ -49,7 +49,7 @@ module.exports = {
           700: "rgb(var(--color-tertiary-700)/<alpha-value>)",
           800: "rgb(var(--color-tertiary-800)/<alpha-value>)",
           900: "rgb(var(--color-tertiary-900)/<alpha-value>)",
-          950: "rgb(var(--color-tertiary-950)/<alpha-value>)",
+          950: "#5c379e",
         },
         error: {
           0: "rgb(var(--color-error-0)/<alpha-value>)",
@@ -169,7 +169,7 @@ module.exports = {
         "regular": ["Regular"],
         "medium": ["Medium"],
         "semibold": ["SemiBold"],
-        "bold": ["Bold"],
+        "bold-1": ["Bold"],
       },
       fontWeight: {
         extrablack: "950",
