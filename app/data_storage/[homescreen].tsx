@@ -38,17 +38,17 @@ const LanguageSelectionScreen = () => {
         <View>
           <View className="flex-row items-end">
             <Image
-              source={require('../../assets/images/godesk.jpg')}
-              style={{ width: 30, height: 30 }}
+              source={require('../../assets/images/icon.png')}
+              style={{ width: 60, height: 60 }}
             />
-            <Text className="font-bold text-secondary-950 ms-.5 font-regular mb-1.5">
+            {/* <Text className="font-bold-1 text-secondary-950 ms-.5 font-regular mb-1.5">
               desk <Text className="text-primary-950 font-regular">Engineer</Text>
-            </Text>
+            </Text> */}
           </View>
         </View>
  
         <View className="mt-10">
-          <Text className="text-3xl font-bold text-center mb-6 font-regular  text-gray-800">
+          <Text className="text-3xl font-bold-1 text-center mb-6 font-regular  text-gray-800">
             Select Your Language
           </Text>
         </View>
@@ -75,7 +75,7 @@ const LanguageSelectionScreen = () => {
           <TouchableOpacity
             onPress={handleDone}
             className="bg-primary-950 w-full p-4 mt-10 rounded-xl shadow-md">
-            <Text className="text-lg font-bold text-center text-white">Done</Text>
+            <Text className="text-lg font-bold-1 text-center text-white">Done</Text>
           </TouchableOpacity>
         </View>
       </View>

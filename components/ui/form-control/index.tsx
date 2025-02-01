@@ -112,7 +112,7 @@ const formControlErrorTextStyle = tva({
       true: "web:truncate",
     },
     bold: {
-      true: "font-bold",
+      true: "font-bold-1",
     },
     underline: {
       true: "underline",
@@ -156,7 +156,7 @@ const formControlHelperTextStyle = tva({
       true: "web:truncate",
     },
     bold: {
-      true: "font-bold",
+      true: "font-bold-1",
     },
     underline: {
       true: "underline",
@@ -200,7 +200,7 @@ const formControlLabelTextStyle = tva({
       true: "web:truncate",
     },
     bold: {
-      true: "font-bold",
+      true: "font-bold-1",
     },
     underline: {
       true: "underline",
@@ -240,7 +240,7 @@ const formControlLabelAstrickStyle = tva({
       true: "web:truncate",
     },
     bold: {
-      true: "font-bold",
+      true: "font-bold-1",
     },
     underline: {
       true: "underline",
