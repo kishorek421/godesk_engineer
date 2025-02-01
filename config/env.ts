@@ -1,7 +1,7 @@
 const LOCAL_BASE_URL = "http://192.168.0.155:8089";
 const DEV_BASE_URL = "http://43.205.35.224:8089";
 const STAGE_BASE_URL = "http://65.0.35.228:8090";
-const PROD_BASE_URL = "https://workplace.godesk.co.in/api";
+const PROD_BASE_URL = "https://workplace.godezk.co.in/api";
 
 enum ENVS {
   local,

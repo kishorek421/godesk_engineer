@@ -225,7 +225,7 @@ const tickets: TicketListItemModel[]  = [
             }
         },
         "ticketImages": [
-            "https://godesk-dev.s3.ap-south-1.amazonaws.com/v1/Issues_ScreenshotsPhase2%20%281%29-49424443-1f3f-45c2-a157-00cc16fa13de.docx?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241118T081629Z&X-Amz-SignedHeaders=host&X-Amz-Credential=AKIA2ZBW4QAKVFBHF3FH%2F20241118%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Expires=600&X-Amz-Signature=89515d10da0be76ac4f8aca13937262a1413ba20041e5ed567dc66ca71bdc4b6"
+            "https://godezk-dev.s3.ap-south-1.amazonaws.com/v1/Issues_ScreenshotsPhase2%20%281%29-49424443-1f3f-45c2-a157-00cc16fa13de.docx?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241118T081629Z&X-Amz-SignedHeaders=host&X-Amz-Credential=AKIA2ZBW4QAKVFBHF3FH%2F20241118%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Expires=600&X-Amz-Signature=89515d10da0be76ac4f8aca13937262a1413ba20041e5ed567dc66ca71bdc4b6"
         ]
     },
     {

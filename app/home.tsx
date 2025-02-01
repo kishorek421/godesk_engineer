@@ -34,17 +34,17 @@ import * as TaskManager from "expo-task-manager";
 const LOCATION_TASK_NAME = "background-location-task";
 
 // Define the background task
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
+// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+//   if (error) {
+//     console.error(error);
+//     return;
+//   }
 
-  if (data) {
-    const { locations } = data; // Array of location updates
-    console.log("Received new locations:", locations);
-  }
-});
+//   if (data) {
+//     const { locations } = data; // Array of location updates
+//     console.log("Received new locations:", locations);
+//   }
+// });
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -91,7 +91,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    requestPermissions();
+    // requestPermissions();
     fetchCheckInOutStatus();
   }, []);
 
@@ -165,55 +165,55 @@ const HomeScreen = () => {
   }, [exitApp, segments]);
 
   // Start background location tracking
-  async function startLocationTracking() {
-    const hasStarted =
-      await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
-    if (hasStarted) {
-      console.log("Background location tracking already started");
-      return;
-    }
+  // async function startLocationTracking() {
+  //   const hasStarted =
+  //     await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+  //   if (hasStarted) {
+  //     console.log("Background location tracking already started");
+  //     return;
+  //   }
 
-    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      accuracy: Location.Accuracy.High,
-      timeInterval: 10000, // Update every 10 seconds
-      distanceInterval: 50, // Update every 50 meters
-      showsBackgroundLocationIndicator: true, // iOS only
-      foregroundService: {
-        notificationTitle: "Tracking your location",
-        notificationBody: "We are monitoring your location in the background.",
-      },
-    });
+  //   await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+  //     accuracy: Location.Accuracy.High,
+  //     timeInterval: 10000, // Update every 10 seconds
+  //     distanceInterval: 50, // Update every 50 meters
+  //     showsBackgroundLocationIndicator: true, // iOS only
+  //     foregroundService: {
+  //       notificationTitle: "Tracking your location",
+  //       notificationBody: "We are monitoring your location in the background.",
+  //     },
+  //   });
 
-    console.log("Background location tracking started");
-  }
+  //   console.log("Background location tracking started");
+  // }
 
-  async function requestPermissions() {
-    const { status: foregroundStatus } =
-      await Location.requestForegroundPermissionsAsync();
-    console.log("foregroundStatus", foregroundStatus);
+  // async function requestPermissions() {
+  //   const { status: foregroundStatus } =
+  //     await Location.requestForegroundPermissionsAsync();
+  //   console.log("foregroundStatus", foregroundStatus);
 
-    if (foregroundStatus === "granted") {
-      const { status: backgroundStatus } =
-        await Location.requestBackgroundPermissionsAsync();
-      console.log("backgroundStatus", backgroundStatus);
+  //   if (foregroundStatus === "granted") {
+  //     const { status: backgroundStatus } =
+  //       await Location.requestBackgroundPermissionsAsync();
+  //     console.log("backgroundStatus", backgroundStatus);
 
-      if (backgroundStatus === "granted") {
-        // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        //   accuracy: Location.Accuracy.Balanced,
-        // });
-        startLocationTracking();
-      }
-    }
+  //     if (backgroundStatus === "granted") {
+  //       // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+  //       //   accuracy: Location.Accuracy.Balanced,
+  //       // });
+  //       startLocationTracking();
+  //     }
+  //   }
 
-    console.log("All permissions granted");
-  }
+  //   console.log("All permissions granted");
+  // }
 
   return (
     <SafeAreaView>
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
-            <Text className="mx-2  font-regular text-md">
+            <Text className="mx-2  font-medium text-md leading-5">
               {getGreetingMessage()} 👋
             </Text>
             <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
@@ -246,7 +246,9 @@ const HomeScreen = () => {
           )}
         </View>
         {isLoading ? (
-          <Text className="mt-6 text-center font-regular text-gray-500">Loading...</Text>
+          <Text className="mt-6 text-center font-regular text-gray-500">
+            Loading...
+          </Text>
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -260,31 +262,35 @@ const HomeScreen = () => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                  <View className="flex-row justify-between w-full">
+                  <View className="flex-row justify-between w-full items-center">
                     <View>
-                      <Text className="font-bold text-gray-900">
+                      <Text className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-500 font-regular">
+                      <Text className="mt-[1px] text-[13px] text-gray-900 font-regular">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
-                    <TicketStatusComponent
-                      statusKey={
-                        inProgressTicketDetails.statusDetails?.key ?? ""
-                      }
-                      statusValue={
-                        inProgressTicketDetails.statusDetails?.value ?? ""
-                      }
-                    />
+                    <View>
+                      <TicketStatusComponent
+                        statusKey={
+                          inProgressTicketDetails.statusDetails?.key ?? ""
+                        }
+                        statusValue={
+                          inProgressTicketDetails.statusDetails?.value ?? ""
+                        }
+                      />
+                    </View>
                   </View>
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
                   <View className="w-full">
                     <View className="flex-row justify-between items-center">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md">{t('raisedBy')}</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
+                        <Text className="text-gray-500 font-regular text-md">
+                          {t("raisedBy")}
+                        </Text>
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
                           {inProgressTicketDetails.customerDetails?.lastName ??
@@ -292,8 +298,10 @@ const HomeScreen = () => {
                         </Text>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 font-regular text-md">{t('raisedAt')}</Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md">
+                        <Text className="text-gray-500 font-regular text-md">
+                          {t("raisedAt")}
+                        </Text>
+                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
                                 Number.parseInt(
@@ -310,7 +318,6 @@ const HomeScreen = () => {
             </Pressable>
           )
         )}
-
         <CheckInOutModal
           setIsModalVisible={setIsModalVisible}
           bottomSheetRef={bottomSheetRef}

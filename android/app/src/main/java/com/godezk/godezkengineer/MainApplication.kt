@@ -1,4 +1,4 @@
-package com.godesk.godeskengineer
+package com.godezk.godezkengineer
 
 import android.app.Application
 import android.content.res.Configuration

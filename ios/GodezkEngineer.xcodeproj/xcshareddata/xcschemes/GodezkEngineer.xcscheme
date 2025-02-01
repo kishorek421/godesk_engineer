@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "godeskengineer.app"
-               BlueprintName = "godeskengineer"
-               ReferencedContainer = "container:godeskengineer.xcodeproj">
+               BuildableName = "GodezkEngineer.app"
+               BlueprintName = "GodezkEngineer"
+               ReferencedContainer = "container:GodezkEngineer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "godeskengineerTests.xctest"
-               BlueprintName = "godeskengineerTests"
-               ReferencedContainer = "container:godeskengineer.xcodeproj">
+               BuildableName = "GodezkEngineerTests.xctest"
+               BlueprintName = "GodezkEngineerTests"
+               ReferencedContainer = "container:GodezkEngineer.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "godeskengineer.app"
-            BlueprintName = "godeskengineer"
-            ReferencedContainer = "container:godeskengineer.xcodeproj">
+            BuildableName = "GodezkEngineer.app"
+            BlueprintName = "GodezkEngineer"
+            ReferencedContainer = "container:GodezkEngineer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "godeskengineer.app"
-            BlueprintName = "godeskengineer"
-            ReferencedContainer = "container:godeskengineer.xcodeproj">
+            BuildableName = "GodezkEngineer.app"
+            BlueprintName = "GodezkEngineer"
+            ReferencedContainer = "container:GodezkEngineer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

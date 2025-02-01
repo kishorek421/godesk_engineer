@@ -237,7 +237,7 @@ const CheckInOutModal = ({
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
       <View className="gap-4 p-4">
         {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
-        <Text className="font-bold font-regular text-xl">
+        <Text className="font-bold-1 font-regular text-xl">
           {status === "Checked In" ? t('checkOut') : t("checkIn")}
         </Text>
         <View className="gap-5">

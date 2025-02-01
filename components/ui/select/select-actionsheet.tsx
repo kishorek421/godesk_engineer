@@ -136,7 +136,7 @@ const actionsheetItemTextStyle = tva({
       true: '',
     },
     bold: {
-      true: 'font-bold',
+      true: 'font-bold-1',
     },
     underline: {
       true: 'underline',
@@ -192,13 +192,13 @@ const actionsheetSectionListStyle = tva({
 });
 
 const actionsheetSectionHeaderTextStyle = tva({
-  base: 'leading-5 font-bold font-heading my-0 text-typography-500 p-3 uppercase',
+  base: 'leading-5 font-bold-1 font-heading my-0 text-typography-500 p-3 uppercase',
   variants: {
     isTruncated: {
       true: '',
     },
     bold: {
-      true: 'font-bold',
+      true: 'font-bold-1',
     },
     underline: {
       true: 'underline',

@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.CAMERA"/>
@@ -29,9 +30,9 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="godeskengineer"/>
-        <data android:scheme="com.godesk.godeskengineer"/>
-        <data android:scheme="exp+godesk-engineer"/>
+        <data android:scheme="godezkengineer"/>
+        <data android:scheme="com.godezk.godezkengineer"/>
+        <data android:scheme="exp+godezk-engineer"/>
       </intent-filter>
     </activity>
   </application>
