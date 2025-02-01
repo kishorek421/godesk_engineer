@@ -461,11 +461,11 @@ const TicketDetails = () => {
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
                   <View>
-                    <Text className="text-gray-900  font-bold">
+                    <Text className="text-[#5c379e]  font-bold">
                     {ticketDetails?.ticketNo ?? "-"}
                     </Text>
-                    <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                    issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
+                    <Text className="text-gray-500 font-bold text-[13px] mt-[1px]">
+                    Issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                     </Text>
                   </View>
                   <TicketStatusComponent
@@ -632,6 +632,15 @@ const TicketDetails = () => {
                     <Text className="text-gray-500 text-md font-regular ">
                     Spare Required Details
                     </Text>
+                    {/* {paymentProducts.map((item) => (
+                    <View key={item.id}>
+                    <Text className="text-[#cf9009] text-sm">
+                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                            </Text>
+                    </View>
+                    ))} */}
                     <View className="mt-2">
                     {paymentProducts.length > 0 && (
                       paymentProducts.map((item) => (
@@ -640,11 +649,9 @@ const TicketDetails = () => {
                         <View>   
                             {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
                             <Text className="text-[#cf9009] text-sm">
-                            {item.itemDetails?.productDetails
-                              ?.assetTypeDetails?.name ?? "-"}{" "}
-                            {item.itemDetails?.productDetails
-                              ?.assetModelDetails?.modelName ?? "-"}{" "}
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
                             </Text>
                             )}
                         </View>
@@ -654,7 +661,13 @@ const TicketDetails = () => {
                     )}
                     </View>
                   </View>
-                  )}     {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
+                  )}
+                  {/* <Text className="text-[#cf9009] text-sm">
+                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                            </Text>  */}
+                      {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                     <View className="mt-4">
                       <Text className="font-medium text-md">{t("Payment Method")}</Text>
                       <View className="flex-row mt-2">
@@ -674,33 +687,10 @@ const TicketDetails = () => {
                             )}
                           </View>
                           <Text className="ml-2 text-md text-gray-900">
-                            {t("customer want to pay cash")}
+                            {t("Pay with cash")}
                           </Text>
-                        </Pressable>
-                        <Pressable
-                          className="flex-row items-center"
-                          onPress={() =>
-                            setPaymentMethod(paymentMethod === "online" ? "" : "online")
-                          }
-                        >
-                          <View
-                            className={`w-5 h-5 rounded-sm border-2 ${
-                              paymentMethod === "online" ? "border-primary-950" : "border-gray-400"
-                            } flex items-center justify-center`}
-                          >
-                            {paymentMethod === "online" && (
-                              <View className="w-3 h-3 rounded-sm bg-primary-950" />
-                            )}
-                          </View>
-                          <Text className="ml-2 text-md text-gray-900">{t("Pay Online")}</Text>
-                        </Pressable>
+                          </Pressable>
                       </View>
-                      {paymentMethod && (
-                        <Text className="mt-2 text-md text-gray-900">
-                          {t("Selected Payment Method")}:{" "}
-                          {paymentMethod === "offline" ? t("customer want to pay cash") : t("Pay Online")}
-                        </Text>
-                      )}
                     </View>
                   )}
                   
@@ -872,15 +862,17 @@ const TicketDetails = () => {
                     </FormControl>
                    
                     <Button
-                      className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
+                      className="bg-primary-950 rounded-lg mt-6 h-12 mb-8 flex-row items-center justify-center"
                       onPress={() => {
                       if (isLoading) return;
                       updateTicketStatus();
                       }}>
-                      <Text className="font-bold text-white text-xl font-regular"> {t("updateStatus")}</Text>
-                      {isLoading && <ButtonSpinner className="text-white ms-2" />}
+                      {isLoading ? (
+                        <ActivityIndicator className="text-white" />
+                      ) : (
+                        <Text className="font-bold text-white text-xl font-regular"> {t("updateStatus")}</Text>
+                      )}
                     </Button>
-
                     </View>
                   )}
                 </View>

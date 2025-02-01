@@ -47,7 +47,7 @@ const TicketListItemLayout = ({
               <Text className="text-[#5c379e]  font-bold">
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
-              <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
+              <Text className="text-gray-500 font-bold text-[13px] mt-[1px]">
               Issue In {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>

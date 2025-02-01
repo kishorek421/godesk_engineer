@@ -34,7 +34,7 @@
     "writeShortDescription": "Write a short description about your issue",
     "assetImages": "Asset Images",
     "addImage": "Add Image",
-    "enterOtpForOpenClose": "Enter customer PIN for in-progress , On Hold(Spare Required , Cannot Resolve) and close ticket",
+    "enterOtpForOpenClose": "Enter customer PIN for In-Progress , On Hold(Spare Required , Cannot Resolve) and Close Ticket",
     "customerOtp": "Customer Pin",
     "enterCustomerOtp": "Enter customer pin",
     "updateStatus": "Update Status",

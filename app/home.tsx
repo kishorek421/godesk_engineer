@@ -137,7 +137,7 @@ const HomeScreen = () => {
         <View className="flex-row justify-between items-center">
 
           <View className="flex px-4">
-            <Text className="mx-2  font-regular text-md">
+            <Text className="mx-2  font-semibold text-md">
               {getGreetingMessage()} 👋
             </Text>
             <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
@@ -191,10 +191,10 @@ const HomeScreen = () => {
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
                     <View>
-                      <Text className="font-bold text-gray-900">
+                      <Text className=" text-[#5c379e]  font-bold">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-500 font-regular">
+                      <Text className="mt-[1px] text-[13px] text-gray-500 font-bold">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>

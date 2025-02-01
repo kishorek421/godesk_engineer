@@ -4,6 +4,7 @@ import {
   AssetInUseCustomerDetailsModel,
   AssetMasterListItemModel,
 } from "./assets";
+import { OrderProductsForTicketModel } from "./payments";
 import { ConfigurationModel } from "./configurations";
 import { EmployeeDetailsModel } from "./employees";
 import { CustomerDetailsModel } from "./customers";
@@ -36,6 +37,7 @@ export interface TicketListItemModel {
   pin?: string;
   customersDetails?:CustomerDetailsModel;
   userTypeDetails?: ConfigurationModel;
+  itemDetails?: OrderProductsForTicketModel;
 }
 
 export interface AssignedToUserDetailsModel {

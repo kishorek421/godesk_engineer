@@ -136,23 +136,22 @@ const TicketListLayout = () => {
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity
+            <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-2 h-12 py-2 rounded-full w-36 mb-8 ${
+            className={`ms-1 h-12 py-2 rounded-full text-center mt-4 w-36 mb-8 ${
               selectedTab === index ? "bg-primary-200" : "bg-gray-200"
             }`}
-            key={index}
-          >
+            key={index}>
             <Text
-              className={` h-96 text-center font-regular ${
-                selectedTab === index
-                  ? "text-primary-950 font-medium"
-                  : "text-gray-500 font-normal text-sm"
+              className={` h-auto text-center font-regular ${
+              selectedTab === index
+                ? "text-primary-950 font-medium"
+                : "text-gray-500 font-normal text-sm"
               }`}
             >
               {item}
             </Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
         )}
         className="mt-6"
       />
@@ -177,7 +176,6 @@ const TicketListLayout = () => {
             }
           }}
           ListFooterComponent={<View style={{ height: 600 }} />}
-          // contentContainerStyle={{ paddingTop: 16 }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
