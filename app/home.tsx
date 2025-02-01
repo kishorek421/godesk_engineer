@@ -267,7 +267,7 @@ const HomeScreen = () => {
                       <Text className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-900 font-regular">
+                      <Text className="mt-[1px] text-[13px] text-gray-900 font-bold">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>

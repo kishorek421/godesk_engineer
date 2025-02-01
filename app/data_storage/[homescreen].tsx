@@ -48,7 +48,7 @@ const LanguageSelectionScreen = () => {
         </View>
  
         <View className="mt-10">
-          <Text className="text-3xl font-bold-1 text-center mb-6 font-regular  text-gray-800">
+          <Text className="text-3xl font-bold-1 text-center mb-6   text-gray-800">
             Select Your Language
           </Text>
         </View>

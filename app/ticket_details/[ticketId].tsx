@@ -490,7 +490,7 @@ const TicketDetails = () => {
                       <Text className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
-                      <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
+                      <Text className="text-gray-500 font-bold text-[13px] mt-[1px]">
                         Issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
@@ -658,6 +658,35 @@ const TicketDetails = () => {
                       )}
                     </View>
                   </View>
+                  {ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
+                  <View className="flex mt-3">
+                    <View className="">
+                    {paymentProducts.length > 0 && (
+                      paymentProducts.map((item) => (
+                        <View key={item.id}>
+                        {item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES" && (
+                          <Text className="text-gray-500 text-md font-regular ">
+                          Spare Required Details
+                          </Text>
+                        )}
+                        <View className="flex-row justify-between w-full items-center ">
+                        <View>   
+                            {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
+                              <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                              ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                              </Text>
+                            ) }
+                            
+                        </View>
+                        </View>
+                      </View>
+                      ))
+                    )}
+                    </View>
+                  </View>
+                  )}
                   <View className="mt-4" />
 
                   {/* Conditionally render Update Ticket Status section */}
@@ -669,102 +698,34 @@ const TicketDetails = () => {
                       <Text className="font-semibold text-lg text-primary-950">
                         {t("updateTicketStatus")}
                       </Text>
-                      {ticketDetails.statusDetails?.key ===
-                        "WORK_COMPLETED" && (
-                        <View className="flex mt-3">
-                          <Text className="text-gray-500 text-md font-regular ">
-                            Spare Required Details
-                          </Text>
-                          <View className="mt-2">
-                            {paymentProducts.length > 0 &&
-                              paymentProducts.map((item) => (
-                                <View key={item.id}>
-                                  <View className="flex-row justify-between w-full items-center mt-2">
-                                    <View>
-                                      {item.itemDetails?.productDetails
-                                        ?.assetTypeDetails?.name && (
-                                        <Text className="text-[#cf9009] text-sm">
-                                          {item.itemDetails?.productDetails
-                                            ?.assetTypeDetails?.name ??
-                                            "-"}{" "}
-                                          {item.itemDetails?.productDetails
-                                            ?.assetModelDetails?.modelName ??
-                                            "-"}{" "}
-                                          ,{" "}
-                                          {item.itemDetails.productDetails
-                                            .assetSubTypeDetails?.name ?? "-"}
-                                        </Text>
-                                      )}
-                                    </View>
-                                  </View>
-                                </View>
-                              ))}
-                          </View>
-                        </View>
-                      )}
+                      
                       {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
-                        <View className="mt-4">
-                          <Text className="font-medium text-md">
-                            {t("Payment Method")}
-                          </Text>
-                          <View className="flex-row mt-2">
-                            <Pressable
-                              className="flex-row items-center mr-4"
-                              onPress={() =>
-                                setPaymentMethod(
-                                  paymentMethod === "offline" ? "" : "offline"
-                                )
-                              }
-                            >
-                              <View
-                                className={`w-5 h-5 rounded-sm border-2 ${
-                                  paymentMethod === "offline"
-                                    ? "border-primary-950"
-                                    : "border-gray-400"
-                                } flex items-center justify-center`}
-                              >
-                                {paymentMethod === "offline" && (
-                                  <View className="w-3 h-3 rounded-sm bg-primary-950" />
-                                )}
-                              </View>
-                              <Text className="ml-2 text-md text-gray-900">
-                                {t("customer want to pay cash")}
-                              </Text>
-                            </Pressable>
-                            <Pressable
-                              className="flex-row items-center"
-                              onPress={() =>
-                                setPaymentMethod(
-                                  paymentMethod === "online" ? "" : "online"
-                                )
-                              }
-                            >
-                              <View
-                                className={`w-5 h-5 rounded-sm border-2 ${
-                                  paymentMethod === "online"
-                                    ? "border-primary-950"
-                                    : "border-gray-400"
-                                } flex items-center justify-center`}
-                              >
-                                {paymentMethod === "online" && (
-                                  <View className="w-3 h-3 rounded-sm bg-primary-950" />
-                                )}
-                              </View>
-                              <Text className="ml-2 text-md text-gray-900">
-                                {t("Pay Online")}
-                              </Text>
-                            </Pressable>
+                    <View className="mt-4">
+                      <Text className="font-medium text-md">{t("Payment Method")}</Text>
+                      <View className="flex-row mt-2">
+                        <Pressable
+                          className="flex-row items-center mr-4"
+                          onPress={() =>
+                            setPaymentMethod(paymentMethod === "offline" ? "" : "offline")
+                          }
+                        >
+                          <View
+                            className={`w-5 h-5 rounded-sm border-2 ${
+                              paymentMethod === "offline" ? "border-primary-950" : "border-gray-400"
+                            } flex items-center justify-center`}
+                          >
+                            {paymentMethod === "offline" && (
+                              <View className="w-3 h-3 rounded-sm bg-primary-950" />
+                            )}
                           </View>
-                          {paymentMethod && (
-                            <Text className="mt-2 text-md text-gray-900">
-                              {t("Selected Payment Method")}:{" "}
-                              {paymentMethod === "offline"
-                                ? t("customer want to pay cash")
-                                : t("Pay Online")}
-                            </Text>
-                          )}
-                        </View>
-                      )}
+                          <Text className="ml-2 text-md text-gray-900">
+                            {t("Pay on cash")}
+                          </Text>
+                          </Pressable>
+                      </View>
+                    </View>
+                  )}
+                  
                       <FormControl
                         isInvalid={
                           isFormFieldInValid("ticketStatus", errors).length > 0
