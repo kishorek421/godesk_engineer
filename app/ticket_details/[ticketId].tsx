@@ -629,31 +629,25 @@ const TicketDetails = () => {
 
                   {ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md font-regular ">
-                    Spare Required Details
-                    </Text>
-                    {/* {paymentProducts.map((item) => (
-                    <View key={item.id}>
-                    <Text className="text-[#cf9009] text-sm">
-                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
-                            </Text>
-                    </View>
-                    ))} */}
-                    <View className="mt-2">
+                    <View className="">
                     {paymentProducts.length > 0 && (
                       paymentProducts.map((item) => (
-                      <View key={item.id}>
-                        <View className="flex-row justify-between w-full items-center mt-2">
+                        <View key={item.id}>
+                        {item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES" && (
+                          <Text className="text-gray-500 text-md font-regular ">
+                          Spare Required Details
+                          </Text>
+                        )}
+                        <View className="flex-row justify-between w-full items-center ">
                         <View>   
                             {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
-                            <Text className="text-[#cf9009] text-sm">
-                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
-                            </Text>
-                            )}
+                              <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                              ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                              </Text>
+                            ) }
+                            
                         </View>
                         </View>
                       </View>
@@ -662,11 +656,7 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   )}
-                  {/* <Text className="text-[#cf9009] text-sm">
-                            {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                            ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                            ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
-                            </Text>  */}
+                 
                       {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                     <View className="mt-4">
                       <Text className="font-medium text-md">{t("Payment Method")}</Text>
@@ -687,7 +677,7 @@ const TicketDetails = () => {
                             )}
                           </View>
                           <Text className="ml-2 text-md text-gray-900">
-                            {t("Pay with cash")}
+                            {t("Pay on cash")}
                           </Text>
                           </Pressable>
                       </View>
