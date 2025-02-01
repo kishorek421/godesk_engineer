@@ -34,17 +34,17 @@ import * as TaskManager from "expo-task-manager";
 const LOCATION_TASK_NAME = "background-location-task";
 
 // Define the background task
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
+// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
+//   if (error) {
+//     console.error(error);
+//     return;
+//   }
 
-  if (data) {
-    const { locations } = data; // Array of location updates
-    console.log("Received new locations:", locations);
-  }
-});
+//   if (data) {
+//     const { locations } = data; // Array of location updates
+//     console.log("Received new locations:", locations);
+//   }
+// });
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -91,7 +91,7 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    requestPermissions();
+    // requestPermissions();
     fetchCheckInOutStatus();
   }, []);
 
@@ -165,48 +165,48 @@ const HomeScreen = () => {
   }, [exitApp, segments]);
 
   // Start background location tracking
-  async function startLocationTracking() {
-    const hasStarted =
-      await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
-    if (hasStarted) {
-      console.log("Background location tracking already started");
-      return;
-    }
+  // async function startLocationTracking() {
+  //   const hasStarted =
+  //     await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
+  //   if (hasStarted) {
+  //     console.log("Background location tracking already started");
+  //     return;
+  //   }
 
-    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      accuracy: Location.Accuracy.High,
-      timeInterval: 10000, // Update every 10 seconds
-      distanceInterval: 50, // Update every 50 meters
-      showsBackgroundLocationIndicator: true, // iOS only
-      foregroundService: {
-        notificationTitle: "Tracking your location",
-        notificationBody: "We are monitoring your location in the background.",
-      },
-    });
+  //   await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+  //     accuracy: Location.Accuracy.High,
+  //     timeInterval: 10000, // Update every 10 seconds
+  //     distanceInterval: 50, // Update every 50 meters
+  //     showsBackgroundLocationIndicator: true, // iOS only
+  //     foregroundService: {
+  //       notificationTitle: "Tracking your location",
+  //       notificationBody: "We are monitoring your location in the background.",
+  //     },
+  //   });
 
-    console.log("Background location tracking started");
-  }
+  //   console.log("Background location tracking started");
+  // }
 
-  async function requestPermissions() {
-    const { status: foregroundStatus } =
-      await Location.requestForegroundPermissionsAsync();
-    console.log("foregroundStatus", foregroundStatus);
+  // async function requestPermissions() {
+  //   const { status: foregroundStatus } =
+  //     await Location.requestForegroundPermissionsAsync();
+  //   console.log("foregroundStatus", foregroundStatus);
 
-    if (foregroundStatus === "granted") {
-      const { status: backgroundStatus } =
-        await Location.requestBackgroundPermissionsAsync();
-      console.log("backgroundStatus", backgroundStatus);
+  //   if (foregroundStatus === "granted") {
+  //     const { status: backgroundStatus } =
+  //       await Location.requestBackgroundPermissionsAsync();
+  //     console.log("backgroundStatus", backgroundStatus);
 
-      if (backgroundStatus === "granted") {
-        // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        //   accuracy: Location.Accuracy.Balanced,
-        // });
-        startLocationTracking();
-      }
-    }
+  //     if (backgroundStatus === "granted") {
+  //       // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+  //       //   accuracy: Location.Accuracy.Balanced,
+  //       // });
+  //       startLocationTracking();
+  //     }
+  //   }
 
-    console.log("All permissions granted");
-  }
+  //   console.log("All permissions granted");
+  // }
 
   return (
     <SafeAreaView>
