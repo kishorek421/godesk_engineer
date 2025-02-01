@@ -143,7 +143,7 @@ const TicketListLayout = () => {
             }`}
             key={index}>
             <Text
-              className={` h-auto text-center font-regular ${
+              className={` h-96 text-center mt-1 font-regular${
               selectedTab === index
                 ? "text-primary-950 font-medium"
                 : "text-gray-500 font-normal text-sm"
