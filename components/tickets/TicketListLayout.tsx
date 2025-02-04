@@ -138,13 +138,13 @@ const TicketListLayout = () => {
         renderItem={({ item, index }) => (
           <TouchableOpacity
             onPress={() => setSelectedTab(index)}
-            className={`ms-2 h-12 py-2 rounded-full w-36 mb-8 ${
+            className={`ms-2 h-12 py-2 rounded-full w-40 mb-8 ${
               selectedTab === index ? "bg-primary-200" : "bg-gray-200"
             }`}
             key={index}
           >
             <Text
-              className={` h-96 text-center font-regular ${
+              className={` h-96 text-center mt-1 font-regular ${
                 selectedTab === index
                   ? "text-primary-950 font-medium"
                   : "text-gray-500 font-normal text-sm"
