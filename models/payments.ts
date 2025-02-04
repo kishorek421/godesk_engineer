@@ -2,6 +2,7 @@ import {
     AssetModelListItemModel,
     AssetSubTypeListItemModel,
     AssetTypeListItemModel,
+    AssetSubTypeModelDetails
   } from "./assets";
   import { ConfigurationModel } from "./configurations";
   
@@ -26,7 +27,8 @@ import {
     assetTypeDetails?: AssetTypeListItemModel;
     assetModelDetails?: AssetModelListItemModel;
     assetSubTypeDetails?: AssetSubTypeListItemModel;
-    assetSubTypeModelDetails?:AssetSubTypeListItemModel;
+    assetSubTypeModelDetails?:AssetSubTypeModelDetails;
+   
   }
   
   export interface RazorPayOrderForTicket {

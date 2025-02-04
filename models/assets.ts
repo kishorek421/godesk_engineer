@@ -28,6 +28,13 @@ export interface AssetModelListItemModel {
   modelDescription?: string;
   assetModelParentAssetTypeDetails?: AssetTypeListItemModel;
 }
+export interface AssetSubTypeModelDetails {
+  id?: string;
+  modelName?: string;
+  modelNumber?: string;
+  modelDescription?: string; 
+}
+
 
 export interface AssetInUseCustomerDetailsModel {
   orgName?: string;

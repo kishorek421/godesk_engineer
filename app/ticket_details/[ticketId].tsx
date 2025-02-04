@@ -326,6 +326,7 @@ const TicketDetails = () => {
           ? (otp ?? null)
           : null,
         assetImages: uploadedAssetImages,
+        paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
       };
 
       console.log("Request body:", requestBody);
@@ -579,10 +580,10 @@ const TicketDetails = () => {
                     </Text>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 font-regular text-md ">
+                    <Text className="text-gray-500  font-regular text-md ">
                       {t("Customer mobileNo ")}
                     </Text>
-                    <View className="flex-row  ">
+                    <View className="flex-row text-center  ">
                       <FeatherIcon
                         className="mt-[2px]"
                         name="phone"
@@ -599,7 +600,7 @@ const TicketDetails = () => {
                           }
                         }}
                       >
-                        <Text className="text-md text-primary-950 font-semibold mt-[2px] mx-2">
+                        <Text className="text-md text-primary-950 text-center font-semibold mt-[2px] mx-2">
                           {ticketDetails.assetInUseDetails?.customerDetails
                             ?.mobileNumber ?? "-"}
                         </Text>
@@ -675,7 +676,8 @@ const TicketDetails = () => {
                               <Text className="text-[#cf9009] text-sm">
                               {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
                               ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                         
+                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}  
+                              ,{" "}{item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                         
                               </Text>
                             ) }
                             
@@ -699,7 +701,7 @@ const TicketDetails = () => {
                         {t("updateTicketStatus")}
                       </Text>
                       
-                      {ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
+                    {ticketDetails.userTypeDetails?.key === "B2C_USER" && ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                     <View className="mt-4">
                       <Text className="font-medium text-md">{t("Payment Method")}</Text>
                       <View className="flex-row mt-2">

@@ -1,4 +1,4 @@
-import { ConfigurationModel } from "./configurations";
+import { ConfigurationModel } from "./models/configurations";
 
 export interface AssetTypeListItemModel {
   id?: string;
