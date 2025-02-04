@@ -24,7 +24,7 @@ import { useTranslation } from "react-i18next";
 import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 
 const LoginScreen = () => {
-  const { t, i18n } = useTranslation(); // Access translations using `t`
+  const { t } = useTranslation(); 
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
