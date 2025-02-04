@@ -33,7 +33,7 @@ import * as TaskManager from "expo-task-manager";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
-// Define the background task
+// // Define the background task
 // TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
 //   if (error) {
 //     console.error(error);

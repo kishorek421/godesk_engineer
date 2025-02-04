@@ -34,7 +34,7 @@ const LanguageSelectionScreen = () => {
  
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <View className="flex-1 p-5">
+      <View className="flex-1 px-4">
         <View>
           <View className="flex-row items-end">
             <Image
@@ -46,19 +46,17 @@ const LanguageSelectionScreen = () => {
             </Text> */}
           </View>
         </View>
- 
-        <View className="mt-10">
-          <Text className="text-3xl font-bold-1 text-center mb-6   text-gray-800">
+        <View className="mt-4">
+          <Text className="text-xl font-semibold  text-gray-800">
             Select Your Language
           </Text>
         </View>
-
-        <View className="flex-col items-center w-full px-4 space-y-4">
+        <View className="flex-col items-center w-full">
             {['en', 'kn', 'te'].map((lang) => (
             <TouchableOpacity
               key={lang}
               onPress={() => handleLanguageChange(lang)}
-              className="flex-row items-center w-full p-4 border border-gray-300 rounded-xl shadow-soft-1 mt-10"
+              className="flex-row items-center w-full p-4 border border-gray-300 rounded-lg mt-6"
               style={{
               backgroundColor: selectedLanguage === lang ? '#f1f5f9' : '#fff',
               }} >
@@ -74,8 +72,8 @@ const LanguageSelectionScreen = () => {
             ))}
           <TouchableOpacity
             onPress={handleDone}
-            className="bg-primary-950 w-full p-4 mt-10 rounded-xl shadow-md">
-            <Text className="text-lg font-bold-1 text-center text-white">Done</Text>
+            className="bg-primary-950 w-full p-4 mt-10 rounded-lg">
+            <Text className="text-lg font-semibold text-center text-white">Choose</Text>
           </TouchableOpacity>
         </View>
       </View>
