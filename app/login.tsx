@@ -172,7 +172,7 @@ const LoginScreen = () => {
                   className=" flex justify-center items-center bg-primary-950 rounded-md  w-full h-12 p-0"
                   onPress={handleSendOTP}
                 >
-                  <Text className="font-semibold text-white text-xl font-regular">
+                  <Text className="font-semibold text-white text-lg">
                     {t("Login")}
                   </Text>
                   {isLoading ? (
@@ -198,7 +198,7 @@ const LoginScreen = () => {
                   height: 200,
                 }}
               />
-              <Text className="px-12 text-center text-sm font-regular">
+              <Text className="px-12 text-center text-sm font-regular mt-2">
                 {t("loginAgreement")}{" "}
                 <Text
                   onPress={() => {
