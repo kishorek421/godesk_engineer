@@ -37,6 +37,7 @@ import {
   ASSIGNED,
   TICKET_IN_PROGRESS,
   TICKET_STATUS,
+  PAYMENT_MODE
 } from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
@@ -71,6 +72,7 @@ const TicketDetails = () => {
   const [ticketDetails, setTicketDetails] = useState<TicketListItemModel>({});
   const [selectedTicketStatus, setSelectedTicketStatus] =
     useState<ConfigurationModel>({});
+    const [selectPaymentMode, setSelectPaymentMode] = useState<ConfigurationModel | null>(null);
   const [selectTicketStatusOptions, setSelectTicketStatusOptions] =
     useState<DropdownModel>({});
   const [assetImages, setAssetImages] = useState<string[]>([]);
@@ -135,6 +137,21 @@ const TicketDetails = () => {
       console.error(e);
     }
   };
+  const loadPaymentMode = async () => {
+    try {
+      const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
+        params: { category: PAYMENT_MODE },
+      });
+      console.log(
+        "response.data?.data paymentmode ----->>>> ",
+        response.data?.data
+      );
+      setSelectPaymentMode(response.data?.data[0] ?? null);
+      console.log("selectPaymentMode", selectPaymentMode);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchPincode = async () => {
     try {
@@ -173,6 +190,7 @@ const TicketDetails = () => {
 
     fetchTicketDetails();
     loadTicketStatus();
+    loadPaymentMode();
     fetchPincode();
 
     const timer = setInterval(() => {
@@ -326,7 +344,8 @@ const TicketDetails = () => {
           ? (otp ?? null)
           : null,
         assetImages: uploadedAssetImages,
-        paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
+        // paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
+        paymentMode: selectPaymentMode ? selectPaymentMode.key : null
       };
 
       console.log("Request body:", requestBody);
@@ -700,7 +719,7 @@ const TicketDetails = () => {
                       <Text className="font-semibold text-lg text-primary-950">
                         {t("updateTicketStatus")}
                       </Text>
-                      
+                      {/* ticketDetails.userTypeDetails?.key === "B2C_USER" && */}
                     {ticketDetails.userTypeDetails?.key === "B2C_USER" && ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                     <View className="mt-4">
                       <Text className="font-medium text-md">{t("Payment Method")}</Text>
@@ -708,15 +727,15 @@ const TicketDetails = () => {
                         <Pressable
                           className="flex-row items-center mr-4"
                           onPress={() =>
-                            setPaymentMethod(paymentMethod === "offline" ? "" : "offline")
+                            setSelectPaymentMode(selectPaymentMode?.key === "CASH" ? null : { key: "CASH", value: "CASH" })
                           }
                         >
                           <View
                             className={`w-5 h-5 rounded-sm border-2 ${
-                              paymentMethod === "offline" ? "border-primary-950" : "border-gray-400"
+                              selectPaymentMode?.key === "CASH" ? "border-primary-950" : "border-gray-400"
                             } flex items-center justify-center`}
                           >
-                            {paymentMethod === "offline" && (
+                            {selectPaymentMode?.key === "CASH" && (
                               <View className="w-3 h-3 rounded-sm bg-primary-950" />
                             )}
                           </View>
