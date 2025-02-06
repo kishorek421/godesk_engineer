@@ -566,8 +566,9 @@ const TicketDetails = () => {
                       </View>
                     </View>
                   </View>
+                  
                   <View className="w-full mt-3">
-                    <View className="flex-row items-center justify-between">
+                 
                       <View className="flex">
                         <Text className="text-gray-500 font-regular text-md ">
                           {t("description")}
@@ -576,7 +577,9 @@ const TicketDetails = () => {
                           {ticketDetails?.description ?? "-"}
                         </Text>
                       </View>
-                      <View className="flex items-end">
+                      
+                  </View>
+                  <View className="flex mt-3">
                         <Text className="text-gray-500 text-md font-regular ">
                           {t("assignedAt")}
                         </Text>
@@ -588,7 +591,13 @@ const TicketDetails = () => {
                             : "-"}
                         </Text>
                       </View>
-                    </View>
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 text-md ">
+                      {t("Service Type")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                    </Text>
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500 font-regular text-md ">
@@ -687,17 +696,26 @@ const TicketDetails = () => {
                         {item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES" && (
                           <Text className="text-gray-500 text-md font-regular ">
                           Spare Required Details
-                          </Text>
-                        )}
+                          </Text>)}
+                        
                         <View className="flex-row justify-between w-full items-center ">
-                        <View>   
+                        <View className="mt-1">   
                             {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
-                              <Text className="text-[#cf9009] text-sm">
-                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                              ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}  
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                         
-                              </Text>
+                              <View>
+                              <Text>Asset Type :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}                                   
+                              </Text></Text>
+                              <Text>Asset Model :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}                                 
+                              </Text></Text>
+                              <Text>Asset Subtype :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                     
+                              </Text></Text>
+                              <Text>Asset Subtype Model :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                  
+                              </Text></Text>
+                             
+                              </View>
                             ) }
                             
                         </View>
