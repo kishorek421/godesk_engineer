@@ -37,6 +37,7 @@ import {
   ASSIGNED,
   TICKET_IN_PROGRESS,
   TICKET_STATUS,
+  PAYMENT_MODE
 } from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
@@ -71,6 +72,7 @@ const TicketDetails = () => {
   const [ticketDetails, setTicketDetails] = useState<TicketListItemModel>({});
   const [selectedTicketStatus, setSelectedTicketStatus] =
     useState<ConfigurationModel>({});
+    const [selectPaymentMode, setSelectPaymentMode] = useState<ConfigurationModel | null>(null);
   const [selectTicketStatusOptions, setSelectTicketStatusOptions] =
     useState<DropdownModel>({});
   const [assetImages, setAssetImages] = useState<string[]>([]);
@@ -135,6 +137,21 @@ const TicketDetails = () => {
       console.error(e);
     }
   };
+  const loadPaymentMode = async () => {
+    try {
+      const response = await apiClient.get(GET_CONFIGURATIONS_BY_CATEGORY, {
+        params: { category: PAYMENT_MODE },
+      });
+      console.log(
+        "response.data?.data paymentmode ----->>>> ",
+        response.data?.data
+      );
+      setSelectPaymentMode(response.data?.data[0] ?? null);
+      console.log("selectPaymentMode", selectPaymentMode);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const fetchPincode = async () => {
     try {
@@ -173,6 +190,7 @@ const TicketDetails = () => {
 
     fetchTicketDetails();
     loadTicketStatus();
+    loadPaymentMode();
     fetchPincode();
 
     const timer = setInterval(() => {
@@ -326,7 +344,8 @@ const TicketDetails = () => {
           ? (otp ?? null)
           : null,
         assetImages: uploadedAssetImages,
-        paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
+        // paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
+        paymentMode: selectPaymentMode ? selectPaymentMode.key : null
       };
 
       console.log("Request body:", requestBody);
@@ -547,8 +566,9 @@ const TicketDetails = () => {
                       </View>
                     </View>
                   </View>
+                  
                   <View className="w-full mt-3">
-                    <View className="flex-row items-center justify-between">
+                 
                       <View className="flex">
                         <Text className="text-gray-500 font-regular text-md ">
                           {t("description")}
@@ -557,7 +577,9 @@ const TicketDetails = () => {
                           {ticketDetails?.description ?? "-"}
                         </Text>
                       </View>
-                      <View className="flex items-end">
+                      
+                  </View>
+                  <View className="flex mt-3">
                         <Text className="text-gray-500 text-md font-regular ">
                           {t("assignedAt")}
                         </Text>
@@ -569,7 +591,13 @@ const TicketDetails = () => {
                             : "-"}
                         </Text>
                       </View>
-                    </View>
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 text-md ">
+                      {t("Service Type")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold  mt-[2px]">
+                      {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                    </Text>
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500 font-regular text-md ">
@@ -668,17 +696,26 @@ const TicketDetails = () => {
                         {item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES" && (
                           <Text className="text-gray-500 text-md font-regular ">
                           Spare Required Details
-                          </Text>
-                        )}
+                          </Text>)}
+                        
                         <View className="flex-row justify-between w-full items-center ">
-                        <View>   
+                        <View className="mt-1">   
                             {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
-                              <Text className="text-[#cf9009] text-sm">
-                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                              ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}  
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                         
-                              </Text>
+                              <View>
+                              <Text>Asset Type :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}                                   
+                              </Text></Text>
+                              <Text>Asset Model :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}                                 
+                              </Text></Text>
+                              <Text>Asset Subtype :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}                                     
+                              </Text></Text>
+                              <Text>Asset Subtype Model :  <Text className="text-[#cf9009] text-sm">
+                              {item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                  
+                              </Text></Text>
+                             
+                              </View>
                             ) }
                             
                         </View>
@@ -700,7 +737,7 @@ const TicketDetails = () => {
                       <Text className="font-semibold text-lg text-primary-950">
                         {t("updateTicketStatus")}
                       </Text>
-                      
+                      {/* ticketDetails.userTypeDetails?.key === "B2C_USER" && */}
                     {ticketDetails.userTypeDetails?.key === "B2C_USER" && ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                     <View className="mt-4">
                       <Text className="font-medium text-md">{t("Payment Method")}</Text>
@@ -708,15 +745,15 @@ const TicketDetails = () => {
                         <Pressable
                           className="flex-row items-center mr-4"
                           onPress={() =>
-                            setPaymentMethod(paymentMethod === "offline" ? "" : "offline")
+                            setSelectPaymentMode(selectPaymentMode?.key === "CASH" ? null : { key: "CASH", value: "CASH" })
                           }
                         >
                           <View
                             className={`w-5 h-5 rounded-sm border-2 ${
-                              paymentMethod === "offline" ? "border-primary-950" : "border-gray-400"
+                              selectPaymentMode?.key === "CASH" ? "border-primary-950" : "border-gray-400"
                             } flex items-center justify-center`}
                           >
-                            {paymentMethod === "offline" && (
+                            {selectPaymentMode?.key === "CASH" && (
                               <View className="w-3 h-3 rounded-sm bg-primary-950" />
                             )}
                           </View>

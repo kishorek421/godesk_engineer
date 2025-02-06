@@ -220,6 +220,7 @@ const HomeScreen = () => {
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
           </View>
+          {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button

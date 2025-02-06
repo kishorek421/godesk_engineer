@@ -36,6 +36,7 @@ export interface TicketListItemModel {
   pin?: string;
   customersDetails?:CustomerDetailsModel;
   userTypeDetails?: ConfigurationModel;
+  paymentMode?: ConfigurationModel;
 }
 
 export interface AssignedToUserDetailsModel {
