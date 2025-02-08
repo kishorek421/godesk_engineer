@@ -35,6 +35,7 @@ interface PrimaryTextFormFieldProps {
   textCase?: TextCase;
   inputType?: "text" | "password";
   className?: string;
+  defaultErrorMessage?: string;
 }
 
 const PrimaryTextFormField = ({
@@ -58,6 +59,7 @@ const PrimaryTextFormField = ({
   textCase = TextCase.freeform,
   inputType = "text",
   className = "",
+  defaultErrorMessage,
 }: PrimaryTextFormFieldProps) => {
   const [value, setValue] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -85,7 +87,7 @@ const PrimaryTextFormField = ({
       setErrorValue(
         fieldName,
         value,
-        `Please enter a ${label.toLowerCase()}`,
+        defaultErrorMessage ?? `Please enter a ${label.toLowerCase()}`,
         setErrors,
       );
       return;

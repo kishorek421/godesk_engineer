@@ -82,6 +82,7 @@ const HomeScreen = () => {
         console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
+          console.log("data ------>", data);
           setCheckInOutStatusDetails(data);
         }
       })
@@ -220,7 +221,7 @@ const HomeScreen = () => {
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
           </View>
-          {checkInOutStatusDetails.value !== "Checked Out" && (
+          {checkInOutStatusDetails.id !== undefined && checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button
                 className="bg-primary-950 rounded-lg"
@@ -267,7 +268,7 @@ const HomeScreen = () => {
                       <Text className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-900 font-bold">
+                      <Text className="mt-[1px] text-[13px] text-gray-900 font-regular">
                         Issue in{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>

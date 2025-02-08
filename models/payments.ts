@@ -28,7 +28,6 @@ import {
     assetModelDetails?: AssetModelListItemModel;
     assetSubTypeDetails?: AssetSubTypeListItemModel;
     assetSubTypeModelDetails?:AssetSubTypeModelDetails;
-   
   }
   
   export interface RazorPayOrderForTicket {

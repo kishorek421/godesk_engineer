@@ -96,3 +96,12 @@ export const setErrorValue = (
     return prevState;
   });
 };
+
+export const getAorAn = (word: string) => {
+  if (word.length == 0) return "";
+  const lcFirstChar = word.toLowerCase()[0];
+  if (['a', 'e', 'i', 'o', 'u'].includes(lcFirstChar)) {
+    return "an";
+  }
+  return "a";
+}

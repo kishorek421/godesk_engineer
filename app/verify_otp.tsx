@@ -161,6 +161,7 @@ const VerifyOTPScreen = () => {
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: string) => setOtp(e)}
+                defaultErrorMessage="Please enter a OTP"
               />
             </View>
             <View className="flex-row justify-center mt-8">

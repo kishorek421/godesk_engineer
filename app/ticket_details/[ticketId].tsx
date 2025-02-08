@@ -35,6 +35,7 @@ import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import {
   ASSIGNED,
+  PAYMENT_MODE,
   TICKET_IN_PROGRESS,
   TICKET_STATUS,
 } from "@/constants/configuration_keys";
@@ -55,6 +56,8 @@ import {
   OrderProductsForTicketModel,
   RazorPayOrderForTicket,
 } from "@/models/payments";
+import { primaryColor } from "@/constants/colors";
+import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
 
 const TicketDetails = () => {
   const { t, i18n } = useTranslation();
@@ -89,9 +92,12 @@ const TicketDetails = () => {
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
   const [paymentProducts, setPaymentProducts] = useState<
-    OrderProductsForTicketModel[] | any[]
+    OrderProductsForTicketModel[]
   >([]);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [selectedPaymentMode, setSelectedPaymentMode] =
+  useState<ConfigurationModel>();
+
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -102,6 +108,8 @@ const TicketDetails = () => {
   };
 
   const fetchTicketDetails = async () => {
+    console.log("ticketId ----------------------->", ticketId);
+
     setIsLoading(true);
     if (typeof ticketId === "string") {
       try {
@@ -326,7 +334,10 @@ const TicketDetails = () => {
           ? (otp ?? null)
           : null,
         assetImages: uploadedAssetImages,
-        paymentMode: paymentMethod === "offline" ? "079d38fc-93a6-482d-8a99-ee600196cea8" : "cce2e5f5-340d-410a-9074-1ec72ace1e18"
+        paymentMode:
+          paymentMethod === "offline"
+            ? "079d38fc-93a6-482d-8a99-ee600196cea8"
+            : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
       };
 
       console.log("Request body:", requestBody);
@@ -387,9 +398,10 @@ const TicketDetails = () => {
 
   const getTicketStatusOptions = (
     statusKey?: string,
-    customerTypeKey?: string
+    customerTypeKey?: string,
+    paymentModeKey?: string
   ): (string | { label: any; value: any })[] => {
-    if (ticketDetails.statusDetails?.key === ASSIGNED) {
+    if (statusKey === ASSIGNED) {
       return [
         { value: "OPENED", label: "Open" },
         {
@@ -398,7 +410,7 @@ const TicketDetails = () => {
         },
       ];
     }
-    if (ticketDetails.statusDetails?.key === "OPENED") {
+    if (statusKey === "OPENED") {
       return [
         {
           value: "IN_PROGRESS",
@@ -410,7 +422,7 @@ const TicketDetails = () => {
         },
       ];
     }
-    if (ticketDetails.statusDetails?.key === "IN_PROGRESS") {
+    if (statusKey === "IN_PROGRESS") {
       if (customerTypeKey === "B2C_USER") {
         return [
           {
@@ -431,8 +443,18 @@ const TicketDetails = () => {
         ];
       }
     }
-    if (ticketDetails.statusDetails?.key === "PAID") {
+    if (statusKey === "PAID") {
       if (customerTypeKey === "B2C_USER") {
+        return [
+          {
+            value: "TICKET_CLOSED",
+            label: "Close",
+          },
+        ];
+      }
+    }
+    if (statusKey === "WORK_COMPLETED") {
+      if (customerTypeKey === "B2C_USER" && paymentModeKey === "CASH") {
         return [
           {
             value: "TICKET_CLOSED",
@@ -450,11 +472,39 @@ const TicketDetails = () => {
     }, 2000);
   }, []);
 
+  const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
+    return listOfProducts.filter(
+      (item) => item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES"
+    );
+  };
+
+  const getSparesComponent = (
+    listOfProducts: OrderProductsForTicketModel[]
+  ) => {
+    if (listOfProducts.length === 0) {
+      return <Text>-</Text>;
+    }
+    return listOfProducts.map((item) => (
+      <View className="flex-row justify-between w-full items-center ">
+        <View>
+          {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
+            <Text className="text-secondary-950 text-sm">
+              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ??
+                "-"}
+              (x{item.quantity})
+            </Text>
+          )}
+        </View>
+      </View>
+    ));
+  };
+
   return isLoading ? (
     <LoadingBar />
   ) : (
-    <SafeAreaView className="flex-1">
-      <View>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="bg-white">
         <Pressable
           onPress={() => {
             router.push({
@@ -465,7 +515,7 @@ const TicketDetails = () => {
             });
           }}
         >
-          <View className="flex-row items-center bg-white h-14 shadow-md px-4">
+          <View className="flex-row items-center bg-white h-14 px-4">
             <View className="flex-row items-center flex-1">
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
@@ -481,8 +531,9 @@ const TicketDetails = () => {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
+          className="bg-white h-full"
         >
-          <View className="flex-1 bg-gray-100 mb-8">
+          <View className="flex-1 bg-gray-100 mb-8 h-full">
             <View className="p-4">
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
@@ -491,7 +542,7 @@ const TicketDetails = () => {
                       <Text className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
                       </Text>
-                      <Text className="text-gray-500 font-bold text-[13px] mt-[1px]">
+                      <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
                         Issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
                       </Text>
                     </View>
@@ -551,44 +602,52 @@ const TicketDetails = () => {
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
                         <Text className="text-gray-500 font-regular text-md ">
-                          {t("description")}
+                          {t("User Type")}
                         </Text>
                         <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                          {ticketDetails?.description ?? "-"}
+                          {ticketDetails.userTypeDetails?.value ?? "-"}
                         </Text>
                       </View>
                       <View className="flex items-end">
                         <Text className="text-gray-500 text-md font-regular ">
-                          {t("assignedAt")}
+                          Service Type
                         </Text>
                         <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                          {ticketDetails.lastAssignedToDetails?.assignedAt
-                            ? moment(
-                                ticketDetails.lastAssignedToDetails?.assignedAt
-                              ).format("DD-MM-YYYY hh:mm A")
-                            : "-"}
+                          {ticketDetails.serviceTypeDetails?.value ?? "-"}
                         </Text>
                       </View>
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 font-regular text-md ">
-                      {t("User Type")}
+                    <Text className="text-gray-500 text-md font-regular ">
+                      {t("assignedAt")}
                     </Text>
                     <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                      {ticketDetails.userTypeDetails?.value ?? "-"}
+                      {ticketDetails.lastAssignedToDetails?.assignedAt
+                        ? moment(
+                            ticketDetails.lastAssignedToDetails?.assignedAt
+                          ).format("DD-MM-YYYY hh:mm A")
+                        : "-"}
+                    </Text>
+                  </View>
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 font-regular text-md ">
+                      {t("description")}
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                      {ticketDetails?.description ?? "-"}
                     </Text>
                   </View>
                   <View className="flex mt-3">
                     <Text className="text-gray-500  font-regular text-md ">
                       {t("Customer mobileNo ")}
                     </Text>
-                    <View className="flex-row text-center  ">
+                    <View className="flex-row text-center items-center  ">
                       <FeatherIcon
                         className="mt-[2px]"
                         name="phone"
                         size={16}
-                        color="black"
+                        color={primaryColor}
                       />
                       <Pressable
                         onPress={() => {
@@ -600,7 +659,7 @@ const TicketDetails = () => {
                           }
                         }}
                       >
-                        <Text className="text-md text-primary-950 text-center font-semibold mt-[2px] mx-2">
+                        <Text className="text-md text-primary-950 text-center font-semibold mt-[2px] ms-1">
                           {ticketDetails.assetInUseDetails?.customerDetails
                             ?.mobileNumber ?? "-"}
                         </Text>
@@ -659,75 +718,72 @@ const TicketDetails = () => {
                       )}
                     </View>
                   </View>
-                  {ticketDetails.statusDetails?.key === "WORK_COMPLETED" && (
-                  <View className="flex mt-3">
-                    <View className="">
-                    {paymentProducts.length > 0 && (
-                      paymentProducts.map((item) => (
-                        <View key={item.id}>
-                        {item.itemDetails?.productTypeDetails?.key === "TICKET_SPARES" && (
-                          <Text className="text-gray-500 text-md font-regular ">
-                          Spare Required Details
-                          </Text>
+                  {paymentProducts.length > 0 && (
+                    <View className="flex mt-4">
+                      <Text className="text-gray-500 text-md font-regular ">
+                        Spare Details
+                      </Text>
+                      <View className="">
+                        {paymentProducts && paymentProducts?.length > 0 ? (
+                          getSparesComponent(getTicketSpares(paymentProducts))
+                        ) : (
+                          <Text>-</Text>
                         )}
-                        <View className="flex-row justify-between w-full items-center ">
-                        <View>   
-                            {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
-                              <Text className="text-[#cf9009] text-sm">
-                              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-                              ,{" "} {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeDetails?.name ?? "-"}  
-                              ,{" "}{item.itemDetails.productDetails.assetSubTypeModelDetails?.modelName ?? "-"}                                         
-                              </Text>
-                            ) }
-                            
-                        </View>
-                        </View>
                       </View>
-                      ))
-                    )}
                     </View>
-                  </View>
                   )}
-                  <View className="mt-4" />
-
+                  <View className="flex mt-3">
+                    <Text className="text-gray-500 font-regular text-md ">
+                      Payment Mode
+                    </Text>
+                    <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                      {ticketDetails?.paymentModeDetails?.value ?? "-"}
+                    </Text>
+                  </View>
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
+                    ticketDetails.statusDetails?.key === "WORK_COMPLETED" ||
                     ticketDetails.statusDetails?.value === "Paid") && (
                     <View className="my-4">
                       <Text className="font-semibold text-lg text-primary-950">
                         {t("updateTicketStatus")}
                       </Text>
-                      
-                    {ticketDetails.userTypeDetails?.key === "B2C_USER" && ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
-                    <View className="mt-4">
-                      <Text className="font-medium text-md">{t("Payment Method")}</Text>
-                      <View className="flex-row mt-2">
-                        <Pressable
-                          className="flex-row items-center mr-4"
-                          onPress={() =>
-                            setPaymentMethod(paymentMethod === "offline" ? "" : "offline")
-                          }
-                        >
-                          <View
-                            className={`w-5 h-5 rounded-sm border-2 ${
-                              paymentMethod === "offline" ? "border-primary-950" : "border-gray-400"
-                            } flex items-center justify-center`}
-                          >
-                            {paymentMethod === "offline" && (
-                              <View className="w-3 h-3 rounded-sm bg-primary-950" />
-                            )}
+
+                      {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                        ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
+                          <View className="mt-4">
+                            <Text className="font-medium text-md">
+                              {t("Payment Method")}
+                            </Text>
+                            <View className="flex-row mt-2">
+                              <Pressable
+                                className="flex-row items-center mr-4"
+                                onPress={() =>
+                                  setPaymentMethod(
+                                    paymentMethod === "offline" ? "" : "offline"
+                                  )
+                                }
+                              >
+                                <View
+                                  className={`w-5 h-5 rounded-sm border-2 ${
+                                    paymentMethod === "offline"
+                                      ? "border-primary-950"
+                                      : "border-gray-400"
+                                  } flex items-center justify-center`}
+                                >
+                                  {paymentMethod === "offline" && (
+                                    <View className="w-3 h-3 rounded-sm bg-primary-950" />
+                                  )}
+                                </View>
+                                <Text className="ml-2 text-md text-gray-900">
+                                  Customer want to Pay on Cash
+                                </Text>
+                              </Pressable>
+                            </View>
                           </View>
-                          <Text className="ml-2 text-md text-gray-900">
-                            {t("Pay on cash")}
-                          </Text>
-                          </Pressable>
-                      </View>
-                    </View>
-                  )}
-                  
+                        )}
                       <FormControl
                         isInvalid={
                           isFormFieldInValid("ticketStatus", errors).length > 0
@@ -737,7 +793,8 @@ const TicketDetails = () => {
                         <PrimaryDropdownFormField
                           options={getTicketStatusOptions(
                             ticketDetails.statusDetails?.key,
-                            ticketDetails.userTypeDetails?.key
+                            ticketDetails.userTypeDetails?.key,
+                            ticketDetails.paymentModeDetails?.key
                           )}
                           selectedValue={selectTicketStatusOptions.value}
                           setSelectedValue={setSelectTicketStatusOptions}
@@ -872,7 +929,6 @@ const TicketDetails = () => {
                         className="mt-4 "
                       >
                         <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
-                          {" "}
                           {t("enterOtpForOpenClose")}
                         </Text>
                         <PrimaryTextFormField
@@ -898,6 +954,29 @@ const TicketDetails = () => {
                           </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
+                      <ConfigurationDropdownFormField
+                        className="my-3"
+                        configurationCategory={PAYMENT_MODE}
+                        placeholder="Select payment mode"
+                        label="Payment Mode"
+                        errors={errors}
+                        setErrors={setErrors}
+                        fieldName="paymentMode"
+                        canValidateField={canValidateField}
+                        setCanValidateField={setCanValidateField}
+                        setFieldValidationStatus={setFieldValidationStatus}
+                        validateFieldFunc={setFieldValidationStatusFunc}
+                        defaultValue={selectedPaymentMode}
+                        onItemSelect={(config) => {
+                          console.log("config", config);
+                          setSelectedPaymentMode(config);
+                        }}
+                        isRequired={false}
+                        defaultKey={ticketDetails?.paymentModeDetails?.key ?? "ONLINE"}
+                        isDisabled={
+                          ticketDetails?.statusDetails?.key !== "IN_PROGRESS"
+                        }
+                      />
                       <Button
                         className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
                         onPress={() => {

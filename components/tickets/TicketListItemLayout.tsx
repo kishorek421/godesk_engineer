@@ -46,7 +46,7 @@ const TicketListItemLayout = ({
               <Text className="text-tertiary-950 font-bold-1 leading-5">
                 {ticketModel?.ticketNo ?? "-"}
               </Text>
-              <Text className="text-gray-800 font-bold text-[13px]">
+              <Text className="text-gray-800 font-regular text-[13px]">
                 Issue In {ticketModel.issueTypeDetails?.name ?? "-"}
               </Text>
             </View>
@@ -91,7 +91,7 @@ const TicketListItemLayout = ({
             <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
             <View className=" py-1 flex-row justify-start items-center ">
               <Entypo name="bell" size={16} color="#eab308" />
-              <Text className="text-yellow-500 text-sm font-regular ms-1">
+              <Text className="text-secondary-950 text-sm font-regular ms-1">
                 {getHelpText(ticketModel.statusDetails?.key)}
               </Text>
             </View>
