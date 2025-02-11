@@ -98,6 +98,7 @@ const TicketDetails = () => {
   const [selectedPaymentMode, setSelectedPaymentMode] =
   useState<ConfigurationModel>();
 
+ 
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -106,7 +107,6 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-
   const fetchTicketDetails = async () => {
     console.log("ticketId ----------------------->", ticketId);
 
@@ -220,12 +220,18 @@ const TicketDetails = () => {
   const validateInputs = (): { param: string; message: string }[] => {
     const errors: { param: string; message: string }[] = [];
     if (!selectedTicketStatus?.key) {
-      errors.push({ param: "ticketStatus", message: "Status is required" });
-    }
-    if (!description) {
+      errors.push({ param: "selectTicketStatusOptions", message: "Status is required" });
+    } 
+    if (!description ) {
       errors.push({
         param: "description",
-        message: "Please enter a description",
+        message: "Please enter an description",
+      });
+    }
+    if (description && description.length < 10) {
+      errors.push({
+        param: "description",
+        message: "Min. length should be 10",
       });
     }
     if (
@@ -236,7 +242,7 @@ const TicketDetails = () => {
       !otp
     ) {
       errors.push({
-        param: "otp",
+        param: "customerOTP",
         message: "Pin is required for the selected status",
       });
     }
@@ -732,6 +738,7 @@ const TicketDetails = () => {
                       </View>
                     </View>
                   )}
+                  {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                   <View className="flex mt-3">
                     <Text className="text-gray-500 font-regular text-md ">
                       Payment Mode
@@ -739,7 +746,7 @@ const TicketDetails = () => {
                     <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails?.paymentModeDetails?.value ?? "-"}
                     </Text>
-                  </View>
+                  </View>}
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
                     ticketDetails.statusDetails?.value === "Assigned" ||
@@ -750,7 +757,6 @@ const TicketDetails = () => {
                       <Text className="font-semibold text-lg text-primary-950">
                         {t("updateTicketStatus")}
                       </Text>
-
                       {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                         ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                           <View className="mt-4">
@@ -762,9 +768,7 @@ const TicketDetails = () => {
                                 className="flex-row items-center mr-4"
                                 onPress={() =>
                                   setPaymentMethod(
-                                    paymentMethod === "offline" ? "" : "offline"
-                                  )
-                                }
+                                    paymentMethod === "offline" ? "" : "offline")}
                               >
                                 <View
                                   className={`w-5 h-5 rounded-sm border-2 ${
@@ -784,13 +788,8 @@ const TicketDetails = () => {
                             </View>
                           </View>
                         )}
-                      <FormControl
-                        isInvalid={
-                          isFormFieldInValid("ticketStatus", errors).length > 0
-                        }
-                        className={`mt-4 `}
-                      >
                         <PrimaryDropdownFormField
+                         className="my-3"
                           options={getTicketStatusOptions(
                             ticketDetails.statusDetails?.key,
                             ticketDetails.userTypeDetails?.key,
@@ -798,11 +797,13 @@ const TicketDetails = () => {
                           )}
                           selectedValue={selectTicketStatusOptions.value}
                           setSelectedValue={setSelectTicketStatusOptions}
+                        
                           type="ticketStatusOptionsState"
                           placeholder={t("selectStatus")}
                           fieldName="selectTicketStatusOptions"
                           label={t("status")}
                           canValidateField={canValidateField}
+                          defaultValue={selectedTicketStatus}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
@@ -810,19 +811,8 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           onSelect={handleSelectOption}
                         />
-                        <FormControlError>
-                          <FormControlErrorText>
-                            {isFormFieldInValid("ticketStatus", errors)}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
-                      <FormControl
-                        isInvalid={
-                          isFormFieldInValid("description", errors).length > 0
-                        }
-                        className="mt-4"
-                      >
                         <PrimaryTextareaFormField
+                         className="my-3"
                           fieldName="description"
                           label={t("description")}
                           placeholder={t("writeShortDescription")}
@@ -830,14 +820,15 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           min={10}
                           max={200}
-                          filterExp={/^[a-zA-Z0-9,.-/'#$& ]*$/}
+                          filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
+                          //defaultValue={ticketDetails?.description}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: any) => setDescription(e)}
+                         
                         />
-                      </FormControl>
                       <FormControl
                         isInvalid={
                           isFormFieldInValid("assetImages", errors).length > 0
@@ -924,10 +915,6 @@ const TicketDetails = () => {
                           </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                      <FormControl
-                        isInvalid={isFormFieldInValid("otp", errors).length > 0}
-                        className="mt-4 "
-                      >
                         <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
                           {t("enterOtpForOpenClose")}
                         </Text>
@@ -948,12 +935,7 @@ const TicketDetails = () => {
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: string) => setOtp(e)}
                         />
-                        <FormControlError>
-                          <FormControlErrorText>
-                            {isFormFieldInValid("otp", errors)}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
+                        {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                       <ConfigurationDropdownFormField
                         className="my-3"
                         configurationCategory={PAYMENT_MODE}
@@ -977,6 +959,7 @@ const TicketDetails = () => {
                           ticketDetails?.statusDetails?.key !== "IN_PROGRESS"
                         }
                       />
+}
                       <Button
                         className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
                         onPress={() => {
