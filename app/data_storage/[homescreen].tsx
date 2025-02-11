@@ -38,8 +38,8 @@ const LanguageSelectionScreen = () => {
         <View>
           <View className="flex-row items-end">
             <Image
-              source={require('../../assets/images/icon.png')}
-              style={{ width: 60, height: 60 }}
+              source={require('../../assets/images/godezk_engineer_banner_300x150.png')}
+              style={{ width: 100, height: 60 }}
             />
             {/* <Text className="font-bold-1 text-secondary-950 ms-.5 font-regular mb-1.5">
               desk <Text className="text-primary-950 font-regular">Engineer</Text>

@@ -109,9 +109,9 @@ const LoginScreen = () => {
         <View className="mt-1 h-full">
           <View className="flex-row items-end mx-3">
             <Image
-              source={require("../assets/images/icon.png")}
+              source={require("../assets/images/godezk_engineer_banner_300x150.png")}
               style={{
-                width: 60,
+                width: 100,
                 height: 60,
               }}
             />
