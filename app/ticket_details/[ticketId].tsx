@@ -30,7 +30,7 @@ import {
   FormControlErrorText,
 } from "@/components/ui/form-control";
 import SubmitButton from "@/components/SubmitButton";
-import { bytesToMB, getFileName, isFormFieldInValid } from "@/utils/helper";
+import { bytesToMB, getFileName, isFormFieldInValid,setErrorValue } from "@/utils/helper";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import {
@@ -42,7 +42,7 @@ import {
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
+import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropdownFormField";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import * as Location from "expo-location";
 import FeatherIcon from "@expo/vector-icons/Feather";
@@ -190,15 +190,6 @@ const TicketDetails = () => {
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
-  // const predefinedStatuses: { [key: string]: ConfigurationModel } = {
-  //   OPENED: { key: "OPENED", value: "Open" },
-  //   CUSTOMER_NOT_AVAILABLE: {
-  //     key: "CUSTOMER_NOT_AVAILABLE",
-  //     value: "Customer Not Available",
-  //   },
-  //   IN_PROGRESS: { key: "IN_PROGRESS", value: "InProgress" },
-  //   TICKET_CLOSED: { key: "TICKET_CLOSED", value: "Close" },
-  // };
 
   const handleSelectOption = async (option: string) => {
     console.log("Selected option:", option);
@@ -216,66 +207,6 @@ const TicketDetails = () => {
       bottomSheetRef.current?.hide();
     }
   };
-
-  const validateInputs = (): { param: string; message: string }[] => {
-    const errors: { param: string; message: string }[] = [];
-    if (!selectedTicketStatus?.key) {
-      errors.push({ param: "selectTicketStatusOptions", message: "Status is required" });
-    } 
-    if (!description ) {
-      errors.push({
-        param: "description",
-        message: "Please enter an description",
-      });
-    }
-    if (description && description.length < 10) {
-      errors.push({
-        param: "description",
-        message: "Min. length should be 10",
-      });
-    }
-    if (
-      (selectedTicketStatus?.key === "IN_PROGRESS" ||
-        selectedTicketStatus?.key === "SPARE_REQUIRED" ||
-        selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
-        selectedTicketStatus?.key === "TICKET_CLOSED") &&
-      !otp
-    ) {
-      errors.push({
-        param: "customerOTP",
-        message: "Pin is required for the selected status",
-      });
-    }
-    if (assetImages.length === 0) {
-      if (
-        selectedTicketStatus?.key === "IN_PROGRESS" ||
-        selectedTicketStatus?.key === "SPARE_REQUIRED" ||
-        selectedTicketStatus?.key === "CANNOT_RESOLVE" ||
-        selectedTicketStatus?.key === "WORK_COMPLETED" ||
-        selectedTicketStatus?.key === "TICKET_CLOSED"
-      ) {
-        errors.push({
-          param: "assetImages",
-          message: "At least one asset image is required",
-        });
-      }
-    }
-    if (!latitude || !longitude) {
-      if (!latitude || !longitude) {
-        errors.push({
-          param: "location",
-          message: "Location is required but couldn't be fetched.",
-        });
-      }
-      if (!pincode) {
-        errors.push({
-          param: "pincode",
-          message: "Pincode is required but couldn't be fetched.",
-        });
-      }
-    }
-    return errors;
-  };
   const getPaymentProducts = () => {
     apiClient
       .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
@@ -289,118 +220,174 @@ const TicketDetails = () => {
         setIsLoading(false);
       });
   };
+  
   const updateTicketStatus = async () => {
-    try {
-      const formErrors = validateInputs();
-      if (formErrors.length > 0) {
-        setErrors(formErrors);
-        return;
-      }
 
-      // setIsLoading(true);
-
-      let uploadedAssetImages: string[] = [];
-
-      if (assetImages.length > 0) {
-        console.log("Uploading asset images:", assetImages);
-
-        const formData = new FormData();
-        for (let i = 0; i < assetImages.length; i++) {
-          const assetImage = assetImages[i];
-          formData.append("assetImages", {
-            uri: assetImage,
-            type: "image/jpeg",
-            name: getFileName(assetImage, true),
-          } as unknown as Blob);
-        }
-        const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        uploadedAssetImages = uploadResponse.data.data || [];
-        console.log("Uploaded asset images:", uploadedAssetImages);
-      }
-      const requestBody = {
-        ticketId,
-        assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-        toStatus: selectedTicketStatus.key,
-        location: {
-          latitude,
-          longitude,
-        },
-        pincode,
-        description,
-        pin: [
-          "IN_PROGRESS",
-          "SPARE_REQUIRED",
-          "CANNOT_RESOLVE",
-          "TICKET_CLOSED",
-        ].includes(selectedTicketStatus.key ?? "")
-          ? (otp ?? null)
-          : null,
-        assetImages: uploadedAssetImages,
-        paymentMode:
-          paymentMethod === "offline"
-            ? "079d38fc-93a6-482d-8a99-ee600196cea8"
-            : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
-      };
-
-      console.log("Request body:", requestBody);
-      const updateResponse = await apiClient.put(
-        `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
-        requestBody
+    console.log("assetImages.length", assetImages.length);
+    if (
+      assetImages.length === 0 &&
+      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+    ) {
+      setErrorValue(
+        "assetImages",
+        "",
+        "At least one asset image is required",
+        setErrors
       );
-
-      if (updateResponse.status === 200) {
-        // console.log("Ticket status updated successfully");
-        Toast.show({
-          type: "success",
-          text1: "Ticket status updated successfully!",
-          visibilityTime: 5000,
-        });
-
-        await fetchTicketDetails();
-        router.push({
-          pathname: "../home",
-          params: { refresh: "true" },
-        });
-      } else {
-        throw new Error(`Failed to update status: ${updateResponse.status}`);
-      }
-    } catch (error: any) {
-      console.error("Failed to update ticket status.", error);
-
-      if (error?.response?.data?.errors) {
-        setErrors(
-          error.response.data.errors.filter((err: any) => err.param !== null)
-        );
-
-        const errorMessages = error.response.data.errors
-          .filter((err: any) => err.param === null)
-          .map((err: any) => err.message)
-          .join("\n");
-
-        if (errorMessages) {
-          Toast.show({
-            type: "error",
-            text1: errorMessages,
-            visibilityTime: 5000,
-          });
-        }
-      } else {
-        Toast.show({
-          type: "error",
-          text1:
-            error.response?.data?.message ||
-            "An unexpected error occurred. Please try again.",
-          visibilityTime: 5000,
-        });
-      }
-    } finally {
-      setIsLoading(false);
+    } else {
+      setErrorValue("assetImages", "", "", setErrors);
     }
-  };
+    if (
+      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
+        selectedTicketStatus?.key ?? ""
+      ) &&
+      !otp
+    ) {
+      errors.push({
+        param: "customerOTP",
+        message: "Pin is required for the selected status",
+      });
+    }
+    
+    if (!latitude || !longitude) {
+      errors.push({
+        param: "location",
+        message: "Location is required but couldn't be fetched.",
+      });
+    }
+    
+    if (!pincode) {
+      errors.push({
+        param: "pincode",
+        message: "Pincode is required but couldn't be fetched.",
+      });
+    }
+    
+    const validationPromises = Object.keys(fieldValidationStatus).map(
+        (key) =>
+            new Promise((resolve) => {
+                setFieldValidationStatus((prev: any) => ({
+                    ...prev,
+                    [key]: resolve,
+                }));
+            })
+    );
+
+    setCanValidateField(true);
+    await Promise.all(validationPromises);
+
+    const allValid = errors
+        .map((error) => error.message?.length === 0)
+        .every((status) => status === true);
+
+    if (allValid) {
+        //setIsLoading(true);
+        try {
+            let uploadedAssetImages: string[] = [];
+
+            if (assetImages.length > 0) {
+                console.log("Uploading asset images:", assetImages);
+
+                const formData = new FormData();
+                for (let i = 0; i < assetImages.length; i++) {
+                    const assetImage = assetImages[i];
+                    formData.append("assetImages", {
+                        uri: assetImage,
+                        type: "image/jpeg",
+                        name: getFileName(assetImage, true),
+                    } as unknown as Blob);
+                }
+
+                const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                uploadedAssetImages = uploadResponse.data.data || [];
+                console.log("Uploaded asset images:", uploadedAssetImages);
+            }
+
+            const requestBody = {
+                ticketId,
+                assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+                toStatus: selectedTicketStatus.key,
+                location: {
+                    latitude,
+                    longitude,
+                },
+                pincode,
+                description,
+                pin: [
+                    "IN_PROGRESS",
+                    "SPARE_REQUIRED",
+                    "CANNOT_RESOLVE",
+                    "TICKET_CLOSED",
+                ].includes(selectedTicketStatus.key ?? "")
+                    ? otp ?? null
+                    : null,
+                assetImages: uploadedAssetImages,
+                paymentMode:
+                    paymentMethod === "offline"
+                        ? "079d38fc-93a6-482d-8a99-ee600196cea8"
+                        : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
+            };
+
+            console.log("Request body:", requestBody);
+            const updateResponse = await apiClient.put(
+                `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
+                requestBody
+            );
+
+            if (updateResponse.status === 200) {
+                Toast.show({
+                    type: "success",
+                    text1: "Ticket status updated successfully!",
+                    visibilityTime: 5000,
+                });
+
+                await fetchTicketDetails();
+                router.push({
+                    pathname: "../home",
+                    params: { refresh: "true" },
+                });
+            } else {
+                throw new Error(`Failed to update status: ${updateResponse.status}`);
+            }
+        } catch (error: any) {
+            console.error("Failed to update ticket status.", error);
+
+            if (error?.response?.data?.errors) {
+                setErrors(
+                    error.response.data.errors.filter((err: any) => err.param !== null)
+                );
+
+                const errorMessages = error.response.data.errors
+                    .filter((err: any) => err.param === null)
+                    .map((err: any) => err.message)
+                    .join("\n");
+
+                if (errorMessages) {
+                    Toast.show({
+                        type: "error",
+                        text1: errorMessages,
+                        visibilityTime: 5000,
+                    });
+                }
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1:
+                        error.response?.data?.message ||
+                        "An unexpected error occurred. Please try again.",
+                    visibilityTime: 5000,
+                });
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    }
+};
+
 
   const getTicketStatusOptions = (
     statusKey?: string,
@@ -788,14 +775,14 @@ const TicketDetails = () => {
                             </View>
                           </View>
                         )}
-                        <PrimaryDropdownFormField
+                        <PrimaryDropdownFormFieldWithCustomDropdown
                          className="my-3"
                           options={getTicketStatusOptions(
                             ticketDetails.statusDetails?.key,
                             ticketDetails.userTypeDetails?.key,
                             ticketDetails.paymentModeDetails?.key
                           )}
-                          selectedValue={selectTicketStatusOptions.value}
+                          selectedValue={selectTicketStatusOptions}
                           setSelectedValue={setSelectTicketStatusOptions}
                         
                           type="ticketStatusOptionsState"
