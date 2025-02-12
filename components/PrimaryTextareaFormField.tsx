@@ -32,6 +32,7 @@ interface PrimaryTextareaFormFieldProps {
   filterExp?: RegExp;
   customValidations?: (value: string) => string | undefined;
   canClearForm?: boolean;
+  className?:string
 }
 
 const PrimaryTextareaFormField = ({
@@ -53,6 +54,7 @@ const PrimaryTextareaFormField = ({
   filterExp,
   customValidations,
   canClearForm,
+  className
 }: PrimaryTextareaFormFieldProps) => {
   const [value, setValue] = useState<string>("");
 
