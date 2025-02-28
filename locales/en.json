@@ -35,7 +35,7 @@
     "assetImages": "Asset Images",
     "addImage": "Add Image",
     "enterOtpForOpenClose": "Enter customer PIN for In-Progress , On Hold(Spare Required , Cannot Resolve) and Close Ticket",
-    "customerOtp": "Customer Pin",
+    "customerOtp": "Customer PIN",
     "enterCustomerOtp": "Enter customer PIN",
     "updateStatus": "Update Status",
     "updateTicketStatus": "Update Ticket Status",
