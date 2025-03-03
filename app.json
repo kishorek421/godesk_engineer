@@ -19,7 +19,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes",
         "NSUserTrackingUsageDescription": "We would like to track your activity to provide a better experience and personalized content."
-      }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
@@ -34,7 +35,8 @@
         "android.permission.ACCESS_BACKGROUND_LOCATION",
         "com.google.android.gms.permission.AD_ID"
       ],
-      "package": "com.godezk.godezkengineer"
+      "package": "com.godezk.godezkengineer",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -53,11 +55,27 @@
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location to track your check in and check out location."
         }
       ],
-        "expo-font",
+      "expo-font",
       [
         "expo-tracking-transparency",
         {
           "userTrackingPermission": "We would like to track your activity to provide a better experience and personalized content."
+        }
+      ],
+      [
+        "@react-native-firebase/app",
+        {
+          "iosGoogleServicesFile": "./GoogleService-Info.plist",
+          "androidGoogleServicesFile": "./google-services.json"
+        }
+      ],
+      "@react-native-firebase/messaging",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
         }
       ]
     ],

@@ -1,5 +1,6 @@
 import { ESCALATED, RAISED, TICKET_IN_PROGRESS, TICKET_CLOSED, ASSIGNED } from "@/constants/configuration_keys";
 import { ErrorModel } from "@/models/common";
+import { router } from "expo-router";
 import moment from "moment";
 import { useTranslation } from 'react-i18next';
 export const isFormFieldInValid = (
@@ -105,3 +106,28 @@ export const getAorAn = (word: string) => {
   }
   return "a";
 }
+
+export const handleNotificationNavigation = (remoteMessage: any) => {
+  console.log("remoteMessage", remoteMessage);
+  const data = remoteMessage.data;
+  console.log("Local notification tapped:", data);
+  // redirectToPage(navigation, { data });
+  const type = data?.type;
+  const id = data?.id;
+  if (type === "TICKET" && id) {
+    router.push({
+      pathname: "/tickets/tickets_history/details/[ticketId]",
+      params: {
+        ticketId: id,
+      },
+    });
+  }
+  if (type === "LEAVE_REQUEST" && id) {
+    router.push({
+      pathname: "/leave/leave_history/details/[leaveId]",
+      params: {
+        leaveId: id,
+      },
+    });
+  }
+};
