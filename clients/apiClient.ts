@@ -2,7 +2,8 @@ import axios, { AxiosError } from "axios";
 import { BASE_URL } from "@/config/env";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import { getItem, setItem } from "@/utils/secure_store";
-
+import { getFCMToken } from "@/services/fcm";
+import { getFirebaseMessaging } from "@/config/firebase_config";
 const apiClient = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -17,10 +18,19 @@ apiClient.interceptors.request.use(
     //   "eyJhbGciOiJIUzUxMiJ9.eyJwYXNzd29yZCI6IjZLU0IyR3VhTDluUC9zdEowaWd2MXk2R3JHdjVnRmJSSzJ1dzNwVjIzL289Iiwicm9sZSI6WyJGSUVMRF9FTkdJTkVFUiJdLCJpZCI6ImFiMTliOTk5LTE1ODEtNDE5My1iOWUyLTk2N2UxNWZiZjUzZCIsInVzZXJPcmdEZXRhaWxzIjp7ImxlYWRJZCI6IjIxYWUzYWI3LTg2NWYtNGQ0Yi05OTBiLThjMDU2ZWRlZTE2MSIsIm9yZ0lkIjoiYjBiYzhiZTUtZTRlYi00NTAzLWE4MTMtMTNiOTdiNzZjNzczIiwib3JnRGVwYXJ0bWVudElkIjoiMjUxMWI0NGQtOTE1ZC00NTM1LTliNzgtMGVjNTkyYzBhMDFjIiwib3JnRGVzaWduYXRpb25JZCI6ImM1YzRkMjE2LTZiMmItNDI2Ny05YWFiLTk5Nzg1MGFkZTZhYiJ9LCJlbWFpbCI6ImJvamphbWFoaTg1NzJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJNYWhpIiwic3ViIjoiYm9qamFtYWhpODU3MkBnbWFpbC5jb20iLCJpYXQiOjE3MzUxMTk3MzEsImV4cCI6MTczNTE0ODUzMX0.LLkadK44mF1hiJZ2pxS0-uWaVebky6OWaFDSsKo9UOpbnFj202SsFrf9Bb5adbbVt_aYcz1biheZUFBVX38huQ");
     let token = await getItem(AUTH_TOKEN_KEY);
     if (token) {
+      let fcmToken = "";
+
+      try {
+        const iMessaging = await getFirebaseMessaging();
+        fcmToken = (await getFCMToken(iMessaging)) ?? "";
+        console.log("fcmToken", fcmToken);
+      } catch (e) {
+        console.error("Token Error ->", e);
+      }
       try {
         console.log("BASE_URL", BASE_URL);
        
-        await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
+        await axios.post(BASE_URL + `/login/validate?token=${token}&fcmToken=${fcmToken}`, {});
         // console.log(validateResponse);
       } catch (e) {
         console.error("token invalid");
@@ -28,7 +38,7 @@ apiClient.interceptors.request.use(
           const refreshToken = await getItem(REFRESH_TOKEN_KEY);
           console.log("refreshToken", refreshToken);
           const response = await axios.get(
-            BASE_URL + "/login/refresh_token" + `?refreshToken=${refreshToken}`,
+            BASE_URL + "/login/refresh_token" + `?refreshToken=${refreshToken}&fcmToken=${fcmToken}`,
           );
           const newToken = response.data?.data?.accessToken;
           await setItem(AUTH_TOKEN_KEY, newToken);
