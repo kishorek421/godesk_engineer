@@ -30,7 +30,7 @@ import {
 import Toast from "react-native-toast-message";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 const LOCATION_TASK_NAME = "background-location-task";
 
 // // Define the background task
@@ -211,6 +211,14 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
+      <View className="mt-4 flex-row justify-end mx-4">
+        <Ionicons
+          name="notifications-outline"
+          size={20}
+          color="black"
+          onPress={() => router.push("/notifications/all_notifications")}
+        />
+      </View>
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
@@ -221,7 +229,8 @@ const HomeScreen = () => {
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
           </View>
-          {checkInOutStatusDetails.id !== undefined && checkInOutStatusDetails.value !== "Checked Out" && (
+
+          {checkInOutStatusDetails.id == undefined && checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button
                 className="bg-primary-950 rounded-lg"
@@ -243,8 +252,10 @@ const HomeScreen = () => {
                     : t("checkIn")}
                 </ButtonText>
               </Button>
+
             </View>
           )}
+
         </View>
         {isLoading ? (
           <Text className="mt-6 text-center font-regular text-gray-500">
@@ -305,10 +316,10 @@ const HomeScreen = () => {
                         <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
-                                Number.parseInt(
-                                  inProgressTicketDetails.createdAt
-                                )
-                              ).format("DD-MM-YYYY hh:mm a")
+                              Number.parseInt(
+                                inProgressTicketDetails.createdAt
+                              )
+                            ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
                         </Text>
                       </View>

@@ -116,18 +116,18 @@ export const handleNotificationNavigation = (remoteMessage: any) => {
   const id = data?.id;
   if (type === "TICKET" && id) {
     router.push({
-      pathname: "/tickets/tickets_history/details/[ticketId]",
+      pathname: "/ticket_details/[ticketId]",
       params: {
         ticketId: id,
       },
     });
   }
-  if (type === "LEAVE_REQUEST" && id) {
-    router.push({
-      pathname: "/leave/leave_history/details/[leaveId]",
-      params: {
-        leaveId: id,
-      },
-    });
-  }
+  // if (type === "LEAVE_REQUEST" && id) {
+  //   router.push({
+  //     pathname: "/leave/leave_history/details/[leaveId]",
+  //     params: {
+  //       leaveId: id,
+  //     },
+  //   });
+  // }
 };

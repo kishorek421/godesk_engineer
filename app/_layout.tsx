@@ -1,9 +1,9 @@
-import { View, Text } from "react-native";
+import { View, Text ,Pressable} from "react-native";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
 import { useEffect } from "react";
-import { Stack } from "expo-router";
+import { Stack,router } from "expo-router";
 import { useFonts } from "expo-font";
 import { AuthProvider } from "@/context/AuthContext";
 import Toast from "react-native-toast-message";
@@ -18,7 +18,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 import * as Notifications from "expo-notifications";
 import { handleNotificationNavigation } from "@/utils/helper";
-
+import Ionicons from "@expo/vector-icons/Ionicons";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 async function checkAppVersion() {
@@ -140,6 +140,7 @@ export default function RootLayout() {
     <GluestackUIProvider mode="light">
       <AuthProvider>
         <Stack>
+          
           <Stack.Screen
             name="index"
             options={{
@@ -165,6 +166,19 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="notifications/all_notifications"
+            options={{
+              headerShown: false,
+              headerTitleStyle: {
+                fontFamily: "SemiBold",
+              },
+              headerBackTitleStyle: {
+                fontFamily: "Regular",
+              },
+            }}
+          />
+          
+          <Stack.Screen
             name="login"
             options={{
               headerShown: false,
@@ -176,6 +190,7 @@ export default function RootLayout() {
               },
             }}
           />
+          
           <Stack.Screen
             name="verify_otp"
             options={{
@@ -200,6 +215,8 @@ export default function RootLayout() {
               },
             }}
           />
+         
+        
           <Stack.Screen
             name="data_storage/[homescreen]"
             options={{
