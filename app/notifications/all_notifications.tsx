@@ -1,4 +1,4 @@
-import { View, Text, FlatList, RefreshControl, Pressable } from "react-native";
+import { View, Text, FlatList, RefreshControl,Pressable } from "react-native";
 import React, { useState, useEffect } from "react";
 import TicketListItemLayout from "@/components/tickets/TicketListItemLayout";
 import NotificationsItemLayout from "@/components/notifications/NotificationsItemLayout";
@@ -12,6 +12,7 @@ import LoadingBar from "@/components/LoadingBar";
 import apiClient from "@/clients/apiClient";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { router } from "expo-router";
+
 const AllNotifications = () => {
   const [allNotifications, setAllNotifications] = useState<
     NotificationItemModel[]
@@ -42,7 +43,7 @@ const AllNotifications = () => {
         } else {
           setAllNotifications((prevState) => [...prevState, ...content]);
         }
-        let paginator = response.data?.paginator;
+        let paginator = response.data?.data?.paginator;
         if (paginator) {
           let iCurrentPage = paginator.currentPage;
           let iLastPage = paginator.lastPage;
@@ -54,7 +55,6 @@ const AllNotifications = () => {
       })
       .catch((e) => {
         console.error(e);
-        console.log("error", e)
       })
       .finally(() => {
         setIsLoading(false);
@@ -69,7 +69,6 @@ const AllNotifications = () => {
       .put(REMOVE_ALL_NOTIFICATIONS, {
         performType: "ClearAll",
         notificationIds: [],
-       
       })
       .then((response) => {
         console.log("response", response);
@@ -83,35 +82,13 @@ const AllNotifications = () => {
       });
   };
 
-  // const removeNotification = (notificationId: string) => {
-  //   setIsLoading(true);
-
-  //   apiClient
-  //     .put(REMOVE_ALL_NOTIFICATIONS, {
-  //       performType: "Remove",
-  //       notificationIds: [notificationId],
-  //     })
-  //     .then((response) => {
-  //       console.log("remove", response);
-  //       setAllNotifications((prevState) =>
-  //         prevState.filter((notification) => notification.id !== notificationId)
-  //       );
-  //     })
-  //     .catch((e) => {
-  //       console.error(e.response);
-  //     })
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  // };
-
   useEffect(() => {
     fetchNotifications(1);
   }, []);
 
   return (
     <View className="h-full ">
-      <Pressable
+       <Pressable
         onPress={() => {
           router.push({
             pathname: "../home",
@@ -136,7 +113,6 @@ const AllNotifications = () => {
       {isLoading ? (
         <View>
           <LoadingBar />
-
         </View>
       ) : (
         <View>
@@ -160,7 +136,6 @@ const AllNotifications = () => {
                 <Text className="text-gray-500 text-md text-center font-regular">
                   No Recent Notifications
                 </Text>
-
               </View>
             ) : (
               <FlatList
