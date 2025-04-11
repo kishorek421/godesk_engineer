@@ -228,6 +228,7 @@ const HomeScreen = () => {
             <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </Text>
+            {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
           </View>
 
           {checkInOutStatusDetails.id == undefined && checkInOutStatusDetails.value !== "Checked Out" && (
