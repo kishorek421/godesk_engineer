@@ -28,3 +28,9 @@ export const CHECK_IN_OUT = "/attendanceTransaction/createORUpdateAttendanceTran
 export const GET_CHECK_IN_OUT_STATUS = "/attendanceTransaction/checkAttendanceStatusByEmployeeId";
 export const GET_ORDER_PRODUCTS_OF_TICKET  =
   "/orderAndPayment/getOrderProductsOfTicket";
+
+
+  //notification
+  export const GET_ALL_NOTIFICATIONS = "/notifications/getNotifications";
+export const REMOVE_ALL_NOTIFICATIONS =
+  "/notifications/updateOrRemoveNotifications";

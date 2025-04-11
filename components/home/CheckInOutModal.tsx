@@ -196,13 +196,13 @@ const CheckInOutModal = ({
                   status === "Checked In"
                     ? "Checked out successfully"
                     : "Checked in successfully",
-                    visibilityTime: 5000,
+                visibilityTime: 5000,
               });
               setSelfie("");
               setErrors([]);
               setErrorMsg("");
               onClose();
-             
+
             })
             .catch((e) => {
               console.error(e.response?.data);
@@ -220,7 +220,7 @@ const CheckInOutModal = ({
             type: "error",
             text1: "Failed to upload your selfie",
             visibilityTime: 5000,
-            
+
           });
           setErrorMsg("Failed to check in");
         }
@@ -237,7 +237,7 @@ const CheckInOutModal = ({
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
       <View className="gap-4 p-4">
         {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
-        <Text className="font-bold-1 font-regular text-xl">
+        <Text className="font-bold-1  text-xl">
           {status === "Checked In" ? t('checkOut') : t("checkIn")}
         </Text>
         <View className="gap-5">
@@ -274,7 +274,7 @@ const CheckInOutModal = ({
                         >
                           <MaterialCommunityIcons
                             name="camera-plus"
-                            color={`${isFormFieldInValid("selfie", errors).length === 0 ?primaryColor : "#b91c1c"}`}
+                            color={`${isFormFieldInValid("selfie", errors).length === 0 ? primaryColor : "#b91c1c"}`}
                             size={18}
                           />
                         </View>

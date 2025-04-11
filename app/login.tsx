@@ -22,9 +22,11 @@ import { isFormFieldInValid } from "@/utils/helper";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import { useTranslation } from "react-i18next";
 import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
+import { getFCMToken } from "@/services/fcm";
+import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 
 const LoginScreen = () => {
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -32,6 +34,7 @@ const LoginScreen = () => {
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const { messagingRef } = useFirebaseMessaging();
 
   useEffect(() => {
     const requestPermission = async () => {
@@ -68,8 +71,16 @@ const LoginScreen = () => {
     setIsLoading(true);
     setErrors([]);
 
+    let fcmToken = "";
+
+    try {
+      fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
+    } catch (e) {
+      console.error("Token Error ->", e);
+    }
+
     await apiClient
-      .post("/otp/send", { mobile, type: "FIELD_ENGINEER" })
+      .post("/otp/send", { mobile, type: "FIELD_ENGINEER", "fcmToken": fcmToken })
       .then((response) => {
         console.log("Response:", response.data.data);
         if (response.data?.success) {
@@ -109,9 +120,9 @@ const LoginScreen = () => {
         <View className="mt-1 h-full">
           <View className="flex-row items-end mx-3">
             <Image
-              source={require("../assets/images/icon.png")}
+              source={require("../assets/images/godezk_engineer_banner_300x150.png")}
               style={{
-                width: 60,
+                width: 100,
                 height: 60,
               }}
             />
@@ -122,9 +133,7 @@ const LoginScreen = () => {
           <View className="px-4 flex justify-between h-[88%]">
             <View>
               <View className="mt-2">
-                <Text className="text-2xl font-bold-1">
-                  {t("welcome")}
-                </Text>
+                <Text className="text-2xl font-bold-1">{t("welcome")}</Text>
 
                 <Text className="color-gray-400 text-sm font-regular">
                   {t(" Let’s create something extraordinary!")}
