@@ -15,13 +15,13 @@ import { DropdownProps } from "@/models/common";
 
 interface PrimaryDropdownFormFieldProps {
   options: (string | { label: any; value: any })[];
-  selectedValue: any;
-  setSelectedValue: any;
+  selectedValue: string; // Expect string (e.g., option value or key)
+  setSelectedValue: (value: string) => void;
   type: any;
   onSelect: (selected: string) => void;
   placeholder: string;
   canValidateField: boolean;
-  setCanValidateField: any;
+  setCanValidateField: (value: boolean) => void;
   setFieldValidationStatus: any;
   validateFieldFunc: (fieldName: string, isValid: boolean) => void;
   fieldName: string;
@@ -29,7 +29,7 @@ interface PrimaryDropdownFormFieldProps {
   setErrors: any;
   label: string;
   isRequired?: boolean;
-  defaultValue?: any;
+  defaultValue?: string; // Expect string (e.g., default key)
   className?: string;
 }
 
@@ -55,47 +55,74 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
   const [visible, setVisible] = useState(false);
   const [inputText, setInputText] = useState<string>("");
 
+  // Initialize with defaultValue
   useEffect(() => {
     if (defaultValue) {
-      setSelectedValue(defaultValue);
+      const selectedOption = options.find(
+        (item) => (typeof item === "string" ? item : item.value) === defaultValue
+      );
+      if (selectedOption) {
+        setSelectedValue(defaultValue);
+        setInputText(typeof selectedOption === "string" ? selectedOption : selectedOption.label);
+      }
     }
-  }, [defaultValue]);
+  }, [defaultValue, options]);
 
+  // Sync inputText with selectedValue changes
+  useEffect(() => {
+    if (selectedValue) {
+      const selectedOption = options.find(
+        (item) => (typeof item === "string" ? item : item.value) === selectedValue
+      );
+      if (selectedOption) {
+        setInputText(typeof selectedOption === "string" ? selectedOption : selectedOption.label);
+      } else {
+        setInputText(""); // Reset if selectedValue is invalid
+      }
+    } else {
+      setInputText(""); // Show placeholder if no selection
+    }
+  }, [selectedValue, options]);
+
+  // Initialize field validation status
   useEffect(() => {
     setFieldValidationStatus((prevState: any) => ({
       ...prevState,
       [fieldName]: null,
     }));
-  }, []);
+  }, [fieldName]);
 
+  // Validate field when canValidateField changes
   useEffect(() => {
     if (canValidateField) {
       validateField(selectedValue);
       setCanValidateField(false);
     }
-  }, [canValidateField]);
+  }, [canValidateField, selectedValue]);
 
-  const validateField = (newValue: any) => {
-    if (isRequired && newValue.value === undefined) {
+  const validateField = (value: string) => {
+    if (isRequired && !value) {
       validateFieldFunc(fieldName, false);
       setErrorValue(
         fieldName,
-        newValue.value ?? "",
+        value,
         `Please select a ${label.toLowerCase()}`,
         setErrors
       );
-      return;
+    } else {
+      validateFieldFunc(fieldName, true);
+      setErrorValue(fieldName, value, "", setErrors);
     }
-    validateFieldFunc(fieldName, true);
-    setErrorValue(fieldName, newValue.value ?? "", "", setErrors);
   };
 
   const handleSelect = (item: string | { label: string; value: string }) => {
     const value = typeof item === "string" ? item : item.value;
+    const label = typeof item === "string" ? item : item.label;
     setSelectedValue(value);
-    setInputText(typeof item === "string" ? item : item.label);
+    setInputText(label);
     onSelect(value);
     setVisible(false);
+    validateField(value); // Re-validate on selection
   };
 
   return (
@@ -107,8 +134,8 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
       {/* Custom Dropdown */}
       <Pressable onPress={() => setVisible(true)}>
         <View className="flex-row items-center justify-between px-4 border border-gray-300 rounded-md bg-white w-full py-3.5">
-          <Text className={`${inputText && inputText.length > 0 ? "text-gray-900" : "text-gray-500"} text-lg`}>
-            {inputText && inputText.length > 0 ? inputText : placeholder}
+          <Text className={`${inputText ? "text-gray-900" : "text-gray-500"} text-lg`}>
+            {inputText || placeholder}
           </Text>
           <SimpleLineIcons name="arrow-down" size={16} color="#a9a9a9" />
         </View>
