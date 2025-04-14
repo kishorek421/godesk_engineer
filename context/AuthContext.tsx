@@ -22,12 +22,20 @@ interface AuthContextProps {
 export const AuthContext = createContext<AuthContextProps | undefined>(
   undefined,
 );
-
+export enum InitialNotificationStatus {
+  fetching,
+  notifications_empty,
+  notifications_pending,
+}
 interface AuthProviderProps {
+  initialNotificationStatus?: InitialNotificationStatus;
   children?: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({
+  initialNotificationStatus = InitialNotificationStatus.fetching,
+  children,
+}:  AuthProviderProps) => {
   const [user, setUser] = useState<UserDetailsModel | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const router = useRouter();

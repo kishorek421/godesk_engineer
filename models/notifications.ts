@@ -9,9 +9,11 @@ export interface NotificationItemModel {
   subType?: string;
   router?: string;
   userId: string;
+  notificationId?:string;
   roleDetails?: RoleModel;
   notificationType?: ConfigurationModel;
   isRead?: boolean;
   createdAt?: number;
   modifiedAt?: number;
 }
+

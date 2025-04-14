@@ -98,7 +98,6 @@ const TicketDetails = () => {
   const [selectedPaymentMode, setSelectedPaymentMode] =
   useState<ConfigurationModel>();
 
- 
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -111,7 +110,7 @@ const TicketDetails = () => {
     console.log("ticketId ----------------------->", ticketId);
 
     setIsLoading(true);
-    if (typeof ticketId === "string") {
+    if (ticketId) {
       try {
         const response = await apiClient.get(
           GET_TICKET_DETAILS + `?ticketId=${ticketId}`
@@ -223,7 +222,6 @@ const TicketDetails = () => {
   
   const updateTicketStatus = async () => {
 
-    console.log("assetImages.length", assetImages.length);
     if (
       assetImages.length === 0 &&
       ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
@@ -275,13 +273,10 @@ const TicketDetails = () => {
 
     setCanValidateField(true);
     await Promise.all(validationPromises);
-
-    const allValid = errors
-        .map((error) => error.message?.length === 0)
-        .every((status) => status === true);
+    const allValid = errors.every((error) => !error.message);
 
     if (allValid) {
-        //setIsLoading(true);
+        setIsLoading(true);
         try {
             let uploadedAssetImages: string[] = [];
 
@@ -340,9 +335,9 @@ const TicketDetails = () => {
 
             if (updateResponse.status === 200) {
                 Toast.show({
-                    type: "success",
-                    text1: "Ticket status updated successfully!",
-                    visibilityTime: 5000,
+                  type: "success",
+                  text1: `Ticket status updated successfully!`,
+                  visibilityTime: 5000,
                 });
 
                 await fetchTicketDetails();
@@ -481,12 +476,21 @@ const TicketDetails = () => {
       <View className="flex-row justify-between w-full items-center ">
         <View>
           {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
+            <View>
             <Text className="text-secondary-950 text-sm">
+              Asset Model{" "}:{" "}
               {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ??
-                "-"}
+              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+              ({item.itemDetails?.productDetails?.assetModelDetails?.modelNumber ?? "-"}{" "})
               (x{item.quantity})
             </Text>
+            <Text className="text-secondary-950 text-sm">
+              Asset SubType Model{" "}:{" "}
+              {item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelName ?? "-"}{" "}
+              ({item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelNumber ?? "-"}{" "})
+              (x{item.quantity})
+            </Text>
+              </View>
           )}
         </View>
       </View>
@@ -783,14 +787,12 @@ const TicketDetails = () => {
                             ticketDetails.paymentModeDetails?.key
                           )}
                           selectedValue={selectTicketStatusOptions}
-                          setSelectedValue={setSelectTicketStatusOptions}
-                        
+                          setSelectedValue={setSelectTicketStatusOptions} 
                           type="ticketStatusOptionsState"
                           placeholder={t("selectStatus")}
                           fieldName="selectTicketStatusOptions"
                           label={t("status")}
                           canValidateField={canValidateField}
-                          defaultValue={selectedTicketStatus}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
@@ -808,7 +810,7 @@ const TicketDetails = () => {
                           min={10}
                           max={200}
                           filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
-                          //defaultValue={ticketDetails?.description}
+                          defaultValue={description}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
@@ -913,6 +915,7 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           min={4}
                           max={4}
+                          defaultValue={otp}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
