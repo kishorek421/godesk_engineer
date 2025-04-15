@@ -107,7 +107,7 @@ export const getAorAn = (word: string) => {
   return "a";
 }
 
-export const handleNotificationNavigation = (remoteMessage: any) => {
+export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
   console.log("remoteMessage", remoteMessage);
   const data = remoteMessage.data;
   console.log("Local notification tapped:", data);

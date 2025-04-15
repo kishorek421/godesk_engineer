@@ -98,7 +98,6 @@ const TicketDetails = () => {
   const [selectedPaymentMode, setSelectedPaymentMode] =
   useState<ConfigurationModel>();
 
- 
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -111,7 +110,7 @@ const TicketDetails = () => {
     console.log("ticketId ----------------------->", ticketId);
 
     setIsLoading(true);
-    if (typeof ticketId === "string") {
+    if (ticketId) {
       try {
         const response = await apiClient.get(
           GET_TICKET_DETAILS + `?ticketId=${ticketId}`
@@ -222,171 +221,191 @@ const TicketDetails = () => {
   };
   
   const updateTicketStatus = async () => {
-
-    console.log("assetImages.length", assetImages.length);
+    // Clear previous errors and reset validation state
+    setErrors([]);
+    setFieldValidationStatus({});
+  
+    // Validate inputs
+    let newErrors: { param: string; message: string }[] = [];
+  
     if (
       assetImages.length === 0 &&
-      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(
+        selectedTicketStatus?.key ?? ""
+      )
     ) {
-      setErrorValue(
-        "assetImages",
-        "",
-        "At least one asset image is required",
-        setErrors
-      );
+      setErrorValue("assetImages", "", "At least one asset image is required", setErrors);
+      newErrors.push({
+        param: "assetImages",
+        message: "At least one asset image is required",
+      });
     } else {
       setErrorValue("assetImages", "", "", setErrors);
     }
+  
     if (
       ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
         selectedTicketStatus?.key ?? ""
       ) &&
       !otp
     ) {
-      errors.push({
+      newErrors.push({
         param: "customerOTP",
         message: "Pin is required for the selected status",
       });
     }
-    
+    if (!selectedTicketStatus?.key) {
+      newErrors.push({
+        param: "selectTicketStatusOptions",
+        message: "Please select a status",
+      });
+    }
+    if (!description) {
+      newErrors.push({
+        param: "description",
+        message: "Please enter a description",
+      });
+    }
+  
     if (!latitude || !longitude) {
-      errors.push({
+      newErrors.push({
         param: "location",
         message: "Location is required but couldn't be fetched.",
       });
     }
-    
+  
     if (!pincode) {
-      errors.push({
+      newErrors.push({
         param: "pincode",
         message: "Pincode is required but couldn't be fetched.",
       });
     }
-    
+  
+    // Trigger field validations
     const validationPromises = Object.keys(fieldValidationStatus).map(
-        (key) =>
-            new Promise((resolve) => {
-                setFieldValidationStatus((prev: any) => ({
-                    ...prev,
-                    [key]: resolve,
-                }));
-            })
+      (key) =>
+        new Promise((resolve) => {
+          setFieldValidationStatus((prev: any) => ({
+            ...prev,
+            [key]: resolve,
+          }));
+        })
     );
-
+  
     setCanValidateField(true);
+  
     await Promise.all(validationPromises);
-
-    const allValid = errors
-        .map((error) => error.message?.length === 0)
-        .every((status) => status === true);
-
+  
+    // Check if there are no errors
+    const allValid = newErrors.length === 0;
+  
     if (allValid) {
-        //setIsLoading(true);
-        try {
-            let uploadedAssetImages: string[] = [];
-
-            if (assetImages.length > 0) {
-                console.log("Uploading asset images:", assetImages);
-
-                const formData = new FormData();
-                for (let i = 0; i < assetImages.length; i++) {
-                    const assetImage = assetImages[i];
-                    formData.append("assetImages", {
-                        uri: assetImage,
-                        type: "image/jpeg",
-                        name: getFileName(assetImage, true),
-                    } as unknown as Blob);
-                }
-
-                const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                });
-                uploadedAssetImages = uploadResponse.data.data || [];
-                console.log("Uploaded asset images:", uploadedAssetImages);
-            }
-
-            const requestBody = {
-                ticketId,
-                assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-                toStatus: selectedTicketStatus.key,
-                location: {
-                    latitude,
-                    longitude,
-                },
-                pincode,
-                description,
-                pin: [
-                    "IN_PROGRESS",
-                    "SPARE_REQUIRED",
-                    "CANNOT_RESOLVE",
-                    "TICKET_CLOSED",
-                ].includes(selectedTicketStatus.key ?? "")
-                    ? otp ?? null
-                    : null,
-                assetImages: uploadedAssetImages,
-                paymentMode:
-                    paymentMethod === "offline"
-                        ? "079d38fc-93a6-482d-8a99-ee600196cea8"
-                        : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
-            };
-
-            console.log("Request body:", requestBody);
-            const updateResponse = await apiClient.put(
-                `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
-                requestBody
-            );
-
-            if (updateResponse.status === 200) {
-                Toast.show({
-                    type: "success",
-                    text1: "Ticket status updated successfully!",
-                    visibilityTime: 5000,
-                });
-
-                await fetchTicketDetails();
-                router.push({
-                    pathname: "../home",
-                    params: { refresh: "true" },
-                });
-            } else {
-                throw new Error(`Failed to update status: ${updateResponse.status}`);
-            }
-        } catch (error: any) {
-            console.error("Failed to update ticket status.", error);
-
-            if (error?.response?.data?.errors) {
-                setErrors(
-                    error.response.data.errors.filter((err: any) => err.param !== null)
-                );
-
-                const errorMessages = error.response.data.errors
-                    .filter((err: any) => err.param === null)
-                    .map((err: any) => err.message)
-                    .join("\n");
-
-                if (errorMessages) {
-                    Toast.show({
-                        type: "error",
-                        text1: errorMessages,
-                        visibilityTime: 5000,
-                    });
-                }
-            } else {
-                Toast.show({
-                    type: "error",
-                    text1:
-                        error.response?.data?.message ||
-                        "An unexpected error occurred. Please try again.",
-                    visibilityTime: 5000,
-                });
-            }
-        } finally {
-            setIsLoading(false);
+      setIsLoading(true);
+      try {
+        let uploadedAssetImages: string[] = [];
+  
+        if (assetImages.length > 0) {
+          console.log("Uploading asset images:", assetImages);
+  
+          const formData = new FormData();
+          for (let i = 0; i < assetImages.length; i++) {
+            const assetImage = assetImages[i];
+            formData.append("assetImages", {
+              uri: assetImage,
+              type: "image/jpeg",
+              name: getFileName(assetImage, true),
+            } as unknown as Blob);
+          }
+  
+          const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+          uploadedAssetImages = uploadResponse.data.data || [];
+          console.log("Uploaded asset images:", uploadedAssetImages);
         }
+  
+        const requestBody = {
+          ticketId,
+          assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+          toStatus: selectedTicketStatus.key,
+          location: {
+            latitude,
+            longitude,
+          },
+          pincode,
+          description,
+          pin: ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
+            selectedTicketStatus.key ?? ""
+          )
+            ? otp ?? null
+            : null,
+          assetImages: uploadedAssetImages,
+          paymentMode:
+            paymentMethod === "offline"
+              ? "079d38fc-93a6-482d-8a99-ee600196cea8"
+              : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
+        };
+  
+        console.log("Request body:", requestBody);
+        const updateResponse = await apiClient.put(
+          `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
+          requestBody
+        );
+  
+        if (updateResponse.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: `Ticket status updated successfully!`,
+            visibilityTime: 5000,
+          });
+  
+          await fetchTicketDetails();
+          router.push({
+            pathname: "../home",
+            params: { refresh: "true" },
+          });
+        } else {
+          throw new Error(`Failed to update status: ${updateResponse.status}`);
+        }
+      } catch (error: any) {
+        console.error("Failed to update ticket status.", error);
+  
+        if (error?.response?.data?.errors) {
+          setErrors(
+            error.response.data.errors.filter((err: any) => err.param !== null)
+          );
+  
+          const errorMessages = error.response.data.errors
+            .filter((err: any) => err.param === null)
+            .map((err: any) => err.message)
+            .join("\n");
+  
+          if (errorMessages) {
+            Toast.show({
+              type: "error",
+              text1: errorMessages,
+              visibilityTime: 5000,
+            });
+          }
+        } else {
+          Toast.show({
+            type: "error",
+            text1:
+              error.response?.data?.message ||
+              "An unexpected error occurred. Please try again.",
+            visibilityTime: 5000,
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      // Update errors state with new errors
+      setErrors(newErrors);
     }
-};
+  };
 
 
   const getTicketStatusOptions = (
@@ -481,12 +500,21 @@ const TicketDetails = () => {
       <View className="flex-row justify-between w-full items-center ">
         <View>
           {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
+            <View>
             <Text className="text-secondary-950 text-sm">
+              Asset Model{" "}:{" "}
               {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ??
-                "-"}
+              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+              ({item.itemDetails?.productDetails?.assetModelDetails?.modelNumber ?? "-"}{" "})
               (x{item.quantity})
             </Text>
+            <Text className="text-secondary-950 text-sm">
+              Asset SubType Model{" "}:{" "}
+              {item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelName ?? "-"}{" "}
+              ({item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelNumber ?? "-"}{" "})
+              (x{item.quantity})
+            </Text>
+              </View>
           )}
         </View>
       </View>
@@ -782,15 +810,16 @@ const TicketDetails = () => {
                             ticketDetails.userTypeDetails?.key,
                             ticketDetails.paymentModeDetails?.key
                           )}
-                          selectedValue={selectTicketStatusOptions}
-                          setSelectedValue={setSelectTicketStatusOptions}
-                        
+                          selectedValue={selectedTicketStatus?.key || ""}
+                          setSelectedValue={(value: string) => {
+                            const selectedOption = ticketStatusOptionsState.find((item) => item.key === value) || {};
+                            setSelectedTicketStatus(selectedOption);
+                          }}
                           type="ticketStatusOptionsState"
                           placeholder={t("selectStatus")}
                           fieldName="selectTicketStatusOptions"
                           label={t("status")}
                           canValidateField={canValidateField}
-                          defaultValue={selectedTicketStatus}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
@@ -808,7 +837,7 @@ const TicketDetails = () => {
                           min={10}
                           max={200}
                           filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
-                          //defaultValue={ticketDetails?.description}
+                          defaultValue={description}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
@@ -913,6 +942,7 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           min={4}
                           max={4}
+                          defaultValue={otp}
                           isRequired={false}
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}

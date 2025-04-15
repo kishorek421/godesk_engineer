@@ -24,7 +24,7 @@ interface PrimaryTextareaFormFieldProps {
   setCanValidateField: any;
   setFieldValidationStatus: any;
   validateFieldFunc: (fieldName: string, isValid: boolean) => void;
-  defaultValue?: string;
+  defaultValue?: string | null;
   isRequired?: boolean;
   keyboardType?: KeyboardTypeOptions;
   min?: number;

@@ -9,10 +9,13 @@ import { handleNotificationNavigation } from "@/utils/helper";
 
 interface NotificationsItemLayoutProps {
   item: NotificationItemModel;
-
+  callbackFunc: (notificationId: any) => Promise<void>;
 }
 
-const NotificationsItemLayout = ({ item }: NotificationsItemLayoutProps) => {
+const NotificationsItemLayout = ({
+  item,
+  callbackFunc,
+}: NotificationsItemLayoutProps) => {
   const getIcon = (type?: string) => {
     switch (type) {
       case "TICKET":
@@ -36,8 +39,9 @@ const NotificationsItemLayout = ({ item }: NotificationsItemLayoutProps) => {
 
   return (
     <Pressable
-      onPress={() => {
+      onPress={async () => {
         console.log("item -> ", item);
+        callbackFunc(item.notificationId);
         handleNotificationNavigation({ data: item });
       }}
     >
@@ -54,7 +58,9 @@ const NotificationsItemLayout = ({ item }: NotificationsItemLayoutProps) => {
           </View>
         </View>
         <View className="px-4 py-2 mt-2 border-gray-200 border-[1px] rounded-md w-full">
-          <Text className="text-gray-900 font-medium text-md">{item.message ?? "-"}</Text>
+          <Text className="text-gray-900 font-medium text-md">
+            {item.message ?? "-"}
+          </Text>
         </View>
       </View>
     </Pressable>
