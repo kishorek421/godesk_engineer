@@ -8,8 +8,9 @@ import {
   ASSIGNED,
   TICKET_ASSIGNED,
 } from "@/constants/configuration_keys";
-import { useTranslation } from 'react-i18next';
+import PrimaryText from "../PrimaryText";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BasePage from "../base/base_page";
 const TicketStatusComponent = ({
   statusKey,
   statusValue,
@@ -17,7 +18,7 @@ const TicketStatusComponent = ({
   statusKey?: string;
   statusValue?: string;
 }) => {
-  const { t, i18n } = useTranslation();
+ 
 const [selectedLanguage, setSelectedLanguage] = useState('en');
 
   const getStatusColor = (statusKey?: string): string => {
@@ -39,11 +40,13 @@ const [selectedLanguage, setSelectedLanguage] = useState('en');
     }
   };
   return (
+    <BasePage>
     <View className={`py-2 px-4 rounded-lg ${getStatusColor(statusKey)}`}>
-      <Text className={`${getStatusColor(statusKey)} font-regular`}>
+      <PrimaryText className={`${getStatusColor(statusKey)} font-regular`}>
         {statusValue ?? "-"}
-      </Text>
+      </PrimaryText>
     </View>
+    </BasePage>
   );
 };
 export default TicketStatusComponent;

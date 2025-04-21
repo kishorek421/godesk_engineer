@@ -20,13 +20,12 @@ import apiClient from "@/clients/apiClient";
 import { ErrorModel } from "@/models/common";
 import { isFormFieldInValid } from "@/utils/helper";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-import { useTranslation } from "react-i18next";
+import PrimaryText from "@/components/PrimaryText";
 import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 import { getFCMToken } from "@/services/fcm";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
-
+import BasePage from "@/components/base/base_page";
 const LoginScreen = () => {
-  const { t } = useTranslation();
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,7 +61,7 @@ const LoginScreen = () => {
       setErrors([
         {
           param: "mobile",
-          message: t("Please enter a valid 10-digit mobile number."),
+          message: "Please enter a valid 10-digit mobile number.",
         },
       ]);
       return;
@@ -94,7 +93,7 @@ const LoginScreen = () => {
             {
               param: "mobile",
               message:
-                response.data?.message || t("Failed to send OTP. Try again."),
+                response.data?.message || "Failed to send OTP. Try again.",
             },
           ]);
         }
@@ -104,7 +103,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message: t("An error occurred. Please try again."),
+            message: ("An error occurred. Please try again."),
           },
         ]);
       })
@@ -115,7 +114,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <SafeAreaView className="bg-white">
+    <BasePage>
       <View className="flex justify-between h-full">
         <View className="mt-1 h-full">
           <View className="flex-row items-end mx-3">
@@ -126,18 +125,18 @@ const LoginScreen = () => {
                 height: 60,
               }}
             />
-            {/* <Text className="mb-1.5 font-bold-1 text-secondary-950 ms-.5 font-regular">
-                desk <Text className="text-primary-950 font-regular">Engineer</Text>
-              </Text> */}
+            {/* <PrimaryText className="mb-1.5 font-bold-1 text-secondary-950 ms-.5 font-regular">
+                desk <PrimaryText className="text-primary-950 font-regular">Engineer</PrimaryText>
+              </PrimaryText> */}
           </View>
           <View className="px-4 flex justify-between h-[88%]">
             <View>
               <View className="mt-2">
-                <Text className="text-2xl font-bold-1">{t("welcome")}</Text>
+                <PrimaryText className="text-2xl font-bold-1">welcome</PrimaryText>
 
-                <Text className="color-gray-400 text-sm font-regular">
-                  {t(" Let’s create something extraordinary!")}
-                </Text>
+                <PrimaryText className="color-gray-400 text-sm font-regular">
+                  createExtraordinary
+                </PrimaryText>
               </View>
               <View className="mt-6">
                 <FormControl
@@ -145,8 +144,8 @@ const LoginScreen = () => {
                 >
                   <PrimaryTextFormField
                     fieldName="mobile"
-                    label={t("Mobile Number")}
-                    placeholder={t("Enter your mobile number")}
+                    label="mobileLabel"
+                    placeholder="mobilePlaceholder"
                     errors={errors}
                     setErrors={setErrors}
                     min={10}
@@ -161,7 +160,7 @@ const LoginScreen = () => {
                       // mobile no should start with 6-9
                       const customRE = /^[6-9]/;
                       if (!customRE.test(value)) {
-                        return t("Mobile no. should start with 6-9");
+                        return ("Mobile no. should start with 6-9");
                       }
                       return undefined;
                     }}
@@ -181,14 +180,13 @@ const LoginScreen = () => {
                   className=" flex justify-center items-center bg-primary-950 rounded-md  w-full h-12 p-0"
                   onPress={handleSendOTP}
                 >
-                  <Text className="font-semibold text-white text-lg">
-                    {t("Login")}
-                  </Text>
+                  <PrimaryText className="font-semibold text-white text-lg">
+                    loginButton
+                  </PrimaryText>
                   {isLoading ? (
                     <ActivityIndicator color="white" className="ms-1" />
                   ) : (
-                    <AntDesign
-                      name="arrowright"
+                    <AntDesign  
                       size={20}
                       color="white"
                       className="ms-1"
@@ -207,9 +205,9 @@ const LoginScreen = () => {
                   height: 200,
                 }}
               />
-              <Text className="px-12 text-center text-sm font-regular mt-2">
-                {t("loginAgreement")}{" "}
-                <Text
+              <PrimaryText className="px-12 text-center text-sm font-regular mt-2">
+                loginAgreement{" "}
+                <PrimaryText
                   onPress={() => {
                     Linking.openURL(
                       "https://godezk.com/Terms_And_conditions.html"
@@ -217,23 +215,23 @@ const LoginScreen = () => {
                   }}
                   className="font-bold-1 text-secondary-950"
                 >
-                  {t("terms_conditions")}
-                </Text>{" "}
-                {t("and")}{" "}
-                <Text
+                termsConditions
+                </PrimaryText>{" "}
+                and{" "}
+                <PrimaryText
                   onPress={() => {
                     Linking.openURL("https://godezk.com/Privacy_Policy.html");
                   }}
                   className="font-bold-1 text-secondary-950"
                 >
-                  {t("privacy_policy")}
-                </Text>
-              </Text>
+                  privacyPolicy
+                </PrimaryText>
+              </PrimaryText>
             </View>
           </View>
         </View>
       </View>
-    </SafeAreaView>
+      </BasePage>
   );
 };
 export default LoginScreen;

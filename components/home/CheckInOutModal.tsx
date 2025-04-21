@@ -19,12 +19,14 @@ import {
   FormControlError,
   FormControlErrorText,
 } from "../ui/form-control";
+import PrimaryText from "@/components/PrimaryText"
 import { TICKET_UPLOADS, CHECK_IN_OUT } from "@/constants/api_endpoints";
 import Toast from "react-native-toast-message";
 import { CreateCheckInOutModel } from "@/models/users";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import apiClient from "@/clients/apiClient";
-import { useTranslation } from 'react-i18next';
+import BasePage from "../base/base_page";
+
 interface CheckInOutProps {
   setIsModalVisible: any;
   bottomSheetRef: any;
@@ -45,7 +47,6 @@ const CheckInOutModal = ({
   );
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-  const { t, i18n } = useTranslation();
   const [selfie, setSelfie] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -235,19 +236,20 @@ const CheckInOutModal = ({
 
   return (
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
+      <BasePage>
       <View className="gap-4 p-4">
-        {/* <Text>{JSON.stringify(checkedInId)}</Text> */}
-        <Text className="font-bold-1  text-xl">
-          {status === "Checked In" ? t('checkOut') : t("checkIn")}
-        </Text>
+        {/* <PrimaryText>{JSON.stringify(checkedInId)}</PrimaryText> */}
+        <PrimaryText className="font-bold-1  text-xl">
+          {status === "Checked In" ? ('checkOut') : ("checkIn")}
+        </PrimaryText>
         <View className="gap-5">
           <View className="">
-            <Text className="font-semibold text-lg font-regular">{t('startAt')}</Text>
-            <Text className="mt-1 text-gray-700 text-md font-regular">{currentTime}</Text>
+            <PrimaryText className="font-semibold text-lg font-regular">startAt</PrimaryText>
+            <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{currentTime}</PrimaryText>
           </View>
           <View className="">
-            <Text className="font-semibold text-lg font-regular">{t('pincode')}</Text>
-            <Text className="mt-1 text-gray-700 text-md font-regular">{pincode ?? "-"}</Text>
+            <PrimaryText className="font-semibold text-lg font-regular">pincode</PrimaryText>
+            <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{pincode ?? "-"}</PrimaryText>
           </View>
           <View className="flex-row justify-between">
             <FormControl
@@ -255,7 +257,7 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <Text className="font-semibold font-regular text-lg">{t('selfie')} <Text className="text-red-400 mt-1 font-regular">*</Text></Text>
+                <PrimaryText className="font-semibold font-regular text-lg">selfie<PrimaryText className="text-red-400 mt-1 font-regular">*</PrimaryText></PrimaryText>
                 {selfie.length === 0 ? (
                   <Pressable
                     onPress={() => {
@@ -312,7 +314,7 @@ const CheckInOutModal = ({
               className="w-[150px] h-[150px]"
             /> */}
           </View>
-          {errorMsg && <Text className="mt-4 text-red-500 font-regular">* {errorMsg}</Text>}
+          {errorMsg && <PrimaryText className="mt-4 text-red-500 font-regular">* {errorMsg}</PrimaryText>}
           <Button
             className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {
@@ -320,12 +322,13 @@ const CheckInOutModal = ({
               chechInOut();
             }}>
             <ButtonText>
-              {status === "Checked In" ? t('Check Out') : t('Check In')}
+              {status === "Checked In" ? ('checkOut') : ('checkIn')}
             </ButtonText>
             {isLoading && <ActivityIndicator color="white" className="ms-1" />}
           </Button>
         </View>
       </View>
+      </BasePage>
     </BottomSheet>
   );
 };

@@ -17,10 +17,9 @@ import {
 import { getTicketLists } from "@/services/api/tickets_api_service";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
-import { useTranslation } from "react-i18next";
-
+import BasePage from "../base/base_page";
+import PrimaryText from "../PrimaryText";
 const TicketListLayout = () => {
-  const { t } = useTranslation();
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
@@ -29,14 +28,25 @@ const TicketListLayout = () => {
   const [refreshing, setRefreshing] = useState(true);
 
   const tabs = [
-    t("Assigned"),
-    t("Opened"),
-    t("Work Completed"),
-    t("Paid"),
-    t("Completed"),
-    t("On Hold"),
+    "Assigned",
+    "Opened",
+    "Work Completed",
+    "Paid",
+    "Closed",
+    "onHold",
+    "Spare Required",
+    "Cannot Resolve",
+    "Customer not available",
+    "In Progress"
   ];
 
+  const hiddenTabs = [
+    "Spare Required",
+    "Cannot Resolve",
+    "Customer not available",
+    "In Progress"
+  ];
+  const visibleTabs = tabs.filter(tab => !hiddenTabs.includes(tab));
 
   useEffect(() => {
     fetchTickets(1, selectedTab);
@@ -71,7 +81,7 @@ const TicketListLayout = () => {
         })
         .then((response) => {
           let content = response.data?.data?.content ?? [];
-        
+
           if (nextCurrentPage === 1) {
             setRecentTickets(content);
           } else {
@@ -130,37 +140,38 @@ const TicketListLayout = () => {
 
   return (
     <>
+
       <FlatList
         horizontal
-        data={tabs}
+        data={visibleTabs}
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item, index }) => (
-          <TouchableOpacity
-            onPress={() => setSelectedTab(index)}
-            className={`ms-2 h-12 py-2 rounded-full w-40 mb-8 ${
-              selectedTab === index ? "bg-primary-200" : "bg-gray-200"
-            }`}
-            key={index}
-          >
-            <Text
-              className={` h-96 text-center mt-1 font-regular ${
-                selectedTab === index
-                  ? "text-primary-950 font-medium"
-                  : "text-gray-500 font-normal text-sm"
-              }`}
+          <BasePage>
+            <TouchableOpacity
+              onPress={() => setSelectedTab(index)}
+              className={`ms-2 h-12 py-2 rounded-full w-40 mb-8 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
+                }`}
+              key={index}
             >
-              {item}
-            </Text>
-          </TouchableOpacity>
+              <PrimaryText
+                className={`h-96 text-center mt-1 font-regular ${selectedTab === index
+                    ? "text-primary-950 font-medium"
+                    : "text-gray-500 font-normal text-sm"
+                  }`}
+              >
+                {item}
+              </PrimaryText>
+            </TouchableOpacity>
+          </BasePage>
         )}
         className="mt-6"
       />
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
-          <Text className="text-gray-400 text-md text-center font-regular">
+          <PrimaryText className="text-gray-400 text-md text-center font-regular">
             No tickets found
-          </Text>
+          </PrimaryText>
         </View>
       ) : (
         <FlatList

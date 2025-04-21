@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Modal, TextInput, Pressable } from 'react-native';
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import { DropdownProps } from '../models/common';
-
+import PrimaryText from "@/components/PrimaryText";
 const CustomDropdown: React.FC<DropdownProps> = ({
   options,
   placeholder,
@@ -59,7 +59,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
                     className="py-3 border-b border-gray-200"
                     onPress={() => handleSelect(item)}
                   >
-                    <Text className="text-base text-gray-800 font-regular">{displayText}</Text>
+                    <PrimaryText className="text-base text-gray-800 font-regular">{displayText}</PrimaryText>
                   </TouchableOpacity>
                 );
               }}

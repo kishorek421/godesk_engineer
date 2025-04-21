@@ -12,6 +12,7 @@ import LoadingBar from "@/components/LoadingBar";
 import apiClient from "@/clients/apiClient";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import PrimaryText from "@/components/PrimaryText";
 const AllNotifications = () => {
   const [allNotifications, setAllNotifications] = useState<
     NotificationItemModel[]
@@ -156,9 +157,9 @@ const AllNotifications = () => {
             <View className="h-full">
               {allNotifications.length === 0 ? (
                 <View className="h-full flex justify-center items-center rounded-lg">
-                  <Text className="text-gray-500 text-md text-center font-regular">
+                  <PrimaryText className="text-gray-500 text-md text-center font-regular">
                     No Recent Notifications
-                  </Text>
+                  </PrimaryText>
                 </View>
               ) : (
                 <FlatList

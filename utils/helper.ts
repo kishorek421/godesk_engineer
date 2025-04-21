@@ -2,7 +2,6 @@ import { ESCALATED, RAISED, TICKET_IN_PROGRESS, TICKET_CLOSED, ASSIGNED } from "
 import { ErrorModel } from "@/models/common";
 import { router } from "expo-router";
 import moment from "moment";
-import { useTranslation } from 'react-i18next';
 export const isFormFieldInValid = (
   name: string,
   errors: ErrorModel[],
@@ -37,15 +36,15 @@ export const getStatusColor = (statusKey?: string): string => {
 
 export function getGreetingMessage() {
   const currentHour = moment().hour();
-  const { t, i18n } = useTranslation();
+ 
   if (currentHour >= 5 && currentHour < 12) {
-    return t('goodMorning'); 
+    return ('goodMorning'); 
   } else if (currentHour >= 12 && currentHour < 17) {
-    return t('goodAfternoon'); 
+    return ('goodAfternoon'); 
   } else if (currentHour >= 17 && currentHour < 21) {
-    return t('goodEvening'); 
+    return ('goodEvening'); 
   } else {
-    return t('hello'); 
+    return ('hello'); 
   }
 }
 
