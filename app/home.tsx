@@ -275,8 +275,8 @@ const HomeScreen = () => {
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
                   <View className="flex-row justify-between w-full items-center">
-                    <View>
-                      <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
+                    <View className="flex-1">
+                      <Text className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </PrimaryText>
                       <PrimaryText className="mt-[1px] text-[13px] text-gray-900 font-regular">
