@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   View,
   Text,
@@ -10,7 +9,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import BottomSheet from "./BottomSheet";
 import Entypo from "@expo/vector-icons/Entypo";
-
+import PrimaryText from "@/components/PrimaryText";
 type ImagePickerComponentProps = {
   onImagePicked: (uri: string, fileSizeBytes: number) => void;
   setIsModalVisible: any;
@@ -167,10 +166,10 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
     // >
     //   <View style={styles.modalContent}>
     //     <TouchableOpacity style={styles.option} onPress={pickImage}>
-    //       <Text style={styles.optionText}>Pick an Image from Gallery</Text>
+    //       <PrimaryText style={styles.optionText}>Pick an Image from Gallery</PrimaryText>
     //     </TouchableOpacity>
     //     <TouchableOpacity style={styles.option} onPress={takePhoto}>
-    //       <Text style={styles.optionText}>Take a Photo</Text>
+    //       <PrimaryText style={styles.optionText}>Take a Photo</PrimaryText>
     //     </TouchableOpacity>
     //   </View>
     // </Modalize>
@@ -179,13 +178,13 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
         <TouchableOpacity style={styles.option} onPress={pickImage}>
           <View className="flex-row w-full justify-center items-center">
             <Entypo name="folder-images" size={20} color="black" />
-            <Text className="ms-2 text-lg font-regular">Pick an Image from Gallery</Text>
+            <PrimaryText className="ms-2 text-lg font-regular">Pick an Image from Gallery</PrimaryText>
           </View>
         </TouchableOpacity>
         <TouchableOpacity style={styles.option} onPress={takePhoto}>
           <View className="flex-row w-full justify-center items-center">
             <Entypo name="camera" size={20} color="black" />
-            <Text className="ms-2 text-lg font-regular">Take a Photo</Text>
+            <PrimaryText className="ms-2 text-lg font-regular">Take a Photo</PrimaryText>
           </View>
         </TouchableOpacity>
       </View>

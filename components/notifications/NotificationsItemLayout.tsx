@@ -6,7 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import moment from "moment";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import { handleNotificationNavigation } from "@/utils/helper";
-
+import PrimaryText from "@/components/PrimaryText";
 interface NotificationsItemLayoutProps {
   item: NotificationItemModel;
   callbackFunc: (notificationId: any) => Promise<void>;
@@ -51,16 +51,16 @@ const NotificationsItemLayout = ({
             {getIcon(item.type)}
           </View>
           <View className="flex flex-1">
-            <Text className="font-semibold h-6">{item.title ?? "-"}</Text>
-            <Text className="text-gray-500 text-sm font-regular">
+            <PrimaryText className="font-semibold h-6">{item.title ?? "-"}</PrimaryText>
+            <PrimaryText className="text-gray-500 text-sm font-regular">
               {item.createdAt ? moment(item.createdAt).fromNow() : ""}
-            </Text>
+            </PrimaryText>
           </View>
         </View>
         <View className="px-4 py-2 mt-2 border-gray-200 border-[1px] rounded-md w-full">
-          <Text className="text-gray-900 font-medium text-md">
+          <PrimaryText className="text-gray-900 font-medium text-md">
             {item.message ?? "-"}
-          </Text>
+          </PrimaryText>
         </View>
       </View>
     </Pressable>

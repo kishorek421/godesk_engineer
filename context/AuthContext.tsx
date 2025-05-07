@@ -11,7 +11,6 @@ import { GET_USER_DETAILS } from "@/constants/api_endpoints";
 import { CustomerDetailsModel } from "@/models/customers";
 import { UserDetailsModel } from "@/models/users";
 import apiClient from "@/clients/apiClient";
-import i18n from "@/config/i18n";
 import { primaryColor } from "@/constants/colors";
 interface AuthContextProps {
   user: CustomerDetailsModel | undefined;
@@ -41,12 +40,12 @@ export const AuthProvider = ({
   const router = useRouter();
 
   useEffect(() => {
-    const loadLanuage = async () => {
-      const selectedLanguage = await getItem('language');
-      if (selectedLanguage) {
-        i18n.changeLanguage(selectedLanguage);
-      }
-    }
+    // const loadLanuage = async () => {
+    //   const selectedLanguage = await getItem('language');
+    //   if (selectedLanguage) {
+    //     i18n.changeLanguage(selectedLanguage);
+    //   }
+    // }
     const loadUser = async () => {
 
       const token = await getItem(AUTH_TOKEN_KEY);
@@ -68,7 +67,7 @@ export const AuthProvider = ({
       }
       setLoading(false);
     };
-    loadLanuage();
+    // loadLanuage();
     loadUser();
   }, []);
 

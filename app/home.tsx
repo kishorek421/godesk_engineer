@@ -12,6 +12,7 @@ import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import moment from "moment";
+import PrimaryText from "@/components/PrimaryText";
 import {
   GET_CHECK_IN_OUT_STATUS,
   GET_INPROGRESS_TICKETS_DETAILS,
@@ -22,7 +23,6 @@ import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
-import { useTranslation } from "react-i18next";
 import {
   hasServicesEnabledAsync,
   requestForegroundPermissionsAsync,
@@ -31,6 +31,7 @@ import Toast from "react-native-toast-message";
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import BasePage from "@/components/base/base_page";
 const LOCATION_TASK_NAME = "background-location-task";
 
 // // Define the background task
@@ -50,7 +51,6 @@ const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [exitApp, setExitApp] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { t } = useTranslation();
   const bottomSheetRef = useRef(null);
   const segments = useSegments();
 
@@ -210,7 +210,7 @@ const HomeScreen = () => {
   // }
 
   return (
-    <SafeAreaView>
+    <BasePage>
       <View className="mt-4 flex-row justify-end mx-4">
         <Ionicons
           name="notifications-outline"
@@ -222,15 +222,14 @@ const HomeScreen = () => {
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
-            <Text className="mx-2  font-medium text-md leading-5">
+            <PrimaryText className="mx-2  font-medium text-md leading-5">
               {getGreetingMessage()} 👋
-            </Text>
-            <Text className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
+            </PrimaryText>
+            <PrimaryText className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
-            </Text>
-            {/* <Text><Link href={'/sitemap'}>sitemap</Link></Text> */}
+            </PrimaryText>
+            {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
           </View>
-
           {checkInOutStatusDetails.id == undefined && checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button
@@ -249,8 +248,8 @@ const HomeScreen = () => {
               >
                 <ButtonText>
                   {checkInOutStatusDetails.value === "Checked In"
-                    ? t("checkOut")
-                    : t("checkIn")}
+                    ? ("checkOut")
+                    : ("checkIn")}
                 </ButtonText>
               </Button>
 
@@ -259,9 +258,9 @@ const HomeScreen = () => {
 
         </View>
         {isLoading ? (
-          <Text className="mt-6 text-center font-regular text-gray-500">
+          <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...
-          </Text>
+          </PrimaryText>
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -277,13 +276,13 @@ const HomeScreen = () => {
                 <View className="flex">
                   <View className="flex-row justify-between w-full items-center">
                     <View>
-                      <Text className="font-bold-1 text-tertiary-950 leading-5">
+                      <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
-                      </Text>
-                      <Text className="mt-[1px] text-[13px] text-gray-900 font-regular">
-                        Issue in{" "}
+                      </PrimaryText>
+                      <PrimaryText className="mt-[1px] text-[13px] text-gray-900 font-regular">
+                       issueIn{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
-                      </Text>
+                      </PrimaryText>
                     </View>
                     <View>
                       <TicketStatusComponent
@@ -300,21 +299,21 @@ const HomeScreen = () => {
                   <View className="w-full">
                     <View className="flex-row justify-between items-center">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md">
-                          {t("raisedBy")}
-                        </Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
+                        <PrimaryText className="text-gray-500 font-regular text-md">
+                          raisedBy
+                        </PrimaryText>
+                        <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.customerDetails?.firstName ??
                             ""}{" "}
                           {inProgressTicketDetails.customerDetails?.lastName ??
                             ""}
-                        </Text>
+                        </PrimaryText>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 font-regular text-md">
-                          {t("raisedAt")}
-                        </Text>
-                        <Text className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
+                        <PrimaryText className="text-gray-500 font-regular text-md">
+                          raisedAt
+                        </PrimaryText>
+                        <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
                               Number.parseInt(
@@ -322,7 +321,7 @@ const HomeScreen = () => {
                               )
                             ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                     </View>
                   </View>
@@ -344,7 +343,7 @@ const HomeScreen = () => {
         />
         <TicketListLayout />
       </View>
-    </SafeAreaView>
+    </BasePage>
   );
 };
 

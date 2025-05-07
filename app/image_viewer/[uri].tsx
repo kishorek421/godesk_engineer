@@ -54,7 +54,7 @@ const ImageViewer = () => {
             </Animated.View>
           </PinchGestureHandler>
         ) : (
-          <Text>No image found</Text>
+          <PrimaryText>No image found</PrimaryText>
         )}
       </View>
     </GestureHandlerRootView>

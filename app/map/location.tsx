@@ -177,7 +177,7 @@
 //         )}
 
 //         <TouchableOpacity style={styles.directionButton} onPress={handleDestinationSearch}>
-//           <Text style={styles.buttonText}>Show Directions</Text>
+//           <PrimaryText style={styles.buttonText}>Show Directions</PrimaryText>
 //         </TouchableOpacity>
 //       </View>
 

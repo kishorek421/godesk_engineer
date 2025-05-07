@@ -136,7 +136,7 @@ const PrimaryTypeheadField = ({
         flexShrink: 1,
       }}
       renderItem={(item , text ) => (
-        <Text style={{ color: "#000", padding: 15 }}>{item.title}</Text>
+        <PrimaryText style={{ color: "#000", padding: 15 }}>{item.title}</PrimaryText>
       )}
       ChevronIconComponent={
         <Feather name="chevron-down" size={20} color="#8c8c8c" />
@@ -152,7 +152,7 @@ const PrimaryTypeheadField = ({
           <View></View>
         ) : (
           <View className="py-3 px-3">
-            <Text>No items found</Text>
+            <PrimaryText>No items found</PrimaryText>
           </View>
         )
       }

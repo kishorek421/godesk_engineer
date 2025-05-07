@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form-control";
 import { ErrorModel } from "@/models/common";
 import { DropdownProps } from "@/models/common";
-
+import PrimaryText from "./PrimaryText";
 interface PrimaryDropdownFormFieldProps {
   options: (string | { label: any; value: any })[];
   selectedValue: string; // Expect string (e.g., option value or key)
@@ -156,7 +156,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
                 const displayText = typeof item === "string" ? item : item.label;
                 return (
                   <TouchableOpacity className="py-3 border-b border-gray-200" onPress={() => handleSelect(item)}>
-                    <Text className="text-base text-gray-800 font-regular">{displayText}</Text>
+                    <PrimaryText className="text-base text-gray-800 font-regular">{displayText}</PrimaryText>
                   </TouchableOpacity>
                 );
               }}

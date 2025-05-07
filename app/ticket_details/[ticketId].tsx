@@ -9,6 +9,7 @@ import {
   RefreshControl,
   FlatList,
 } from "react-native";
+import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
@@ -49,18 +50,19 @@ import FeatherIcon from "@expo/vector-icons/Feather";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { HStack } from "@/components/ui/hstack";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
-import { useTranslation } from "react-i18next";
+
 import { Axios, AxiosError } from "axios";
 import { Icon } from "@/components/ui/icon";
 import {
   OrderProductsForTicketModel,
   RazorPayOrderForTicket,
 } from "@/models/payments";
+import BasePage from "@/components/base/base_page";
 import { primaryColor } from "@/constants/colors";
 import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
 
 const TicketDetails = () => {
-  const { t, i18n } = useTranslation();
+ 
 
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
@@ -477,12 +479,10 @@ const TicketDetails = () => {
     }
     return [];
   };
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+    fetchTicketDetails().finally(() => setRefreshing(false));
+  };
 
   const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
     return listOfProducts.filter(
@@ -494,26 +494,26 @@ const TicketDetails = () => {
     listOfProducts: OrderProductsForTicketModel[]
   ) => {
     if (listOfProducts.length === 0) {
-      return <Text>-</Text>;
+      return <PrimaryText className="">-</PrimaryText>;
     }
     return listOfProducts.map((item) => (
       <View className="flex-row justify-between w-full items-center ">
         <View>
           {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
             <View>
-            <Text className="text-secondary-950 text-sm">
-              Asset Model{" "}:{" "}
+            <PrimaryText className="text-secondary-950 text-sm">
+              assetModel{" "}:{" "}
               {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
               {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
               ({item.itemDetails?.productDetails?.assetModelDetails?.modelNumber ?? "-"}{" "})
               (x{item.quantity})
-            </Text>
-            <Text className="text-secondary-950 text-sm">
-              Asset SubType Model{" "}:{" "}
+            </PrimaryText>
+            <PrimaryText className="text-secondary-950 text-sm">
+              assetSubTypeModel{" "}:{" "}
               {item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelName ?? "-"}{" "}
               ({item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelNumber ?? "-"}{" "})
               (x{item.quantity})
-            </Text>
+            </PrimaryText>
               </View>
           )}
         </View>
@@ -524,9 +524,9 @@ const TicketDetails = () => {
   return isLoading ? (
     <LoadingBar />
   ) : (
-    <SafeAreaView className="flex-1 bg-white">
+    <BasePage>
       <View className="bg-white">
-        <Pressable
+        {/* <Pressable
           onPress={() => {
             router.push({
               pathname: "../home",
@@ -541,13 +541,13 @@ const TicketDetails = () => {
               <MaterialIcons name="arrow-back-ios" size={20} color="black" />
             </View>
             <View className="flex-1">
-              <Text className="font-semibold text-lg text-center">
-                {t("ticketDetails")}
-              </Text>
+              <PrimaryText className="font-semibold text-lg text-center">
+              Ticket Details
+              </PrimaryText>
             </View>
             <View className="flex-1"></View>
           </View>
-        </Pressable>
+        </Pressable> */}
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -559,13 +559,13 @@ const TicketDetails = () => {
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
-                    <View>
-                      <Text className="text-tertiary-950 leading-5  font-bold-1">
+                    <View className="flex-1">
+                      <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
-                      </Text>
-                      <Text className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                        Issue In {ticketDetails.issueTypeDetails?.name ?? "-"}
-                      </Text>
+                      </PrimaryText>
+                      <PrimaryText className="text-gray-500 font-regular text-[13px] mt-[1px]">
+                      issueIn{" "}{ticketDetails.issueTypeDetails?.name ?? "-"}
+                      </PrimaryText>
                     </View>
                     <TicketStatusComponent
                       statusKey={ticketDetails.statusDetails?.key}
@@ -576,93 +576,93 @@ const TicketDetails = () => {
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("raisedBy")}
-                        </Text>
-                        <Text className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                          raisedBy
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
                           {ticketDetails?.customerDetails?.firstName ?? "-"}{" "}
                           {ticketDetails?.customerDetails?.lastName ?? ""}
-                        </Text>
+                        </PrimaryText>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("raisedAt")}
-                        </Text>
-                        <Text className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                          raisedAt
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).format(
                                 "DD-MM-YYYY hh:mm a"
                               )
                             : "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                     </View>
                   </View>
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("serialNo")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold leading-5  mt-[2px]">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                          serialNo
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5  mt-[2px]">
                           {ticketDetails?.assetInUseDetails?.serialNo ?? "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md font-regular">
-                          {t("Asset Type")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        <PrimaryText className="text-gray-500 text-md font-regular">
+                          assetType
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                     </View>
                   </View>
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
-                        <Text className="text-gray-500 font-regular text-md ">
-                          {t("User Type")}
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                          userType
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                           {ticketDetails.userTypeDetails?.value ?? "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                       <View className="flex items-end">
-                        <Text className="text-gray-500 text-md font-regular ">
-                          Service Type
-                        </Text>
-                        <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        <PrimaryText className="text-gray-500 text-md font-regular ">
+                          serviceType
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                           {ticketDetails.serviceTypeDetails?.value ?? "-"}
-                        </Text>
+                        </PrimaryText>
                       </View>
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md font-regular ">
-                      {t("assignedAt")}
-                    </Text>
-                    <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                    <PrimaryText className="text-gray-500 text-md font-regular ">
+                      assignedAt
+                    </PrimaryText>
+                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails.lastAssignedToDetails?.assignedAt
                         ? moment(
                             ticketDetails.lastAssignedToDetails?.assignedAt
                           ).format("DD-MM-YYYY hh:mm A")
                         : "-"}
-                    </Text>
+                    </PrimaryText>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 font-regular text-md ">
-                      {t("description")}
-                    </Text>
-                    <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                    <PrimaryText className="text-gray-500 font-regular text-md ">
+                      description
+                    </PrimaryText>
+                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails?.description ?? "-"}
-                    </Text>
+                    </PrimaryText>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500  font-regular text-md ">
-                      {t("Customer mobileNo ")}
-                    </Text>
+                    <PrimaryText className="text-gray-500  font-regular text-md ">
+                      customerMobileNo
+                    </PrimaryText>
                     <View className="flex-row text-center items-center  ">
                       <FeatherIcon
                         className="mt-[2px]"
@@ -680,18 +680,18 @@ const TicketDetails = () => {
                           }
                         }}
                       >
-                        <Text className="text-md text-primary-950 text-center font-semibold mt-[2px] ms-1">
+                        <PrimaryText className="text-md text-primary-950 text-center font-semibold mt-[2px] ms-1">
                           {ticketDetails.assetInUseDetails?.customerDetails
                             ?.mobileNumber ?? "-"}
-                        </Text>
+                        </PrimaryText>
                       </Pressable>
                     </View>
                   </View>
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 text-md font-regular">
-                      {t("Customer address")}
-                    </Text>
-                    <Text className="text-md text-gray-900 font-semibold  mt-[2px] leading-5">
+                    <PrimaryText className="text-gray-500 text-md font-regular">
+                      customerAddress
+                    </PrimaryText>
+                    <PrimaryText className="text-md text-gray-900 font-semibold  mt-[2px] leading-5">
                       {ticketDetails.assetInUseDetails?.customerDetails
                         ?.address ?? "-"}
                       ,{" "}
@@ -706,12 +706,12 @@ const TicketDetails = () => {
                       ,{" "}
                       {ticketDetails.assetInUseDetails?.customerDetails
                         ?.areaDetails?.pincode ?? "-"}
-                    </Text>
+                    </PrimaryText>
                   </View>
                   <View className="w-full mt-3">
-                    <Text className="text-gray-500 text-md font-regular">
-                      {t("issueImages")}{" "}
-                    </Text>
+                    <PrimaryText className="text-gray-500 text-md font-regular">
+                      issueImages{" "}
+                    </PrimaryText>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
                         ticketDetails.ticketImages?.map(
@@ -735,32 +735,32 @@ const TicketDetails = () => {
                           )
                         )
                       ) : (
-                        <Text>-</Text>
+                        <PrimaryText className="">-</PrimaryText>
                       )}
                     </View>
                   </View>
                   {paymentProducts.length > 0 && (
                     <View className="flex mt-4">
-                      <Text className="text-gray-500 text-md font-regular ">
-                        Spare Details
-                      </Text>
+                      <PrimaryText className="text-gray-500 text-md font-regular ">
+                       spareDetails
+                      </PrimaryText>
                       <View className="">
                         {paymentProducts && paymentProducts?.length > 0 ? (
                           getSparesComponent(getTicketSpares(paymentProducts))
                         ) : (
-                          <Text>-</Text>
+                          <PrimaryText className="">-</PrimaryText>
                         )}
                       </View>
                     </View>
                   )}
                   {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                   <View className="flex mt-3">
-                    <Text className="text-gray-500 font-regular text-md ">
-                      Payment Mode
-                    </Text>
-                    <Text className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                    <PrimaryText className="text-gray-500 font-regular text-md ">
+                      paymentMode
+                    </PrimaryText>
+                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails?.paymentModeDetails?.value ?? "-"}
-                    </Text>
+                    </PrimaryText>
                   </View>}
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
@@ -769,15 +769,15 @@ const TicketDetails = () => {
                     ticketDetails.statusDetails?.key === "WORK_COMPLETED" ||
                     ticketDetails.statusDetails?.value === "Paid") && (
                     <View className="my-4">
-                      <Text className="font-semibold text-lg text-primary-950">
-                        {t("updateTicketStatus")}
-                      </Text>
+                      <PrimaryText className="font-semibold text-lg text-primary-950">
+                        updateTicketStatus
+                      </PrimaryText>
                       {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                         ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                           <View className="mt-4">
-                            <Text className="font-medium text-md">
-                              {t("Payment Method")}
-                            </Text>
+                            <PrimaryText className="font-medium text-md">
+                              paymentMethod
+                            </PrimaryText>
                             <View className="flex-row mt-2">
                               <Pressable
                                 className="flex-row items-center mr-4"
@@ -796,9 +796,9 @@ const TicketDetails = () => {
                                     <View className="w-3 h-3 rounded-sm bg-primary-950" />
                                   )}
                                 </View>
-                                <Text className="ml-2 text-md text-gray-900">
-                                  Customer want to Pay on Cash
-                                </Text>
+                                <PrimaryText className="ml-2 text-md text-gray-900">
+                                payOnCash
+                                </PrimaryText>
                               </Pressable>
                             </View>
                           </View>
@@ -816,9 +816,9 @@ const TicketDetails = () => {
                             setSelectedTicketStatus(selectedOption);
                           }}
                           type="ticketStatusOptionsState"
-                          placeholder={t("selectStatus")}
+                          placeholder="selectStatus"
                           fieldName="selectTicketStatusOptions"
-                          label={t("status")}
+                          label="status"
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
@@ -830,8 +830,8 @@ const TicketDetails = () => {
                         <PrimaryTextareaFormField
                          className="my-3"
                           fieldName="description"
-                          label={t("description")}
-                          placeholder={t("writeShortDescription")}
+                          label="description"
+                          placeholder="writeShortDescription"
                           errors={errors}
                           setErrors={setErrors}
                           min={10}
@@ -851,8 +851,8 @@ const TicketDetails = () => {
                         }
                       >
                         <HStack className="justify-between mt-2 mb-1">
-                          <Text className="font-medium">
-                            {t("assetImages")}{" "}
+                          <PrimaryText className="font-medium">
+                            assetImages{" "}
                             {[
                               "IN_PROGRESS",
                               "SPARE_REQUIRED",
@@ -860,14 +860,14 @@ const TicketDetails = () => {
                               "TICKET_CLOSED",
                               "WORK_COMPLETED",
                             ].includes(selectedTicketStatus.key ?? "") && (
-                              <Text className="text-red-500 font-regular">
+                              <PrimaryText className="text-red-500 font-regular">
                                 *
-                              </Text>
+                              </PrimaryText>
                             )}
-                          </Text>
-                          <Text className="text-gray-500 font-regular">
+                          </PrimaryText>
+                          <PrimaryText className="text-gray-500 font-regular">
                             {assetImages.length}/3
-                          </Text>
+                          </PrimaryText>
                         </HStack>
                         <View className="flex-row flex-wrap">
                           {assetImages.map((uri, index) => (
@@ -921,7 +921,7 @@ const TicketDetails = () => {
                               size={18}
                             />
                             <ButtonText className="text-black font-regular">
-                              {t("addImage")}
+                              addImage
                             </ButtonText>
                           </Button>
                         )}
@@ -931,13 +931,13 @@ const TicketDetails = () => {
                           </FormControlErrorText>
                         </FormControlError>
                       </FormControl>
-                        <Text className="mt-1 mb-2 text-gray-500 text-sm font-regular">
-                          {t("enterOtpForOpenClose")}
-                        </Text>
+                        <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
+                          enterOtpForOpenClose
+                        </PrimaryText>
                         <PrimaryTextFormField
                           fieldName="customerOTP"
-                          label={t("customerOtp")}
-                          placeholder={t("enterCustomerOtp")}
+                          label="customerOtp"
+                          placeholder="enterCustomerOtp"
                           errors={errors}
                           setErrors={setErrors}
                           min={4}
@@ -957,7 +957,7 @@ const TicketDetails = () => {
                         className="my-3"
                         configurationCategory={PAYMENT_MODE}
                         placeholder="Select payment mode"
-                        label="Payment Mode"
+                        label="paymentMode"
                         errors={errors}
                         setErrors={setErrors}
                         fieldName="paymentMode"
@@ -984,10 +984,10 @@ const TicketDetails = () => {
                           updateTicketStatus();
                         }}
                       >
-                        <Text className="font-semibold text-white text-md">
+                        <PrimaryText className="font-semibold text-white text-md">
                           {" "}
-                          {t("updateStatus")}
-                        </Text>
+                          updateStatus
+                        </PrimaryText>
                         {isLoading && (
                           <ButtonSpinner className="text-white ms-2" />
                         )}
@@ -1017,7 +1017,7 @@ const TicketDetails = () => {
           />
         </ScrollView>
       </View>
-    </SafeAreaView>
+      </BasePage>
   );
 };
 
