@@ -1,7 +1,6 @@
 import {
   Pressable,
   ScrollView,
-  Text,
   View,
   Image,
   ActivityIndicator,
@@ -42,7 +41,6 @@ import {
 } from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropdownFormField";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import * as Location from "expo-location";
@@ -600,7 +598,7 @@ const TicketDetails = () => {
                   </View>
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
-                      <View className="flex">
+                      <View className="flex-1">
                         <PrimaryText className="text-gray-500 font-regular text-md ">
                           serialNo
                         </PrimaryText>
