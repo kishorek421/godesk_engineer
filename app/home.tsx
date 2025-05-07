@@ -230,32 +230,33 @@ const HomeScreen = () => {
             </PrimaryText>
             {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
           </View>
-          {checkInOutStatusDetails.id == undefined && checkInOutStatusDetails.value !== "Checked Out" && (
-            <View className="me-4">
-              <Button
-                className="bg-primary-950 rounded-lg"
-                onPress={async () => {
-                  const { status } = await requestForegroundPermissionsAsync();
-                  if (status === "granted") {
-                    toggleImagePicker();
-                  } else {
-                    Toast.show({
-                      type: "error",
-                      text1: "Allow location permission to Check In/Check Out",
-                    });
-                  }
-                }}
-              >
-                <ButtonText>
-                  {checkInOutStatusDetails.value === "Checked In"
-                    ? ("checkOut")
-                    : ("checkIn")}
-                </ButtonText>
-              </Button>
-
-            </View>
-          )}
-
+          {checkInOutStatusDetails.id == undefined &&
+            checkInOutStatusDetails.value !== "Checked Out" && (
+              <View className="me-4">
+                <Button
+                  className="bg-primary-950 rounded-lg"
+                  onPress={async () => {
+                    const { status } =
+                      await requestForegroundPermissionsAsync();
+                    if (status === "granted") {
+                      toggleImagePicker();
+                    } else {
+                      Toast.show({
+                        type: "error",
+                        text1:
+                          "Allow location permission to Check In/Check Out",
+                      });
+                    }
+                  }}
+                >
+                  <ButtonText>
+                    {checkInOutStatusDetails.value === "Checked In"
+                      ? "checkOut"
+                      : "checkIn"}
+                  </ButtonText>
+                </Button>
+              </View>
+            )}
         </View>
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
@@ -276,11 +277,11 @@ const HomeScreen = () => {
                 <View className="flex">
                   <View className="flex-row justify-between w-full items-center">
                     <View className="flex-1">
-                      <Text className="font-bold-1 text-tertiary-950 leading-5">
+                      <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </PrimaryText>
                       <PrimaryText className="mt-[1px] text-[13px] text-gray-900 font-regular">
-                       issueIn{" "}
+                        issueIn{" "}
                         {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
                       </PrimaryText>
                     </View>
@@ -316,10 +317,10 @@ const HomeScreen = () => {
                         <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
-                              Number.parseInt(
-                                inProgressTicketDetails.createdAt
-                              )
-                            ).format("DD-MM-YYYY hh:mm a")
+                                Number.parseInt(
+                                  inProgressTicketDetails.createdAt
+                                )
+                              ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
                         </PrimaryText>
                       </View>
