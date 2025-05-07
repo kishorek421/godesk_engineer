@@ -4,7 +4,7 @@ import { Translator } from '@/context/TranslationContext'; // Assuming Translato
 
 const BasePage = ({children}:{children: ReactNode}) => {
     return (
-        <SafeAreaView className="bg-white">
+        <SafeAreaView className="">
             <Translator>
                 {children}
             </Translator>

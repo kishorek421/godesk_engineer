@@ -8,17 +8,9 @@ import PrimaryText from "@/components/PrimaryText";
 const SUPPORTED_LANGUAGES = [
   { code: 'en', name: 'English', englishName: 'English' },
   { code: 'hi', name: 'हिन्दी', englishName: 'Hindi' },
-  // { code: 'bn', name: 'বাংলা', englishName: 'Bengali' },
   { code: 'te', name: 'తెలుగు', englishName: 'Telugu' },
-  // { code: 'mr', name: 'मराठी', englishName: 'Marathi' },
   { code: 'ta', name: 'தமிழ்', englishName: 'Tamil' },
-  // { code: 'ur', name: 'اردو', englishName: 'Urdu' },
-  // { code: 'gu', name: 'ગુજરાતી', englishName: 'Gujarati' },
-  // { code: 'ml', name: 'മലയാളം', englishName: 'Malayalam' },
   { code: 'kn', name: 'ಕನ್ನಡ', englishName: 'Kannada' },
-  // { code: 'or', name: 'ଓଡ଼ିଆ', englishName: 'Odia' },
-  // { code: 'pa', name: 'ਪੰਜਾਬੀ', englishName: 'Punjabi' },
-  // { code: 'as', name: 'অসমীয়া', englishName: 'Assamese' },
 ];
 
 const LanguageSelectionScreen = () => {
@@ -50,7 +42,7 @@ const LanguageSelectionScreen = () => {
         </View>
 
         <View className="mt-6 mb-4">
-          <PrimaryText className="text-xl font-semibold text-gray-800">selectLanguage</PrimaryText>
+          <PrimaryText className="text-xl font-semibold text-gray-800">Select Language</PrimaryText>
         </View>
 
         <View className="space-y-4">
@@ -58,7 +50,7 @@ const LanguageSelectionScreen = () => {
             <TouchableOpacity
               key={lang.code}
               onPress={() => setLanguage(lang.code)}
-              className="flex-row items-center p-4 border border-gray-300 rounded-lg"
+              className="flex-row items-center p-4 mt-4 border border-gray-300 rounded-lg"
               style={{
                 backgroundColor: language === lang.code ? '#f1f5f9' : '#fff',
               }}
@@ -66,7 +58,7 @@ const LanguageSelectionScreen = () => {
               <Ionicons
                 name={language === lang.code ? 'radio-button-on' : 'radio-button-off'}
                 size={24}
-                color={language === lang.code ? '#39a676' : '#ccc'}
+                color={language === lang.code ? '#206e69' : '#ccc'}
               />
               <PrimaryText className="text-lg font-semibold text-gray-700 ml-4">
                 {lang.name} ({lang.englishName})
@@ -78,7 +70,7 @@ const LanguageSelectionScreen = () => {
         <View className="mt-10">
           <TouchableOpacity
             onPress={handleDone}
-            className="bg-green-700 w-full p-4 rounded-lg"
+            className="bg-primary-950 w-full p-4 rounded-lg"
           >
             <PrimaryText className="text-lg font-medium text-center text-white">
               choose
