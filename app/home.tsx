@@ -230,7 +230,7 @@ const HomeScreen = () => {
             </PrimaryText>
             {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
           </View>
-          {checkInOutStatusDetails.id == undefined && checkInOutStatusDetails.value !== "Checked Out" && (
+          {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">
               <Button
                 className="bg-primary-950 rounded-lg"

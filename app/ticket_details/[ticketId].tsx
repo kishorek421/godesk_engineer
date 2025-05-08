@@ -508,8 +508,7 @@ const TicketDetails = () => {
             </PrimaryText>
             <PrimaryText className="text-secondary-950 text-sm">
               assetSubTypeModel{" "}:{" "}
-              {item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelName ?? "-"}{" "}
-              ({item.itemDetails?.productDetails?.assetSubTypeModelDetails?.modelNumber ?? "-"}{" "})
+              {item.itemDetails?.productDetails?.assetSubTypeDetails?.name?? "-"}{" "}
               (x{item.quantity})
             </PrimaryText>
               </View>
@@ -613,6 +612,26 @@ const TicketDetails = () => {
                         <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
+                        </PrimaryText>
+                      </View>
+                    </View>
+                  </View>
+                  <View className="w-full mt-3">
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex-1">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                        Asset Model
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5  mt-[2px]">
+                          {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
+                        </PrimaryText>
+                      </View>
+                      <View className="flex items-end">
+                        <PrimaryText className="text-gray-500 text-md font-regular">
+                        Asset SubType
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        {ticketDetails?.assetSubTypeDetails?.name ?? "-"}
                         </PrimaryText>
                       </View>
                     </View>
