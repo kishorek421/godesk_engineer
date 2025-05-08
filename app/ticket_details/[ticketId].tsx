@@ -620,7 +620,7 @@ const TicketDetails = () => {
                     <View className="flex-row items-center justify-between">
                       <View className="flex-1">
                         <PrimaryText className="text-gray-500 font-regular text-md ">
-                        Asset Model
+                        assetModel
                         </PrimaryText>
                         <PrimaryText className="text-md text-gray-900 font-semibold leading-5  mt-[2px]">
                           {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
@@ -628,7 +628,7 @@ const TicketDetails = () => {
                       </View>
                       <View className="flex items-end">
                         <PrimaryText className="text-gray-500 text-md font-regular">
-                        Asset SubType
+                        assetSubTypeModel
                         </PrimaryText>
                         <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                         {ticketDetails?.assetSubTypeDetails?.name ?? "-"}
