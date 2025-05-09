@@ -115,7 +115,7 @@ const LoginScreen = () => {
 
   return (
     <BasePage>
-      <View className="flex justify-between h-full">
+      <View className="flex justify-between h-full bg-white">
         <View className="mt-1 h-full">
           <View className="flex-row items-end mx-3">
             <Image

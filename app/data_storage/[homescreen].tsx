@@ -33,19 +33,19 @@ const LanguageSelectionScreen = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <View className="items-start mt-4">
+      <ScrollView contentContainerStyle={{ paddingTop: 10, paddingBottom: 10, paddingHorizontal: 20 }}>
+        <View className="items-start">
         <Image
               source={require('../../assets/images/godezk_engineer_banner_300x150.png')}
               style={{ width: 100, height: 60 }}
             />
         </View>
 
-        <View className="mt-6 mb-4">
+        <View className="mt-6">
           <PrimaryText className="text-xl font-semibold text-gray-800">Select Language</PrimaryText>
         </View>
 
-        <View className="space-y-4">
+        <View className="">
           {SUPPORTED_LANGUAGES.map((lang) => (
             <TouchableOpacity
               key={lang.code}
@@ -73,7 +73,7 @@ const LanguageSelectionScreen = () => {
             className="bg-primary-950 w-full p-4 rounded-lg"
           >
             <PrimaryText className="text-lg font-medium text-center text-white">
-              choose
+              Choose
             </PrimaryText>
           </TouchableOpacity>
         </View>
