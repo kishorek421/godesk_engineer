@@ -10,12 +10,10 @@ enum ENVS {
   prod,
 }
 
-
-// let env: ENVS = ENVS.local;
- let env: ENVS = ENVS.dev;
-// let env: ENVS = ENVS.stage;
-// let env: ENVS = ENVS.prod;
-
+// const env: ENVS = ENVS.local;
+const env: ENVS = ENVS.dev;
+// const env: ENVS = ENVS.stage;
+// const env: ENVS = ENVS.prod;
 
 const getBaseURL = (iENV: ENVS) => {
   switch (iENV) {
@@ -31,4 +29,3 @@ const getBaseURL = (iENV: ENVS) => {
 };
 
 export const BASE_URL = getBaseURL(env);
-export const isTickeApiServiceMock = true;

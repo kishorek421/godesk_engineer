@@ -40,6 +40,7 @@ export const uiStrings ={
     "writeShortDescription": "Write a short description about your issue",
     "assetImages": "Asset Images",
     "addImage": "Add Image",
+    "assetType": "Asset Type",
     "enterOtpForOpenClose": "Enter customer PIN for In-Progress , On Hold(Spare Required , Cannot Resolve) and Close Ticket",
     "customerOtp": "Customer PIN",
     "enterCustomerOtp": "Enter customer PIN",

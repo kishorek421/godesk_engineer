@@ -33,6 +33,8 @@ export interface AssetSubTypeModelDetails {
   modelName?: string;
   modelNumber?: string;
   modelDescription?: string; 
+  name?: string;
+  code?: string;
 }
 
 
