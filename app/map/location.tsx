@@ -8,6 +8,9 @@
 // import Geocoder from 'react-native-geocoding';
 // import Icon from 'react-native-vector-icons/MaterialIcons';
 
+import React from "react";
+import { View } from "react-native";
+
 // const LOCATION_TASK_NAME = 'background-location-task';
 // const GOOGLE_MAPS_APIKEY = 'AIzaSyArnnwpKWaI9Rp_OSC9mn-L1gG0gtj8J5A';
 // // Define interfaces for location and coordinates
@@ -32,7 +35,7 @@
 //   const appState = useRef(AppState.currentState);
 
 //   useEffect(() => {
-  
+
 //     Geocoder.init(GOOGLE_MAPS_APIKEY);
 
 //     // Request location permissions and get the current location
@@ -304,3 +307,9 @@
 // });
 
 // export default RouteMap;
+
+const Map = () => {
+  return <View></View>;
+};
+
+export default Map;

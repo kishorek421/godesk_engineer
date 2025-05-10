@@ -3,9 +3,6 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">65.0.35.228</domain> 
     </domain-config>
-     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">43.205.35.224</domain> 
-    </domain-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">43.205.35.224</domain> 
     </domain-config>
