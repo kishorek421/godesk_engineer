@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import PrimaryText from "../PrimaryText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BasePage from "../base/base_page";
+import { useTranslation } from "@/context/TranslationContext";
 const TicketListItemLayout = ({
   ticketModel,
   cn = "",
@@ -15,13 +16,13 @@ const TicketListItemLayout = ({
   ticketModel: TicketListItemModel;
   cn?: string;
 }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+ const { translatedStrings } = useTranslation();
   //  const { refreshFlag, setRefreshFlag } = useRefresh();
   const [refreshing, setRefreshing] = useState(true);
   const getHelpText = (statusKey?: string): string => {
     switch (statusKey) {
       case "WORK_COMPLETED":
-        return "Once payment is done, you’ll close the ticket.";
+        return translatedStrings["workcompletedmessage"]  ;
       default:
         return "";
     }

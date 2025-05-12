@@ -157,7 +157,7 @@ const LoginScreen = () => {
                     setFieldValidationStatus={setFieldValidationStatus}
                     validateFieldFunc={setFieldValidationStatusFunc}
                     customValidations={(value) => {
-                      // mobile no should start with 6-9
+                     
                       const customRE = /^[6-9]/;
                       if (!customRE.test(value)) {
                         return ("Mobile no. should start with 6-9");
@@ -205,28 +205,26 @@ const LoginScreen = () => {
                   height: 200,
                 }}
               />
-              <PrimaryText className="px-12 text-center text-sm font-regular mt-2">
-                loginAgreement{" "}
-                <PrimaryText
-                  onPress={() => {
-                    Linking.openURL(
-                      "https://godezk.com/Terms_And_conditions.html"
-                    );
-                  }}
-                  className="font-bold-1 text-secondary-950"
-                >
-                termsConditions
-                </PrimaryText>{" "}
-                and{" "}
-                <PrimaryText
-                  onPress={() => {
-                    Linking.openURL("https://godezk.com/Privacy_Policy.html");
-                  }}
-                  className="font-bold-1 text-secondary-950"
-                >
-                  privacyPolicy
-                </PrimaryText>
-              </PrimaryText>
+              <Text className="mt-8 text-sm text-center px-8 font-regular">
+           loginAgreement{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godezk.com/Terms_And_conditions.html");
+              }}
+              className="font-bold-1 text-primary-950"
+            >
+              termsConditions
+            </Text>{" "}
+            and{" "}
+            <Text
+              onPress={() => {
+                Linking.openURL("https://godezk.com/Privacy_Policy.html");
+              }}
+              className="font-bold-1 text-primary-950"
+            >
+              privacyPolicy
+            </Text>
+              </Text>
             </View>
           </View>
         </View>

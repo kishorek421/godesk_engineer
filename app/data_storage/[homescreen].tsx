@@ -73,7 +73,7 @@ const LanguageSelectionScreen = () => {
             className="bg-primary-950 w-full p-4 rounded-lg"
           >
             <PrimaryText className="text-lg font-medium text-center text-white">
-              choose
+              Choose
             </PrimaryText>
           </TouchableOpacity>
         </View>
