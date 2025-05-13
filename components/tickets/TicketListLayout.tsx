@@ -9,6 +9,7 @@ import {
 import TicketListItemLayout from "@/components/tickets/TicketListItemLayout";
 import {
   GET_ASSIGNED_TICKETS_LIST,
+  GET_OPENED_TICKETS_LIST,
   GET_CLOSED_TICKETS_LIST,
   GET_NOT_COMPLETED_TICKETS_LIST,
   GET_PAID_TICKETS_LIST,
@@ -19,6 +20,7 @@ import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
+import { useTranslation } from "@/context/TranslationContext";
 const TicketListLayout = () => {
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,7 +49,7 @@ const TicketListLayout = () => {
     "In Progress"
   ];
   const visibleTabs = tabs.filter(tab => !hiddenTabs.includes(tab));
-
+ const { translatedStrings } = useTranslation();
   useEffect(() => {
     fetchTickets(1, selectedTab);
   }, [selectedTab]);
@@ -57,7 +59,7 @@ const TicketListLayout = () => {
       case 0:
         return GET_ASSIGNED_TICKETS_LIST;
       case 1:
-        return GET_ASSIGNED_TICKETS_LIST;
+        return GET_OPENED_TICKETS_LIST;
       case 2:
         return GET_WORK_COMPLETED_TICKETS_LIST;
       case 3:
@@ -76,7 +78,7 @@ const TicketListLayout = () => {
     if (selectedTab === 1) {
       setRefreshing(true);
       await apiClient
-        .get("/tickets/users/getTicketsByStatusKey?status=OPENED", {
+        .get(GET_OPENED_TICKETS_LIST, {
           params: { pageNo: nextCurrentPage, pageSize: 10 },
         })
         .then((response) => {
@@ -170,7 +172,7 @@ const TicketListLayout = () => {
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
           <PrimaryText className="text-gray-400 text-md text-center font-regular">
-            No tickets found
+{translatedStrings['noTicketsFound']}
           </PrimaryText>
         </View>
       ) : (

@@ -138,19 +138,18 @@ const VerifyOTPScreen = () => {
               </PrimaryText> */}
           </View>
           <View className=" px-4">
-            <View className="mt-2">
-              <PrimaryText className="text-2xl font-bold-1">
-                checkYourMobile
-              </PrimaryText>
-              <View className="flex-row mt-2">
-              <PrimaryText className="color-gray-400 text-sm font-regular">
+          <View className="mt-4">
+            <Text className="text-2xl font-bold-1">checkYourMobile</Text>
+            <View className="flex-row mt-2">
+              <Text className="color-gray-400 text-sm font-regular">
                otpMessage
-              </PrimaryText>
-              <PrimaryText className="color-gray-400 text-sm font-regular">
+              </Text>
+              <Text className="color-gray-400 text-sm font-regular mt-0">
                { mobile }.
-              </PrimaryText>
+              </Text>
               </View>
-            </View>
+          </View>
+         
             <View className="mt-6">
               <PrimaryTextFormField
                 fieldName="otp"

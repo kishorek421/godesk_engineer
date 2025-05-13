@@ -9,8 +9,8 @@ const kn = {
   "assignedTo": "ಈವರಿಗೆ ನಿಯೋಜಿಸಲಾದದ್ದು",
   "assetType": "ಅಸೆಟ್ ಟೈಪ್",
   "assetImages": "ಅಸೆಟ್ ಇಮೇಜಸ್",
-  "assetModel": "ಅಸೆಟ್ ಮಾಡೆಲ್"
-
+  "assetModel": "ಅಸೆಟ್ ಮಾಡೆಲ್",
+  "otpMessage": "OTP ಕಳುಹಿಸಲಾಗಿದೆ.",
 };
 
 const hi = {
