@@ -60,7 +60,7 @@ export const uiStrings ={
     "Paid": "Paid",
     "onHold": "On Hold",
     "assetModel":"Asset Model",
-    "assetSubTypeModel":"Asset SubType Model",
+    "assetSubType":"Asset SubType",
     "didReceiveOTP?":"Didn't Receive OTP?",
     "resendOTP": "Resend OTP",
     "Closed":"Closed",
