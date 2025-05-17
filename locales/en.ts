@@ -32,7 +32,7 @@ export const uiStrings ={
     "loginAgreement": "By logging in, you agree to our",
     "ticketDetails": "Ticket Details",
     "serialNo": "Serial No",
-    "description": "Description",              
+    "Description": "Description",              
     "assignedAt": "Assigned At",
     "assignedTo" :"Assigned To",
     "issueImages": "Issue Images",

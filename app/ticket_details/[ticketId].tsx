@@ -260,7 +260,7 @@ const TicketDetails = () => {
         message: "Please select a status",
       });
     }
-    if (!description?.length) {
+    if (!description) {
       newErrors.push({
         param: "description",
         message: "Please enter a description",
@@ -846,7 +846,7 @@ const TicketDetails = () => {
                         <PrimaryTextareaFormField
                          className="my-3"
                           fieldName="description"
-                          label="description"
+                          label="Description"
                           placeholder="writeShortDescription"
                           errors={errors}
                           setErrors={setErrors}
