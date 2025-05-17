@@ -82,7 +82,7 @@ const TicketDetails = () => {
   const [ticketStatusOptionsState, setTicketStatusOptions] = useState<
     ConfigurationModel[]
   >([]);
-  const [description, setDescription] = useState<string | null>(null);
+  const [description, setDescription] = useState<string >();
 
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -260,7 +260,7 @@ const TicketDetails = () => {
         message: "Please select a status",
       });
     }
-    if (!description) {
+    if (!description?.length) {
       newErrors.push({
         param: "description",
         message: "Please enter a description",
@@ -507,7 +507,7 @@ const TicketDetails = () => {
               (x{item.quantity})
             </PrimaryText>
             <PrimaryText className="text-secondary-950 text-sm">
-              assetSubTypeModel{" "}:{" "}
+              assetSubType{" "}:{" "}
               {item.itemDetails?.productDetails?.assetSubTypeDetails?.name?? "-"}{" "}
               (x{item.quantity})
             </PrimaryText>
@@ -618,31 +618,6 @@ const TicketDetails = () => {
                   </View>
                   <View className="w-full mt-3">
                     <View className="flex-row items-center justify-between">
-                      <View className="flex-1">
-                        <PrimaryText className="text-gray-500 font-regular text-md ">
-                        assetModel
-                        </PrimaryText>
-                        <View className="flex-1">
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
-                          {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
-                        </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
-                         {" "} ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
-                        </PrimaryText>
-                        </View>
-                      </View>
-                      <View className="flex items-end">
-                        <PrimaryText className="text-gray-500 text-md font-regular">
-                        assetSubType
-                        </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                        {ticketDetails?.assetSubTypeDetails?.name ?? "-"}
-                        </PrimaryText>
-                      </View>
-                    </View>
-                  </View>
-                  <View className="w-full mt-3">
-                    <View className="flex-row items-center justify-between">
                       <View className="flex">
                         <PrimaryText className="text-gray-500 font-regular text-md ">
                           userType
@@ -661,6 +636,25 @@ const TicketDetails = () => {
                       </View>
                     </View>
                   </View>
+                  <View className="w-full mt-3">
+                    <View className="flex-row items-center justify-between">
+                      <View className="flex-1">
+                        <PrimaryText className="text-gray-500 font-regular text-md ">
+                        assetModel
+                        </PrimaryText>
+                        <View className="flex-1">
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
+                          {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
+                        </PrimaryText>
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
+                         ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
+                        </PrimaryText>
+                        </View>
+                      </View>
+                      
+                    </View>
+                  </View>
+                  
                   <View className="flex mt-3">
                     <PrimaryText className="text-gray-500 text-md font-regular ">
                       assignedAt
