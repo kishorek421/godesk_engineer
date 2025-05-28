@@ -1,4 +1,4 @@
-export const uiStrings ={
+{
     "welcomeMessage": "Welcome back!",
     "checkIn": "Check In",
     "checkOut": "Check Out",
@@ -70,4 +70,4 @@ export const uiStrings ={
     "Cannot Resolve":"Cannot Resolve",
     "payOnCash":" Customer want to Pay on Cash"
 
-  };
+}
