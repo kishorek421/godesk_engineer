@@ -58,6 +58,7 @@ import {
 import BasePage from "@/components/base/base_page";
 import { primaryColor } from "@/constants/colors";
 import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
+import { useTranslation } from "@/context/TranslationContext";
 
 const TicketDetails = () => {
 
@@ -87,7 +88,7 @@ const TicketDetails = () => {
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-
+  const { translatedStrings } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
@@ -357,7 +358,7 @@ const TicketDetails = () => {
         if (updateResponse.status === 200) {
           Toast.show({
             type: "success",
-            text1: `Ticket status updated successfully!`,
+            text1: translatedStrings["toast13"],
             visibilityTime: 5000,
           });
 
@@ -394,7 +395,7 @@ const TicketDetails = () => {
             type: "error",
             text1:
               error.response?.data?.message ||
-              "An unexpected error occurred. Please try again.",
+              translatedStrings["toast19"],
             visibilityTime: 5000,
           });
         }
@@ -1029,7 +1030,7 @@ const TicketDetails = () => {
               if (fileSizeMB > 15) {
                 Toast.show({
                   type: "error",
-                  text1: "Image larger than 15mb are not accepted.",
+                  text1: translatedStrings["toast14"],
                   visibilityTime: 5000,
                 });
                 return;

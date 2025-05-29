@@ -21,6 +21,7 @@ import { getFCMToken } from "@/services/fcm";
 import Toast from "react-native-toast-message";
 import BasePage from "@/components/base/base_page";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
+import { useTranslation } from "@/context/TranslationContext";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
 
@@ -30,7 +31,7 @@ const VerifyOTPScreen = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [otp, setOtp] = useState<string>("");
   const animationRef = useRef<LottieView>(null);
-
+  const { translatedStrings } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -118,7 +119,7 @@ const { messagingRef } = useFirebaseMessaging();
         if (response.data?.success) {
           Toast.show({
             type: "success",
-            text1: "OTP sent successfully",
+            text1: translatedStrings["toast5"],
           });
           setTimer(120);
           setIsDisabled(true);
