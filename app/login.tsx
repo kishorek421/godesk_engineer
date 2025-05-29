@@ -140,7 +140,7 @@ const LoginScreen = () => {
                 <PrimaryText className="color-gray-400 text-sm font-regular">
                   createExtraordinary
                 </PrimaryText>
-                <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText>
+                {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
               </View>
               <View className="mt-6">
                 <FormControl
