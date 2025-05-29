@@ -21,7 +21,7 @@ export const loadUsedKeys = async () => {
 
 export const fetchBaseStrings = async (): Promise<Record<string, string>> => {
   try {
-    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK&version=latest');
+    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK_ENGINEER&version=latest');
     const fileURL = res.data?.data?.url || res.data?.url;
     if (!fileURL) return {};
     const response = await fetch(fileURL);
