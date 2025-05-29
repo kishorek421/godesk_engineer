@@ -26,6 +26,7 @@ import { CreateCheckInOutModel } from "@/models/users";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface CheckInOutProps {
   setIsModalVisible: any;
@@ -50,7 +51,7 @@ const CheckInOutModal = ({
   const [selfie, setSelfie] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
-
+  const { translatedStrings } = useTranslation();
   const [cameraPermissionStatus, requestCameraPermission] =
     ImagePicker.useCameraPermissions();
 
@@ -143,7 +144,7 @@ const CheckInOutModal = ({
       } else {
         Toast.show({
           type: "error",
-          text1: "Image more than 15 mb not accepeted",
+          text1: translatedStrings["toast14"],
           visibilityTime: 5000,
         });
       }
@@ -195,8 +196,8 @@ const CheckInOutModal = ({
                 type: "success",
                 text1:
                   status === "Checked In"
-                    ? "Checked out successfully"
-                    : "Checked in successfully",
+                    ? translatedStrings["toast16"]
+                    : translatedStrings["toast17"],
                 visibilityTime: 5000,
               });
               setSelfie("");
@@ -219,7 +220,7 @@ const CheckInOutModal = ({
           setIsLoading(false);
           Toast.show({
             type: "error",
-            text1: "Failed to upload your selfie",
+            text1: translatedStrings["toast15"],
             visibilityTime: 5000,
 
           });

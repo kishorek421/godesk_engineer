@@ -17,9 +17,11 @@ import apiClient from "@/clients/apiClient";
 import { setItem } from "@/utils/secure_store";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
-
+import { getFCMToken } from "@/services/fcm";
 import Toast from "react-native-toast-message";
 import BasePage from "@/components/base/base_page";
+import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
+import { useTranslation } from "@/context/TranslationContext";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
 
@@ -29,11 +31,11 @@ const VerifyOTPScreen = () => {
   const [isDisabled, setIsDisabled] = useState(true);
   const [otp, setOtp] = useState<string>("");
   const animationRef = useRef<LottieView>(null);
-
+  const { translatedStrings } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-
+const { messagingRef } = useFirebaseMessaging();
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -62,10 +64,18 @@ const VerifyOTPScreen = () => {
     }
     setIsLoading(true);
     setErrors([]);
+ let fcmToken = "";
+
+      try {
+        fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
+        console.log("fcmToken", fcmToken);
+      } catch (e) {
+        console.error("Token Error ->", e);
+      }
 
     try {
       await apiClient
-        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER`)
+        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER&fcmToken=${fcmToken}`)
         .then(async (response) => {
           if (response.data?.success) {
             const loginData = response.data?.data;
@@ -109,7 +119,7 @@ const VerifyOTPScreen = () => {
         if (response.data?.success) {
           Toast.show({
             type: "success",
-            text1: "OTP sent successfully",
+            text1: translatedStrings["toast5"],
           });
           setTimer(120);
           setIsDisabled(true);

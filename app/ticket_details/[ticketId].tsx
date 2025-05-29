@@ -30,7 +30,7 @@ import {
   FormControlErrorText,
 } from "@/components/ui/form-control";
 import SubmitButton from "@/components/SubmitButton";
-import { bytesToMB, getFileName, isFormFieldInValid,setErrorValue } from "@/utils/helper";
+import { bytesToMB, getFileName, isFormFieldInValid, setErrorValue } from "@/utils/helper";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import {
@@ -58,9 +58,10 @@ import {
 import BasePage from "@/components/base/base_page";
 import { primaryColor } from "@/constants/colors";
 import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
+import { useTranslation } from "@/context/TranslationContext";
 
 const TicketDetails = () => {
- 
+
 
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
@@ -82,12 +83,12 @@ const TicketDetails = () => {
   const [ticketStatusOptionsState, setTicketStatusOptions] = useState<
     ConfigurationModel[]
   >([]);
-  const [description, setDescription] = useState<string >();
+  const [description, setDescription] = useState<string>();
 
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-
+  const { translatedStrings } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
@@ -96,7 +97,7 @@ const TicketDetails = () => {
   >([]);
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [selectedPaymentMode, setSelectedPaymentMode] =
-  useState<ConfigurationModel>();
+    useState<ConfigurationModel>();
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
@@ -219,15 +220,15 @@ const TicketDetails = () => {
         setIsLoading(false);
       });
   };
-  
+
   const updateTicketStatus = async () => {
     // Clear previous errors and reset validation state
     setErrors([]);
     setFieldValidationStatus({});
-  
+
     // Validate inputs
     let newErrors: { param: string; message: string }[] = [];
-  
+
     if (
       assetImages.length === 0 &&
       ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(
@@ -242,7 +243,7 @@ const TicketDetails = () => {
     } else {
       setErrorValue("assetImages", "", "", setErrors);
     }
-  
+
     if (
       ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
         selectedTicketStatus?.key ?? ""
@@ -266,21 +267,21 @@ const TicketDetails = () => {
         message: "Please enter a description",
       });
     }
-  
+
     if (!latitude || !longitude) {
       newErrors.push({
         param: "location",
         message: "Location is required but couldn't be fetched.",
       });
     }
-  
+
     if (!pincode) {
       newErrors.push({
         param: "pincode",
         message: "Pincode is required but couldn't be fetched.",
       });
     }
-  
+
     // Trigger field validations
     const validationPromises = Object.keys(fieldValidationStatus).map(
       (key) =>
@@ -291,22 +292,22 @@ const TicketDetails = () => {
           }));
         })
     );
-  
+
     setCanValidateField(true);
-  
+
     await Promise.all(validationPromises);
-  
+
     // Check if there are no errors
     const allValid = newErrors.length === 0;
-  
+
     if (allValid) {
       setIsLoading(true);
       try {
         let uploadedAssetImages: string[] = [];
-  
+
         if (assetImages.length > 0) {
           console.log("Uploading asset images:", assetImages);
-  
+
           const formData = new FormData();
           for (let i = 0; i < assetImages.length; i++) {
             const assetImage = assetImages[i];
@@ -316,7 +317,7 @@ const TicketDetails = () => {
               name: getFileName(assetImage, true),
             } as unknown as Blob);
           }
-  
+
           const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -325,7 +326,7 @@ const TicketDetails = () => {
           uploadedAssetImages = uploadResponse.data.data || [];
           console.log("Uploaded asset images:", uploadedAssetImages);
         }
-  
+
         const requestBody = {
           ticketId,
           assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
@@ -347,20 +348,20 @@ const TicketDetails = () => {
               ? "079d38fc-93a6-482d-8a99-ee600196cea8"
               : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
         };
-  
+
         console.log("Request body:", requestBody);
         const updateResponse = await apiClient.put(
           `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
           requestBody
         );
-  
+
         if (updateResponse.status === 200) {
           Toast.show({
             type: "success",
-            text1: `Ticket status updated successfully!`,
+            text1: translatedStrings["toast13"],
             visibilityTime: 5000,
           });
-  
+
           await fetchTicketDetails();
           router.push({
             pathname: "../home",
@@ -371,17 +372,17 @@ const TicketDetails = () => {
         }
       } catch (error: any) {
         console.error("Failed to update ticket status.", error);
-  
+
         if (error?.response?.data?.errors) {
           setErrors(
             error.response.data.errors.filter((err: any) => err.param !== null)
           );
-  
+
           const errorMessages = error.response.data.errors
             .filter((err: any) => err.param === null)
             .map((err: any) => err.message)
             .join("\n");
-  
+
           if (errorMessages) {
             Toast.show({
               type: "error",
@@ -394,7 +395,7 @@ const TicketDetails = () => {
             type: "error",
             text1:
               error.response?.data?.message ||
-              "An unexpected error occurred. Please try again.",
+              translatedStrings["toast19"],
             visibilityTime: 5000,
           });
         }
@@ -499,19 +500,19 @@ const TicketDetails = () => {
         <View>
           {item.itemDetails?.productDetails?.assetTypeDetails?.name && (
             <View>
-            <PrimaryText className="text-secondary-950 text-sm">
-              assetModel{" "}:{" "}
-              {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
-              {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
-              ({item.itemDetails?.productDetails?.assetModelDetails?.modelNumber ?? "-"}{" "})
-              (x{item.quantity})
-            </PrimaryText>
-            <PrimaryText className="text-secondary-950 text-sm">
-              assetSubType{" "}:{" "}
-              {item.itemDetails?.productDetails?.assetSubTypeDetails?.name?? "-"}{" "}
-              (x{item.quantity})
-            </PrimaryText>
-              </View>
+              <PrimaryText className="text-secondary-950 text-sm">
+                assetModel{" "}:{" "}
+                {item.itemDetails?.productDetails?.assetTypeDetails?.name ?? "-"}{" "}
+                {item.itemDetails?.productDetails?.assetModelDetails?.modelName ?? "-"}{" "}
+                ({item.itemDetails?.productDetails?.assetModelDetails?.modelNumber ?? "-"}{" "})
+                (x{item.quantity})
+              </PrimaryText>
+              <PrimaryText className="text-secondary-950 text-sm">
+                assetSubType{" "}:{" "}
+                {item.itemDetails?.productDetails?.assetSubTypeDetails?.name ?? "-"}{" "}
+                (x{item.quantity})
+              </PrimaryText>
+            </View>
           )}
         </View>
       </View>
@@ -561,7 +562,7 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
                       <PrimaryText className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                      issueIn{" "}{ticketDetails.issueTypeDetails?.name ?? "-"}
+                        issueIn{" "}{ticketDetails.issueTypeDetails?.name ?? "-"}
                       </PrimaryText>
                     </View>
                     <TicketStatusComponent
@@ -588,8 +589,8 @@ const TicketDetails = () => {
                         <PrimaryText className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).format(
-                                "DD-MM-YYYY hh:mm a"
-                              )
+                              "DD-MM-YYYY hh:mm a"
+                            )
                             : "-"}
                         </PrimaryText>
                       </View>
@@ -640,21 +641,21 @@ const TicketDetails = () => {
                     <View className="flex-row items-center justify-between">
                       <View className="flex-1">
                         <PrimaryText className="text-gray-500 font-regular text-md ">
-                        assetModel
+                          assetModel
                         </PrimaryText>
                         <View className="flex-1">
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
-                          {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
-                        </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
-                         ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
-                        </PrimaryText>
+                          <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
+                            {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
+                          </PrimaryText>
+                          <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
+                            ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
+                          </PrimaryText>
                         </View>
                       </View>
-                      
+
                     </View>
                   </View>
-                  
+
                   <View className="flex mt-3">
                     <PrimaryText className="text-gray-500 text-md font-regular ">
                       assignedAt
@@ -662,8 +663,8 @@ const TicketDetails = () => {
                     <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails.lastAssignedToDetails?.assignedAt
                         ? moment(
-                            ticketDetails.lastAssignedToDetails?.assignedAt
-                          ).format("DD-MM-YYYY hh:mm A")
+                          ticketDetails.lastAssignedToDetails?.assignedAt
+                        ).format("DD-MM-YYYY hh:mm A")
                         : "-"}
                     </PrimaryText>
                   </View>
@@ -758,7 +759,7 @@ const TicketDetails = () => {
                   {paymentProducts.length > 0 && (
                     <View className="flex mt-4">
                       <PrimaryText className="text-gray-500 text-md font-regular ">
-                       spareDetails
+                        spareDetails
                       </PrimaryText>
                       <View className="">
                         {paymentProducts && paymentProducts?.length > 0 ? (
@@ -769,26 +770,26 @@ const TicketDetails = () => {
                       </View>
                     </View>
                   )}
-                  {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
-                  <View className="flex mt-3">
-                    <PrimaryText className="text-gray-500 font-regular text-md ">
-                      paymentMode
-                    </PrimaryText>
-                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                      {ticketDetails?.paymentModeDetails?.value ?? "-"}
-                    </PrimaryText>
-                  </View>}
+                  {/* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                    <View className="flex mt-3">
+                      <PrimaryText className="text-gray-500 font-regular text-md ">
+                        paymentMode
+                      </PrimaryText>
+                      <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        {ticketDetails?.paymentModeDetails?.value ?? "-"}
+                      </PrimaryText>
+                    </View>} */}
                   {/* Conditionally render Update Ticket Status section */}
                   {(ticketDetails.statusDetails?.value === "Opened" ||
                     ticketDetails.statusDetails?.value === "Assigned" ||
                     ticketDetails.statusDetails?.value === "InProgress" ||
-                    ticketDetails.statusDetails?.key === "WORK_COMPLETED" ||
+                    (ticketDetails.statusDetails?.key === "WORK_COMPLETED" && ticketDetails.paymentModeDetails?.key !== "CASH") ||
                     ticketDetails.statusDetails?.value === "Paid") && (
-                    <View className="my-4">
-                      <PrimaryText className="font-semibold text-lg text-primary-950">
-                        updateTicketStatus
-                      </PrimaryText>
-                      {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                      <View className="my-4">
+                        <PrimaryText className="font-semibold text-lg text-primary-950">
+                          updateTicketStatus
+                        </PrimaryText>
+                        {/* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                         ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                           <View className="mt-4">
                             <PrimaryText className="font-medium text-md">
@@ -818,9 +819,9 @@ const TicketDetails = () => {
                               </Pressable>
                             </View>
                           </View>
-                        )}
+                        )} */}
                         <PrimaryDropdownFormFieldWithCustomDropdown
-                         className="my-3"
+                          className="my-3"
                           options={getTicketStatusOptions(
                             ticketDetails.statusDetails?.key,
                             ticketDetails.userTypeDetails?.key,
@@ -844,7 +845,7 @@ const TicketDetails = () => {
                           onSelect={handleSelectOption}
                         />
                         <PrimaryTextareaFormField
-                         className="my-3"
+                          className="my-3"
                           fieldName="description"
                           label="Description"
                           placeholder="writeShortDescription"
@@ -859,94 +860,94 @@ const TicketDetails = () => {
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: any) => setDescription(e)}
-                         
+
                         />
-                      <FormControl
-                        isInvalid={
-                          isFormFieldInValid("assetImages", errors).length > 0
-                        }
-                      >
-                        <HStack className="justify-between mt-2 mb-1">
-                          <PrimaryText className="font-medium">
-                            assetImages{" "}
-                            {[
-                              "IN_PROGRESS",
-                              "SPARE_REQUIRED",
-                              "CANNOT_RESOLVE",
-                              "TICKET_CLOSED",
-                              "WORK_COMPLETED",
-                            ].includes(selectedTicketStatus.key ?? "") && (
-                              <PrimaryText className="text-red-500 font-regular">
-                                *
-                              </PrimaryText>
-                            )}
-                          </PrimaryText>
-                          <PrimaryText className="text-gray-500 font-regular">
-                            {assetImages.length}/3
-                          </PrimaryText>
-                        </HStack>
-                        <View className="flex-row flex-wrap">
-                          {assetImages.map((uri, index) => (
-                            <Pressable
-                              onPress={() => {
-                                router.push({
-                                  pathname: "/image_viewer/[uri]",
-                                  params: {
-                                    uri: uri,
-                                  },
-                                });
-                              }}
-                              className="me-3 mt-2"
-                              key={index}
-                            >
-                              <View>
-                                <Image
-                                  source={{ uri: uri }}
-                                  className="w-24 h-24 rounded-xl absolute"
-                                />
-                                <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
-                                  <Pressable
-                                    className="mt-2 me-2"
-                                    onPress={() => {
-                                      setAssetImages((prev) => {
-                                        prev.splice(index, 1);
-                                        return [...prev];
-                                      });
-                                    }}
-                                  >
-                                    <AntDesign
-                                      name="closecircle"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Pressable>
+                        <FormControl
+                          isInvalid={
+                            isFormFieldInValid("assetImages", errors).length > 0
+                          }
+                        >
+                          <HStack className="justify-between mt-2 mb-1">
+                            <PrimaryText className="font-medium">
+                              assetImages{" "}
+                              {[
+                                "IN_PROGRESS",
+                                "SPARE_REQUIRED",
+                                "CANNOT_RESOLVE",
+                                "TICKET_CLOSED",
+                                "WORK_COMPLETED",
+                              ].includes(selectedTicketStatus.key ?? "") && (
+                                  <PrimaryText className="text-red-500 font-regular">
+                                    *
+                                  </PrimaryText>
+                                )}
+                            </PrimaryText>
+                            <PrimaryText className="text-gray-500 font-regular">
+                              {assetImages.length}/3
+                            </PrimaryText>
+                          </HStack>
+                          <View className="flex-row flex-wrap">
+                            {assetImages.map((uri, index) => (
+                              <Pressable
+                                onPress={() => {
+                                  router.push({
+                                    pathname: "/image_viewer/[uri]",
+                                    params: {
+                                      uri: uri,
+                                    },
+                                  });
+                                }}
+                                className="me-3 mt-2"
+                                key={index}
+                              >
+                                <View>
+                                  <Image
+                                    source={{ uri: uri }}
+                                    className="w-24 h-24 rounded-xl absolute"
+                                  />
+                                  <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
+                                    <Pressable
+                                      className="mt-2 me-2"
+                                      onPress={() => {
+                                        setAssetImages((prev) => {
+                                          prev.splice(index, 1);
+                                          return [...prev];
+                                        });
+                                      }}
+                                    >
+                                      <AntDesign
+                                        name="closecircle"
+                                        size={16}
+                                        color="white"
+                                      />
+                                    </Pressable>
+                                  </View>
                                 </View>
-                              </View>
-                            </Pressable>
-                          ))}
-                        </View>
-                        {assetImages.length < 3 && (
-                          <Button
-                            className="bg-gray-200 mt-4"
-                            onPress={() => toggleImagePicker()}
-                          >
-                            <FeatherIcon
-                              name="plus-circle"
-                              className="me-1"
-                              color="black"
-                              size={18}
-                            />
-                            <ButtonText className="text-black font-regular">
-                              addImage
-                            </ButtonText>
-                          </Button>
-                        )}
-                        <FormControlError className="mt-2">
-                          <FormControlErrorText>
-                            {isFormFieldInValid("assetImages", errors)}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
+                              </Pressable>
+                            ))}
+                          </View>
+                          {assetImages.length < 3 && (
+                            <Button
+                              className="bg-gray-200 mt-4"
+                              onPress={() => toggleImagePicker()}
+                            >
+                              <FeatherIcon
+                                name="plus-circle"
+                                className="me-1"
+                                color="black"
+                                size={18}
+                              />
+                              <ButtonText className="text-black font-regular">
+                                addImage
+                              </ButtonText>
+                            </Button>
+                          )}
+                          <FormControlError className="mt-2">
+                            <FormControlErrorText>
+                              {isFormFieldInValid("assetImages", errors)}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        </FormControl>
                         <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
                           enterOtpForOpenClose
                         </PrimaryText>
@@ -968,52 +969,60 @@ const TicketDetails = () => {
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: string) => setOtp(e)}
                         />
-                        {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
-                      <ConfigurationDropdownFormField
-                        className="my-3"
-                        configurationCategory={PAYMENT_MODE}
-                        placeholder="Select payment mode"
-                        label="paymentMode"
-                        errors={errors}
-                        setErrors={setErrors}
-                        fieldName="paymentMode"
-                        canValidateField={canValidateField}
-                        setCanValidateField={setCanValidateField}
-                        setFieldValidationStatus={setFieldValidationStatus}
-                        validateFieldFunc={setFieldValidationStatusFunc}
-                        defaultValue={selectedPaymentMode}
-                        onItemSelect={(config) => {
-                          console.log("config", config);
-                          setSelectedPaymentMode(config);
-                        }}
-                        isRequired={false}
-                        defaultKey={ticketDetails?.paymentModeDetails?.key ?? "ONLINE"}
-                        isDisabled={
-                          ticketDetails?.statusDetails?.key !== "IN_PROGRESS"
-                        }
-                      />
-}
-                      <Button
-                        className="bg-primary-950 rounded-lg mt-6 h-12 mb-8"
-                        onPress={() => {
-                          if (isLoading) return;
-                          updateTicketStatus();
-                        }}
-                      >
-                        <PrimaryText className="font-semibold text-white text-md">
-                          {" "}
-                          updateStatus
-                        </PrimaryText>
-                        {isLoading && (
-                          <ButtonSpinner className="text-white ms-2" />
-                        )}
-                      </Button>
-                    </View>
-                  )}
+                        {/* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                          <ConfigurationDropdownFormField
+                            className="my-3"
+                            configurationCategory={PAYMENT_MODE}
+                            placeholder="Select payment mode"
+                            label="paymentMode"
+                            errors={errors}
+                            setErrors={setErrors}
+                            fieldName="paymentMode"
+                            canValidateField={canValidateField}
+                            setCanValidateField={setCanValidateField}
+                            setFieldValidationStatus={setFieldValidationStatus}
+                            validateFieldFunc={setFieldValidationStatusFunc}
+                            defaultValue={selectedPaymentMode}
+                            onItemSelect={(config) => {
+                              console.log("config", config);
+                              setSelectedPaymentMode(config);
+                            }}
+                            isRequired={false}
+                            defaultKey={ticketDetails?.paymentModeDetails?.key ?? "ONLINE"}
+                            isDisabled={
+                              ticketDetails?.statusDetails?.key !== "IN_PROGRESS"
+                            }
+                          />
+                        } */}
+                        <Button
+                          className="bg-primary-950 rounded-lg mt-6 h-12 mb-8 flex-row items-center justify-center"
+                          onPress={async () => {
+                            if (isLoading) return;
+                            await updateTicketStatus();
+                          }}
+                        >
+                          <PrimaryText className="font-semibold text-white text-md">
+                            Update Status
+                          </PrimaryText>
+                          {isLoading ? (
+                            <ActivityIndicator color="white" className="ms-2" />
+                          ) : (
+                            <AntDesign
+                              size={20}
+                              color="white"
+                              className="ms-1"
+                            />
+                          )}
+                        </Button>
+                      </View>
+
+                    )}
+
                 </View>
               </View>
             </View>
           </View>
+
           <ImagePickerComponent
             onImagePicked={(uri, fileSizeBytes) => {
               console.log("uri", uri);
@@ -1021,7 +1030,7 @@ const TicketDetails = () => {
               if (fileSizeMB > 15) {
                 Toast.show({
                   type: "error",
-                  text1: "Image larger than 15mb are not accepted.",
+                  text1: translatedStrings["toast14"],
                   visibilityTime: 5000,
                 });
                 return;
@@ -1033,7 +1042,7 @@ const TicketDetails = () => {
           />
         </ScrollView>
       </View>
-      </BasePage>
+    </BasePage>
   );
 };
 

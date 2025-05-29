@@ -32,6 +32,7 @@ import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
+import { useTranslation } from "@/context/TranslationContext";
 const LOCATION_TASK_NAME = "background-location-task";
 
 // // Define the background task
@@ -53,7 +54,7 @@ const HomeScreen = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const bottomSheetRef = useRef(null);
   const segments = useSegments();
-
+  const { translatedStrings } = useTranslation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
@@ -241,7 +242,7 @@ const HomeScreen = () => {
                   } else {
                     Toast.show({
                       type: "error",
-                      text1: "Allow location permission to Check In/Check Out",
+                      text1: translatedStrings["toast18"],
                     });
                   }
                 }}

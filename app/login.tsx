@@ -6,7 +6,9 @@ import {
   Image,
   ActivityIndicator,
   Linking,
+
 } from "react-native";
+import {  Link, useSegments } from "expo-router";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
@@ -25,6 +27,7 @@ import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 import { getFCMToken } from "@/services/fcm";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 import BasePage from "@/components/base/base_page";
+import { useTranslation } from "@/context/TranslationContext";
 const LoginScreen = () => {
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
@@ -34,7 +37,7 @@ const LoginScreen = () => {
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const { messagingRef } = useFirebaseMessaging();
-
+  const {translatedStrings} = useTranslation();
   useEffect(() => {
     const requestPermission = async () => {
       const { status } = await requestTrackingPermissionsAsync();
@@ -137,6 +140,7 @@ const LoginScreen = () => {
                 <PrimaryText className="color-gray-400 text-sm font-regular">
                   createExtraordinary
                 </PrimaryText>
+                {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
               </View>
               <View className="mt-6">
                 <FormControl
@@ -157,10 +161,10 @@ const LoginScreen = () => {
                     setFieldValidationStatus={setFieldValidationStatus}
                     validateFieldFunc={setFieldValidationStatusFunc}
                     customValidations={(value) => {
-                     
+                      // mobile no should start with 6-9
                       const customRE = /^[6-9]/;
                       if (!customRE.test(value)) {
-                        return ("Mobile no. should start with 6-9");
+                        return translatedStrings['Mobile no. should start with 6-9'];
                       }
                       return undefined;
                     }}
@@ -186,7 +190,7 @@ const LoginScreen = () => {
                   {isLoading ? (
                     <ActivityIndicator color="white" className="ms-1" />
                   ) : (
-                    <AntDesign  
+                    <AntDesign
                       size={20}
                       color="white"
                       className="ms-1"
@@ -206,30 +210,30 @@ const LoginScreen = () => {
                 }}
               />
               <Text className="mt-8 text-sm text-center px-8 font-regular">
-           loginAgreement{" "}
-            <Text
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Terms_And_conditions.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              termsConditions
-            </Text>{" "}
-            and{" "}
-            <Text
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Privacy_Policy.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              privacyPolicy
-            </Text>
+                loginAgreement{" "}
+                <Text
+                  onPress={() => {
+                    Linking.openURL("https://godezk.com/Terms_And_conditions.html");
+                  }}
+                  className="font-bold-1 text-primary-950"
+                >
+                  termsConditions
+                </Text>{" "}
+                and{" "}
+                <Text
+                  onPress={() => {
+                    Linking.openURL("https://godezk.com/Privacy_Policy.html");
+                  }}
+                  className="font-bold-1 text-primary-950"
+                >
+                  privacyPolicy
+                </Text>
               </Text>
             </View>
           </View>
         </View>
       </View>
-      </BasePage>
+    </BasePage>
   );
 };
 export default LoginScreen;
