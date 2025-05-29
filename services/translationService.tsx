@@ -21,7 +21,7 @@ export const loadUsedKeys = async () => {
 
 export const fetchBaseStrings = async (): Promise<Record<string, string>> => {
   try {
-    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK_ENGINEER&version=latest');
+    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK&version=latest');
     const fileURL = res.data?.data?.url || res.data?.url;
     if (!fileURL) return {};
     const response = await fetch(fileURL);
@@ -30,61 +30,66 @@ export const fetchBaseStrings = async (): Promise<Record<string, string>> => {
   } catch (err) {
     return {};
   }
-};export const translateBaseToLanguage = async (
+};
+
+export const translateBaseToLanguage = async (
   base: Record<string, string>,
   langCode: string,
-  predefined: Record<string, Record<string, string>>
+  PREDEFINED_TRANSLATIONS: Record<string, Record<string, string>>
 ): Promise<Record<string, string>> => {
-  if (langCode === 'en') return base;
+  if (langCode === 'en') return { ...base };
 
   const cacheKey = `lang-${langCode}`;
-  const cached = await getItem(cacheKey);
-  const cachedTranslations: Record<string, string> = cached ? JSON.parse(cached) : {};
+  let cachedTranslations: Record<string, string> = {};
 
+  // Load cached translations
+  try {
+    const cached = await getItem(cacheKey);
+    cachedTranslations = cached ? JSON.parse(cached) : {};
+  } catch {
+    cachedTranslations = {};
+  }
+
+  const updatedCache: Record<string, string> = { ...cachedTranslations };
   const result: Record<string, string> = {};
 
-  // Combine usedTranslationKeys and all base keys for wider coverage
-  const keysToTranslate = new Set([
-    ...Object.keys(base),
-    ...Array.from(usedTranslationKeys),
-  ]);
-
-  const keysToFetch: string[] = [];
-
-  for (const key of keysToTranslate) {
+  for (const key of Object.keys(base)) {
     const normalized = key.toLowerCase();
+    const englishValue = base[key];
 
-    if (predefined[langCode]?.[normalized]) {
-      result[key] = predefined[langCode][normalized];
-      cachedTranslations[key] = result[key];
-    } else if (cachedTranslations[key]) {
+    // 1. Use predefined translation if available
+    if (PREDEFINED_TRANSLATIONS[langCode]?.[normalized]) {
+      result[key] = PREDEFINED_TRANSLATIONS[langCode][normalized];
+      updatedCache[key] = result[key];
+      continue;
+    }
+
+    // 2. Use cached translation if available
+    if (cachedTranslations[key]) {
       result[key] = cachedTranslations[key];
-    } else {
-      keysToFetch.push(key);
+      continue;
+    }
+
+    // 3. Otherwise, call API and translate
+    try {
+      const cleanText = englishValue.replace(/[\u{1F600}-\u{1F64F}]/gu, '');
+      const res = await apiClient.get(
+        `/language/translate?text=${encodeURIComponent(cleanText)}&languageCode=${langCode}`
+      );
+      const translated = res.data?.data?.convertedText || englishValue;
+
+      result[key] = translated;
+      updatedCache[key] = translated;
+    } catch {
+      result[key] = englishValue;
     }
   }
 
-  if (keysToFetch.length > 0) {
-    try {
-      const textParam = keysToFetch.map(encodeURIComponent).join(',');
-      const response = await apiClient.get(
-        `/language/translate?text=${textParam}&languageCode=${langCode}`
-      );
-
-      const translations: Record<string, string> = response.data?.data || {};
-
-      for (const key of keysToFetch) {
-        result[key] = translations[key] || base[key] || key;
-        cachedTranslations[key] = result[key];
-      }
-
-      await setItem(cacheKey, JSON.stringify(cachedTranslations));
-    } catch (err) {
-      console.error('Batch translation fetch failed:', err);
-      for (const key of keysToFetch) {
-        result[key] = base[key] || key;
-      }
-    }
+  // Save updated cache
+  try {
+    await setItem(cacheKey, JSON.stringify(updatedCache));
+  } catch (err) {
+    console.warn('Error saving translation cache', err);
   }
 
   return result;
