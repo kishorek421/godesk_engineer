@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, FlatList, Modal, Pressable } from "react-native";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
-import { isFormFieldInValid, setErrorValue } from "@/utils/helper";
+import { isFormFieldInValid, setErrorValue ,getAorAn} from "@/utils/helper";
 import {
   FormControl,
   FormControlLabel,
@@ -13,6 +13,8 @@ import {
 import { ErrorModel } from "@/models/common";
 import { DropdownProps } from "@/models/common";
 import PrimaryText from "./PrimaryText";
+import { messages } from "@/locales/constant";
+import { useTranslation } from "@/context/TranslationContext";
 interface PrimaryDropdownFormFieldProps {
   options: (string | { label: any; value: any })[];
   selectedValue: string; // Expect string (e.g., option value or key)
@@ -54,7 +56,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
 }: PrimaryDropdownFormFieldProps) => {
   const [visible, setVisible] = useState(false);
   const [inputText, setInputText] = useState<string>("");
-
+ const { language } = useTranslation();
   // Initialize with defaultValue
   useEffect(() => {
     if (defaultValue) {
@@ -106,7 +108,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
       setErrorValue(
         fieldName,
         value,
-        `Please select a ${label.toLowerCase()}`,
+        messages[language as keyof typeof messages]["label1"](label.toLowerCase(), getAorAn(label)),
         setErrors
       );
     } else {

@@ -1,6 +1,6 @@
 import { View, Text, KeyboardTypeOptions } from "react-native";
 import React, { useEffect, useState } from "react";
-import { isFormFieldInValid, setErrorValue } from "@/utils/helper";
+import { isFormFieldInValid, setErrorValue,getAorAn } from "@/utils/helper";
 import {
   FormControl,
   FormControlLabel,
@@ -12,6 +12,8 @@ import {
 import { Input, InputField } from "@/components/ui/input";
 import { ErrorModel } from "@/models/common";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
+import { messages } from "@/locales/constant";
+import { useTranslation } from "@/context/TranslationContext";
 
 interface PrimaryTextareaFormFieldProps {
   fieldName: string;
@@ -57,7 +59,7 @@ const PrimaryTextareaFormField = ({
   className
 }: PrimaryTextareaFormFieldProps) => {
   const [value, setValue] = useState<string>("");
-
+  const { language } = useTranslation();
   useEffect(() => {
     if (canClearForm && value.length > 0) {
       setValue("");
@@ -87,7 +89,7 @@ const PrimaryTextareaFormField = ({
       setErrorValue(
         fieldName,
         value,
-        `Please enter a ${label.toLowerCase()}`,
+          messages[language as keyof typeof messages]["label"](label.toLowerCase(), getAorAn(label)),
         setErrors,
       );
       return;

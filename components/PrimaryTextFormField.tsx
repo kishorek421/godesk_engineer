@@ -1,6 +1,6 @@
 import { View, Text, KeyboardTypeOptions, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import { isFormFieldInValid, setErrorValue } from "@/utils/helper";
+import { isFormFieldInValid, setErrorValue,getAorAn } from "@/utils/helper";
 import {
   FormControl,
   FormControlLabel,
@@ -13,6 +13,9 @@ import { Input, InputField } from "@/components/ui/input";
 import { ErrorModel } from "@/models/common";
 import { TextCase } from "@/enums/enums";
 import Feather from "@expo/vector-icons/Feather";
+import { messages } from "@/locales/constant";
+import { useTranslation } from "@/context/TranslationContext";
+import {translateNumberToNative} from "@/services/translationService"
 
 interface PrimaryTextFormFieldProps {
   fieldName: string;
@@ -63,7 +66,7 @@ const PrimaryTextFormField = ({
 }: PrimaryTextFormFieldProps) => {
   const [value, setValue] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+ const { language } = useTranslation();
   useEffect(() => {
     setFieldValidationStatus((prevState: any) => ({
       ...prevState,
@@ -87,7 +90,7 @@ const PrimaryTextFormField = ({
       setErrorValue(
         fieldName,
         value,
-        defaultErrorMessage ?? `Please enter a ${label.toLowerCase()}`,
+        defaultErrorMessage ??    messages[language as keyof typeof messages]["label"](label.toLowerCase(), getAorAn(label)),
         setErrors,
       );
       return;
@@ -106,8 +109,7 @@ const PrimaryTextFormField = ({
       // if this field is not valid set validField is false
       setErrorValue(
         fieldName,
-        value,
-        `Min. length should be ${min}`,
+        value,  messages[language as keyof typeof messages]["min"](min, translateNumberToNative),
         setErrors,
       );
       return;

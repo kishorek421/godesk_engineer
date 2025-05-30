@@ -163,7 +163,7 @@ const { messagingRef } = useFirebaseMessaging();
             <View className="mt-6">
               <PrimaryTextFormField
                 fieldName="otp"
-                label="enterOtp"
+                label="OTP"
                 placeholder="enterOtp"
                 errors={errors}
                 setErrors={setErrors}
@@ -176,7 +176,7 @@ const { messagingRef } = useFirebaseMessaging();
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: string) => setOtp(e)}
-                defaultErrorMessage="Please enter a OTP"
+                // defaultErrorMessage="Please enter a OTP"
               />
             </View>
             <View className="flex-row justify-center mt-8">
