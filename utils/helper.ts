@@ -47,7 +47,14 @@ export function getGreetingMessage() {
     return ('hello'); 
   }
 }
-
+export const getAorAn = (word: string) => {
+  if (word.length == 0) return "";
+  const lcFirstChar = word.toLowerCase()[0];
+  if (["a", "e", "i", "o", "u"].includes(lcFirstChar)) {
+    return "an";
+  }
+  return "a";
+};
 export const getFileName = (uri: string, isFullName = false) => {
   const splits = uri.split("/");
   const fileName = splits[splits.length - 1];
@@ -97,14 +104,7 @@ export const setErrorValue = (
   });
 };
 
-export const getAorAn = (word: string) => {
-  if (word.length == 0) return "";
-  const lcFirstChar = word.toLowerCase()[0];
-  if (['a', 'e', 'i', 'o', 'u'].includes(lcFirstChar)) {
-    return "an";
-  }
-  return "a";
-}
+
 
 export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
   console.log("remoteMessage", remoteMessage);
@@ -129,4 +129,29 @@ export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
   //     },
   //   });
   // }
+};
+export const numerals_en = {
+  0: "0", 1: "1", 2: "2", 3: "3", 4: "4",
+  5: "5", 6: "6", 7: "7", 8: "8", 9: "9"
+};
+
+export const numerals_kn = {
+  0: "0", 1: "೧", 2: "೨", 3: "೩", 4: "೪",
+  5: "೫", 6: "೬", 7: "೭", 8: "೮", 9: "೯"
+};
+
+
+export const numerals_te = {
+  0: "0", 1: "౧", 2: "౨", 3: "౩", 4: "౪",
+  5: "౫", 6: "౬", 7: "౭", 8: "౮", 9: "౯"
+};
+
+
+export const numerals_ta = {
+  0: "0", 1: "௧", 2: "௨", 3: "௩", 4: "௪",
+  5: "௫", 6: "௬", 7: "௭", 8: "௮", 9: "௯"
+};
+export const numerals_hi = {
+  0: "0", 1: "१", 2: "२", 3: "३", 4: "४",
+  5: "५", 6: "६", 7: "७", 8: "८", 9: "९"
 };

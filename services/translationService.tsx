@@ -1,6 +1,6 @@
 
 import apiClient from '@/clients/apiClient';
-
+import { numerals_kn,numerals_ta,numerals_te,numerals_en,numerals_hi } from '@/utils/helper';
 import { getItem, setItem } from '@/utils/secure_store';
 import { usedTranslationKeys } from '@/context/TranslationContext';
 
@@ -21,7 +21,7 @@ export const loadUsedKeys = async () => {
 
 export const fetchBaseStrings = async (): Promise<Record<string, string>> => {
   try {
-    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK&version=latest');
+    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK_ENGINEER&version=latest');
     const fileURL = res.data?.data?.url || res.data?.url;
     if (!fileURL) return {};
     const response = await fetch(fileURL);
@@ -93,4 +93,16 @@ export const translateBaseToLanguage = async (
   }
 
   return result;
+};
+export const translateNumberToNative = (num: any, lang:'en'| 'kn' | 'te' | 'ta' | 'hi') => {
+  const maps: Record< 'en'|'kn' | 'te' | 'ta' | 'hi', Record<string, string>> = {
+    kn: numerals_kn,
+    te: numerals_te,
+    ta: numerals_ta,
+    en : numerals_en,
+    hi : numerals_hi,
+  };
+
+  const digits = num.toString().split('');
+  return digits.map((d: string) => maps[lang][d] ?? d).join('');
 };
