@@ -3,7 +3,7 @@ export const messages = {
     
     "label": (label: string, getAorAn: any) => `Please enter ${getAorAn} ${label.toLowerCase()}`,
     "label1": (label: string, getAorAn: any) => `Please select ${getAorAn} ${label.toLowerCase()}`,
-    "min": (min: any,translateNumberToNative:any) => `Min. length should be ${translateNumberToNative(min, 'en')}`,
+    "min": (min: any) => `Min. length should be ${(min) }`,
     "fieldOrNormal":(getRemoteORField:any) => `First our ${getRemoteORField()} Remote team will prioritize your ticket to diagnose the issue.`,
     
   },
@@ -32,7 +32,7 @@ export const messages = {
       `ನಾವು ನಿಮ್ಮ ವಿನಂತಿಗೆ ಸಂಬಂಧಿಸಿದ ಯಾವುದೇ ಟಿಕೇಟ್ ಅನ್ನು ಕಂಡುಹಿಡಿಯಲಿಲ್ಲ.\nದಯವಿಟ್ಟು ಟಿಕೇಟ್ ರೈಸ್ ಮಾಡಿ, ಮತ್ತು ನಮ್ಮ ತಂಡ ಶೀಘ್ರದಲ್ಲೇ ನಿಮಗೆ ಸಹಾಯ ನೀಡುತ್ತದೆ.`,
     "label": (label: string) => `ದಯವಿಟ್ಟು ${label.toLowerCase()} ಅನ್ನು ನಮೂದಿಸಿ`,
     "label1": (label: string) => `ದಯವಿಟ್ಟು ಒಂದು ${label.toLowerCase()} ಆಯ್ಕೆಮಾಡಿ`,
-   "min": (min: any,translateNumberToNative:any)=> `ಕನಿಷ್ಟ ಉದ್ದ ${translateNumberToNative(min, 'kn')} ಅಕ್ಷರಗಳು ಇರಬೇಕು`,
+   "min": (min: any,)=> `ಕನಿಷ್ಟ ಉದ್ದ ${(min)} ಅಕ್ಷರಗಳು ಇರಬೇಕು`,
  "fieldOrNormal":(getRemoteORField:any) => `ಮೊದಲು ನಮ್ಮ ${getRemoteORField()} ರಿಮೋಟ್ ತಂಡವು ನಿಮ್ಮ ಟಿಕೆಟ್ ಅನ್ನು ಪ್ರಾಥಮಿಕತೆ ನೀಡುತ್ತದೆ ಮತ್ತು ಸಮಸ್ಯೆಯನ್ನು ನಿರ್ಧರಿಸುತ್ತದೆ.`
 
 
@@ -63,7 +63,7 @@ export const messages = {
       `మేము మీ అభ్యర్థనకు సంబంధించిన ఏవైనా టికెట్లు కనుగొనలేకపోయాం.\nదయచేసి ఒక టికెట్ నమోదు చేయండి, మరియు మా బృందం త్వరలో మీకు సహాయం చేస్తుంది.`,
     "label": (label: string) => `దయచేసి ${label.toLowerCase()} ను నమోదు చేయండి`,
     "label1": (label: string) => `దయచేసి ఒక ${label.toLowerCase()} ఎంచుకోండి`,
-    "min": (min: any,translateNumberToNative:any) => `కనీస పొడవు ${translateNumberToNative(min, 'te')} అక్షరాలు ఉండాలి`,
+    "min": (min: any,)=> `కనీస పొడవు ${(min)} అక్షరాలు ఉండాలి`,
 
  "fieldOrNormal":(getRemoteORField:any) => `మొదట మా ${getRemoteORField()} రిమోట్ బృందం మీ టికెట్‌ను ప్రాధాన్యత ఇస్తుంది మరియు సమస్యను నిర్ధారిస్తుంది.`,
   },
@@ -92,7 +92,7 @@ export const messages = {
       `உங்கள் கோரிக்கைக்கு தொடர்புடைய எந்த டிக்கெட்டுகளையும் கண்டுபிடிக்க முடியவில்லை.\nதயவுசெய்து ஒரு டிக்கெட்டை பதிவு செய்யவும், எங்கள் குழு விரைவில் உங்களுக்கு உதவுவார்கள்.`,
     "label": (label: string) => `தயவுசெய்து ${label.toLowerCase()} ஐ உள்ளிடவும்`,
     "label1": (label: string) => `${label.toLowerCase()}ஐ தேர்வு செய்யவும்`,
-    "min": (min: any,translateNumberToNative:any) => `${translateNumberToNative(min, 'ta')} எழுத்துகளுக்கு குறைந்தபட்ச நீளம் வேண்டும்`,
+    "min": (min: any) => `${(min)} எழுத்துகளுக்கு குறைந்தபட்ச நீளம் வேண்டும்`,
     "fieldOrNormal":(getRemoteORField:any) => `முதலில் எங்கள் ${getRemoteORField()} ரிமோட் குழு உங்கள் டிக்கெட்டை முன்னுரிமை அளிக்கும் மற்றும் பிரச்சினையை தீர்க்கும்.`,
 
   },
@@ -121,7 +121,7 @@ export const messages = {
       `हम आपके अनुरोध से संबंधित कोई टिकट नहीं पा सके।\nकृपया एक टिकट उठाएं, और हमारी टीम जल्द ही आपकी सहायता करेगी।`,
     "label": (label: string) => `कृपया ${label.toLowerCase()} दर्ज करें`,
     "label1": (label: string) => `कृपया एक ${label.toLowerCase()} चुनें`,
-    "min": (min: any,translateNumberToNative:any) => `न्यूनतम लंबाई ${translateNumberToNative(min, 'hi')} अक्षर होनी चाहिए`,
+    "min": (min: any) => `न्यूनतम लंबाई ${(min)} अक्षर होनी चाहिए`,
     "fieldOrNormal":(getRemoteORField:any) => `पहले हमारे ${getRemoteORField()} रिमोट टीम आपके टिकट को प्राथमिकता देती है और समस्या का समाधान करती है.`
 
   }

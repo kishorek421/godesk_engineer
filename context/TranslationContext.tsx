@@ -9,7 +9,6 @@ import React, {
   cloneElement,
 } from 'react';
 import { Text } from 'react-native';
-import LoadingBar from '@/components/LoadingBar';
 import { getItem, setItem } from '@/utils/secure_store';
 import TRANSLATIONS from '@/locales/translations';
 import {
@@ -17,7 +16,10 @@ import {
   translateBaseToLanguage,
   loadUsedKeys,
   saveUsedKeys,
+  translateText,
 } from '@/services/translationService';
+import LoadingBar from '@/components/LoadingBar';
+import RNFS from 'react-native-fs';
 
 const PREDEFINED_TRANSLATIONS: Record<string, Record<string, string>> = Object.fromEntries(
   Object.entries(TRANSLATIONS).map(([lang, translations]) => [
@@ -31,7 +33,6 @@ interface TranslationContextType {
   setLanguage: (lang: string) => Promise<void>;
   translatedStrings: Record<string, string>;
   baseStrings: Record<string, string>;
-  loading: boolean;
 }
 
 const TranslationContext = createContext<TranslationContextType>({
@@ -39,7 +40,6 @@ const TranslationContext = createContext<TranslationContextType>({
   setLanguage: async () => {},
   translatedStrings: {},
   baseStrings: {},
-  loading: true,
 });
 
 export const usedTranslationKeys = new Set<string>();
@@ -48,33 +48,32 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState('en');
   const [translatedStrings, setTranslatedStrings] = useState<Record<string, string>>({});
   const [baseStrings, setBaseStrings] = useState<Record<string, string>>({});
-  const [loading, setLoading] = useState(true);
 
   const setLanguage = async (lang: string) => {
-    setLoading(true);
     try {
       const selectedLang = lang || 'en';
       await setItem('language', selectedLang);
-      setLanguageState(selectedLang);
-
       await loadUsedKeys();
       const base = await fetchBaseStrings();
       const translated = await translateBaseToLanguage(base, selectedLang, PREDEFINED_TRANSLATIONS);
+      setLanguageState(selectedLang);
       setBaseStrings(base);
       setTranslatedStrings(translated);
     } catch (err) {
       console.error('Translation load error:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    (async () => {
+ useEffect(() => {
+  (async () => {
+    try {
       const storedLang = await getItem('language');
       await setLanguage(storedLang || 'en');
-    })();
-  }, []);
+    } catch (e) {
+      console.error('Language init error:', e);
+    }
+  })();
+}, []);
 
   useEffect(() => {
     const timer = setTimeout(() => saveUsedKeys(), 2000);
@@ -83,11 +82,41 @@ export const TranslationProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TranslationContext.Provider
-      value={{ language, setLanguage, translatedStrings, baseStrings, loading }}
+      value={{ language, setLanguage, translatedStrings, baseStrings }}
     >
       {children}
     </TranslationContext.Provider>
   );
+};
+export const loadLanguageFromCache = async (): Promise<{
+  language: string;
+  translatedStrings: Record<string, string>;
+  baseStrings: Record<string, string>;
+}> => {
+  const langCode = (await getItem('language')) || 'en';
+  const filePath = `${RNFS.DocumentDirectoryPath}/language_${langCode}.json`;
+
+  let translatedStrings: Record<string, string> = {};
+  try {
+    const exists = await RNFS.exists(filePath);
+    if (exists) {
+      const content = await RNFS.readFile(filePath, 'utf8');
+      translatedStrings = JSON.parse(content);
+      console.log(`✅ Loaded cached language file for ${langCode}`);
+    } else {
+      console.warn(`⚠️ Cached translation file not found for ${langCode}`);
+    }
+  } catch (err) {
+    console.warn('⚠️ Error reading cached translation file:', err);
+  }
+
+  const baseStrings = await fetchBaseStrings();
+
+  return {
+    language: langCode,
+    translatedStrings,
+    baseStrings,
+  };
 };
 
 export const useTranslation = () => {
@@ -104,7 +133,7 @@ const NON_TRANSLATABLE_PROPS = [
   'keyboardType',
   'resizeMode',
   'color',
-  ,
+  'options',
 ];
 
 const translateChildren = (
@@ -116,26 +145,48 @@ const translateChildren = (
   Children.map(children, (child) => {
     if (typeof child === 'string' && child.trim()) {
       usedTranslationKeys.add(child);
-      const normalizedChild = child.toLowerCase();
+      const normalized = child.toLowerCase();
       return (
         translations[child] ||
-        PREDEFINED_TRANSLATIONS[language]?.[normalizedChild] ||
+        translations[normalized] ||
+        PREDEFINED_TRANSLATIONS[language]?.[normalized] ||
         base[child] ||
+        base[normalized] ||
         child
       );
     }
+
     if (isValidElement(child)) {
       const translatedProps: Record<string, any> = {};
+
       for (const [key, value] of Object.entries(child.props)) {
         if (NON_TRANSLATABLE_PROPS.includes(key)) {
-          translatedProps[key] = value;
+          translatedProps[key] =
+            key === 'options' && Array.isArray(value)
+              ? value.map((opt) => {
+                  const label = opt.label?.toString() || '';
+                  const normalized = label.toLowerCase();
+                  usedTranslationKeys.add(label);
+                  return {
+                    ...opt,
+                    label:
+                      translations[label] ||
+                      translations[normalized] ||
+                      base[label] ||
+                      PREDEFINED_TRANSLATIONS[language]?.[normalized] ||
+                      label,
+                  };
+                })
+              : value;
         } else if (typeof value === 'string') {
           usedTranslationKeys.add(value);
           const normalized = value.toLowerCase();
           translatedProps[key] =
             translations[value] ||
+            translations[normalized] ||
             PREDEFINED_TRANSLATIONS[language]?.[normalized] ||
             base[value] ||
+            base[normalized] ||
             value;
         } else if (key === 'children') {
           translatedProps.children = translateChildren(value, translations, base, language);
@@ -143,23 +194,53 @@ const translateChildren = (
           translatedProps[key] = value;
         }
       }
+
       return cloneElement(child, translatedProps);
     }
+
     return child;
   });
 
-export const Translator = ({ children, text }: { children?: ReactNode; text?: string }) => {
-  const { translatedStrings, baseStrings, language, loading } = useTranslation();
+export const Translator = ({
+  children,
+  text,
+  dynamic = false,
+  showLoadingBar = false,
+}: {
+  children?: ReactNode;
+  text?: string;
+  dynamic?: boolean;
+  showLoadingBar?: boolean;
+}) => {
+  const { translatedStrings, baseStrings, language } = useTranslation();
+  const [dynamicTranslated, setDynamicTranslated] = useState<string | null>(null);
 
-if (loading) return <LoadingBar/>;
+  useEffect(() => {
+    const translate = async () => {
+      if (dynamic && text && language !== 'en') {
+        const result = await translateText(text, language);
+        setDynamicTranslated(result);
+      }
+    };
+    translate();
+  }, [text, language, dynamic]);
+
+  if (dynamic) {
+    if (dynamicTranslated === null) {
+      return showLoadingBar ? <LoadingBar /> : null;
+    }
+    return <Text>{dynamicTranslated}</Text>;
+  }
 
   if (text) {
     usedTranslationKeys.add(text);
-    const normalizedText = text.toLowerCase();
+    const normalized = text.toLowerCase();
     const translated =
       translatedStrings[text] ||
-      PREDEFINED_TRANSLATIONS[language]?.[normalizedText] ||
+      translatedStrings[normalized] ||
+      PREDEFINED_TRANSLATIONS[language]?.[normalized] ||
       baseStrings[text] ||
+      baseStrings[normalized] ||
       text;
     return <Text>{translated}</Text>;
   }
@@ -167,4 +248,4 @@ if (loading) return <LoadingBar/>;
   return <>{translateChildren(children, translatedStrings, baseStrings, language)}</>;
 };
 
-export default TranslationContext;
+export default Translator;

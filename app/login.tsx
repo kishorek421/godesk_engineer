@@ -64,7 +64,7 @@ const LoginScreen = () => {
       setErrors([
         {
           param: "mobile",
-          message: "Please enter a valid 10-digit mobile number.",
+          message: translatedStrings['Please enter a valid 10-digit mobile number.'],
         },
       ]);
       return;
@@ -106,7 +106,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message: ("An error occurred. Please try again."),
+            message: translatedStrings["otpErrorMessage"]||"An error occurred. Please try again.",
           },
         ]);
       })

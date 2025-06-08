@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import PrimaryText from "../PrimaryText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BasePage from "../base/base_page";
-import { useTranslation } from "@/context/TranslationContext";
+import Translator, { useTranslation } from "@/context/TranslationContext";
 const TicketListItemLayout = ({
   ticketModel,
   cn = "",
@@ -18,6 +18,7 @@ const TicketListItemLayout = ({
 }) => {
  const { translatedStrings } = useTranslation();
   //  const { refreshFlag, setRefreshFlag } = useRefresh();
+  const {language} = useTranslation();
   const [refreshing, setRefreshing] = useState(true);
   const getHelpText = (statusKey?: string): string => {
     switch (statusKey) {
@@ -49,7 +50,12 @@ const TicketListItemLayout = ({
                 {ticketModel?.ticketNo ?? "-"}
               </PrimaryText>
               <PrimaryText className="text-gray-800 font-regular text-[13px]">
-              issueIn{" "}{ticketModel.issueTypeDetails?.name ?? "-"}
+              issueIn{" "}
+                                  {language === "en" || language === "en-US" ? (
+                                    ticketModel.issueTypeDetails?.name ?? "-"
+                                  ) : (
+                                    <Translator text={ticketModel.issueTypeDetails?.name ?? "-"} dynamic />
+                                  )}
               </PrimaryText>
             </View>
             <View>

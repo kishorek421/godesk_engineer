@@ -258,56 +258,57 @@ const CheckInOutModal = ({
               isInvalid={isFormFieldInValid("selfie", errors).length > 0}
             >
               <View className="">
-                <PrimaryText className="font-semibold font-regular text-lg">selfie<PrimaryText className="text-red-400 mt-1 font-regular">*</PrimaryText></PrimaryText>
-                {selfie.length === 0 ? (
-                  <Pressable
-                    onPress={() => {
-                      takePhoto();
-                    }}
-                    className="mt-1"
-                  >
-                    <View
-                      className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
-                      border-dashed h-28 w-28
-                rounded-md mt-1 flex justify-center items-center `}
-                    >
-                      <View className="flex justify-center items-center mt-3">
-                        <View
-                          className={`${isFormFieldInValid("selfie", errors).length === 0 ? "bg-primary-300" : "bg-red-300"} rounded-md p-2 bg-primary-300 w-auto`}
-                        >
-                          <MaterialCommunityIcons
-                            name="camera-plus"
-                            color={`${isFormFieldInValid("selfie", errors).length === 0 ? primaryColor : "#b91c1c"}`}
-                            size={18}
-                          />
-                        </View>
-                      </View>
-                    </View>
-                  </Pressable>
-                ) : (
-                  <View>
-                    <Image
-                      source={{ uri: selfie }}
-                      className="absolute mt-1 rounded-xl w-28 h-28"
-                    />
-                    <View className="flex items-end gap-4 rounded-xl w-28 h-28">
-                      <Pressable
-                        className="mt-2 me-2"
-                        onPress={() => {
-                          // setImagePath("");
-                          setSelfie("");
-                        }}
-                      >
-                        <AntDesign name="closecircle" size={16} color="white" />
-                      </Pressable>
-                    </View>
-                  </View>
-                )}
+          <PrimaryText className="font-semibold font-regular text-lg">selfie<PrimaryText className="text-red-400 mt-1 font-regular">*</PrimaryText></PrimaryText>
+          {selfie.length === 0 ? (
+            <Pressable
+              onPress={() => {
+                takePhoto();
+              }}
+              className="mt-1"
+            >
+              <View
+                className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
+                border-dashed h-28 w-28
+          rounded-md mt-1 flex justify-center items-center `}
+              >
+                <View className="flex justify-center items-center mt-3">
+            <View
+              className={`${isFormFieldInValid("selfie", errors).length === 0 ? "bg-primary-300" : "bg-red-300"} rounded-md p-2 bg-primary-300 w-auto`}
+            >
+              <MaterialCommunityIcons
+                name="camera-plus"
+                color={`${isFormFieldInValid("selfie", errors).length === 0 ? primaryColor : "#b91c1c"}`}
+                size={18}
+              />
+            </View>
+                </View>
+              </View>
+            </Pressable>
+          ) : (
+            <View>
+              <Image
+                source={{ uri: selfie }}
+                className="absolute mt-1 rounded-xl w-28 h-28"
+              />
+              <View className="flex items-end gap-4 rounded-xl w-28 h-28">
+                <Pressable
+            className="mt-2 me-2"
+            onPress={() => {
+              // setImagePath("");
+              if (!isLoading) setSelfie("");
+            }}
+            disabled={isLoading}
+                >
+            <AntDesign name="closecircle" size={16} color="white" />
+                </Pressable>
+              </View>
+            </View>
+          )}
               </View>
               <FormControlError>
-                <FormControlErrorText>
-                  {isFormFieldInValid("selfie", errors)}
-                </FormControlErrorText>
+          <FormControlErrorText>
+            {isFormFieldInValid("selfie", errors)}
+          </FormControlErrorText>
               </FormControlError>
             </FormControl>
             {/* <Image
@@ -316,17 +317,19 @@ const CheckInOutModal = ({
             /> */}
           </View>
           {errorMsg && <PrimaryText className="mt-4 text-red-500 font-regular">* {errorMsg}</PrimaryText>}
-          <Button
+            <Button
             className="bg-primary-950 mt-4 rounded-lg h-12"
             onPress={() => {
               if (isLoading) return;
               chechInOut();
-            }}>
+            }}
+           
+            >
             <ButtonText>
               {status === "Checked In" ? ('checkOut') : ('checkIn')}
             </ButtonText>
             {isLoading && <ActivityIndicator color="white" className="ms-1" />}
-          </Button>
+            </Button>
         </View>
       </View>
       </BasePage>

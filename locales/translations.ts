@@ -1,17 +1,5 @@
 // src/translations.ts
 const kn = {
-  Asset: 'ಅಸೆಟ್',
-  privacyPolicy: 'ಪ್ರೈವಸಿ ಪಾಲಿಸಿ',
-  checkIn: 'ಚೆಕ್ ಇನ್',
-  checkOut: 'ಚೆಕ್ ಔಟ್',
-  raisedBy: 'ರೈಸ್ ಮಾಡಿದವರು',
-  raisedAt: 'ರೈಸ್ ಮಾಡಿದ ಸಮಯ',
-  assignedAt: 'ನಿಯೋಜಿಸಲಾದ ಸಮಯ',
-  assignedTo: 'ಈವರಿಗೆ ನಿಯೋಜಿಸಲಾದದ್ದು',
-  assetType: 'ಅಸೆಟ್ ಟೈಪ್',
-  assetImages: 'ಅಸೆಟ್ ಇಮೇಜಸ್',
-  assetModel: 'ಅಸೆಟ್ ಮಾಡೆಲ್',
-  otpMessage: 'OTP ಕಳುಹಿಸಲಾಗಿದೆ.',
   "At least one asset image is required": 'ಕನಿಷ್ಠ ಒಂದು ಅಸೆಟ್ ಇಮೇಜ್ ಅಗತ್ಯವಿದೆ',
   "Pin is required for the selected status": 'ಆಯ್ಕೆ ಮಾಡಲಾದ ಸ್ಥಿತಿಗೆ ಪಿನ್ ಅಗತ್ಯವಿದೆ',
   "Selfie is required": 'ಆತ್ಮಚಿತ್ರ ಅಗತ್ಯವಿದೆ',
@@ -22,17 +10,11 @@ const kn = {
   "An error occurred. Please try again.": 'ಒಂದು ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.',
   "Failed to send OTP. Try again.": 'OTP ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.',
   "Please enter a valid 10-digit mobile number.": 'ದಯವಿಟ್ಟು 10-ಅಂಕಿಯ ಮಾನ್ಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.',
+  "loginAgreement":"ನೀವು ಲಾಗಿನ್ ಮಾಡುವ ಮೂಲಕ ಒಪ್ಪಿಕೊಳ್ಳುತ್ತೀರಿ ನಮ್ಮ",
+  'Mobile no. should start with 6-9': 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ 6-9 ರಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು',
 };
 
 const hi = {
-  Asset: 'एसेट',
-  privacyPolicy: 'प्राइवेसी पॉलिसी',
-  checkIn: 'चेक इन',
-  checkOut: 'चेक आउट',
-  raisedBy: 'उठाने वाला',
-  raisedAt: 'उठाने का समय',
-  assignedAt: 'आवंटित समय',
-  assignedTo: 'जिसे सौंपा गया',
   'Asset Type': 'एसेट टाइप',
   'Asset Images': 'एसेट इमेजेस',
   'Asset Model': 'एसेट मॉडल',
@@ -51,17 +33,6 @@ const hi = {
 };
 
 const te = {
-  Asset: 'అసెట్',
-  privacyPolicy: 'ప్రైవసీ పాలసీ',
-  checkIn: 'చెక్ ఇన్',
-  checkOut: 'చెక్ అవుట్',
-  raisedBy: 'రైజ్ చేసినవారు',
-  raisedAt: 'రైజ్ చేసిన సమయం',
-  assignedAt: 'అసైన్ చేసిన సమయం',
-  assignedTo: 'అసైన్ చేసిన వ్యక్తి',
-  assetType: 'అసెట్ టైప్',
-  assetImages: 'అసెట్ ఇమేజెస్',
-  assetModel: 'అసెట్ మోడల్',
   "At least one asset image is required": 'కనీసం ఒక ఆస్తి చిత్రం అవసరం',
 "Pin is required for the selected status": 'ఎంపిక చేసిన స్థితికి పిన్ అవసరం',
 "Selfie is required": 'సెల్ఫీ అవసరం',

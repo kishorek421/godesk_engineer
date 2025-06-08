@@ -12,6 +12,8 @@ const SUPPORTED_LANGUAGES = [
   { code: 'te', name: 'తెలుగు', englishName: 'Telugu' },
   { code: 'ta', name: 'தமிழ்', englishName: 'Tamil' },
   { code: 'kn', name: 'ಕನ್ನಡ', englishName: 'Kannada' },
+  { code: 'ml', name: 'മലയാളം', englishName: 'Malayalam' },
+  { code: 'mr', name: 'मराठी', englishName: 'Marathi' }
 ];
 
 const LanguageSelectionScreen = () => {
