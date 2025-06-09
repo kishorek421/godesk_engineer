@@ -27,7 +27,8 @@ const hi = {
 "Pincode is required but couldn't be fetched.": 'पिनकोड आवश्यक है लेकिन प्राप्त नहीं हो सका',
 "An error occurred. Please try again.": 'एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
 "Failed to send OTP. Try again.": 'OTP भेजने में विफल। कृपया पुनः प्रयास करें।',
-"Please enter a valid 10-digit mobile number.": 'कृपया एक मान्य 10-अंकों का मोबाइल नंबर दर्ज करें।'
+"Please enter a valid 10-digit mobile number.": 'कृपया एक मान्य 10-अंकों का मोबाइल नंबर दर्ज करें।',
+ 'Mobile no. should start with 6-9':'मोबाईल क्रमांक 6-9 पासून सुरू व्हावा'
 
 
 };
@@ -42,22 +43,12 @@ const te = {
 "Pincode is required but couldn't be fetched.": 'పిన్‌కోడ్ అవసరం కానీ పొందలేకపోయింది',
 "An error occurred. Please try again.": 'లోపం జరిగింది. దయచేసి మళ్లీ ప్రయత్నించండి.',
 "Failed to send OTP. Try again.": 'OTP పంపించడంలో విఫలమైంది. మళ్లీ ప్రయత్నించండి.',
-"Please enter a valid 10-digit mobile number.": 'దయచేసి సరైన 10 అంకెల మొబైల్ నంబర్‌ను నమోదు చేయండి.'
+"Please enter a valid 10-digit mobile number.": 'దయచేసి సరైన 10 అంకెల మొబైల్ నంబర్‌ను నమోదు చేయండి.',
+ 'Mobile no. should start with 6-9': 'మొబైల్ నంబర్ 6-9 తో ప్రారంభమవాలి'
 
 };
 
 const ta = {
-  Asset: 'அசெட்',
-  privacyPolicy: 'பிரைவசி பாலிசி',
-  checkIn: 'செக் இன்ம்',
-  checkOut: 'செக் அவுட்',
-  raisedBy: 'ரெய்ஸ் செய்தவர்',
-  raisedAt: 'ரெய்ஸ் செய்த நேரம்',
-  assignedAt: 'அஸைன் செய்த நேரம்',
-  assignedTo: 'அஸைன் செய்தவர்',
-  assetType: 'அசெட் டைப்',
-  assetImages: 'அசெட் இமேஜ்ஸ்',
-  assetModel: 'அசெட் மாடல்',
   "At least one asset image is required": 'குறைந்தது ஒரு சொத்து படிமம் தேவை',
 "Pin is required for the selected status": 'தேர்ந்தெடுக்கப்பட்ட நிலைக்குப் பின் தேவை',
 "Selfie is required": 'செல்ஃபி தேவை',
@@ -67,8 +58,39 @@ const ta = {
 "Pincode is required but couldn't be fetched.": 'அஞ்சல் குறியீடு தேவை, ஆனால் பெற முடியவில்லை',
 "An error occurred. Please try again.": 'பிழை ஏற்பட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்.',
 "Failed to send OTP. Try again.": 'OTP அனுப்பத் தவறியது. மீண்டும் முயற்சிக்கவும்.',
-"Please enter a valid 10-digit mobile number.": 'தயவுசெய்து சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.'
+"Please enter a valid 10-digit mobile number.": 'தயவுசெய்து சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.',
+ 'Mobile no. should start with 6-9': 'மொபைல் எண் 6-9 இலிருந்து தொடங்க வேண்டும்'
 
 };
+const mr={
 
-export default { kn, hi, te, ta };
+  "At least one asset image is required": "किमान एक मालमत्ता प्रतिमा आवश्यक आहे",
+  "Pin is required for the selected status": "निवडलेल्या स्थितीसाठी पिन आवश्यक आहे",
+  "Selfie is required": "सेल्फी आवश्यक आहे",
+  "Please select a status": "कृपया एक स्थिती निवडा",
+  "Please enter a description": "कृपया वर्णन टाका",
+  "Location is required but couldn't be fetched.": "स्थान आवश्यक आहे परंतु मिळवता आले नाही.",
+  "Pincode is required but couldn't be fetched.": "पिनकोड आवश्यक आहे परंतु मिळवता आले नाही.",
+  "An error occurred. Please try again.": "एक त्रुटी आली आहे. कृपया पुन्हा प्रयत्न करा.",
+  "Failed to send OTP. Try again.": "OTP पाठवण्यात अयशस्वी. पुन्हा प्रयत्न करा.",
+  "Please enter a valid 10-digit mobile number.": "कृपया वैध 10-अंकी मोबाइल नंबर टाका."
+
+
+};
+const ml=
+  {
+  "At least one asset image is required": "കുറைந்தത് ഒരു ആസ്തി ചിത്രം ആവശ്യമാണ്",
+  "Pin is required for the selected status": "തിരഞ്ഞെടുത്ത നിലയ്ക്ക് പിന് ആവശ്യമാണ്",
+  "Selfie is required": "സെൽഫി ആവശ്യമാണ്",
+  "Please select a status": "ദയവായി ഒരു നില തിരഞ്ഞെടുക്കുക",
+  "Please enter a description": "ദയവായി വിവരണം നൽകുക",
+  "Location is required but couldn't be fetched.": "സ്ഥലം ആവശ്യമാണ്, പക്ഷേ ലഭിക്കാനായില്ല.",
+  "Pincode is required but couldn't be fetched.": "പിൻകോഡ് ആവശ്യമാണ്, പക്ഷേ ലഭിക്കാനായില്ല.",
+  "An error occurred. Please try again.": "ഒരു പിശക് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.",
+  "Failed to send OTP. Try again.": "OTP അയയ്ക്കുന്നതിൽ പരാജയം. വീണ്ടും ശ്രമിക്കുക.",
+  "Please enter a valid 10-digit mobile number.": "ദയവായി ശരിയായ 10 അക്കമുള്ള മൊബൈൽ നമ്പർ നൽകുക."
+
+}
+
+
+export default { kn, hi, te, ta,mr,ml };
