@@ -14,7 +14,7 @@ import { ErrorModel } from "@/models/common";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { messages } from "@/locales/constant";
 import { useTranslation } from "@/context/TranslationContext";
-
+import {translateNumberToNative} from "@/services/translationService"
 interface PrimaryTextareaFormFieldProps {
   fieldName: string;
   label: string;
@@ -109,7 +109,7 @@ const PrimaryTextareaFormField = ({
       setErrorValue(
         fieldName,
         value,
-        `Min. length should be ${min}`,
+  messages[language as keyof typeof messages]["min"](min, translateNumberToNative),
         setErrors,
       );
       return;

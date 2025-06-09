@@ -59,7 +59,7 @@ const { messagingRef } = useFirebaseMessaging();
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ param: "otp", message: "otpValidationMessage" }]);
+      setErrors([{ param: "otp", message: translatedStrings["otpValidationMessage"] }]);
       return;
     }
     setIsLoading(true);

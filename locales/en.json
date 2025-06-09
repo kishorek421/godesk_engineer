@@ -55,6 +55,7 @@
     "noTicketsFound": "No tickets found",
     "Assigned": "Assigned",
     "Opened": "Opened",
+    "Open":"Open",
     "workCompleted": "Work Completed",
     "Work Completed": "Work Completed",
     "Paid": "Paid",
@@ -64,9 +65,11 @@
     "didReceiveOTP?": "Didn't Receive OTP?",
     "resendOTP": "Resend OTP",
     "Closed": "Closed",
+     "Close": "Close",
     "Spare Required": "Spare Required",
     "Customer not available": "Customer not available",
     "In Progress": "In Progress",
+     "InProgress": "In Progress",
     "Cannot Resolve": "Cannot Resolve",
     "payOnCash": " Customer want to Pay on Cash",
     "toast3": "Invalid inputs",
@@ -79,4 +82,5 @@
     "toast17": "Checked in successfully",
     "toast18": "Allow location permission to Check In/Check Out",
     "toast19": "An unexpected error occurred. Please try again."
+
 }

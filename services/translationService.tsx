@@ -1,13 +1,13 @@
-
 import apiClient from '@/clients/apiClient';
-import { numerals_kn,numerals_ta,numerals_te,numerals_en,numerals_hi } from '@/utils/helper';
 import { getItem, setItem } from '@/utils/secure_store';
 import { usedTranslationKeys } from '@/context/TranslationContext';
+import RNFS from 'react-native-fs';
+import { Alert } from 'react-native';
 
 export const saveUsedKeys = async () => {
   try {
     await setItem('usedTranslationKeys', JSON.stringify([...usedTranslationKeys]));
-  } catch (err) {}
+  } catch { }
 };
 
 export const loadUsedKeys = async () => {
@@ -16,93 +16,150 @@ export const loadUsedKeys = async () => {
     if (saved) {
       JSON.parse(saved).forEach((key: string) => usedTranslationKeys.add(key));
     }
-  } catch (err) {}
+  } catch { }
+};
+
+export const fetchAndCacheLanguageFile = async (
+  langCode: string,
+  allowDownload = true
+): Promise<Record<string, string>> => {
+  const filePath = `${RNFS.DocumentDirectoryPath}/language_${langCode}.json`;
+  const versionFilePath = `${RNFS.DocumentDirectoryPath}/language_${langCode}_version.json`;
+
+  try {
+    const fileExists = await RNFS.exists(filePath);
+    const versionExists = await RNFS.exists(versionFilePath);
+
+    let currentVersion = null;
+    if (versionExists) {
+      const versionContent = await RNFS.readFile(versionFilePath, 'utf8');
+      currentVersion = JSON.parse(versionContent).version;
+    }
+
+    const res = await apiClient.get(`/language/getLanguageFile?code=${langCode}&version=latest&app=GODEZK_ENGINEER`);
+    const fileURL = res.data?.data?.url;
+    const latestVersion = res.data?.data?.version || 'latest';
+
+    if (!fileURL) throw new Error('Missing URL from language response');
+
+    const shouldDownload = !fileExists || currentVersion !== latestVersion;
+
+    if (shouldDownload && allowDownload) {
+      console.log(` Downloading updated language file for ${langCode} (v${latestVersion})`);
+   
+
+      // Delete old files
+      if (fileExists) await RNFS.unlink(filePath);
+      if (versionExists) await RNFS.unlink(versionFilePath);
+
+      const downloadResult = await RNFS.downloadFile({
+        fromUrl: fileURL,
+        toFile: filePath,
+      }).promise;
+
+      if (downloadResult.statusCode !== 200) {
+        throw new Error(` Failed to download language file for ${langCode}`);
+      }
+
+      await RNFS.writeFile(versionFilePath, JSON.stringify({ version: latestVersion }), 'utf8');
+
+      const json = await RNFS.readFile(filePath, 'utf8');
+      return JSON.parse(json);
+    }
+    if (fileExists) {
+      const fileContent = await RNFS.readFile(filePath, 'utf8');
+      return JSON.parse(fileContent);
+    }
+    console.warn(`⚠️ No local file found and download not allowed for ${langCode}`);
+    return {};
+
+  } catch (error) {
+    console.error('⚠️ Error loading language file:', error);
+    return {};
+  }
 };
 
 export const fetchBaseStrings = async (): Promise<Record<string, string>> => {
-  try {
-    const res = await apiClient.get('/language/getLanguageFile?code=en&app=GODEZK_ENGINEER&version=latest');
-    const fileURL = res.data?.data?.url || res.data?.url;
-    if (!fileURL) return {};
-    const response = await fetch(fileURL);
-    const json = await response.json();
-    return typeof json === 'object' ? json : {};
-  } catch (err) {
-    return {};
-  }
+  return await fetchAndCacheLanguageFile('en');
 };
 
 export const translateBaseToLanguage = async (
   base: Record<string, string>,
   langCode: string,
-  PREDEFINED_TRANSLATIONS: Record<string, Record<string, string>>
+  predefinedTranslations: Record<string, Record<string, string>> = {},
+  
 ): Promise<Record<string, string>> => {
   if (langCode === 'en') return { ...base };
 
-  const cacheKey = `lang-${langCode}`;
-  let cachedTranslations: Record<string, string> = {};
-
-  // Load cached translations
-  try {
-    const cached = await getItem(cacheKey);
-    cachedTranslations = cached ? JSON.parse(cached) : {};
-  } catch {
-    cachedTranslations = {};
-  }
-
-  const updatedCache: Record<string, string> = { ...cachedTranslations };
+  const translations = await fetchAndCacheLanguageFile(langCode);
   const result: Record<string, string> = {};
 
   for (const key of Object.keys(base)) {
-    const normalized = key.toLowerCase();
-    const englishValue = base[key];
-
-    // 1. Use predefined translation if available
-    if (PREDEFINED_TRANSLATIONS[langCode]?.[normalized]) {
-      result[key] = PREDEFINED_TRANSLATIONS[langCode][normalized];
-      updatedCache[key] = result[key];
-      continue;
+    if (translations[key]) {
+      result[key] = translations[key];
+    } else if (predefinedTranslations[langCode]?.[key]) {
+      result[key] = predefinedTranslations[langCode][key];
+    } else {
+      result[key] = base[key];
     }
-
-    // 2. Use cached translation if available
-    if (cachedTranslations[key]) {
-      result[key] = cachedTranslations[key];
-      continue;
-    }
-
-    // 3. Otherwise, call API and translate
-    try {
-      const cleanText = englishValue.replace(/[\u{1F600}-\u{1F64F}]/gu, '');
-      const res = await apiClient.get(
-        `/language/translate?text=${encodeURIComponent(cleanText)}&languageCode=${langCode}`
-      );
-      const translated = res.data?.data?.convertedText || englishValue;
-
-      result[key] = translated;
-      updatedCache[key] = translated;
-    } catch {
-      result[key] = englishValue;
-    }
-  }
-
-  // Save updated cache
-  try {
-    await setItem(cacheKey, JSON.stringify(updatedCache));
-  } catch (err) {
-    console.warn('Error saving translation cache', err);
   }
 
   return result;
 };
-export const translateNumberToNative = (num: any, lang:'en'| 'kn' | 'te' | 'ta' | 'hi') => {
-  const maps: Record< 'en'|'kn' | 'te' | 'ta' | 'hi', Record<string, string>> = {
-    kn: numerals_kn,
-    te: numerals_te,
-    ta: numerals_ta,
-    en : numerals_en,
-    hi : numerals_hi,
-  };
 
-  const digits = num.toString().split('');
-  return digits.map((d: string) => maps[lang][d] ?? d).join('');
+export const translateText = async (text: string, toLang: string): Promise<string> => {
+  try {
+    if (toLang === 'en') return text;
+    const cacheKey = `translation_${toLang}_${text}`;
+    const cached = await getItem(cacheKey);
+    if (cached) return cached;
+
+    const res = await apiClient.get(
+      `/language/translate?text=${encodeURIComponent(text)}&languageCode=${toLang}`
+    );
+    const translated = res.data?.data?.convertedText || text;
+    await setItem(cacheKey, translated);
+    return translated;
+  } catch {
+    return text;
+  }
+};
+
+export const translateToEnglish = async (text: string): Promise<string> => {
+  try {
+    if (!text) return text;
+    const cacheKey = `translation_en_${text}`;
+    const cached = await getItem(cacheKey);
+    if (cached) return cached;
+
+    const res = await apiClient.get(
+      `/language/translate?text=${encodeURIComponent(text)}&languageCode=en`
+    );
+    const translated = res.data?.data?.convertedText || text;
+    await setItem(cacheKey, translated);
+    return translated;
+  } catch {
+    return text;
+  }
+};
+
+
+export const exportLanguageFileToDownloads = async (langCode = 'en') => {
+  try {
+    const sourcePath = `${RNFS.DocumentDirectoryPath}/language_${langCode}.json`;
+    const targetPath = `${RNFS.DownloadDirectoryPath}/language_${langCode}.json`;
+
+    const exists = await RNFS.exists(sourcePath);
+    if (!exists) {
+      Alert.alert('Not Found', `language_${langCode}.json not found in internal storage.`);
+      return;
+    }
+
+    await RNFS.copyFile(sourcePath, targetPath);
+    Alert.alert('Success', `language_${langCode}.json copied to Downloads.`);
+    console.log(`Copied ${sourcePath} → ${targetPath}`);
+  } catch (error) {
+    console.error('Failed to export language file:', error);
+    Alert.alert('Error', 'Failed to export file to Downloads.');
+  }
 };

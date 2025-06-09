@@ -58,11 +58,11 @@ import {
 import BasePage from "@/components/base/base_page";
 import { primaryColor } from "@/constants/colors";
 import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
-import { useTranslation } from "@/context/TranslationContext";
+import Translator, { useTranslation } from "@/context/TranslationContext";
 
 const TicketDetails = () => {
 
-
+ const {language} = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -195,6 +195,11 @@ const TicketDetails = () => {
     console.log("Selected option:", option);
     const selectedTicketStatus =
       ticketStatusOptionsState.find((item) => item.key === option) ?? {};
+
+    // Dynamically translate the label if available
+    if (selectedTicketStatus && selectedTicketStatus.value && translatedStrings[selectedTicketStatus.value]) {
+      selectedTicketStatus.value = translatedStrings[selectedTicketStatus.value];
+    }
     console.log("selectedTicketStatus", selectedTicketStatus);
     setSelectedTicketStatus(selectedTicketStatus);
   };
@@ -220,180 +225,165 @@ const TicketDetails = () => {
         setIsLoading(false);
       });
   };
-
   const updateTicketStatus = async () => {
-    // Clear previous errors and reset validation state
     setErrors([]);
     setFieldValidationStatus({});
-
-    // Validate inputs
-
-
-    if (
-      assetImages.length === 0 &&
-      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "WORK_COMPLETED", "TICKET_CLOSED"].includes(
-        selectedTicketStatus?.key ?? ""
-      )
-    ) {
-      setErrorValue("assetImages", "", "At least one asset image is required", setErrors);
-     
-    } else {
-      setErrorValue("assetImages", "", "", setErrors);
-    }
-
-    if (
-      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
-        selectedTicketStatus?.key ?? ""
-      ) &&
-      !otp
-    ) {
-     
-    }
-    if (
-      ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
-        selectedTicketStatus?.key ?? ""
-      ) && !otp
-    ) {
-      setErrorValue("customerOTP", "", "Pin is required for the selected status", setErrors);
-    } 
-    if (!selectedTicketStatus?.key) {
-      
-    }
-    if (!description ) {
-      setErrorValue("description", "", "Please enter a description", setErrors);
-     
-    } 
-    if (!latitude || !longitude) {
-     
-    }
-
-    if (!pincode) {
-     
-    }
-
-    // Trigger field validations
-    const validationPromises = Object.keys(fieldValidationStatus).map(
-      (key) =>
-        new Promise((resolve) => {
-          setFieldValidationStatus((prev: any) => ({
-            ...prev,
-            [key]: resolve,
-          }));
-        })
-    );
-
     setCanValidateField(true);
 
-    await Promise.all(validationPromises);
+    const currentErrors: any[] = [];
 
-    // Check if there are no errors
-    const allValid = Object.keys(errors).length === 0;
+    const requiresImageOrOTP = [
+      "IN_PROGRESS",
+      "SPARE_REQUIRED",
+      "CANNOT_RESOLVE",
+      "WORK_COMPLETED",
+      "TICKET_CLOSED",
+    ];
 
-    if (allValid) {
-      setIsLoading(true);
-      try {
-        let uploadedAssetImages: string[] = [];
+    const requiresOtp = [
+      "IN_PROGRESS",
+      "SPARE_REQUIRED",
+      "CANNOT_RESOLVE",
+      "TICKET_CLOSED",
+    ];
 
-        if (assetImages.length > 0) {
-          console.log("Uploading asset images:", assetImages);
+    const statusKey = selectedTicketStatus?.key ?? "";
 
-          const formData = new FormData();
-          for (let i = 0; i < assetImages.length; i++) {
-            const assetImage = assetImages[i];
-            formData.append("assetImages", {
-              uri: assetImage,
-              type: "image/jpeg",
-              name: getFileName(assetImage, true),
-            } as unknown as Blob);
-          }
+    // Image validation
+    if (assetImages.length === 0 && requiresImageOrOTP.includes(statusKey)) {
+      currentErrors.push({
+        param: "assetImages",
+        message: "At least one asset image is required",
+      });
+    }
 
-          const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          uploadedAssetImages = uploadResponse.data.data || [];
-          console.log("Uploaded asset images:", uploadedAssetImages);
-        }
+    // OTP validation
+    if (requiresOtp.includes(statusKey) && !otp) {
+      currentErrors.push({
+        param: "customerOTP",
+        message: "Pin is required for the selected status",
+      });
+    }
+ if (!description || description.trim().length === 0) {
+  currentErrors.push({
+    param: "description",
+    message: "Please enter a description",
+  });
+}
 
-        const requestBody = {
-          ticketId,
-          assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
-          toStatus: selectedTicketStatus.key,
-          location: {
-            latitude,
-            longitude,
-          },
-          pincode,
-          description,
-          customerOTP: ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(
-            selectedTicketStatus.key ?? ""
-          )
-            ? otp ?? null
-            : null,
-          assetImages: uploadedAssetImages,
-          paymentMode:
-            paymentMethod === "offline"
-              ? "079d38fc-93a6-482d-8a99-ee600196cea8"
-              : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
-        };
 
-        console.log("Request body:", requestBody);
-        const updateResponse = await apiClient.put(
-          `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
-          requestBody
-        );
+    // Location
+    if (!latitude || !longitude) {
+      currentErrors.push({
+        param: "location",
+        message: "Location is required but couldn't be fetched.",
+      });
+    }
 
-        if (updateResponse.status === 200) {
-          Toast.show({
-            type: "success",
-            text1: translatedStrings["toast13"],
-            visibilityTime: 5000,
-          });
+    // Pincode (optional error message based on your needs)
+    if (!pincode) {
+      currentErrors.push({
+        param: "pincode",
+        message: "Pincode is required",
+      });
+    }
 
-          await fetchTicketDetails();
-          router.push({
-            pathname: "../home",
-            params: { refresh: "true" },
-          });
-        } else {
-          throw new Error(`Failed to update status: ${updateResponse.status}`);
-        }
-      } catch (error: any) {
-        console.error("Failed to update ticket status.", error);
+    // Set all accumulated errors
+    if (currentErrors.length > 0) {
+      setErrors(currentErrors);
+      return;
+    }
 
-        if (error?.response?.data?.errors) {
-          setErrors(
-            error.response.data.errors.filter((err: any) => err.param !== null)
-          );
+    setIsLoading(true);
 
-          const errorMessages = error.response.data.errors
-            .filter((err: any) => err.param === null)
-            .map((err: any) => err.message)
-            .join("\n");
+    try {
+      let uploadedAssetImages: string[] = [];
 
-          if (errorMessages) {
-            Toast.show({
-              type: "error",
-              text1: errorMessages,
-              visibilityTime: 5000,
-            });
-          }
-        } else {
+      // Upload images
+      if (assetImages.length > 0) {
+        const formData = new FormData();
+        assetImages.forEach((image) => {
+          formData.append("assetImages", {
+            uri: image,
+            type: "image/jpeg",
+            name: getFileName(image, true),
+          } as unknown as Blob);
+        });
+
+        const uploadResponse = await apiClient.post(TICKET_UPLOADS, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        uploadedAssetImages = uploadResponse.data.data || [];
+      }
+
+      // Prepare body
+      const requestBody = {
+        ticketId,
+        assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
+        toStatus: statusKey,
+        location: { latitude, longitude },
+        pincode,
+        description,
+        pin: requiresOtp.includes(statusKey) ? otp ?? null : null,
+        assetImages: uploadedAssetImages,
+        paymentMode:
+          paymentMethod === "offline"
+            ? "079d38fc-93a6-482d-8a99-ee600196cea8"
+            : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
+      };
+ console.log("Request Body for updating ticket status:", requestBody);
+      const updateResponse = await apiClient.put(
+        `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
+        requestBody
+      );
+     
+
+      if (updateResponse.status === 200) {
+        Toast.show({
+          type: "success",
+          text1: translatedStrings["toast13"],
+          visibilityTime: 5000,
+        });
+
+        await fetchTicketDetails();
+
+        router.push({
+          pathname: "../home",
+          params: { refresh: "true" },
+        });
+      } else {
+        throw new Error(`Failed to update status: ${updateResponse.status}`);
+      }
+    } catch (error: any) {
+      console.error("Failed to update ticket status.", error);
+
+      if (error?.response?.data?.errors) {
+        const responseErrors = error.response.data.errors;
+
+        setErrors(responseErrors.filter((err: any) => err.param !== null));
+
+        const genericMessages = responseErrors
+          .filter((err: any) => err.param === null)
+          .map((err: any) => err.message)
+          .join("\n");
+
+        if (genericMessages) {
           Toast.show({
             type: "error",
-            text1:
-              error.response?.data?.message ||
-              translatedStrings["toast19"],
+            text1: genericMessages,
             visibilityTime: 5000,
           });
         }
-      } finally {
-        setIsLoading(false);
+      } else {
+        Toast.show({
+          type: "error",
+          text1: error.response?.data?.message || translatedStrings["toast19"],
+          visibilityTime: 5000,
+        });
       }
-    } else {
-      // Update errors state with new errors
-      setErrors([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -551,7 +541,12 @@ const TicketDetails = () => {
                         {ticketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
                       <PrimaryText className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                        issueIn{" "}{ticketDetails.issueTypeDetails?.name ?? "-"}
+                        issueIn{" "}
+                    {language === "en" || language === "en-US" ? (
+                      ticketDetails.issueTypeDetails?.name ?? "-"
+                    ) : (
+                      <Translator text={ticketDetails.issueTypeDetails?.name ?? "-"} dynamic />
+                    )}
                       </PrimaryText>
                     </View>
                     <TicketStatusComponent
@@ -621,7 +616,9 @@ const TicketDetails = () => {
                           serviceType
                         </PrimaryText>
                         <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                          {ticketDetails.serviceTypeDetails?.value ?? "-"}
+                            {language === "en" || language === "en-US"
+                            ? ticketDetails.serviceTypeDetails?.value ?? "-"
+                            : <Translator text={ticketDetails.serviceTypeDetails?.value ?? "-"} dynamic />}
                         </PrimaryText>
                       </View>
                     </View>
@@ -662,7 +659,9 @@ const TicketDetails = () => {
                       description
                     </PrimaryText>
                     <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                      {ticketDetails?.description ?? "-"}
+                        {language === "en" || language === "en-US"
+                        ? ticketDetails?.description ?? "-"
+                        : <Translator text={ticketDetails?.description ?? "-"} dynamic />}
                     </PrimaryText>
                   </View>
                   <View className="flex mt-3">
@@ -834,26 +833,26 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           onSelect={handleSelectOption}
                         />
-                        
-                          <PrimaryTextareaFormField
-                            className="my-3"
-                            fieldName="description"
-                            label="Description"
-                            placeholder="writeShortDescription"
-                            errors={errors}
-                            setErrors={setErrors}
-                            min={10}
-                            max={200}
-                            filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
-                            defaultValue={description}
-                            canValidateField={canValidateField}
-                            setCanValidateField={setCanValidateField}
-                            setFieldValidationStatus={setFieldValidationStatus}
-                            validateFieldFunc={setFieldValidationStatusFunc}
-                            onChangeText={(e: any) => setDescription(e)}
 
-                          />
+                        <PrimaryTextareaFormField
+                          className="my-3"
+                          fieldName="description"
+                          label="Description"
+                          placeholder="writeShortDescription"
+                          errors={errors}
+                          setErrors={setErrors}
+                          min={10}
+                          max={200}
+                          filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
+                          defaultValue={description}
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          onChangeText={(e: any) => setDescription(e)}
                          
+                        />
+
                         <FormControl
                           isInvalid={
                             isFormFieldInValid("assetImages", errors).length > 0
@@ -940,32 +939,32 @@ const TicketDetails = () => {
                             </FormControlErrorText>
                           </FormControlError>
                         </FormControl>
-                       
-                            <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
-                              enterOtpForOpenClose
-                            </PrimaryText>
-                            <PrimaryTextFormField
-                              fieldName="customerOTP"
-                              label="customerOtp"
-                              placeholder="enterCustomerOtp"
-                              errors={errors}
-                              setErrors={setErrors}
-                              min={4}
-                              max={4}
-                              defaultValue={otp}
-                            isRequired={
+
+                        <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
+                          enterOtpForOpenClose
+                        </PrimaryText>
+                        <PrimaryTextFormField
+                          fieldName="customerOTP"
+                          label="customerOtp"
+                          placeholder="enterCustomerOtp"
+                          errors={errors}
+                          setErrors={setErrors}
+                          min={4}
+                          max={4}
+                          defaultValue={otp}
+                           isRequired={
                               ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
                             }
-                              keyboardType="phone-pad"
-                              filterExp={/^[0-9]*$/}
-                              canValidateField={canValidateField}
-                              setCanValidateField={setCanValidateField}
-                              setFieldValidationStatus={setFieldValidationStatus}
-                              validateFieldFunc={setFieldValidationStatusFunc}
-                              onChangeText={(e: string) => setOtp(e)}
-                            />
-                       
-                        
+                          keyboardType="phone-pad"
+                          filterExp={/^[0-9]*$/}
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          onChangeText={(e: string) => setOtp(e)}
+                        />
+
+
                         {/* {selectedTicketStatus?.key === "CUSTOMER_NOT_AVAILABLE" && (
                           <PrimaryText className="mt-1 mb-2 text-red-500 text-sm font-regular">
                             Customer not available is required for this status.
@@ -995,7 +994,7 @@ const TicketDetails = () => {
                               ticketDetails?.statusDetails?.key !== "IN_PROGRESS"
                             }
                           />
-                        } */} 
+                        } */}
                         <Button
                           className="bg-primary-950 rounded-lg mt-6 h-12 mb-8 flex-row items-center justify-center"
                           onPress={async () => {
