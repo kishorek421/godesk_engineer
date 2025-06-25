@@ -12,6 +12,7 @@ import {  Link, useSegments } from "expo-router";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import {
   FormControl,
   FormControlError,
@@ -27,7 +28,8 @@ import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 import { getFCMToken } from "@/services/fcm";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 import BasePage from "@/components/base/base_page";
-import { useTranslation } from "@/context/TranslationContext";
+import { t } from "i18next";
+
 const LoginScreen = () => {
   const animationRef = useRef<LottieView>(null);
   const [mobile, setMobileNumber] = useState<string>("");
@@ -37,7 +39,7 @@ const LoginScreen = () => {
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const { messagingRef } = useFirebaseMessaging();
-  const {translatedStrings} = useTranslation();
+  // const {translatedStrings} = useTranslation();
   useEffect(() => {
     const requestPermission = async () => {
       const { status } = await requestTrackingPermissionsAsync();
@@ -64,7 +66,7 @@ const LoginScreen = () => {
       setErrors([
         {
           param: "mobile",
-          message: translatedStrings['Please enter a valid 10-digit mobile number.'],
+          message: 'Please enter a valid 10-digit mobile number.',
         },
       ]);
       return;
@@ -106,7 +108,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message: translatedStrings["otpErrorMessage"]||"An error occurred. Please try again.",
+            message:"Invalid mobile number or user not found. Please check and try again.",
           },
         ]);
       })
@@ -164,7 +166,7 @@ const LoginScreen = () => {
                       // mobile no should start with 6-9
                       const customRE = /^[6-9]/;
                       if (!customRE.test(value)) {
-                        return translatedStrings['Mobile no. should start with 6-9'];
+                        return 'Mobile no. should start with 6-9';
                       }
                       return undefined;
                     }}
@@ -199,39 +201,42 @@ const LoginScreen = () => {
                 </Button>
               </View>
             </View>
-            <View>
-              <LottieView
-                ref={animationRef}
-                source={require("../assets/lottie/login.json")}
-                autoPlay
-                loop
-                style={{
-                  height: 200,
-                }}
-              />
-              <Text className="mt-8 text-sm text-center px-8 font-regular">
-                loginAgreement{" "}
-                <Text
-                  onPress={() => {
-                    Linking.openURL("https://godezk.com/Terms_And_conditions.html");
-                  }}
-                  className="font-bold-1 text-primary-950"
-                >
-                  termsConditions
-                </Text>{" "}
-                and{" "}
-                <Text
-                  onPress={() => {
-                    Linking.openURL("https://godezk.com/Privacy_Policy.html");
-                  }}
-                  className="font-bold-1 text-primary-950"
-                >
-                  privacyPolicy
-                </Text>
-              </Text>
-            </View>
-          </View>
+           <View>
+          <LottieView
+            ref={animationRef}
+            source={require("../assets/lottie/login.json")}
+            autoPlay
+            loop
+            style={{
+              height: 200,
+            }}
+          />
+          <PrimaryText
+            className="mt-8 text-sm text-center px-8 font-regular"
+            translate="none"
+          >
+            {t("loginAgreement") + " "}
+            <PrimaryText
+              onPress={() => {
+                Linking.openURL("https://godezk.com/Terms_And_conditions.html");
+              }}
+              className="font-bold-1 text-primary-950"
+            >
+              termsConditions
+            </PrimaryText>{" "}
+            {t("and") + " "}
+            <PrimaryText
+              onPress={() => {
+                Linking.openURL("https://godezk.com/Privacy_Policy.html");
+              }}
+              className="font-bold-1 text-primary-950"
+            >
+              privacyPolicy
+            </PrimaryText>
+          </PrimaryText>
         </View>
+      </View>
+      </View>
       </View>
     </BasePage>
   );

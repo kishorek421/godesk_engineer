@@ -1,6 +1,6 @@
 import {
   View,
-  Text,
+
   SafeAreaView,
   Image,
   Pressable,
@@ -18,24 +18,25 @@ import { setItem } from "@/utils/secure_store";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import { getFCMToken } from "@/services/fcm";
-import Toast from "react-native-toast-message";
+
 import BasePage from "@/components/base/base_page";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
-import { useTranslation } from "@/context/TranslationContext";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import { useToast } from "@/context/ToastContext";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
-
+ const {showToast} = useToast();
   const [timer, setTimer] = useState(120);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [isDisabled, setIsDisabled] = useState(true);
   const [otp, setOtp] = useState<string>("");
   const animationRef = useRef<LottieView>(null);
-  const { translatedStrings } = useTranslation();
+  const { t } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
-const { messagingRef } = useFirebaseMessaging();
+  const { messagingRef } = useFirebaseMessaging();
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -59,19 +60,19 @@ const { messagingRef } = useFirebaseMessaging();
 
   const handleVerifyOTP = async () => {
     if (!otp || otp.length !== 6) {
-      setErrors([{ param: "otp", message: translatedStrings["otpValidationMessage"] }]);
+      setErrors([{ param: "otp", message: "otpValidationMessage" }]);
       return;
     }
     setIsLoading(true);
     setErrors([]);
- let fcmToken = "";
+    let fcmToken = "";
 
-      try {
-        fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
-        console.log("fcmToken", fcmToken);
-      } catch (e) {
-        console.error("Token Error ->", e);
-      }
+    try {
+      fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
+      console.log("fcmToken", fcmToken);
+    } catch (e) {
+      console.error("Token Error ->", e);
+    }
 
     try {
       await apiClient
@@ -117,9 +118,10 @@ const { messagingRef } = useFirebaseMessaging();
       .then((response) => {
         console.log("Response:", response.data.data);
         if (response.data?.success) {
-          Toast.show({
+           showToast({
+                          position: "top",
             type: "success",
-            text1: translatedStrings["toast5"],
+            message: "toast5",
           });
           setTimer(120);
           setIsDisabled(true);
@@ -136,7 +138,7 @@ const { messagingRef } = useFirebaseMessaging();
 
   return (
     <BasePage>
-      <View className="flex justify-between h-full">
+      <View className="flex justify-between h-full bg-white">
         <View className="mt-1">
           <View className="flex-row items-end mx-3">
             <Image
@@ -148,18 +150,17 @@ const { messagingRef } = useFirebaseMessaging();
               </PrimaryText> */}
           </View>
           <View className=" px-4">
-          <View className="mt-4">
-            <Text className="text-2xl font-bold-1">checkYourMobile</Text>
-            <View className="flex-row mt-2">
-              <Text className="color-gray-400 text-sm font-regular">
-               otpMessage
-              </Text>
-              <Text className="color-gray-400 text-sm font-regular mt-0">
-               { mobile }.
-              </Text>
+            <View className="mt-4">
+              <PrimaryText className="text-2xl font-bold-1">
+                checkYourMobile
+              </PrimaryText>
+              <View className="flex-row mt-2">
+                <PrimaryText className="color-gray-400 text-sm font-regular" translate="none">
+                  {t("otpMessage", { mobile })}.
+                </PrimaryText>
               </View>
-          </View>
-         
+            </View>
+
             <View className="mt-6">
               <PrimaryTextFormField
                 fieldName="otp"
@@ -176,15 +177,15 @@ const { messagingRef } = useFirebaseMessaging();
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: string) => setOtp(e)}
-                // defaultErrorMessage="Please enter a OTP"
+              // defaultErrorMessage="Please enter a OTP"
               />
             </View>
-            <View className="flex-row justify-center mt-8">
-              <View className="flex-row">
+            <View className="flex justify-center mt-8 items-center ">
+              <View className="flex items-center">
                 <PrimaryText className="text-gray-700 font-regular">
-                  didReceiveOTP?{" "}
+                  didReceiveOTP?
                 </PrimaryText>
-                <View className="flew-row">
+                <View className="flex">
                   <Pressable
                     onPress={() => {
                       handleSendOTP();
@@ -192,19 +193,22 @@ const { messagingRef } = useFirebaseMessaging();
                     disabled={isDisabled}
                   >
                     <PrimaryText
-                      className={`${isDisabled ? "text-gray-500 " : "text-primary-950 font-semibold"}`}
+                      className={`${isDisabled ? "text-gray-500" : "text-primary-950 font-semibold"}`}
+                      translate="none"
                     >
-                      resendOTP
-                      {isDisabled && (
-                        <PrimaryText className="text-gray-600 font-regular font-normal">
-                          {" "}
-                          in
-                          <PrimaryText className="font-semibold underline font-regular text-primary-950">
+                      {isDisabled ? (
+                        <>
+                          {t("resendOtpInTime") + " "}
+                          <PrimaryText className="font-semibold underline text-primary-950" translate="none">
                             {getTime()}
                           </PrimaryText>
-                        </PrimaryText>
+                        </>
+                      ) : (
+                        t("resendOTP")
                       )}
                     </PrimaryText>
+
+
                   </Pressable>
                 </View>
               </View>
@@ -215,7 +219,7 @@ const { messagingRef } = useFirebaseMessaging();
                 onPress={handleVerifyOTP}
               >
                 <PrimaryText className="font-semibold text-white text-xl">
-                verifyOtp
+                  verifyOtp
                 </PrimaryText>
                 {isLoading ? (
                   <ActivityIndicator color="white" className="ms-1" />
@@ -241,7 +245,7 @@ const { messagingRef } = useFirebaseMessaging();
           />
         </View>
       </View>
-</BasePage>
+    </BasePage>
   );
 };
 

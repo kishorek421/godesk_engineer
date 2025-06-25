@@ -13,8 +13,9 @@ import {
 import { ErrorModel } from "@/models/common";
 import { DropdownProps } from "@/models/common";
 import PrimaryText from "./PrimaryText";
-import { messages } from "@/locales/constant";
-import { useTranslation } from "@/context/TranslationContext";
+import { messages } from "@/i18n/constant";
+import i18n from "@/i18n";
+import { t } from "i18next";
 interface PrimaryDropdownFormFieldProps {
   options: (string | { label: any; value: any })[];
   selectedValue: string; // Expect string (e.g., option value or key)
@@ -56,7 +57,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
 }: PrimaryDropdownFormFieldProps) => {
   const [visible, setVisible] = useState(false);
   const [inputText, setInputText] = useState<string>("");
- const { language } = useTranslation();
+  const lng = i18n.language;
   // Initialize with defaultValue
   useEffect(() => {
     if (defaultValue) {
@@ -108,7 +109,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
       setErrorValue(
         fieldName,
         value,
-        messages[language as keyof typeof messages]["label1"](label.toLowerCase(), getAorAn(label)),
+        messages[lng as keyof typeof messages]["label1"](label, getAorAn(label),t),
         setErrors
       );
     } else {
@@ -137,7 +138,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
       <Pressable onPress={() => setVisible(true)}>
         <View className="flex-row items-center justify-between px-4 border border-gray-300 rounded-md bg-white w-full py-3.5">
           <Text className={`${inputText ? "text-gray-900" : "text-gray-500"} text-lg`}>
-            {inputText || placeholder}
+            {t(inputText || placeholder)}
           </Text>
           <SimpleLineIcons name="arrow-down" size={16} color="#a9a9a9" />
         </View>

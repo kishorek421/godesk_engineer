@@ -12,9 +12,9 @@ import {
 import { Input, InputField } from "@/components/ui/input";
 import { ErrorModel } from "@/models/common";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
-import { messages } from "@/locales/constant";
-import { useTranslation } from "@/context/TranslationContext";
-import {translateNumberToNative} from "@/services/translationService"
+import { messages } from "@/i18n/constant";
+import i18n from "@/i18n";
+import { t } from "i18next";
 interface PrimaryTextareaFormFieldProps {
   fieldName: string;
   label: string;
@@ -59,7 +59,7 @@ const PrimaryTextareaFormField = ({
   className
 }: PrimaryTextareaFormFieldProps) => {
   const [value, setValue] = useState<string>("");
-  const { language } = useTranslation();
+ const lng= i18n.language;
   useEffect(() => {
     if (canClearForm && value.length > 0) {
       setValue("");
@@ -89,7 +89,7 @@ const PrimaryTextareaFormField = ({
       setErrorValue(
         fieldName,
         value,
-          messages[language as keyof typeof messages]["label"](label.toLowerCase(), getAorAn(label)),
+          messages[lng as keyof typeof messages]["label"](label, getAorAn(label),t),
         setErrors,
       );
       return;
@@ -109,7 +109,7 @@ const PrimaryTextareaFormField = ({
       setErrorValue(
         fieldName,
         value,
-  messages[language as keyof typeof messages]["min"](min, translateNumberToNative),
+  messages[lng as keyof typeof messages]["min"](min),
         setErrors,
       );
       return;
@@ -131,7 +131,7 @@ const PrimaryTextareaFormField = ({
       </FormControlLabel>
       <Textarea size="md" variant="default">
         <TextareaInput
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           value={value}
           keyboardType={keyboardType}
           onChangeText={(newValue) => {
