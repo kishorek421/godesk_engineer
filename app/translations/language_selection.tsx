@@ -92,7 +92,6 @@ const LanguageSelectionScreen = () => {
           <PrimaryText className="text-xl font-semibold text-gray-800">
             Select Language
           </PrimaryText>
-      <Link href={'/sitemap'}>sitemAP</Link>
         </View>
 
         <View className="mt-2">
