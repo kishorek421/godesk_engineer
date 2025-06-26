@@ -17,6 +17,7 @@ import {
   GET_CHECK_IN_OUT_STATUS,
   GET_INPROGRESS_TICKETS_DETAILS,
   GET_USER_DETAILS,
+  GET_ATTENDANCE_TRANSACTION
 } from "@/constants/api_endpoints";
 import TicketListLayout from "@/components/tickets/TicketListLayout";
 import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
@@ -60,10 +61,13 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
+  const [checkInOutStatus, setCheckInOutStatus] = useState<CheckInOutStatusDetailsModel[]>([]);
+
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
-
+  const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
+  const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(null);
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -93,9 +97,33 @@ const HomeScreen = () => {
         console.error(e.response.data);
       });
   };
+  const getCheckInOutStatus = async () => {
+  try {
+    const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
+    const data = response.data?.data?.content;
 
+    if (data && Array.isArray(data)) {
+      const today = new Date().toISOString().split("T")[0]; 
+      const todayEntry = data.find((item: CheckInOutStatusDetailsModel) => item.date === today);
+
+      if (todayEntry?.check_in) {
+        setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
+      } else {
+        setTodayCheckInTime(null);
+      }
+
+      if (todayEntry?.check_out) {
+        setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
+      } else {
+        setTodayCheckOutTime(null);
+      }
+    }
+  } catch (e: any) {
+    console.error("Error fetching ", e.response?.data || e.message);
+  }
+};
   useEffect(() => {
-    // requestPermissions();
+    getCheckInOutStatus();
     fetchCheckInOutStatus();
   }, []);
 
@@ -214,7 +242,22 @@ const HomeScreen = () => {
 
   return (
     <BasePage>
-      <View className="mt-4 flex-row justify-end mx-4">
+      <View className="mt-4 flex-row justify-between mx-3 items-start">
+
+        {todayCheckInTime && (
+          <View className="p-1 mx-4 bg-blue-200">
+            <Text className="text-gray-800 font-medium text-sm">
+              Today’s Check-In Time: {todayCheckInTime.split(".")[0]}
+            </Text>
+
+            {todayCheckOutTime && (
+              <Text className="text-gray-800 font-medium text-sm">
+                Today’s Check-Out Time: {todayCheckOutTime.split(".")[0]}
+              </Text>
+            )}e
+          </View>
+        )}
+
         <Ionicons
           name="notifications-outline"
           size={20}
@@ -222,6 +265,8 @@ const HomeScreen = () => {
           onPress={() => router.push("/notifications/all_notifications")}
         />
       </View>
+
+
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
@@ -242,11 +287,11 @@ const HomeScreen = () => {
                   if (status === "granted") {
                     toggleImagePicker();
                   } else {
-                   showToast({
-                          position: "top",
-                          type: "error",
-                          message: "toast18",
-                        });
+                    showToast({
+                      position: "top",
+                      type: "error",
+                      message: "toast18",
+                    });
                   }
                 }}
               >
@@ -261,10 +306,8 @@ const HomeScreen = () => {
           )}
 
         </View>
-         {/* <View>
-          <Text>{JSON.stringify(checkInOutStatusDetails.value ??"")}</Text>
-        </View> */}
-      
+
+
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...
@@ -287,7 +330,7 @@ const HomeScreen = () => {
                       <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </PrimaryText>
-                     <PrimaryText
+                      <PrimaryText
                         className="mt-[1px] text-[13px] text-gray-900 font-regular"
                         translate="api"
                       >
