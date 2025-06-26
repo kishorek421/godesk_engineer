@@ -1,4 +1,3 @@
-
 import { primaryColor } from "@/constants/colors";
 import { useToast } from "@/context/ToastContext";
 import React, { useState } from "react";
@@ -55,14 +54,13 @@ const Toast: React.FC = () => {
             {
               translateY: fadeAnim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [position === "top" ? -50 : 50, 40],
+                outputRange: [position === "top" ? -50 : 50, 0],
               }),
             },
           ],
         },
       ]}
-      className={`absolute  rounded-md px-4 py-2 left-1/2 -translate-x-1/2 ${position === "top" ? "top-12" : "bottom-12"}`}
-
+      className={`absolute rounded-md px-4 py-2 self-center ${position === "top" ? "top-12" : "bottom-12"}`}
     >
       <Text className="text-white text-base">
         {toast.translate === "local" ? t(message) : toast.message}{" "}
@@ -79,8 +77,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-  alignSelf: "center",
-
   },
 });
 
