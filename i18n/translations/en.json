@@ -84,5 +84,6 @@
     "toast16": "Checked out successfully",
     "toast17": "Checked in successfully",
     "toast18": "Allow location permission to Check In/Check Out",
-    "toast19": "An unexpected error occurred. Please try again."
+    "toast19": "An unexpected error occurred. Please try again.",
+    "Failed to update your attendance. Please retry.":"Failed to update your attendance. Please retry."
 }

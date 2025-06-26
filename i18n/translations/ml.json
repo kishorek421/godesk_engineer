@@ -94,5 +94,6 @@
     "Pincode is required but couldn't be fetched.": "പിൻകോഡ് ആവശ്യമാണ്, പക്ഷേ ലഭിക്കാനായില്ല.",
     "Invalid mobile number or user not found. Please check and try again.": "അസാധുവായ മൊബൈൽ നമ്പർ അല്ലെങ്കിൽ ഉപയോക്താവ് കണ്ടെത്താനായില്ല. ദയവായി പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.",
     "Failed to send OTP. Try again.": "OTP അയയ്ക്കുന്നതിൽ പരാജയം. വീണ്ടും ശ്രമിക്കുക.",
-    "Please enter a valid 10-digit mobile number.": "ദയവായി ശരിയായ 10 അക്കമുള്ള മൊബൈൽ നമ്പർ നൽകുക."
+    "Please enter a valid 10-digit mobile number.": "ദയവായി ശരിയായ 10 അക്കമുള്ള മൊബൈൽ നമ്പർ നൽകുക.",
+  "Failed to update your attendance. Please retry.": "നിങ്ങളുടെ ഹാജരായിരിക്കുക. ദയവായി വീണ്ടും ശ്രമിക്കുക."
 }

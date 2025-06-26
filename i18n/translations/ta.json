@@ -95,5 +95,6 @@
     "Invalid mobile number or user not found. Please check and try again.": "தவறான மொபைல் எண் அல்லது பயனர் காணப்படவில்லை. தயவுசெய்து சரிபார்த்து மீண்டும் முயற்சிக்கவும்.",
     "Failed to send OTP. Try again.": "OTP அனுப்பத் தவறியது. மீண்டும் முயற்சிக்கவும்.",
     "Please enter a valid 10-digit mobile number.": "தயவுசெய்து சரியான 10 இலக்க மொபைல் எண்ணை உள்ளிடவும்.",
-    "Mobile no. should start with 6-9": "மொபைல் எண் 6-9 இலிருந்து தொடங்க வேண்டும்"
+    "Mobile no. should start with 6-9": "மொபைல் எண் 6-9 இலிருந்து தொடங்க வேண்டும்",
+    "Failed to update your attendance. Please retry.": "உங்கள் ஹாஜரானது புதுப்பிக்கப்படவில்லை. தயவுசெய்து மீண்டும் முயற்சிக்கவும்."
 }

@@ -230,7 +230,24 @@ const TicketDetails = () => {
     setErrors([]);
     setFieldValidationStatus({});
     setCanValidateField(true);
+   const validationPromises = Object.keys(fieldValidationStatus).map(
+        (key) =>
+            new Promise((resolve) => {
+                setFieldValidationStatus((prev: any) => ({
+                    ...prev,
+                    [key]: resolve,
+                }));
+            })
+    );
 
+    setCanValidateField(true);
+    await Promise.all(validationPromises);
+
+    const allValid = errors
+        .map((error) => error.message?.length === 0)
+        .every((status) => status === true);
+
+ 
     const currentErrors: any[] = [];
 
     const requiresImageOrOTP = [
@@ -258,19 +275,24 @@ const TicketDetails = () => {
       });
     }
 
-    // OTP validation
-    // if (requiresOtp.includes(statusKey) && !otp) {
-    //   currentErrors.push({
-    //     param: "customerOTP",
-    //     message: "Pin is required for the selected status",
-    //   });
-    // }
-    // if (!description) {
-    //   currentErrors.push({
-    //     param: "description",
-    //     message: "Please enter a description",
-    //   });
-    // }
+    if (requiresOtp.includes(statusKey) && !otp) {
+      currentErrors.push({
+        param: "customerOTP",
+        message: "Pin is required for the selected status",
+      });
+    }
+    if (!description) {
+      currentErrors.push({
+        param: "description",
+        message: "Please enter a description",
+      });
+    }
+    if (!selectedTicketStatus.key) {
+      currentErrors.push({
+        param: "selectTicketStatusOptions",
+        message: "Please select a status",
+      });
+    }
 
 
     // Location
@@ -532,7 +554,7 @@ const TicketDetails = () => {
         >
           <View className="flex-1 bg-gray-100 mb-8 h-full">
             <View className="p-4">
-               {/* <Button
+              {/* <Button
                   onPress={() =>
                     showToast({
                       position: 'top',
@@ -855,7 +877,7 @@ const TicketDetails = () => {
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: any) => setDescription(e)}
+                          onChangeText={(value: any) => setDescription(value)}
 
                         />
 
@@ -959,7 +981,7 @@ const TicketDetails = () => {
                           max={4}
                           defaultValue={otp}
                           isRequired={
-                            ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+                          ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
                           }
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
@@ -967,15 +989,8 @@ const TicketDetails = () => {
                           setCanValidateField={setCanValidateField}
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(e: string) => setOtp(e)}
+                          onChangeText={(value: string) => setOtp(value)}
                         />
-
-
-                        {/* {selectedTicketStatus?.key === "CUSTOMER_NOT_AVAILABLE" && (
-                          <PrimaryText className="mt-1 mb-2 text-red-500 text-sm font-regular">
-                            Customer not available is required for this status.
-                          </PrimaryText>
-                        )} */}
                         {/* /* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                           <ConfigurationDropdownFormField
                             className="my-3"
