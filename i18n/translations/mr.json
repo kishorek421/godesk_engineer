@@ -21,6 +21,8 @@
   "userType": "वापरकर्ता प्रकार",
   "serviceType": "सेवा प्रकार",
   "customerMobileNo": "ग्राहक मोबाईल क्रमांक",
+    "clearAllNotifications": "सर्व सूचना साफ करा",
+  "noRecentNotifications": "कोणतीही अलीकडील सूचना नाही",
   "customerAddress": "ग्राहक पत्ता",
   "spareDetails": "स्पेअर तपशील",
   "paymentMode": "देयक मोड",

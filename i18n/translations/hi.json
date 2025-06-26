@@ -18,6 +18,8 @@
   "checkYourMobile": "अपना मोबाइल चेक करें 📱",
   "otpMessage": "ओटीपी {{mobile}} पर भेजा गया",
   "enterOtp": "OTP दर्ज करें",
+  "noRecentNotifications": "कोई हालिया सूचनाएं नहीं हैं",
+  "clearAllNotifications": "सभी सूचनाएं साफ करें",
   "userType": "उपयोगकर्ता प्रकार",
   "serviceType": "सेवा प्रकार",
   "customerMobileNo": "ग्राहक मोबाइल नंबर",

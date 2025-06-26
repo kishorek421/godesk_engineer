@@ -287,9 +287,11 @@ const HomeScreen = () => {
                       <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </PrimaryText>
-                      <PrimaryText className="mt-[1px] text-[13px] text-gray-900 font-regular">
-                       issueIn{" "}
-                        {inProgressTicketDetails.issueTypeDetails?.name ?? "-"}
+                     <PrimaryText
+                        className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                        translate="api"
+                      >
+                        {`${t("issueIn")}: ${inProgressTicketDetails.issueTypeDetails?.name ?? "-"}`}
                       </PrimaryText>
                     </View>
                     <View>

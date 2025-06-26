@@ -51,9 +51,9 @@ export const getAorAn = (word: string) => {
   if (word.length == 0) return "";
   const lcFirstChar = word.toLowerCase()[0];
   if (["a", "e", "i", "o", "u"].includes(lcFirstChar)) {
-    return "an";
+    return "An";
   }
-  return "a";
+  return "A";
 };
 export const getFileName = (uri: string, isFullName = false) => {
   const splits = uri.split("/");
