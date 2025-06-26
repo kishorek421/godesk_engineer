@@ -247,14 +247,14 @@ const HomeScreen = () => {
         {todayCheckInTime && (
           <View className="p-1 mx-4 bg-blue-200">
             <Text className="text-gray-800 font-medium text-sm">
-              Today’s Check-In Time: {todayCheckInTime.split(".")[0]}
+              You have checked in at {todayCheckInTime.split(".")[0]}
             </Text>
 
             {todayCheckOutTime && (
               <Text className="text-gray-800 font-medium text-sm">
-                Today’s Check-Out Time: {todayCheckOutTime.split(".")[0]}
+                You have checked out at {todayCheckOutTime.split(".")[0]}
               </Text>
-            )}e
+            )}
           </View>
         )}
 
