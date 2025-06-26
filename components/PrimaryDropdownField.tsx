@@ -13,6 +13,7 @@ import {
 import { ChevronDownIcon } from "@/components/ui/icon";
 import { useEffect } from "react";
 import * as React from 'react';
+import { t } from "i18next";
 
 interface PrimaryDropdownFieldProps {
   options: any[];
@@ -45,7 +46,7 @@ const PrimaryDropdownField = ({
       <SelectTrigger variant="outline" size="md">
         <SelectInput
           className="w-96 "
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           value={selectedValue.label}
         />
         <SelectIcon className="mr-3 " as={ChevronDownIcon} />

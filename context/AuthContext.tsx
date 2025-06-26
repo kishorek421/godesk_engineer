@@ -60,10 +60,10 @@ export const AuthProvider = ({
         } catch (error) {
           console.error("Failed to fetch user:", error);
           await clearStorage();
-          router.replace({ pathname: "/data_storage/[homescreen]" });
+          router.replace({ pathname: "/translations/language_selection" });
         }
       } else {
-        router.replace({ pathname: "/data_storage/[homescreen]" });
+        router.replace({ pathname: "/translations/language_selection" });
       }
       setLoading(false);
     };

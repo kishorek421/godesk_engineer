@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   RefreshControl,
   FlatList,
+  Alert,
 } from "react-native";
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
@@ -23,7 +24,7 @@ import {
 import LoadingBar from "@/components/LoadingBar";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
 import { Button, ButtonText, ButtonSpinner } from "@/components/ui/button";
-import Toast from "react-native-toast-message";
+
 import {
   FormControl,
   FormControlError,
@@ -58,11 +59,12 @@ import {
 import BasePage from "@/components/base/base_page";
 import { primaryColor } from "@/constants/colors";
 import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDropdownFormField";
-import Translator, { useTranslation } from "@/context/TranslationContext";
+import { t } from "i18next";
+import PrimaryButton from "@/components/PrimaryButton";
+import { useToast } from "@/context/ToastContext";
 
 const TicketDetails = () => {
 
- const {language} = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -88,7 +90,6 @@ const TicketDetails = () => {
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
-  const { translatedStrings } = useTranslation();
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [refreshing, setRefreshing] = React.useState(false);
@@ -98,7 +99,7 @@ const TicketDetails = () => {
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
   const [selectedPaymentMode, setSelectedPaymentMode] =
     useState<ConfigurationModel>();
-
+  const { showToast } = useToast();
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -197,8 +198,8 @@ const TicketDetails = () => {
       ticketStatusOptionsState.find((item) => item.key === option) ?? {};
 
     // Dynamically translate the label if available
-    if (selectedTicketStatus && selectedTicketStatus.value && translatedStrings[selectedTicketStatus.value]) {
-      selectedTicketStatus.value = translatedStrings[selectedTicketStatus.value];
+    if (selectedTicketStatus && selectedTicketStatus.value && selectedTicketStatus.value) {
+      selectedTicketStatus.value = selectedTicketStatus.value;
     }
     console.log("selectedTicketStatus", selectedTicketStatus);
     setSelectedTicketStatus(selectedTicketStatus);
@@ -258,35 +259,30 @@ const TicketDetails = () => {
     }
 
     // OTP validation
-    if (requiresOtp.includes(statusKey) && !otp) {
-      currentErrors.push({
-        param: "customerOTP",
-        message: "Pin is required for the selected status",
-      });
-    }
- if (!description || description.trim().length === 0) {
-  currentErrors.push({
-    param: "description",
-    message: "Please enter a description",
-  });
-}
+    // if (requiresOtp.includes(statusKey) && !otp) {
+    //   currentErrors.push({
+    //     param: "customerOTP",
+    //     message: "Pin is required for the selected status",
+    //   });
+    // }
+    // if (!description) {
+    //   currentErrors.push({
+    //     param: "description",
+    //     message: "Please enter a description",
+    //   });
+    // }
 
 
     // Location
     if (!latitude || !longitude) {
-      currentErrors.push({
-        param: "location",
-        message: "Location is required but couldn't be fetched.",
-      });
+      Alert.alert("Location is required but couldn't be fetched. Please try again!");
     }
 
     // Pincode (optional error message based on your needs)
     if (!pincode) {
-      currentErrors.push({
-        param: "pincode",
-        message: "Pincode is required",
-      });
+      Alert.alert("Location is required but couldn't be fetched. Please try again!");
     }
+
 
     // Set all accumulated errors
     if (currentErrors.length > 0) {
@@ -332,18 +328,18 @@ const TicketDetails = () => {
             ? "079d38fc-93a6-482d-8a99-ee600196cea8"
             : "cce2e5f5-340d-410a-9074-1ec72ace1e18",
       };
- console.log("Request Body for updating ticket status:", requestBody);
+      console.log("Request Body for updating ticket status:", requestBody);
       const updateResponse = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
       );
-     
+
 
       if (updateResponse.status === 200) {
-        Toast.show({
+        showToast({
+          position: "top",
           type: "success",
-          text1: translatedStrings["toast13"],
-          visibilityTime: 5000,
+          message: "toast13",
         });
 
         await fetchTicketDetails();
@@ -369,18 +365,21 @@ const TicketDetails = () => {
           .join("\n");
 
         if (genericMessages) {
-          Toast.show({
-            type: "error",
-            text1: genericMessages,
-            visibilityTime: 5000,
+          showToast({
+            position: "top",
+            type: "success",
+            message: genericMessages,
           });
+
         }
       } else {
-        Toast.show({
+
+        showToast({
+          position: "top",
           type: "error",
-          text1: error.response?.data?.message || translatedStrings["toast19"],
-          visibilityTime: 5000,
+          message: error.response?.data?.message || "toast19",
         });
+
       }
     } finally {
       setIsLoading(false);
@@ -533,6 +532,18 @@ const TicketDetails = () => {
         >
           <View className="flex-1 bg-gray-100 mb-8 h-full">
             <View className="p-4">
+               {/* <Button
+                  onPress={() =>
+                    showToast({
+                      position: 'top',
+                      backgroundColor: "#ff00ff",
+                      message:
+                        "Hello! This is a toast message.Hello! .",
+                    })
+                  }
+                >
+                  <ButtonText>Show Toast</ButtonText>
+                </Button> */}
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
@@ -540,13 +551,11 @@ const TicketDetails = () => {
                       <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
-                      <PrimaryText className="text-gray-500 font-regular text-[13px] mt-[1px]">
-                        issueIn{" "}
-                    {language === "en" || language === "en-US" ? (
-                      ticketDetails.issueTypeDetails?.name ?? "-"
-                    ) : (
-                      <Translator text={ticketDetails.issueTypeDetails?.name ?? "-"} dynamic />
-                    )}
+                      <PrimaryText
+                        className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                        translate="api"
+                      >
+                        {`${t("issueIn")}: ${ticketDetails.issueTypeDetails?.name ?? "-"}`}
                       </PrimaryText>
                     </View>
                     <TicketStatusComponent
@@ -615,11 +624,10 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 text-md font-regular ">
                           serviceType
                         </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                            {language === "en" || language === "en-US"
-                            ? ticketDetails.serviceTypeDetails?.value ?? "-"
-                            : <Translator text={ticketDetails.serviceTypeDetails?.value ?? "-"} dynamic />}
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate="api">
+                          {ticketDetails.serviceTypeDetails?.value ?? "-"}
                         </PrimaryText>
+
                       </View>
                     </View>
                   </View>
@@ -629,9 +637,9 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 font-regular text-md ">
                           assetModel
                         </PrimaryText>
-                        <View className="flex-1">
+                        <View className="flex-row">
                           <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
-                            {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}
+                            {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}{" "}
                           </PrimaryText>
                           <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
                             ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
@@ -656,12 +664,10 @@ const TicketDetails = () => {
                   </View>
                   <View className="flex mt-3">
                     <PrimaryText className="text-gray-500 font-regular text-md ">
-                      description
+                      Description
                     </PrimaryText>
-                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
-                        {language === "en" || language === "en-US"
-                        ? ticketDetails?.description ?? "-"
-                        : <Translator text={ticketDetails?.description ?? "-"} dynamic />}
+                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate="api">
+                      {ticketDetails?.description ?? "-"}
                     </PrimaryText>
                   </View>
                   <View className="flex mt-3">
@@ -715,7 +721,7 @@ const TicketDetails = () => {
                   </View>
                   <View className="w-full mt-3">
                     <PrimaryText className="text-gray-500 text-md font-regular">
-                      issueImages{" "}
+                      issueImages
                     </PrimaryText>
                     <View className="flex-row flex-wrap gap-3">
                       {(ticketDetails.ticketImages ?? []).length > 0 ? (
@@ -850,7 +856,7 @@ const TicketDetails = () => {
                           setFieldValidationStatus={setFieldValidationStatus}
                           validateFieldFunc={setFieldValidationStatusFunc}
                           onChangeText={(e: any) => setDescription(e)}
-                         
+
                         />
 
                         <FormControl
@@ -860,7 +866,7 @@ const TicketDetails = () => {
                         >
                           <HStack className="justify-between mt-2 mb-1">
                             <PrimaryText className="font-medium">
-                              assetImages{" "}
+                              {t("assetImages")}{" "}
                               {[
                                 "IN_PROGRESS",
                                 "SPARE_REQUIRED",
@@ -929,7 +935,7 @@ const TicketDetails = () => {
                                 size={18}
                               />
                               <ButtonText className="text-black font-regular">
-                                addImage
+                                <PrimaryText>addImage</PrimaryText>
                               </ButtonText>
                             </Button>
                           )}
@@ -952,9 +958,9 @@ const TicketDetails = () => {
                           min={4}
                           max={4}
                           defaultValue={otp}
-                           isRequired={
-                              ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
-                            }
+                          isRequired={
+                            ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+                          }
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}
                           canValidateField={canValidateField}
@@ -995,26 +1001,11 @@ const TicketDetails = () => {
                             }
                           />
                         } */}
-                        <Button
-                          className="bg-primary-950 rounded-lg mt-6 h-12 mb-8 flex-row items-center justify-center"
-                          onPress={async () => {
-                            if (isLoading) return;
-                            await updateTicketStatus();
-                          }}
-                        >
-                          <PrimaryText className="font-semibold text-white text-md">
-                            updateStatus
-                          </PrimaryText>
-                          {isLoading ? (
-                            <ActivityIndicator color="white" className="ms-2" />
-                          ) : (
-                            <AntDesign
-                              size={20}
-                              color="white"
-                              className="ms-1"
-                            />
-                          )}
-                        </Button>
+                        <PrimaryButton
+                          isLoading={isLoading}
+                          onPress={updateTicketStatus}
+                          btnText="updateStatus"
+                        />
                       </View>
 
                     )}
@@ -1029,10 +1020,10 @@ const TicketDetails = () => {
               console.log("uri", uri);
               const fileSizeMB = bytesToMB(fileSizeBytes);
               if (fileSizeMB > 15) {
-                Toast.show({
+                showToast({
                   type: "error",
-                  text1: translatedStrings["toast14"],
-                  visibilityTime: 5000,
+                  // position:"top",
+                  message: "toast14",
                 });
                 return;
               }

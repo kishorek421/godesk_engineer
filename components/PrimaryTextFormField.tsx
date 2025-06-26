@@ -13,10 +13,9 @@ import { Input, InputField } from "@/components/ui/input";
 import { ErrorModel } from "@/models/common";
 import { TextCase } from "@/enums/enums";
 import Feather from "@expo/vector-icons/Feather";
-import { messages } from "@/locales/constant";
-import { useTranslation } from "@/context/TranslationContext";
-import {translateNumberToNative} from "@/services/translationService"
-
+import { messages } from "@/i18n/constant";
+import i18n from "@/i18n";
+import { t } from "i18next";
 interface PrimaryTextFormFieldProps {
   fieldName: string;
   label: string;
@@ -66,8 +65,11 @@ const PrimaryTextFormField = ({
 }: PrimaryTextFormFieldProps) => {
   const [value, setValue] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
- const { language } = useTranslation();
+   const lng = i18n.language;
+
   useEffect(() => {
+    console.log("fieldName", fieldName);
+
     setFieldValidationStatus((prevState: any) => ({
       ...prevState,
       [fieldName]: null,
@@ -75,14 +77,16 @@ const PrimaryTextFormField = ({
   }, []);
 
   useEffect(() => {
-    if (defaultValue) {
-      setValue(defaultValue);
-    }
+    console.log("defaultValue", defaultValue);
+    setValue(defaultValue ?? "");
+  }, [defaultValue]);
+
+  useEffect(() => {
     if (canValidateField) {
       validateField(value);
       setCanValidateField(false);
     }
-  }, [defaultValue, canValidateField]);
+  }, [canValidateField]);
 
   const validateField = (newValue: string) => {
     if (isRequired && newValue.length === 0) {
@@ -90,14 +94,18 @@ const PrimaryTextFormField = ({
       setErrorValue(
         fieldName,
         value,
-        defaultErrorMessage ??    messages[language as keyof typeof messages]["label"](label.toLowerCase(), getAorAn(label)),
-        setErrors,
+        messages[lng as keyof typeof messages]["label"](
+          label,
+          getAorAn(label),
+          t
+        ),
+        setErrors
       );
       return;
     }
     const valLen = newValue.length;
     if (customValidations && valLen > 0) {
-      const errorValidationMsg = customValidations(value);
+      const errorValidationMsg = customValidations(newValue);
       if (errorValidationMsg) {
         validateFieldFunc(fieldName, false);
         setErrorValue(fieldName, value, errorValidationMsg, setErrors);
@@ -109,14 +117,16 @@ const PrimaryTextFormField = ({
       // if this field is not valid set validField is false
       setErrorValue(
         fieldName,
-        value,  messages[language as keyof typeof messages]["min"](min, translateNumberToNative),
-        setErrors,
+        value,
+        messages[lng as keyof typeof messages]["min"](min),
+        setErrors
       );
       return;
     }
     validateFieldFunc(fieldName, true);
     setErrorValue(fieldName, value, "", setErrors);
   };
+
 
   return (
     <FormControl
@@ -140,7 +150,7 @@ const PrimaryTextFormField = ({
       >
         <InputField
           type={isPasswordVisible ? "text" : inputType}
-          placeholder={placeholder}
+          placeholder={t(placeholder)}
           value={value}
           keyboardType={keyboardType}
           style={{

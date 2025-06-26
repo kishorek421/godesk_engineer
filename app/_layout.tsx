@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { useFonts } from "expo-font";
 import { AuthProvider, InitialNotificationStatus, } from "@/context/AuthContext";
-import Toast from "react-native-toast-message";
+import { ToastProvider } from "@/context/ToastContext";
 import {
   Poppins_400Regular,
   Poppins_500Medium,
@@ -20,8 +20,10 @@ import * as Notifications from "expo-notifications";
 import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
 import { handleNotificationNavigation } from "@/utils/helper";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { TranslationProvider } from '@/context/TranslationContext';
+import i18n from "@/i18n";
+import { I18nextProvider } from "react-i18next";
 import BasePage from '@/components/base/base_page';
+import Toast from "@/components/base/toast";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -191,7 +193,8 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="light">
       <AuthProvider>
-        <TranslationProvider>
+        <I18nextProvider i18n={i18n}>
+          <ToastProvider>
             <Stack>
               <Stack.Screen
                 name="index"
@@ -271,7 +274,7 @@ export default function RootLayout() {
               />
 
               <Stack.Screen
-                name="data_storage/[homescreen]"
+                name="translations/language_selection"
                 options={{
                   headerShown: false,
                   headerTitleStyle: {
@@ -298,7 +301,8 @@ export default function RootLayout() {
 
             </Stack>
             <Toast />
-        </TranslationProvider>
+          </ToastProvider>
+        </I18nextProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );

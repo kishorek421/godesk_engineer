@@ -1,5 +1,5 @@
 "use client";
-import { Text, View } from "react-native";
+import {  View } from "react-native";
 import React, { useMemo } from "react";
 import { Svg } from "react-native-svg";
 import { createFormControl } from "@gluestack-ui/form-control";
@@ -10,6 +10,7 @@ import {
 } from "@gluestack-ui/nativewind-utils/withStyleContext";
 import { cssInterop } from "nativewind";
 import type { VariantProps } from "@gluestack-ui/nativewind-utils";
+import PrimaryText from "@/components/PrimaryText";
 
 const SCOPE = "FORM_CONTROL";
 
@@ -274,19 +275,20 @@ const formControlLabelAstrickStyle = tva({
 });
 
 type IFormControlLabelAstrickProps = React.ComponentPropsWithoutRef<
-  typeof Text
+  typeof PrimaryText
 > &
   VariantProps<typeof formControlLabelAstrickStyle>;
 
 const FormControlLabelAstrick = React.forwardRef<
-  React.ElementRef<typeof Text>,
+  React.ElementRef<typeof PrimaryText>,
   IFormControlLabelAstrickProps
 >(({ className, ...props }, ref) => {
   const { size: parentSize } = useStyleContext(SCOPE);
 
   return (
-    <Text
+    <PrimaryText
       ref={ref}
+      translate = "local"
       className={formControlLabelAstrickStyle({
         parentVariants: { size: parentSize },
         class: className,
@@ -299,13 +301,13 @@ const FormControlLabelAstrick = React.forwardRef<
 export const UIFormControl = createFormControl({
   Root: withStyleContext(View, SCOPE),
   Error: View,
-  ErrorText: Text,
+  ErrorText: PrimaryText,
   ErrorIcon: PrimitiveIcon,
   Label: View,
-  LabelText: Text,
+  LabelText: PrimaryText,
   LabelAstrick: FormControlLabelAstrick,
   Helper: View,
-  HelperText: Text,
+  HelperText: PrimaryText,
 });
 
 cssInterop(UIFormControl, { className: "style" });

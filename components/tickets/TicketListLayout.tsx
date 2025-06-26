@@ -20,7 +20,7 @@ import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
-import { useTranslation } from "@/context/TranslationContext";
+
 const TicketListLayout = () => {
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,7 +49,6 @@ const TicketListLayout = () => {
     "In Progress"
   ];
   const visibleTabs = tabs.filter(tab => !hiddenTabs.includes(tab));
- const { translatedStrings } = useTranslation();
   useEffect(() => {
     fetchTickets(1, selectedTab);
   }, [selectedTab]);
@@ -172,7 +171,7 @@ const TicketListLayout = () => {
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
           <PrimaryText className="text-gray-400 text-md text-center font-regular">
-{translatedStrings['noTicketsFound']}
+noTicketsFound
           </PrimaryText>
         </View>
       ) : (

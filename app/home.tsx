@@ -27,12 +27,14 @@ import {
   hasServicesEnabledAsync,
   requestForegroundPermissionsAsync,
 } from "expo-location";
-import Toast from "react-native-toast-message";
+
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
-import { useTranslation } from "@/context/TranslationContext";
+import { t } from "i18next";
+import { useToast } from "@/context/ToastContext";
+
 const LOCATION_TASK_NAME = "background-location-task";
 
 // // Define the background task
@@ -54,7 +56,7 @@ const HomeScreen = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const bottomSheetRef = useRef(null);
   const segments = useSegments();
-  const { translatedStrings } = useTranslation();
+  const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
@@ -224,7 +226,7 @@ const HomeScreen = () => {
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
             <PrimaryText className="mx-2  font-medium text-md leading-5">
-              {getGreetingMessage()} 👋
+              {t(getGreetingMessage())} 👋
             </PrimaryText>
             <PrimaryText className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
@@ -240,17 +242,18 @@ const HomeScreen = () => {
                   if (status === "granted") {
                     toggleImagePicker();
                   } else {
-                    Toast.show({
-                      type: "error",
-                      text1: translatedStrings["toast18"],
-                    });
+                   showToast({
+                          position: "top",
+                          type: "error",
+                          message: "toast18",
+                        });
                   }
                 }}
               >
                 <ButtonText>
                   {checkInOutStatusDetails.value === "Checked In"
-                    ? ("checkOut")
-                    : ("checkIn")}
+                    ? t("checkOut")
+                    : t("checkIn")}
                 </ButtonText>
               </Button>
 
@@ -258,6 +261,10 @@ const HomeScreen = () => {
           )}
 
         </View>
+         {/* <View>
+          <Text>{JSON.stringify(checkInOutStatusDetails.value ??"")}</Text>
+        </View> */}
+      
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...

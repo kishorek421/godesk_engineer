@@ -21,12 +21,14 @@ import {
 } from "../ui/form-control";
 import PrimaryText from "@/components/PrimaryText"
 import { TICKET_UPLOADS, CHECK_IN_OUT } from "@/constants/api_endpoints";
-import Toast from "react-native-toast-message";
+
 import { CreateCheckInOutModel } from "@/models/users";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
-import { useTranslation } from "@/context/TranslationContext";
+import { t } from "i18next";
+import { useToast } from "@/context/ToastContext";
+
 
 interface CheckInOutProps {
   setIsModalVisible: any;
@@ -51,10 +53,9 @@ const CheckInOutModal = ({
   const [selfie, setSelfie] = useState("");
 
   const [errorMsg, setErrorMsg] = useState("");
-  const { translatedStrings } = useTranslation();
   const [cameraPermissionStatus, requestCameraPermission] =
     ImagePicker.useCameraPermissions();
-
+  const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -142,10 +143,11 @@ const CheckInOutModal = ({
       if (fileSizeMB < 16) {
         setSelfie(asset.uri);
       } else {
-        Toast.show({
+        showToast({
+          position: "top",
           type: "error",
-          text1: translatedStrings["toast14"],
-          visibilityTime: 5000,
+          message: "toast14",
+
         });
       }
     }
@@ -192,13 +194,14 @@ const CheckInOutModal = ({
               // setIsModalVisible(false);
               // bottomSheetRef
               setIsLoading(false);
-              Toast.show({
+              showToast({
+                position: "top",
                 type: "success",
-                text1:
+                message:
                   status === "Checked In"
-                    ? translatedStrings["toast16"]
-                    : translatedStrings["toast17"],
-                visibilityTime: 5000,
+                    ? "toast16"
+                    : "toast17",
+
               });
               setSelfie("");
               setErrors([]);
@@ -213,125 +216,125 @@ const CheckInOutModal = ({
                 console.error("errors -> ", errors);
                 setErrors(errors);
               }
-              setErrorMsg("Failed to check in");
+              setErrorMsg("Failed to update your attendance. Please retry.");
               setIsLoading(false);
             });
         } else {
           setIsLoading(false);
-          Toast.show({
+          showToast({
+            position: "top",
             type: "error",
-            text1: translatedStrings["toast15"],
-            visibilityTime: 5000,
+            message: "toast15",
 
           });
-          setErrorMsg("Failed to check in");
+          setErrorMsg("Failed to update your attendance. Please retry.");
         }
       })
       .catch((e) => {
         let errors = e.response?.data;
         console.log("errors ---->", errors);
         setIsLoading(false);
-        setErrorMsg("Failed to check in");
+        setErrorMsg("Failed to update your attendance. Please retry.");
       });
   };
 
   return (
     <BottomSheet initialHeight={500} ref={bottomSheetRef}>
       <BasePage>
-      <View className="gap-4 p-4">
-        {/* <PrimaryText>{JSON.stringify(checkedInId)}</PrimaryText> */}
-        <PrimaryText className="font-bold-1  text-xl">
-          {status === "Checked In" ? ('checkOut') : ("checkIn")}
-        </PrimaryText>
-        <View className="gap-5">
-          <View className="">
-            <PrimaryText className="font-semibold text-lg font-regular">startAt</PrimaryText>
-            <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{currentTime}</PrimaryText>
-          </View>
-          <View className="">
-            <PrimaryText className="font-semibold text-lg font-regular">pincode</PrimaryText>
-            <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{pincode ?? "-"}</PrimaryText>
-          </View>
-          <View className="flex-row justify-between">
-            <FormControl
-              key="selfie"
-              isInvalid={isFormFieldInValid("selfie", errors).length > 0}
-            >
-              <View className="">
-          <PrimaryText className="font-semibold font-regular text-lg">selfie<PrimaryText className="text-red-400 mt-1 font-regular">*</PrimaryText></PrimaryText>
-          {selfie.length === 0 ? (
-            <Pressable
-              onPress={() => {
-                takePhoto();
-              }}
-              className="mt-1"
-            >
-              <View
-                className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
+        <View className="gap-4 p-4">
+          {/* <PrimaryText>{JSON.stringify(checkedInId)}</PrimaryText> */}
+          <PrimaryText className="font-bold-1  text-xl">
+            {status === "Checked In" ? ('checkOut') : ("checkIn")}
+          </PrimaryText>
+          <View className="gap-5">
+            <View className="">
+              <PrimaryText className="font-semibold text-lg font-regular">startAt</PrimaryText>
+              <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{currentTime}</PrimaryText>
+            </View>
+            <View className="">
+              <PrimaryText className="font-semibold text-lg font-regular">pincode</PrimaryText>
+              <PrimaryText className="mt-1 text-gray-700 text-md font-regular">{pincode ?? "-"}</PrimaryText>
+            </View>
+            <View className="flex-row justify-between">
+              <FormControl
+                key="selfie"
+                isInvalid={isFormFieldInValid("selfie", errors).length > 0}
+              >
+                <View className="">
+                  <PrimaryText className="font-semibold font-regular text-lg">{t("selfie")}<PrimaryText className="text-red-400 mt-1 font-regular">*</PrimaryText></PrimaryText>
+                  {selfie.length === 0 ? (
+                    <Pressable
+                      onPress={() => {
+                        takePhoto();
+                      }}
+                      className="mt-1"
+                    >
+                      <View
+                        className={`${isFormFieldInValid("selfie", errors).length === 0 ? "border-primary-950" : "border-red-700"} border-[1px] 
                 border-dashed h-28 w-28
           rounded-md mt-1 flex justify-center items-center `}
-              >
-                <View className="flex justify-center items-center mt-3">
-            <View
-              className={`${isFormFieldInValid("selfie", errors).length === 0 ? "bg-primary-300" : "bg-red-300"} rounded-md p-2 bg-primary-300 w-auto`}
-            >
-              <MaterialCommunityIcons
-                name="camera-plus"
-                color={`${isFormFieldInValid("selfie", errors).length === 0 ? primaryColor : "#b91c1c"}`}
-                size={18}
-              />
-            </View>
+                      >
+                        <View className="flex justify-center items-center mt-3">
+                          <View
+                            className={`${isFormFieldInValid("selfie", errors).length === 0 ? "bg-primary-300" : "bg-red-300"} rounded-md p-2 bg-primary-300 w-auto`}
+                          >
+                            <MaterialCommunityIcons
+                              name="camera-plus"
+                              color={`${isFormFieldInValid("selfie", errors).length === 0 ? primaryColor : "#b91c1c"}`}
+                              size={18}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    </Pressable>
+                  ) : (
+                    <View>
+                      <Image
+                        source={{ uri: selfie }}
+                        className="absolute mt-1 rounded-xl w-28 h-28"
+                      />
+                      <View className="flex items-end gap-4 rounded-xl w-28 h-28">
+                        <Pressable
+                          className="mt-2 me-2"
+                          onPress={() => {
+                            // setImagePath("");
+                            if (!isLoading) setSelfie("");
+                          }}
+                          disabled={isLoading}
+                        >
+                          <AntDesign name="closecircle" size={16} color="white" />
+                        </Pressable>
+                      </View>
+                    </View>
+                  )}
                 </View>
-              </View>
-            </Pressable>
-          ) : (
-            <View>
-              <Image
-                source={{ uri: selfie }}
-                className="absolute mt-1 rounded-xl w-28 h-28"
-              />
-              <View className="flex items-end gap-4 rounded-xl w-28 h-28">
-                <Pressable
-            className="mt-2 me-2"
-            onPress={() => {
-              // setImagePath("");
-              if (!isLoading) setSelfie("");
-            }}
-            disabled={isLoading}
-                >
-            <AntDesign name="closecircle" size={16} color="white" />
-                </Pressable>
-              </View>
-            </View>
-          )}
-              </View>
-              <FormControlError>
-          <FormControlErrorText>
-            {isFormFieldInValid("selfie", errors)}
-          </FormControlErrorText>
-              </FormControlError>
-            </FormControl>
-            {/* <Image
+                <FormControlError>
+                  <FormControlErrorText>
+                    {isFormFieldInValid("selfie", errors)}
+                  </FormControlErrorText>
+                </FormControlError>
+              </FormControl>
+              {/* <Image
               source={require("../../assets/images/check_in_out.png")}
               className="w-[150px] h-[150px]"
             /> */}
-          </View>
-          {errorMsg && <PrimaryText className="mt-4 text-red-500 font-regular">* {errorMsg}</PrimaryText>}
+            </View>
+            {errorMsg && <PrimaryText className="mt-4 text-red-500 font-regular">* {errorMsg}</PrimaryText>}
             <Button
-            className="bg-primary-950 mt-4 rounded-lg h-12"
-            onPress={() => {
-              if (isLoading) return;
-              chechInOut();
-            }}
-           
+              className="bg-primary-950 mt-4 rounded-lg h-12"
+              onPress={() => {
+                if (isLoading) return;
+                chechInOut();
+              }}
+
             >
-            <ButtonText>
-              {status === "Checked In" ? ('checkOut') : ('checkIn')}
-            </ButtonText>
-            {isLoading && <ActivityIndicator color="white" className="ms-1" />}
+              <ButtonText>
+                {status === "Checked In" ? t('checkOut') : t('checkIn')}
+              </ButtonText>
+              {isLoading && <ActivityIndicator color="white" className="ms-1" />}
             </Button>
+          </View>
         </View>
-      </View>
       </BasePage>
     </BottomSheet>
   );

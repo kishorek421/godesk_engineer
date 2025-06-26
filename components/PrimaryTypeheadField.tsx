@@ -15,7 +15,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { DropdownItemModel } from "@/models/ui/dropdown_item_model";
 import { isFormFieldInValid } from "@/utils/helper";
 import { ErrorModel } from "@/models/common";
-
+import PrimaryText from "./PrimaryText";
 interface PrimaryTypeheadFieldProps {
   type: any;
   onClearPress: (type: any) => void;
