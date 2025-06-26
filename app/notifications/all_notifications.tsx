@@ -149,7 +149,7 @@ const AllNotifications = () => {
                   onPress={clearAllNotifications}
                 >
                   <ButtonText className="font-semibold">
-                    Clear All Notifications
+                    <PrimaryText>clearAllNotifications</PrimaryText>
                   </ButtonText>
                 </Button>
               </View>
@@ -158,7 +158,7 @@ const AllNotifications = () => {
               {allNotifications.length === 0 ? (
                 <View className="h-full flex justify-center items-center rounded-lg">
                   <PrimaryText className="text-gray-500 text-md text-center font-regular">
-                    No Recent Notifications
+                    noRecentNotifications
                   </PrimaryText>
                 </View>
               ) : (

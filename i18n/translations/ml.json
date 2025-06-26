@@ -20,6 +20,8 @@
   "enterOtp": "OTP നൽകുക",
   "userType": "ഉപയോക്തൃ തരം",
   "serviceType": "സേവാ തരം",
+    "clearAllNotifications": "എല്ലാ അറിയിപ്പുകളും ക്ലിയർ ചെയ്യുക",
+  "noRecentNotifications": "ഇടത്തരം അറിയിപ്പുകൾ ഇല്ല",
   "customerMobileNo": "ഉപഭോക്തൃ മൊബൈൽ നമ്പർ",
   "customerAddress": "ഉപഭോക്തൃ വിലാസം",
   "spareDetails": "പകർപ്പ് ഭാഗങ്ങൾ",

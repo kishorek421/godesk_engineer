@@ -20,6 +20,8 @@
   "enterOtp": "OTP உள்ளிடவும்",
   "userType": "பயனர் வகை",
   "serviceType": "சேவை வகை",
+    "clearAllNotifications": "அனைத்து அறிவிப்புகளையும் அழிக்கவும்",
+  "noRecentNotifications": "சமீபத்திய அறிவிப்புகள் இல்லை",
   "customerMobileNo": "வாடிக்கையாளர் மொபைல் எண்",
   "customerAddress": "வாடிக்கையாளர் முகவரி",
   "spareDetails": "ஓரங்காலப் பகுதி விவரங்கள்",
