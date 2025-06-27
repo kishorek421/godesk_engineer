@@ -98,34 +98,36 @@ const HomeScreen = () => {
       });
   };
   const getCheckInOutStatus = async () => {
-  try {
-    const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
-    const data = response.data?.data?.content;
+    try {
+      const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
+      const data = response.data?.data?.content;
 
-    if (data && Array.isArray(data)) {
-      const today = new Date().toISOString().split("T")[0]; 
-      const todayEntry = data.find((item: CheckInOutStatusDetailsModel) => item.date === today);
+      if (data && Array.isArray(data)) {
+        const today = new Date().toISOString().split("T")[0];
+        const todayEntry = data.find((item: CheckInOutStatusDetailsModel) => item.date === today);
 
-      if (todayEntry?.check_in) {
-        setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
-      } else {
-        setTodayCheckInTime(null);
+        if (todayEntry?.check_in) {
+          setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
+        } else {
+          setTodayCheckInTime(null);
+        }
+
+        if (todayEntry?.check_out) {
+          setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
+        } else {
+          setTodayCheckOutTime(null);
+        }
       }
-
-      if (todayEntry?.check_out) {
-        setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
-      } else {
-        setTodayCheckOutTime(null);
-      }
+    } catch (e: any) {
+      console.error("Error fetching ", e.response?.data || e.message);
     }
-  } catch (e: any) {
-    console.error("Error fetching ", e.response?.data || e.message);
-  }
-};
+  };
+
   useEffect(() => {
     getCheckInOutStatus();
     fetchCheckInOutStatus();
   }, []);
+
 
   const fetchInProgressTicketDetails = () => {
     apiClient
@@ -242,21 +244,22 @@ const HomeScreen = () => {
 
   return (
     <BasePage>
-      <View className="mt-4 flex-row justify-between mx-3 items-start">
+      <View className="mt-4 mx-3 flex-row justify-between items-start">
+        <View>
+          {todayCheckInTime && (
+            <View className="bg-blue-200 rounded-md px-2 py-1 mx-4 self-start">
+              <PrimaryText className="text-gray-800 font-medium text-sm" >
+               {t("checkInMessage", { time: todayCheckInTime })}
+              </PrimaryText>
 
-        {todayCheckInTime && (
-          <View className="p-1 mx-4 bg-blue-200">
-            <Text className="text-gray-800 font-medium text-sm">
-              You have checked in at {todayCheckInTime.split(".")[0]}
-            </Text>
-
-            {todayCheckOutTime && (
-              <Text className="text-gray-800 font-medium text-sm">
-                You have checked out at {todayCheckOutTime.split(".")[0]}
-              </Text>
-            )}
-          </View>
-        )}
+              {todayCheckOutTime && (
+                <PrimaryText className="text-gray-800 font-medium text-sm" >
+                  {t("checkOutMessage", { time: todayCheckOutTime })}
+                </PrimaryText>
+              )}
+            </View>
+          )}
+        </View>
 
         <Ionicons
           name="notifications-outline"
@@ -265,6 +268,7 @@ const HomeScreen = () => {
           onPress={() => router.push("/notifications/all_notifications")}
         />
       </View>
+
 
 
       <View className="mt-6 p-1">
@@ -286,6 +290,8 @@ const HomeScreen = () => {
                   const { status } = await requestForegroundPermissionsAsync();
                   if (status === "granted") {
                     toggleImagePicker();
+                    await getCheckInOutStatus();
+                    await fetchCheckInOutStatus();
                   } else {
                     showToast({
                       position: "top",

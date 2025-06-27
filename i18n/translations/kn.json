@@ -97,5 +97,7 @@
   "Failed to send OTP. Try again.": "OTP ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
   "Please enter a valid 10-digit mobile number.": "ದಯವಿಟ್ಟು 10-ಅಂಕಿಯ ಮಾನ್ಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.",
   "Mobile no. should start with 6-9": " ಮೊಬೈಲ್ ಸಂಖ್ಯೆ 6-9 ರಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು",
-  "Failed to update your attendance. Please retry.": "ನಿಮ್ಮ ಹಾಜರಾತಿ ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ."
+  "Failed to update your attendance. Please retry.": "ನಿಮ್ಮ ಹಾಜರಾತಿ ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
+   "checkInMessage": "ನೀವು {{time}} ಕ್ಕೆ ಚೆಕ್ ಇನ್ ಮಾಡಿದ್ದಾರೆ",
+    "checkOutMessage": "ನೀವು {{time}} ಕ್ಕೆ ಚೆಕ್ ಔಟ್ ಮಾಡಿದ್ದಾರೆ"
 }

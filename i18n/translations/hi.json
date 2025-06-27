@@ -71,6 +71,8 @@
   "Close": "बंद करें",
   "Spare Required": "स्पेयर की आवश्यकता",
   "Customer not available": "ग्राहक उपलब्ध नहीं है",
+    "checkInMessage": "आपने {{time}} बजे चेक-इन किया है",
+    "checkOutMessage": "आपने {{time}} बजे चेक-आउट किया है",
   "In Progress": "प्रगति में",
   "InProgress": "प्रगति में",
   "Cannot Resolve": "समाधान नहीं किया जा सकता",

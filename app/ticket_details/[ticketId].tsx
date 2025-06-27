@@ -625,7 +625,7 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 text-md font-regular">
                           assetType
                         </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]"translate="api">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
                         </PrimaryText>

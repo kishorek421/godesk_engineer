@@ -49,6 +49,8 @@
     "enterCustomerOtp": "Enter customer PIN",
     "updateStatus": "Update Status",
     "updateTicketStatus": "Update Ticket Status",
+     "checkInMessage": "You have checked in at {{time}}",
+    "checkOutMessage": "You have checked out at {{time}}",
     "startAt": "Start at",
     "pincode": "Pincode",
     "selfie": "Selfie",
