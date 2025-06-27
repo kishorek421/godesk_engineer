@@ -23,17 +23,11 @@ import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
-import {
-  hasServicesEnabledAsync,
-  requestForegroundPermissionsAsync,
-} from "expo-location";
-
-import * as Location from "expo-location";
-import * as TaskManager from "expo-task-manager";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
+import useLocation from "@/hooks/useLocation";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -64,6 +58,9 @@ const HomeScreen = () => {
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
 
+  const { isLocationPermissionAllowed, watchCurrentLocationChanges } =
+    useLocation();
+
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -76,6 +73,7 @@ const HomeScreen = () => {
   useEffect(() => {
     fetchInProgressTicketDetails();
     fetchUserDetails();
+    fetchCheckInOutStatus();
   }, []);
 
   const fetchCheckInOutStatus = async () => {
@@ -95,19 +93,21 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    // requestPermissions();
-    fetchCheckInOutStatus();
-  }, []);
+    if (isLocationPermissionAllowed) {
+      watchCurrentLocationChanges(inProgressTicketDetails?.id);
+    }
+  }, [isLocationPermissionAllowed]);
 
   const fetchInProgressTicketDetails = () => {
     apiClient
       .get(GET_INPROGRESS_TICKETS_DETAILS)
       .then((response) => {
         const content = response.data?.data?.content;
-        console.log("inProgressTicketDetails", content);
+        console.log("inProgressTicketDetails", JSON.stringify(content));
 
         if (content && content.length > 0) {
           const ticketData = content[0] ?? {};
+          console.log("ticketId -------------->", ticketData.id)
           setInProgressTicketDetails(ticketData);
         }
         setIsLoading(false);
@@ -222,7 +222,14 @@ const HomeScreen = () => {
           onPress={() => router.push("/notifications/all_notifications")}
         />
       </View>
-      <View className="mt-6 p-1">
+      <View className="mt-4 p-1">
+        <View className="px-6 mb-4">
+          <PrimaryText className="text-primary-950 font-bold text-lg">
+            {checkInOutStatusDetails.value === "Checked In"
+              ? `Last checked in at :`
+              : "Last checked out at :"}
+          </PrimaryText>
+        </View>
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
             <PrimaryText className="mx-2  font-medium text-md leading-5">
@@ -238,15 +245,14 @@ const HomeScreen = () => {
               <Button
                 className="bg-primary-950 rounded-lg"
                 onPress={async () => {
-                  const { status } = await requestForegroundPermissionsAsync();
-                  if (status === "granted") {
+                  if (isLocationPermissionAllowed) {
                     toggleImagePicker();
                   } else {
-                   showToast({
-                          position: "top",
-                          type: "error",
-                          message: "toast18",
-                        });
+                    showToast({
+                      position: "top",
+                      type: "error",
+                      message: "toast18",
+                    });
                   }
                 }}
               >
@@ -256,15 +262,13 @@ const HomeScreen = () => {
                     : t("checkIn")}
                 </ButtonText>
               </Button>
-
             </View>
           )}
-
         </View>
-         {/* <View>
+        {/* <View>
           <Text>{JSON.stringify(checkInOutStatusDetails.value ??"")}</Text>
         </View> */}
-      
+
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...
@@ -287,7 +291,7 @@ const HomeScreen = () => {
                       <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
                         {inProgressTicketDetails.ticketNo ?? "-"}
                       </PrimaryText>
-                     <PrimaryText
+                      <PrimaryText
                         className="mt-[1px] text-[13px] text-gray-900 font-regular"
                         translate="api"
                       >
@@ -326,10 +330,10 @@ const HomeScreen = () => {
                         <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
-                              Number.parseInt(
-                                inProgressTicketDetails.createdAt
-                              )
-                            ).format("DD-MM-YYYY hh:mm a")
+                                Number.parseInt(
+                                  inProgressTicketDetails.createdAt
+                                )
+                              ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
                         </PrimaryText>
                       </View>
