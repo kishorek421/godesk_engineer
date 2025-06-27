@@ -17,8 +17,12 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.godezk.godezkengineer",
       "infoPlist": {
+        "UIBackgroundModes": ["location"],
         "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes",
-        "NSUserTrackingUsageDescription": "We would like to track your activity to provide a better experience and personalized content."
+        "NSUserTrackingUsageDescription": "We would like to track your activity to provide a better experience and personalized content.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We track your location to update your route to the customer place.",
+        "NSLocationWhenInUseUsageDescription": "We track your location during travelling to customer place and check in, check out records.",
+        "NSLocationAlwaysUsageDescription": "We track your location even in background  during travelling to customer place."
       },
       "googleServicesFile": "./GoogleService-Info.plist"
     },
@@ -32,6 +36,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
         "com.google.android.gms.permission.AD_ID"
       ],
       "package": "com.godezk.godezkengineer",

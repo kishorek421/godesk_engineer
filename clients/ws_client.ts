@@ -1,4 +1,4 @@
-import { BASE_URL } from "@/config/env";
+import { API_BASE_WS_URL, BASE_URL } from "@/config/env";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import useLocation from "@/hooks/useLocation";
 import { getItem, setItem } from "@/utils/secure_store";
@@ -106,3 +106,5 @@ export default class WebSocketClient {
     this.ws?.close();
   }
 }
+
+export const wsClient = WebSocketClient.getInstance(API_BASE_WS_URL);

@@ -6,6 +6,12 @@ import { AppState, AppStateStatus, Platform } from "react-native";
 import { useWebSocket } from "./WSContext";
 import useAuth from "@/hooks/useAuth";
 import * as TaskManager from "expo-task-manager";
+import { getItem, setItem } from "@/utils/secure_store";
+import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
+import { BASE_URL } from "@/config/env";
+import axios, { AxiosError } from "axios";
+import { wsClient } from "@/clients/ws_client";
+import { primaryColor } from "@/constants/colors";
 
 interface CurrentLocationModel {
   latitude: number;
@@ -17,8 +23,10 @@ interface LocationContextProps {
   clearAllData: () => void;
   checkPermission: () => Promise<boolean>;
   isLocationEnabled: boolean;
-  isLocationPermissionAllowed: boolean;
-  watchCurrentLocationChanges: (ticketId?: string) => void;
+  isForegroundLocationPermissionAllowed: boolean;
+  isBackgroundLocationPermissionAllowed: boolean;
+  startBackgroundLocationTracking: () => void;
+  startForegroundLocationTracking: () => void;
   currentLocation?: CurrentLocationModel;
 }
 
@@ -34,16 +42,75 @@ const LOCATION_TASK_NAME = "background-location-task";
 
 TaskManager.defineTask(
   LOCATION_TASK_NAME,
-  async ({ data, error }: { data: CurrentLocationModel; error: any }) => {
+  async ({
+    data,
+    error,
+  }: {
+    data: {
+      locations: {
+        coords: CurrentLocationModel;
+      }[];
+    };
+    error: any;
+  }) => {
     if (error) {
       console.error("Background location error:", error);
       return;
     }
 
-    if (data) {
-      const { latitude, longitude, heading } = data;
-      console.log("📍 Background location:", latitude, longitude, heading);
-      // You can: update a server, save to local DB, etc.
+    const inProgressTicketId = await getItem("inProgressTicketId");
+    console.log(
+      "inProgressTicketId >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+      inProgressTicketId
+    );
+
+    if (inProgressTicketId) {
+      if (data) {
+        const { locations } = data;
+        const { latitude, longitude, heading } = locations[0].coords;
+        console.log("📍 Background location:", latitude, longitude, heading);
+        // find lastest in progress ticket Id
+        let token = await getItem(AUTH_TOKEN_KEY);
+        if (token) {
+          try {
+            await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
+            // console.log(validateResponse);
+          } catch (e) {
+            console.error("token invalid");
+            // Sentry.captureMessage(`token invalid -> ${(e as AxiosError)?.response}`);
+            // Sentry.captureMessage(`token invalid -> ${(e as AxiosError)?.response?.data}`);
+            try {
+              const refreshToken = await getItem(REFRESH_TOKEN_KEY);
+              console.log("refreshToken", refreshToken);
+              const response = await axios.get(
+                BASE_URL +
+                  "/login/refresh_token" +
+                  `?refreshToken=${refreshToken}`
+              );
+              const newToken = response.data?.data?.accessToken;
+              await setItem(AUTH_TOKEN_KEY, newToken);
+              console.log("newToken", newToken);
+              token = newToken;
+            } catch (e) {
+              console.error("Refresh token error");
+              if (e && e instanceof AxiosError) {
+                console.log(e.response?.data);
+              }
+            }
+          }
+
+          wsClient.sendMessage({
+            ticketId: inProgressTicketId,
+            lat: latitude,
+            lng: longitude,
+            heading: heading,
+            token: token,
+          });
+        }
+      }
+    } else {
+      // console.log("No inProgressTicketId");
+      // await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
     }
   }
 );
@@ -53,11 +120,17 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
 
   const { token } = useAuth();
 
-  const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(false);
-  const [isLocationPermissionAllowed, setIsLocationPermissionAllowed] =
-    useState(false);
-
   const socket = useWebSocket();
+
+  const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(false);
+  const [
+    isForegroundLocationPermissionAllowed,
+    setIsForegroundLocationPermissionAllowed,
+  ] = useState(false);
+  const [
+    isBackgroundLocationPermissionAllowed,
+    setIsBackgroundLocationPermissionAllowed,
+  ] = useState(false);
 
   // current location of the user
   const [currentLocation, setCurrentLocation] =
@@ -176,41 +249,17 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
     return false;
   };
 
-  // track location is backgorund
-
-  const startBackgroundLocation = async () => {
-    const { status } = await Location.requestForegroundPermissionsAsync();
-    const { status: bgStatus } =
-      await Location.requestBackgroundPermissionsAsync();
-
-    if (status !== "granted" || bgStatus !== "granted") {
-      console.warn("Location permissions not granted!");
-      return;
-    }
-
-    const isRegistered =
-      await TaskManager.isTaskRegisteredAsync(LOCATION_TASK_NAME);
-    if (!isRegistered) {
-      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-        accuracy: Location.Accuracy.Highest,
-        timeInterval: 5000, // 5 seconds
-        distanceInterval: 5,
-        showsBackgroundLocationIndicator: true,
-        foregroundService: {
-          notificationTitle: "GoDesk Tracking",
-          notificationBody: "Tracking your delivery route in background",
-          notificationColor: "#206e69", // your primary color
-        },
-      });
-    }
-  };
-
   // call only at first time app renders
   // till user closes consider this location as current location
   const setCurrentLocationAsDefault = async () => {
-    const isPermitted = await checkForegroundPermission();
-    setIsLocationPermissionAllowed(isPermitted);
-    if (isPermitted) {
+    // check foreground permission allowed
+    const isForegroundPermitted = await checkForegroundPermission();
+    setIsForegroundLocationPermissionAllowed(isForegroundPermitted);
+    // check background permission allowed
+    const isBackgroundPermitted = await checkBackgroundPermission();
+    setIsBackgroundLocationPermissionAllowed(isBackgroundPermitted);
+    // if foreground permission allowed fetch the current location
+    if (isForegroundPermitted) {
       // check last know location
       let lastLocation = await Location.getLastKnownPositionAsync();
       if (lastLocation) {
@@ -239,12 +288,46 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
     }
   };
 
-  const clearAllData = () => {
-    setCurrentLocation(undefined);
+  // track location is backgorund
+  const startBackgroundLocationTracking = async () => {
+    if (
+      isForegroundLocationPermissionAllowed &&
+      isBackgroundLocationPermissionAllowed
+    ) {
+      const isRegistered =
+        await TaskManager.isTaskRegisteredAsync(LOCATION_TASK_NAME);
+      console.log(
+        "isRegistered ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>",
+        isRegistered
+      );
+
+      if (!isRegistered) {
+        console.log(
+          "start register ->>>>>>>>>>>>>>>>>>>>>>>-------------------------->"
+        );
+
+        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+          accuracy: Location.Accuracy.Highest,
+          timeInterval: 5000, // 5 seconds
+          distanceInterval: 5,
+          showsBackgroundLocationIndicator: true,
+          foregroundService: {
+            notificationTitle: "GoDesk Tracking",
+            notificationBody: "Tracking your delivery route in background",
+            notificationColor: primaryColor, // your primary color
+          },
+        });
+      }
+    }
   };
 
-  const watchCurrentLocationChanges = async (ticketId?: string) => {
-    if (isLocationPermissionAllowed) {
+  const startForegroundLocationTracking = async (ticketId?: string) => {
+    // if background tracking is not enabled, start foreground tracking
+    if (
+      isForegroundLocationPermissionAllowed &&
+      !isBackgroundLocationPermissionAllowed
+    ) {
+      await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
       await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.Balanced,
@@ -279,6 +362,10 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
     }
   };
 
+  const clearAllData = () => {
+    setCurrentLocation(undefined);
+  };
+
   return (
     <LocationContext.Provider
       value={{
@@ -286,8 +373,10 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
         clearAllData,
         checkPermission: checkForegroundPermission,
         isLocationEnabled,
-        isLocationPermissionAllowed,
-        watchCurrentLocationChanges,
+        isForegroundLocationPermissionAllowed,
+        isBackgroundLocationPermissionAllowed,
+        startBackgroundLocationTracking,
+        startForegroundLocationTracking,
       }}
     >
       {children}

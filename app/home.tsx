@@ -28,21 +28,7 @@ import BasePage from "@/components/base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
 import useLocation from "@/hooks/useLocation";
-
-const LOCATION_TASK_NAME = "background-location-task";
-
-// // Define the background task
-// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
-
-//   if (data) {
-//     const { locations } = data; // Array of location updates
-//     console.log("Received new locations:", locations);
-//   }
-// });
+import { removeItem, setItem } from "@/utils/secure_store";
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -58,8 +44,12 @@ const HomeScreen = () => {
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
 
-  const { isLocationPermissionAllowed, watchCurrentLocationChanges } =
-    useLocation();
+  const {
+    isForegroundLocationPermissionAllowed,
+    isBackgroundLocationPermissionAllowed,
+    startBackgroundLocationTracking,
+    startForegroundLocationTracking,
+  } = useLocation();
 
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
@@ -93,27 +83,52 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
-    if (isLocationPermissionAllowed) {
-      watchCurrentLocationChanges(inProgressTicketDetails?.id);
+    if (
+      isForegroundLocationPermissionAllowed &&
+      isBackgroundLocationPermissionAllowed
+    ) {
+      if (inProgressTicketDetails?.id) {
+        console.log(
+          "start tracking background -------------------------------->"
+        );
+
+        startBackgroundLocationTracking();
+      } else if (isForegroundLocationPermissionAllowed) {
+        // if background permission is not allowed, start foreground location tracking
+        startForegroundLocationTracking();
+      }
+    } else if (isForegroundLocationPermissionAllowed) {
+      // if background permission is not allowed, start foreground location tracking
+      startForegroundLocationTracking();
     }
-  }, [isLocationPermissionAllowed]);
+  }, [
+    isForegroundLocationPermissionAllowed,
+    isBackgroundLocationPermissionAllowed,
+    inProgressTicketDetails?.id,
+  ]);
 
   const fetchInProgressTicketDetails = () => {
     apiClient
       .get(GET_INPROGRESS_TICKETS_DETAILS)
-      .then((response) => {
+      .then(async (response) => {
         const content = response.data?.data?.content;
         console.log("inProgressTicketDetails", JSON.stringify(content));
 
         if (content && content.length > 0) {
           const ticketData = content[0] ?? {};
-          console.log("ticketId -------------->", ticketData.id)
+          console.log("ticketId -------------->", ticketData.id);
           setInProgressTicketDetails(ticketData);
+          const ticketId = ticketData.id;
+          await setItem("inProgressTicketId", ticketId);
+        } else {
+          await removeItem("inProgressTicketId");
         }
-        setIsLoading(false);
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error("Error fetching tickets", error);
+        await removeItem("inProgressTicketId");
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
@@ -245,7 +260,7 @@ const HomeScreen = () => {
               <Button
                 className="bg-primary-950 rounded-lg"
                 onPress={async () => {
-                  if (isLocationPermissionAllowed) {
+                  if (isForegroundLocationPermissionAllowed) {
                     toggleImagePicker();
                   } else {
                     showToast({
