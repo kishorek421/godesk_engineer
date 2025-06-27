@@ -8,7 +8,7 @@ import {
   Linking,
 
 } from "react-native";
-import {  Link, useSegments } from "expo-router";
+import { Link, useSegments } from "expo-router";
 import LottieView from "lottie-react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
@@ -88,7 +88,7 @@ const LoginScreen = () => {
       .then((response) => {
         console.log("Response:", response.data.data);
         if (response.data?.success) {
-          setMobileNumber(""); //reset mobile no
+        
           router.push({
             pathname: "/verify_otp",
             params: { mobile },
@@ -108,7 +108,7 @@ const LoginScreen = () => {
         setErrors([
           {
             param: "mobile",
-            message:"Invalid mobile number or user not found. Please check and try again.",
+            message: "Invalid mobile number or user not found. Please check and try again.",
           },
         ]);
       })
@@ -166,7 +166,7 @@ const LoginScreen = () => {
                       // mobile no should start with 6-9
                       const customRE = /^[6-9]/;
                       if (!customRE.test(value)) {
-                        return 'Mobile no. should start with 6-9';
+                        return "mobileNoShouldStartWith69";
                       }
                       return undefined;
                     }}
@@ -201,42 +201,42 @@ const LoginScreen = () => {
                 </Button>
               </View>
             </View>
-           <View>
-          <LottieView
-            ref={animationRef}
-            source={require("../assets/lottie/login.json")}
-            autoPlay
-            loop
-            style={{
-              height: 200,
-            }}
-          />
-          <PrimaryText
-            className="mt-8 text-sm text-center px-8 font-regular"
-            translate="none"
-          >
-            {t("loginAgreement") + " "}
-            <PrimaryText
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Terms_And_conditions.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              termsConditions
-            </PrimaryText>{" "}
-            {t("and") + " "}
-            <PrimaryText
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Privacy_Policy.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              privacyPolicy
-            </PrimaryText>
-          </PrimaryText>
+            <View>
+              <LottieView
+                ref={animationRef}
+                source={require("../assets/lottie/login.json")}
+                autoPlay
+                loop
+                style={{
+                  height: 200,
+                }}
+              />
+              <PrimaryText
+                className="mt-8 text-sm text-center px-8 font-regular"
+                translate="none"
+              >
+                {t("loginAgreement") + " "}
+                <PrimaryText
+                  onPress={() => {
+                    Linking.openURL("https://godezk.com/Terms_And_conditions.html");
+                  }}
+                  className="font-bold-1 text-primary-950"
+                >
+                  termsConditions
+                </PrimaryText>{" "}
+                {t("and") + " "}
+                <PrimaryText
+                  onPress={() => {
+                    Linking.openURL("https://godezk.com/Privacy_Policy.html");
+                  }}
+                  className="font-bold-1 text-primary-950"
+                >
+                  privacyPolicy
+                </PrimaryText>
+              </PrimaryText>
+            </View>
+          </View>
         </View>
-      </View>
-      </View>
       </View>
     </BasePage>
   );

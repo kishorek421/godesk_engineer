@@ -94,5 +94,8 @@
     "Pincode is required but couldn't be fetched.": "पिनकोड आवश्यक आहे परंतु मिळवता आले नाही.",
     "Invalid mobile number or user not found. Please check and try again.": "अवैध मोबाइल नंबर किंवा वापरकर्ता आढळला नाही. कृपया तपासा आणि पुन्हा प्रयत्न करा.",
     "Failed to send OTP. Try again.": "OTP पाठवण्यात अयशस्वी. पुन्हा प्रयत्न करा.",
-    "Please enter a valid 10-digit mobile number.": "कृपया वैध 10-अंकी मोबाइल नंबर टाका."
+    "Please enter a valid 10-digit mobile number.": "कृपया वैध 10-अंकी मोबाइल नंबर टाका.",
+    "Failed to update your attendance. Please retry.": "तुमची हजेरी अपडेट करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+     "checkInMessage": "तुम्ही {{time}} वाजता चेक-इन केले आहे",
+    "checkOutMessage": "तुम्ही {{time}} वाजता चेक-आउट केले आहे"
 }
