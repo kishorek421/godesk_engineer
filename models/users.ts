@@ -27,6 +27,7 @@ export interface CreateCheckInOutModel {
   pincode?: string;
   checkInImage?: string;
   checkOutImage?: string;
+
 }
 
 export interface CheckInOutStatusDetailsModel {
@@ -35,6 +36,6 @@ export interface CheckInOutStatusDetailsModel {
   employee_id?: string;
   category?: string;
   id?: string;
-  check_in?: number;
-  check_out?: number;
+  check_in?: string;
+  check_out?: string;
 }

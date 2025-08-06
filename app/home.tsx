@@ -17,6 +17,7 @@ import {
   GET_CHECK_IN_OUT_STATUS,
   GET_INPROGRESS_TICKETS_DETAILS,
   GET_USER_DETAILS,
+  GET_ATTENDANCE_TRANSACTION
 } from "@/constants/api_endpoints";
 import TicketListLayout from "@/components/tickets/TicketListLayout";
 import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
@@ -40,6 +41,8 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
+  const [checkInOutStatus, setCheckInOutStatus] = useState<CheckInOutStatusDetailsModel[]>([]);
+
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
@@ -51,6 +54,8 @@ const HomeScreen = () => {
     startForegroundLocationTracking,
   } = useLocation();
 
+  const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
+  const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(null);
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -63,6 +68,7 @@ const HomeScreen = () => {
   useEffect(() => {
     fetchInProgressTicketDetails();
     fetchUserDetails();
+    getCheckInOutStatus();
     fetchCheckInOutStatus();
   }, []);
 
@@ -80,6 +86,31 @@ const HomeScreen = () => {
       .catch((e) => {
         console.error(e.response.data);
       });
+  };
+  const getCheckInOutStatus = async () => {
+    try {
+      const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
+      const data = response.data?.data?.content;
+
+      if (data && Array.isArray(data)) {
+        const today = new Date().toISOString().split("T")[0];
+        const todayEntry = data.find((item: CheckInOutStatusDetailsModel) => item.date === today);
+
+        if (todayEntry?.check_in) {
+          setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
+        } else {
+          setTodayCheckInTime(null);
+        }
+
+        if (todayEntry?.check_out) {
+          setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
+        } else {
+          setTodayCheckOutTime(null);
+        }
+      }
+    } catch (e: any) {
+      console.error("Error fetching ", e.response?.data || e.message);
+    }
   };
 
   useEffect(() => {
@@ -106,6 +137,7 @@ const HomeScreen = () => {
     isBackgroundLocationPermissionAllowed,
     inProgressTicketDetails?.id,
   ]);
+
 
   const fetchInProgressTicketDetails = () => {
     apiClient
@@ -229,7 +261,23 @@ const HomeScreen = () => {
 
   return (
     <BasePage>
-      <View className="mt-4 flex-row justify-end mx-4">
+      <View className="mt-4 mx-3 flex-row justify-between items-start">
+        <View>
+          {todayCheckInTime && (
+            <View className="bg-blue-200 rounded-md px-2 py-1 mx-4 self-start">
+              <PrimaryText className="text-gray-800 font-medium text-sm" >
+               {t("checkInMessage", { time: todayCheckInTime })}
+              </PrimaryText>
+
+              {todayCheckOutTime && (
+                <PrimaryText className="text-gray-800 font-medium text-sm" >
+                  {t("checkOutMessage", { time: todayCheckOutTime })}
+                </PrimaryText>
+              )}
+            </View>
+          )}
+        </View>
+
         <Ionicons
           name="notifications-outline"
           size={20}
@@ -237,14 +285,7 @@ const HomeScreen = () => {
           onPress={() => router.push("/notifications/all_notifications")}
         />
       </View>
-      <View className="mt-4 p-1">
-        <View className="px-6 mb-4">
-          <PrimaryText className="text-primary-950 font-bold ">
-            {checkInOutStatusDetails.value === "Checked In"
-              ? `Last checked in at : ${checkInOutStatusDetails.check_in ? moment(checkInOutStatusDetails.check_in).format("hh:mm a, DD MMM YYYY") : "-"}`
-              : `Last checked out at : ${checkInOutStatusDetails.check_out ? moment(checkInOutStatusDetails.check_out).format("hh:mm a, DD MMM YYYY") : "-"}`}
-          </PrimaryText>
-        </View>
+      <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
             <PrimaryText className="mx-2  font-medium text-md leading-5">
@@ -262,6 +303,9 @@ const HomeScreen = () => {
                 onPress={async () => {
                   if (isForegroundLocationPermissionAllowed) {
                     toggleImagePicker();
+                    await 
+                    ();
+                    await fetchCheckInOutStatus();
                   } else {
                     showToast({
                       position: "top",
@@ -280,10 +324,6 @@ const HomeScreen = () => {
             </View>
           )}
         </View>
-        {/* <View>
-          <Text>{JSON.stringify(checkInOutStatusDetails.value ??"")}</Text>
-        </View> */}
-
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...

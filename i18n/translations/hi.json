@@ -71,6 +71,8 @@
   "Close": "बंद करें",
   "Spare Required": "स्पेयर की आवश्यकता",
   "Customer not available": "ग्राहक उपलब्ध नहीं है",
+    "checkInMessage": "आपने {{time}} बजे चेक-इन किया है",
+    "checkOutMessage": "आपने {{time}} बजे चेक-आउट किया है",
   "In Progress": "प्रगति में",
   "InProgress": "प्रगति में",
   "Cannot Resolve": "समाधान नहीं किया जा सकता",
@@ -98,5 +100,6 @@
   "Invalid mobile number or user not found. Please check and try again.": "अमान्य मोबाइल नंबर या उपयोगकर्ता नहीं मिला। कृपया जांचें और पुनः प्रयास करें।",
   "Failed to send OTP. Try again.": "OTP भेजने में विफल। कृपया पुनः प्रयास करें।",
   "Please enter a valid 10-digit mobile number.": "कृपया एक मान्य 10-अंकों का मोबाइल नंबर दर्ज करें।",
-  "Mobile no. should start with 6-9": "मोबाईल क्रमांक 6-9 पासून सुरू व्हावा"
+  "Mobile no. should start with 6-9": "मोबाईल क्रमांक 6-9 पासून सुरू व्हावा",
+  "Failed to update your attendance. Please retry.": "आपली उपस्थिती अद्यतनित करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
 }

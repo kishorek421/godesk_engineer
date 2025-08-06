@@ -49,6 +49,8 @@
     "enterCustomerOtp": "Enter customer PIN",
     "updateStatus": "Update Status",
     "updateTicketStatus": "Update Ticket Status",
+     "checkInMessage": "You have checked in at {{time}}",
+    "checkOutMessage": "You have checked out at {{time}}",
     "startAt": "Start at",
     "pincode": "Pincode",
     "selfie": "Selfie",
@@ -84,5 +86,6 @@
     "toast16": "Checked out successfully",
     "toast17": "Checked in successfully",
     "toast18": "Allow location permission to Check In/Check Out",
-    "toast19": "An unexpected error occurred. Please try again."
+    "toast19": "An unexpected error occurred. Please try again.",
+    "Failed to update your attendance. Please retry.":"Failed to update your attendance. Please retry."
 }

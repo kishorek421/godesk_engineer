@@ -37,7 +37,7 @@
   "verifyOtp": "OTP ಪರಿಶೀಲಿಸಿ",
   "otpValidationMessage": "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ 6 ಅಂಕಿಗಳ OTP ನಮೂದಿಸಿ.",
   "otpErrorMessage": "ದೋಷ ಉಂಟಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
-  "loginAgreement": "ಲಾಗಿನ್ ಮಾಡುವ ಮೂಲಕ ನೀವು ನಮ್ಮ",
+  "loginAgreement": "ನೀವು ಲಾಗಿನ್ ಮಾಡುವ ಮೂಲಕ ಒಪ್ಪಿಕೊಳ್ಳುತ್ತೀರಿ ನಮ್ಮ",
   "ticketDetails": "ಟಿಕೆಟ್ ವಿವರಗಳು",
   "serialNo": "ಸೀರಿಯಲ್  ನಂಬರ್",
   "Description": "ವಿವರಣೆ",
@@ -96,5 +96,8 @@
   "Invalid mobile number or user not found. Please check and try again.": "ಅಮಾನ್ಯವಾದ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಅಥವಾ ಬಳಕೆದಾರನು ಕಂಡುಬಂದಿಲ್ಲ. ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
   "Failed to send OTP. Try again.": "OTP ಕಳುಹಿಸಲು ವಿಫಲವಾಗಿದೆ. ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
   "Please enter a valid 10-digit mobile number.": "ದಯವಿಟ್ಟು 10-ಅಂಕಿಯ ಮಾನ್ಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ.",
-  "Mobile no. should start with 6-9": " ಮೊಬೈಲ್ ಸಂಖ್ಯೆ 6-9 ರಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು"
+  "Mobile no. should start with 6-9": " ಮೊಬೈಲ್ ಸಂಖ್ಯೆ 6-9 ರಿಂದ ಪ್ರಾರಂಭವಾಗಬೇಕು",
+  "Failed to update your attendance. Please retry.": "ನಿಮ್ಮ ಹಾಜರಾತಿ ನವೀಕರಿಸಲು ವಿಫಲವಾಗಿದೆ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
+   "checkInMessage": "ನೀವು {{time}} ಕ್ಕೆ ಚೆಕ್ ಇನ್ ಮಾಡಿದ್ದಾರೆ",
+    "checkOutMessage": "ನೀವು {{time}} ಕ್ಕೆ ಚೆಕ್ ಔಟ್ ಮಾಡಿದ್ದಾರೆ"
 }
