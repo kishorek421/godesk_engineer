@@ -239,10 +239,10 @@ const HomeScreen = () => {
       </View>
       <View className="mt-4 p-1">
         <View className="px-6 mb-4">
-          <PrimaryText className="text-primary-950 font-bold text-lg">
+          <PrimaryText className="text-primary-950 font-bold ">
             {checkInOutStatusDetails.value === "Checked In"
-              ? `Last checked in at :`
-              : "Last checked out at :"}
+              ? `Last checked in at : ${checkInOutStatusDetails.check_in ? moment(checkInOutStatusDetails.check_in).format("hh:mm a, DD MMM YYYY") : "-"}`
+              : `Last checked out at : ${checkInOutStatusDetails.check_out ? moment(checkInOutStatusDetails.check_out).format("hh:mm a, DD MMM YYYY") : "-"}`}
           </PrimaryText>
         </View>
         <View className="flex-row justify-between items-center">

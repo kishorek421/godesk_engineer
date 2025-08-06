@@ -19,6 +19,8 @@ export default class WebSocketClient {
   }
 
   private async initWs(url: string) {
+    console.log("-------------------------------------------------->initWs");
+
     // fetch token from getItem
     let token = await getItem(AUTH_TOKEN_KEY);
     if (token) {

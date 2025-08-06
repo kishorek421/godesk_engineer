@@ -35,4 +35,6 @@ export interface CheckInOutStatusDetailsModel {
   employee_id?: string;
   category?: string;
   id?: string;
+  check_in?: number;
+  check_out?: number;
 }

@@ -100,11 +100,12 @@ TaskManager.defineTask(
           }
 
           wsClient.sendMessage({
-            ticketId: inProgressTicketId,
+            // ticketId: inProgressTicketId,
+            ticketId: "2b7bb95a-6c3a-4d39-95fc-ba14eb3c3e80",
             lat: latitude,
             lng: longitude,
             heading: heading,
-            token: token,
+            token: "Bearer " + token,
           });
         }
       }
@@ -307,9 +308,9 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
         );
 
         await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-          accuracy: Location.Accuracy.Highest,
+          accuracy: Location.Accuracy.Balanced,
           timeInterval: 5000, // 5 seconds
-          distanceInterval: 5,
+          distanceInterval: 0,
           showsBackgroundLocationIndicator: true,
           foregroundService: {
             notificationTitle: "GoDesk Tracking",
@@ -350,11 +351,12 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
           if (ticketId) {
             // update current location to customer
             socket?.sendMessage({
-              ticketId: ticketId,
+              // ticketId: ticketId,
+              ticketId: "2b7bb95a-6c3a-4d39-95fc-ba14eb3c3e80",
               lat: latitude,
               lng: longitude,
               heading: heading,
-              token: token,
+              token: "Bearer " + token,
             });
           }
         }
