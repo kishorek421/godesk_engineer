@@ -16,10 +16,11 @@ interface AuthContextProps {
   user: CustomerDetailsModel | undefined;
   loading: boolean;
   logout: any;
+  token?: string;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
-  undefined,
+  undefined
 );
 export enum InitialNotificationStatus {
   fetching,
@@ -34,10 +35,11 @@ interface AuthProviderProps {
 export const AuthProvider = ({
   initialNotificationStatus = InitialNotificationStatus.fetching,
   children,
-}:  AuthProviderProps) => {
+}: AuthProviderProps) => {
   const [user, setUser] = useState<UserDetailsModel | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const [token, setToken] = useState<string>();
 
   useEffect(() => {
     // const loadLanuage = async () => {
@@ -47,12 +49,12 @@ export const AuthProvider = ({
     //   }
     // }
     const loadUser = async () => {
-
       const token = await getItem(AUTH_TOKEN_KEY);
       console.log("token", token);
       const refreshToken = await getItem(REFRESH_TOKEN_KEY);
       console.log("refreshToken", refreshToken);
       if (token) {
+        setToken(token);
         try {
           const response = await apiClient.get(GET_USER_DETAILS);
           setUser(response.data);
@@ -80,37 +82,37 @@ export const AuthProvider = ({
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, token }}>
       <ThemeProvider
-       value={{
-        fonts: {
-          regular: {
-            fontFamily: "sans",
-            fontWeight: "400",
+        value={{
+          fonts: {
+            regular: {
+              fontFamily: "sans",
+              fontWeight: "400",
+            },
+            medium: {
+              fontFamily: "sans",
+              fontWeight: "500",
+            },
+            bold: {
+              fontFamily: "sans",
+              fontWeight: "700",
+            },
+            heavy: {
+              fontFamily: "sans",
+              fontWeight: "900",
+            },
           },
-          medium: {
-            fontFamily: "sans",
-            fontWeight: "500",
+          dark: false,
+          colors: {
+            primary: primaryColor,
+            background: "#f2f2f2",
+            card: "#fff",
+            text: "#000",
+            border: "",
+            notification: "",
           },
-          bold: {
-            fontFamily: "sans",
-            fontWeight: "700",
-          },
-          heavy: {
-            fontFamily: "sans",
-            fontWeight: "900",
-          },
-        },
-        dark: false,
-        colors: {
-          primary: primaryColor,
-          background: "#f2f2f2",
-          card: "#fff",
-          text: "#000",
-          border: "",
-          notification: "",
-        },
-      }}
+        }}
       >
         {children}
       </ThemeProvider>
