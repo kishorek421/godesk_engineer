@@ -5,7 +5,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { useFonts } from "expo-font";
-import { AuthProvider, InitialNotificationStatus } from "@/context/AuthContext";
+import { AuthProvider, InitialNotificationStatus, } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import {
   Poppins_400Regular,
@@ -22,10 +22,8 @@ import { handleNotificationNavigation } from "@/utils/helper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import i18n from "@/i18n";
 import { I18nextProvider } from "react-i18next";
-import BasePage from "@/components/base/base_page";
+import BasePage from '@/components/base/base_page';
 import Toast from "@/components/base/toast";
-import { WebSocketProvider } from "@/context/WSContext";
-import { LocationProvider } from "@/context/LocationContext";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -55,6 +53,7 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+
   useEffect(() => {
     const initNotificationListener = async () => {
       let unsubscribeOnMessage: (() => void) | undefined;
@@ -75,7 +74,12 @@ export default function RootLayout() {
             const token = await getItem(AUTH_TOKEN_KEY);
             // const userDetails = JSON.parse((await getItem(USER_DETAILS)) ?? "");
             const userId = remoteMessage?.data?.userId;
-            if (token && userId && remoteMessage?.notification) {
+            if (
+              token &&
+
+              userId &&
+              remoteMessage?.notification
+            ) {
               // setNotificationData(remoteMessage);
 
               await Notifications.scheduleNotificationAsync({
@@ -97,16 +101,16 @@ export default function RootLayout() {
                   (response) => {
                     console.log(
                       "response ->",
-                      response.notification.request.content
+                      response.notification.request.content,
                     );
                     handleNotificationNavigation(
                       remoteMessage,
-                      "addNotificationResponseReceivedListener"
+                      "addNotificationResponseReceivedListener",
                     );
-                  }
+                  },
                 );
             }
-          }
+          },
         );
 
         unsubscribeOnOpen = messagingRef.current.onNotificationOpenedApp(
@@ -116,9 +120,9 @@ export default function RootLayout() {
             // );
             handleNotificationNavigation(
               remoteMessage,
-              "onNotificationOpenedApp"
+              "onNotificationOpenedApp",
             );
-          }
+          },
         );
 
         messagingRef.current
@@ -132,19 +136,19 @@ export default function RootLayout() {
               if (data) {
                 handleNotificationNavigation(
                   remoteMessage,
-                  "getInitialNotification"
+                  "getInitialNotification",
                 );
                 setInitialNotificationStatus(
-                  InitialNotificationStatus.notifications_pending
+                  InitialNotificationStatus.notifications_pending,
                 );
               } else {
                 setInitialNotificationStatus(
-                  InitialNotificationStatus.notifications_empty
+                  InitialNotificationStatus.notifications_empty,
                 );
               }
             } else {
               setInitialNotificationStatus(
-                InitialNotificationStatus.notifications_empty
+                InitialNotificationStatus.notifications_empty,
               );
             }
             console.log("remoteMessage ----->", remoteMessage);
@@ -157,9 +161,9 @@ export default function RootLayout() {
             if (remoteMessage)
               handleNotificationNavigation(
                 remoteMessage,
-                "setBackgroundMessageHandler"
+                "setBackgroundMessageHandler",
               );
-          }
+          },
         );
       }
 
@@ -182,124 +186,135 @@ export default function RootLayout() {
     initNotificationListener();
   }, [loaded, isMessagingReady]);
 
+
   if (!loaded) {
     return null;
   }
   return (
     <GluestackUIProvider mode="light">
       <AuthProvider>
-        <LocationProvider>
-          <WebSocketProvider>
-            <I18nextProvider i18n={i18n}>
-              <ToastProvider>
-                <Stack>
-                  <Stack.Screen
-                    name="index"
-                    options={{
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
-                  <Stack.Screen
-                    name="home"
-                    options={{
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
-                  <Stack.Screen
-                    name="notifications/all_notifications"
-                    options={{
-                      headerTitle: "Notifications",
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
+        <I18nextProvider i18n={i18n}>
+          <ToastProvider>
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="home"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="notifications/all_notifications"
 
-                  <Stack.Screen
-                    name="login"
-                    options={{
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
+                options={{
+                  headerTitle: "Notifications",
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
 
-                  <Stack.Screen
-                    name="verify_otp"
-                    options={{
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
-                  <Stack.Screen
-                    name="ticket_details/[ticketId]"
-                    options={{
-                      // headerShown: false,
-                      headerTitle: "Ticket Details",
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
+              <Stack.Screen
+                name="login"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
 
-                  <Stack.Screen
-                    name="translations/language_selection"
-                    options={{
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
-                  <Stack.Screen
-                    name="image_viewer/[uri]"
-                    options={{
-                      presentation: "modal",
-                      headerShown: false,
-                      headerTitleStyle: {
-                        fontFamily: "SemiBold",
-                      },
-                      headerBackTitleStyle: {
-                        fontFamily: "Regular",
-                      },
-                    }}
-                  />
-                </Stack>
-                <Toast />
-              </ToastProvider>
-            </I18nextProvider>
-          </WebSocketProvider>
-        </LocationProvider>
+              <Stack.Screen
+                name="verify_otp"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="forgot_password"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="ticket_details/[ticketId]"
+                options={{
+                  // headerShown: false,
+                  headerTitle: "Ticket Details",
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+
+              <Stack.Screen
+                name="translations/language_selection"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
+                name="image_viewer/[uri]"
+                options={{
+                  presentation: "modal",
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+
+            </Stack>
+            <Toast />
+          </ToastProvider>
+        </I18nextProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );

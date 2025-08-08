@@ -38,6 +38,13 @@ interface PrimaryTextFormFieldProps {
   inputType?: "text" | "password";
   className?: string;
   defaultErrorMessage?: string;
+   inputCN?: string;
+  prefix?: string | React.ReactNode;
+  suffix?: string | React.ReactNode;
+  prefixStyle?: string;
+  suffixStyle?: string;
+  isDisabled?: boolean;
+  textAlign?: string;
 }
 
 const PrimaryTextFormField = ({
@@ -62,6 +69,13 @@ const PrimaryTextFormField = ({
   inputType = "text",
   className = "",
   defaultErrorMessage,
+    inputCN = "",
+  prefix,
+  prefixStyle = "",
+  suffix,
+  suffixStyle = "",
+  isDisabled = false,
+  
 }: PrimaryTextFormFieldProps) => {
   const [value, setValue] = useState<string>("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

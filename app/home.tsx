@@ -28,8 +28,10 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-import useLocation from "@/hooks/useLocation";
+// import useLocation from "@/hooks/useLocation";
 import { removeItem, setItem } from "@/utils/secure_store";
+import { requestForegroundPermissionsAsync } from "expo-location";
+import { TouchableWithoutFeedback } from "react-native";
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -42,17 +44,17 @@ const HomeScreen = () => {
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
   const [checkInOutStatus, setCheckInOutStatus] = useState<CheckInOutStatusDetailsModel[]>([]);
-
+    const [expanded, setExpanded] = useState(false);
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
 
-  const {
-    isForegroundLocationPermissionAllowed,
-    isBackgroundLocationPermissionAllowed,
-    startBackgroundLocationTracking,
-    startForegroundLocationTracking,
-  } = useLocation();
+  // const {
+  //   isForegroundLocationPermissionAllowed,
+  //   isBackgroundLocationPermissionAllowed,
+  //   startBackgroundLocationTracking,
+  //   startForegroundLocationTracking,
+  // } = useLocation();
 
   const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
   const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(null);
@@ -113,30 +115,30 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    if (
-      isForegroundLocationPermissionAllowed &&
-      isBackgroundLocationPermissionAllowed
-    ) {
-      if (inProgressTicketDetails?.id) {
-        console.log(
-          "start tracking background -------------------------------->"
-        );
+  // useEffect(() => {
+  //   if (
+  //     isForegroundLocationPermissionAllowed &&
+  //     isBackgroundLocationPermissionAllowed
+  //   ) {
+  //     if (inProgressTicketDetails?.id) {
+  //       console.log(
+  //         "start tracking background -------------------------------->"
+  //       );
 
-        startBackgroundLocationTracking();
-      } else if (isForegroundLocationPermissionAllowed) {
-        // if background permission is not allowed, start foreground location tracking
-        startForegroundLocationTracking();
-      }
-    } else if (isForegroundLocationPermissionAllowed) {
-      // if background permission is not allowed, start foreground location tracking
-      startForegroundLocationTracking();
-    }
-  }, [
-    isForegroundLocationPermissionAllowed,
-    isBackgroundLocationPermissionAllowed,
-    inProgressTicketDetails?.id,
-  ]);
+  //       startBackgroundLocationTracking();
+  //     } else if (isForegroundLocationPermissionAllowed) {
+  //       // if background permission is not allowed, start foreground location tracking
+  //       startForegroundLocationTracking();
+  //     }
+  //   } else if (isForegroundLocationPermissionAllowed) {
+  //     // if background permission is not allowed, start foreground location tracking
+  //     startForegroundLocationTracking();
+  //   }
+  // }, [
+  //   isForegroundLocationPermissionAllowed,
+  //   isBackgroundLocationPermissionAllowed,
+  //   inProgressTicketDetails?.id,
+  // ]);
 
 
   const fetchInProgressTicketDetails = () => {
@@ -164,7 +166,6 @@ const HomeScreen = () => {
         setIsLoading(false);
       });
   };
-
   const fetchUserDetails = () => {
     apiClient
       .get(GET_USER_DETAILS)
@@ -300,11 +301,11 @@ const HomeScreen = () => {
             <View className="me-4">
               <Button
                 className="bg-primary-950 rounded-lg"
-                onPress={async () => {
-                  if (isForegroundLocationPermissionAllowed) {
+                  onPress={async () => {
+                  const { status } = await requestForegroundPermissionsAsync();
+                  if (status === "granted") {
                     toggleImagePicker();
-                    await 
-                    ();
+                    await getCheckInOutStatus();
                     await fetchCheckInOutStatus();
                   } else {
                     showToast({
@@ -341,28 +342,29 @@ const HomeScreen = () => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                  <View className="flex-row justify-between w-full items-center">
-                    <View>
-                      <PrimaryText className="font-bold-1 text-tertiary-950 leading-5">
-                        {inProgressTicketDetails.ticketNo ?? "-"}
+                   <View className="flex-row justify-between w-full">
+                    <View className="flex-1">
+                      <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
+                        {inProgressTicketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
-                      <PrimaryText
-                        className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                        translate="api"
-                      >
-                        {`${t("issueIn")}: ${inProgressTicketDetails.issueTypeDetails?.name ?? "-"}`}
-                      </PrimaryText>
+                      <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+                        <PrimaryText
+                          className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                          translate="api"
+                          numberOfLines={expanded ? undefined : 4}
+                          ellipsizeMode="tail"
+                        >
+                          {`${t('issueIn')}: ${Array.isArray(inProgressTicketDetails.issueTypeDetails) && inProgressTicketDetails.issueTypeDetails.length > 0
+                            ? inProgressTicketDetails.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
+                            : "-"
+                            }`}
+                        </PrimaryText>
+                      </TouchableWithoutFeedback>
                     </View>
-                    <View>
-                      <TicketStatusComponent
-                        statusKey={
-                          inProgressTicketDetails.statusDetails?.key ?? ""
-                        }
-                        statusValue={
-                          inProgressTicketDetails.statusDetails?.value ?? ""
-                        }
-                      />
-                    </View>
+                    <TicketStatusComponent
+                      statusKey={inProgressTicketDetails.statusDetails?.key}
+                      statusValue={inProgressTicketDetails.statusDetails?.value}
+                    />
                   </View>
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
                   <View className="w-full">
