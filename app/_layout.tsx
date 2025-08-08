@@ -260,6 +260,18 @@ export default function RootLayout() {
                 }}
               />
               <Stack.Screen
+                name="forgot_password"
+                options={{
+                  headerShown: false,
+                  headerTitleStyle: {
+                    fontFamily: "SemiBold",
+                  },
+                  headerBackTitleStyle: {
+                    fontFamily: "Regular",
+                  },
+                }}
+              />
+              <Stack.Screen
                 name="ticket_details/[ticketId]"
                 options={{
                   // headerShown: false,

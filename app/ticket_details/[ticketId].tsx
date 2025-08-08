@@ -62,6 +62,7 @@ import ConfigurationDropdownFormField from "@/components/fields/ConfigurationDro
 import { t } from "i18next";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useToast } from "@/context/ToastContext";
+import { TouchableWithoutFeedback } from "react-native";
 
 const TicketDetails = () => {
 
@@ -86,7 +87,7 @@ const TicketDetails = () => {
     ConfigurationModel[]
   >([]);
   const [description, setDescription] = useState<string>();
-
+  const [expanded, setExpanded] = useState(false);
   const [pincode, setPincode] = useState<string | undefined>(undefined);
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
@@ -230,24 +231,24 @@ const TicketDetails = () => {
     setErrors([]);
     setFieldValidationStatus({});
     setCanValidateField(true);
-   const validationPromises = Object.keys(fieldValidationStatus).map(
-        (key) =>
-            new Promise((resolve) => {
-                setFieldValidationStatus((prev: any) => ({
-                    ...prev,
-                    [key]: resolve,
-                }));
-            })
+    const validationPromises = Object.keys(fieldValidationStatus).map(
+      (key) =>
+        new Promise((resolve) => {
+          setFieldValidationStatus((prev: any) => ({
+            ...prev,
+            [key]: resolve,
+          }));
+        })
     );
 
     setCanValidateField(true);
     await Promise.all(validationPromises);
 
     const allValid = errors
-        .map((error) => error.message?.length === 0)
-        .every((status) => status === true);
+      .map((error) => error.message?.length === 0)
+      .every((status) => status === true);
 
- 
+
     const currentErrors: any[] = [];
 
     const requiresImageOrOTP = [
@@ -573,12 +574,19 @@ const TicketDetails = () => {
                       <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
-                      <PrimaryText
-                        className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                        translate="api"
-                      >
-                        {`${t("issueIn")}: ${ticketDetails.issueTypeDetails?.name ?? "-"}`}
-                      </PrimaryText>
+                      <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+                        <PrimaryText
+                          className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                          translate="api"
+                          numberOfLines={expanded ? undefined : 4}
+                          ellipsizeMode="tail"
+                        >
+                          {`${t('issueIn')}: ${Array.isArray(ticketDetails.issueTypeDetails) && ticketDetails.issueTypeDetails.length > 0
+                            ? ticketDetails.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
+                            : "-"
+                            }`}
+                        </PrimaryText>
+                      </TouchableWithoutFeedback>
                     </View>
                     <TicketStatusComponent
                       statusKey={ticketDetails.statusDetails?.key}
@@ -625,7 +633,7 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 text-md font-regular">
                           assetType
                         </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]"translate="api">
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate="api">
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
                         </PrimaryText>
@@ -981,7 +989,7 @@ const TicketDetails = () => {
                           max={4}
                           defaultValue={otp}
                           isRequired={
-                          ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+                            ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
                           }
                           keyboardType="phone-pad"
                           filterExp={/^[0-9]*$/}

@@ -24,32 +24,13 @@ import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
-import {
-  hasServicesEnabledAsync,
-  requestForegroundPermissionsAsync,
-} from "expo-location";
-
-import * as Location from "expo-location";
-import * as TaskManager from "expo-task-manager";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-
-const LOCATION_TASK_NAME = "background-location-task";
-
-// // Define the background task
-// TaskManager.defineTask(LOCATION_TASK_NAME, ({ data, error }) => {
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
-
-//   if (data) {
-//     const { locations } = data; // Array of location updates
-//     console.log("Received new locations:", locations);
-//   }
-// });
+// import useLocation from "@/hooks/useLocation";
+import { removeItem, setItem } from "@/utils/secure_store";
+import { requestForegroundPermissionsAsync } from "expo-location";
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -66,6 +47,14 @@ const HomeScreen = () => {
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
+
+  // const {
+  //   isForegroundLocationPermissionAllowed,
+  //   isBackgroundLocationPermissionAllowed,
+  //   startBackgroundLocationTracking,
+  //   startForegroundLocationTracking,
+  // } = useLocation();
+
   const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
   const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(null);
   const toggleImagePicker = () => {
@@ -80,6 +69,8 @@ const HomeScreen = () => {
   useEffect(() => {
     fetchInProgressTicketDetails();
     fetchUserDetails();
+    getCheckInOutStatus();
+    fetchCheckInOutStatus();
   }, []);
 
   const fetchCheckInOutStatus = async () => {
@@ -123,31 +114,57 @@ const HomeScreen = () => {
     }
   };
 
-  useEffect(() => {
-    getCheckInOutStatus();
-    fetchCheckInOutStatus();
-  }, []);
+  // useEffect(() => {
+  //   if (
+  //     isForegroundLocationPermissionAllowed &&
+  //     isBackgroundLocationPermissionAllowed
+  //   ) {
+  //     if (inProgressTicketDetails?.id) {
+  //       console.log(
+  //         "start tracking background -------------------------------->"
+  //       );
+
+  //       startBackgroundLocationTracking();
+  //     } else if (isForegroundLocationPermissionAllowed) {
+  //       // if background permission is not allowed, start foreground location tracking
+  //       startForegroundLocationTracking();
+  //     }
+  //   } else if (isForegroundLocationPermissionAllowed) {
+  //     // if background permission is not allowed, start foreground location tracking
+  //     startForegroundLocationTracking();
+  //   }
+  // }, [
+  //   isForegroundLocationPermissionAllowed,
+  //   isBackgroundLocationPermissionAllowed,
+  //   inProgressTicketDetails?.id,
+  // ]);
 
 
   const fetchInProgressTicketDetails = () => {
     apiClient
       .get(GET_INPROGRESS_TICKETS_DETAILS)
-      .then((response) => {
+      .then(async (response) => {
         const content = response.data?.data?.content;
-        console.log("inProgressTicketDetails", content);
+        console.log("inProgressTicketDetails", JSON.stringify(content));
 
         if (content && content.length > 0) {
           const ticketData = content[0] ?? {};
+          console.log("ticketId -------------->", ticketData.id);
           setInProgressTicketDetails(ticketData);
+          const ticketId = ticketData.id;
+          await setItem("inProgressTicketId", ticketId);
+        } else {
+          await removeItem("inProgressTicketId");
         }
-        setIsLoading(false);
       })
-      .catch((error) => {
+      .catch(async (error) => {
         console.error("Error fetching tickets", error);
+        await removeItem("inProgressTicketId");
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
-
   const fetchUserDetails = () => {
     apiClient
       .get(GET_USER_DETAILS)
@@ -268,9 +285,6 @@ const HomeScreen = () => {
           onPress={() => router.push("/notifications/all_notifications")}
         />
       </View>
-
-
-
       <View className="mt-6 p-1">
         <View className="flex-row justify-between items-center">
           <View className="flex px-4">
@@ -286,7 +300,7 @@ const HomeScreen = () => {
             <View className="me-4">
               <Button
                 className="bg-primary-950 rounded-lg"
-                onPress={async () => {
+                  onPress={async () => {
                   const { status } = await requestForegroundPermissionsAsync();
                   if (status === "granted") {
                     toggleImagePicker();
@@ -307,13 +321,9 @@ const HomeScreen = () => {
                     : t("checkIn")}
                 </ButtonText>
               </Button>
-
             </View>
           )}
-
         </View>
-
-
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
             Loading...
@@ -375,10 +385,10 @@ const HomeScreen = () => {
                         <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
-                              Number.parseInt(
-                                inProgressTicketDetails.createdAt
-                              )
-                            ).format("DD-MM-YYYY hh:mm a")
+                                Number.parseInt(
+                                  inProgressTicketDetails.createdAt
+                                )
+                              ).format("DD-MM-YYYY hh:mm a")
                             : "-"}
                         </PrimaryText>
                       </View>

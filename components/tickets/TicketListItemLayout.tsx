@@ -9,6 +9,7 @@ import PrimaryText from "../PrimaryText";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import BasePage from "../base/base_page";
 import { t } from "i18next";
+import { TouchableWithoutFeedback } from "react-native";
 const TicketListItemLayout = ({
   ticketModel,
   cn = "",
@@ -20,6 +21,7 @@ const TicketListItemLayout = ({
   //  const { refreshFlag, setRefreshFlag } = useRefresh();
 
   const [refreshing, setRefreshing] = useState(true);
+    const [expanded, setExpanded] = useState(false);
   const getHelpText = (statusKey?: string): string => {
     switch (statusKey) {
       case "WORK_COMPLETED":
@@ -49,12 +51,19 @@ const TicketListItemLayout = ({
                 <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
                   {ticketModel?.ticketNo ?? "-"}
                 </PrimaryText>
-                <PrimaryText
-                  className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                  translate="api"
-                >
-                  {`${t("issueIn")}: ${ticketModel.issueTypeDetails?.name ?? "-"}`}
-                </PrimaryText>
+                  <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+                    <PrimaryText
+                      className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                      translate="api"
+                      numberOfLines={expanded ? undefined : 4}
+                      ellipsizeMode="tail"
+                    >
+                      {`${t('issueIn')}: ${Array.isArray(ticketModel.issueTypeDetails) && ticketModel.issueTypeDetails.length > 0
+                        ? ticketModel.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
+                        : "-"
+                        }`}
+                    </PrimaryText>
+                  </TouchableWithoutFeedback>
               </View>
               <View>
                 <TicketStatusComponent
