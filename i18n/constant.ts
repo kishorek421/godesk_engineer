@@ -1,15 +1,16 @@
 export const messages = {
   "en": {
 
-    label: (label: string, getAorAn: string, t: any) =>
-      `Please Enter ${getAorAn} ${t(label)}`,
 
+    label: (label: string, getAorAn: string, t: any) =>
+      `Please enter ${getAorAn} ${t(label).toLowerCase()}`,
     label2: (label: string, getAorAn: string, t: any) =>
-      `Please Enter ${getAorAn} ${t(label)}`,
+      `Please enter ${getAorAn} ${t(label).toLowerCase()}`,
 
     label1: (label: string, getAorAn: string, t: any) =>
-      `Please Select ${getAorAn} ${t(label)}`,
-    "min": (min: any) => `Min. length should be ${(min)}`,
+      `Please select ${getAorAn} ${t(label).toLowerCase()}`,
+
+    min: (min: any) => `Min. length should be ${min}`,
 
   },
   "kn": {
@@ -45,7 +46,7 @@ export const messages = {
   },
   "hi": {
 
-     label: (label: string, getAorAn: string, t: any) =>
+    label: (label: string, getAorAn: string, t: any) =>
       `कृपया ${t(label)} दर्ज करें`,
     label2: (label: string, getAorAn: string, t: any) =>
       `कृपया ${t(label)} दर्ज करें`,
@@ -56,7 +57,7 @@ export const messages = {
   },
 
   "mr": {
-     label: (label: string, getAorAn: string, t: any) =>
+    label: (label: string, getAorAn: string, t: any) =>
       `कृपया ${t(label)} दर्ज करें`,
     label2: (label: string, getAorAn: string, t: any) =>
       `कृपया ${t(label)} दर्ज करें`,
@@ -66,7 +67,7 @@ export const messages = {
 
   },
   "ml": {
-     
+
     label: (label: string, getAorAn: string, t: any) =>
       `ദയവായി ${t(label)} നൽകുക`,
     label2: (label: string, getAorAn: string, t: any) =>

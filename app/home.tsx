@@ -295,7 +295,7 @@ const HomeScreen = () => {
             <PrimaryText className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
               {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
             </PrimaryText>
-            {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
+            <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText>
           </View>
           {checkInOutStatusDetails.value !== "Checked Out" && (
             <View className="me-4">

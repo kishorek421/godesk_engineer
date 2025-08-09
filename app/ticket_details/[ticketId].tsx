@@ -298,12 +298,12 @@ const TicketDetails = () => {
 
     // Location
     if (!latitude || !longitude) {
-      Alert.alert("Location is required but couldn't be fetched. Please try again!");
+      // Alert.alert("Location is required but couldn't be fetched. Please try again!");
     }
 
     // Pincode (optional error message based on your needs)
     if (!pincode) {
-      Alert.alert("Location is required but couldn't be fetched. Please try again!");
+      // Alert.alert("Location is required but couldn't be fetched. Please try again!");
     }
 
 
@@ -336,7 +336,6 @@ const TicketDetails = () => {
         uploadedAssetImages = uploadResponse.data.data || [];
       }
 
-      // Prepare body
       const requestBody = {
         ticketId,
         assignedTo: ticketDetails.lastAssignedToDetails?.assignedTo,
@@ -890,12 +889,13 @@ const TicketDetails = () => {
                         />
 
                         <FormControl
-                          isInvalid={
-                            isFormFieldInValid("assetImages", errors).length > 0
-                          }
-                        >
-                          <HStack className="justify-between mt-2 mb-1">
-                            <PrimaryText className="font-medium">
+                      isInvalid={
+                        isFormFieldInValid("assetImages", errors).length > 0
+                      }
+                      className="mb-2"
+                    >
+                      <HStack className="justify-between mt-2 mb-1">
+                        <PrimaryText className="font-medium">
                               {t("assetImages")}{" "}
                               {[
                                 "IN_PROGRESS",
@@ -905,76 +905,82 @@ const TicketDetails = () => {
                                 "WORK_COMPLETED",
                               ].includes(selectedTicketStatus.key ?? "") && (
                                   <PrimaryText className="text-red-500 font-regular">
-                                    *
-                                  </PrimaryText>
-                                )}
-                            </PrimaryText>
-                            <PrimaryText className="text-gray-500 font-regular">
-                              {assetImages.length}/3
-                            </PrimaryText>
-                          </HStack>
-                          <View className="flex-row flex-wrap">
-                            {assetImages.map((uri, index) => (
-                              <Pressable
-                                onPress={() => {
-                                  router.push({
-                                    pathname: "/image_viewer/[uri]",
-                                    params: {
-                                      uri: uri,
-                                    },
-                                  });
-                                }}
-                                className="me-3 mt-2"
-                                key={index}
-                              >
-                                <View>
-                                  <Image
-                                    source={{ uri: uri }}
-                                    className="w-24 h-24 rounded-xl absolute"
-                                  />
-                                  <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
-                                    <Pressable
-                                      className="mt-2 me-2"
-                                      onPress={() => {
-                                        setAssetImages((prev) => {
-                                          prev.splice(index, 1);
-                                          return [...prev];
-                                        });
-                                      }}
-                                    >
-                                      <AntDesign
-                                        name="closecircle"
-                                        size={16}
-                                        color="white"
-                                      />
-                                    </Pressable>
-                                  </View>
-                                </View>
-                              </Pressable>
-                            ))}
-                          </View>
-                          {assetImages.length < 3 && (
-                            <Button
-                              className="bg-gray-200 mt-4"
-                              onPress={() => toggleImagePicker()}
-                            >
-                              <FeatherIcon
-                                name="plus-circle"
-                                className="me-1"
-                                color="black"
-                                size={18}
+                            *
+                          </PrimaryText>
+                            )}
+                        </PrimaryText>
+                         
+                        <PrimaryText
+                          className="text-gray-500 font-regular"
+                          translate="none"
+                        >
+                          {assetImages.length}/3
+                        </PrimaryText>
+                      </HStack>
+                      <View className="flex-row flex-wrap">
+                        {assetImages.map((uri, index) => (
+                          <Pressable
+                            onPress={() => {
+                              router.push({
+                                pathname: "/image_viewer/[uri]",
+                                params: {
+                                  uri: uri,
+                                },
+                              });
+                            }}
+                            className="me-3 mt-2"
+                            key={index}
+                          >
+                            <View>
+                              <Image
+                                source={{ uri: uri }}
+                                className="w-24 h-24 rounded-xl absolute"
                               />
-                              <ButtonText className="text-black font-regular">
-                                <PrimaryText>addImage</PrimaryText>
-                              </ButtonText>
-                            </Button>
-                          )}
-                          <FormControlError className="mt-2">
-                            <FormControlErrorText>
-                              {isFormFieldInValid("assetImages", errors)}
-                            </FormControlErrorText>
-                          </FormControlError>
-                        </FormControl>
+                              <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
+                                <Pressable
+                                  className="mt-2 me-2"
+                                  onPress={() => {
+                                    setAssetImages((prev) => {
+                                      prev.splice(index, 1);
+                                      return [...prev];
+                                    });
+                                  }}
+                                >
+                                  <AntDesign
+                                    name="closecircle"
+                                    size={16}
+                                    color="white"
+                                  />
+                                </Pressable>
+                              </View>
+                            </View>
+                          </Pressable>
+                        ))}
+                      </View>
+                      {assetImages.length < 3 && (
+                        <Button
+                          className="bg-primary-200 mt-4 rounded-lg items-center justify-center"
+                          onPress={() => toggleImagePicker()}
+                        >
+                          <FeatherIcon
+                            name="plus-circle"
+                            className="me-1"
+                            color={primaryColor}
+                            size={15}
+                          />
+                          <ButtonText className="text-primary-950 text-sm">
+                            <PrimaryText>addImage</PrimaryText>
+                          </ButtonText>
+                        </Button>
+                      )}
+                      <FormControlError className="mt-2">
+                        <FormControlErrorText>
+                          {assetImages.length > 0
+                            ? ""
+                            : isFormFieldInValid("assetImages", errors)}
+                        </FormControlErrorText>
+                      </FormControlError>
+                    </FormControl>
 
                         <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
                           enterOtpForOpenClose
