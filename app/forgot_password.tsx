@@ -191,26 +191,30 @@ const ForgotPassword = () => {
     }
   };
 
+ useEffect(() => {
+    const finalOtp = otp.join("").trim();
+    if (finalOtp.length === 6 && /^[0-9]{6}$/.test(finalOtp)) {
+      setErrors([]);
+    }
+  }, [otp]);
+
   const verifyOTP = async (otpValue: string) => {
-    setCanValidateField(true);
     setErrors([]);
+    setCanValidateField(true);
 
-    const validationPromises = Object.keys(fieldValidationStatus).map(
-      (key) => new Promise<void>((resolve) => resolve())
-    );
-
-    await Promise.all(validationPromises);
-
-    const allValid = errors.length === 0 || errors.every((e) => !e.message);
-
-    if (!allValid) {
-      console.log("Validation failed", errors);
+    const finalOtp = otp.join("").trim();
+    if (!finalOtp || !/^[0-9]{6}$/.test(finalOtp)) {
+      setErrors([
+        {
+          param: "OTP",
+          message: "Please enter a valid 6-digit OTP.",
+        },
+      ]);
       return;
     }
-    const finalOtp = otp.join("");
+
     try {
       setIsLoading(true);
-
       const response = await api.get(
         `/userProfile/forgotPassword/checkOTP?userId=${userId}&OTP=${finalOtp}`
       );
@@ -220,14 +224,18 @@ const ForgotPassword = () => {
         setModalVisible(false);
       }
     } catch (e: any) {
-      const apiErrors = e?.response?.data?.errors || [];
+      const apiErrors = e?.response?.data?.errors || [
+        {
+          param: "OTP",
+          message: "Invalid OTP. Please try again.",
+        },
+      ];
       console.error("API Errors:", apiErrors);
       setErrors(apiErrors);
     } finally {
       setIsLoading(false);
     }
   };
-
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => {
@@ -356,7 +364,7 @@ const ForgotPassword = () => {
           showToast({
             position: "top",
             type: "success",
-            message: "Set pin successfully",
+            message: "PIN set successfully",
           });
           setIsLoading(false);
           setPasswordChangeStatus(PasswordChangeStatus.restPin);
@@ -640,6 +648,7 @@ const ForgotPassword = () => {
                 </FormControlError>
               </FormControl>
               <PrimaryButton
+
                 isLoading={isLoading}
                 onPress={verifyOTP}
                 btnText="verifyOtp"
@@ -649,7 +658,7 @@ const ForgotPassword = () => {
               <View className="flex justify-center mt-8 items-center ">
                 <View className="flex items-center">
                   <PrimaryText className="text-gray-700 font-regular">
-                   Didn't Receive OTP?
+                    Didn't receive an OTP?
                   </PrimaryText>
                   <View className="flex">
                     <Pressable

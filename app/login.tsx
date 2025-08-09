@@ -19,10 +19,11 @@ import {
 import { useToast } from "@/context/ToastContext";
 import { getFCMToken } from "@/services/fcm";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
+
 const LoginScreen = () => {
   const { showToast } = useToast();
   const animationRef = useRef<LottieView>(null);
-  const [mobile, setMobileNumber] = useState<string>();
+  const [mobile, setMobileNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -34,7 +35,8 @@ const LoginScreen = () => {
   const segments = useSegments();
   const [hasPin, setHasPin] = useState<boolean | null>(null);
   const { messagingRef } = useFirebaseMessaging();
-  const [debouncedMobile, setDebouncedMobile] = useState(mobile);
+  const [debouncedMobile, setDebouncedMobile] = useState<string>("");
+
   const setFieldValidationStatusFunc = (
     fieldName: string,
     isValid: boolean
@@ -59,8 +61,6 @@ const LoginScreen = () => {
   useEffect(() => {
     const backAction = () => {
       const currentPath = segments.join("/");
-
-      // Adjust this to match your actual login route
       const isLoginScreen =
         currentPath === "login" ||
         currentPath === "(auth)/login" ||
@@ -89,6 +89,90 @@ const LoginScreen = () => {
     };
   }, [exitApp, segments]);
 
+  useEffect(() => {
+    setErrors([]);
+    setHasPin(false);
+    setMobileNumber("");
+    setDebouncedMobile("");
+  }, []);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedMobile(mobile);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [mobile]);
+
+  const checkPin = async (mobile: string) => {
+    setErrors([]);
+
+    if (!mobile || !/^\d{10}$/.test(mobile)) {
+      setErrors([
+        {
+          param: "mobile",
+          message: "Please enter a valid 10-digit mobile number.",
+        },
+      ]);
+      return;
+    }
+
+    try {
+      const res = await api.get(`/users/checkPin?mobile=${mobile}&key=INTERNAL`);
+      const resData = res.data?.data;
+
+      if (resData && resData.length > 0) {
+        const b2CUsers = resData.filter(
+          (user: any) => user.role === "FIELD_ENGINEER"
+        );
+
+        if (b2CUsers.length > 0) {
+          const pinResetUser = b2CUsers.find(
+            (user: any) => user.pinReset === true
+          );
+
+          if (pinResetUser) {
+            setHasPin(true);
+          } else {
+            router.push({
+              pathname: "/forgot_password",
+              params: {
+                mobileNumber: mobile,
+                key: "INTERNAL",
+                from: "setPin",
+              },
+            });
+          }
+          return;
+        }
+      }
+      setErrors([
+        {
+          param: "mobile",
+          message: "You are not registered. Please register to continue.",
+        },
+      ]);
+    } catch (error) {
+      setErrors([
+        {
+          param: "mobile",
+          message: "Something went wrong. Please try again later.",
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    if (debouncedMobile && debouncedMobile.length === 10) {
+      checkPin(debouncedMobile);
+    } else {
+      setHasPin(false);
+      // setErrors([]);
+    }
+  }, [debouncedMobile]);
+
   const handleSendOTP = async () => {
     if (!canValidateField) {
       let newErrors: ErrorModel[] = [];
@@ -99,20 +183,16 @@ const LoginScreen = () => {
         });
       }
 
-      if (newErrors.length === 0) {
-        setErrors([]);
-      }
-
       setErrors(newErrors);
       if (newErrors.length > 0) {
         setCanValidateField(true);
         return;
       }
     }
+
     const validationPromises = Object.keys(fieldValidationStatus).map(
       (key) =>
         new Promise((resolve) => {
-          // Resolve each validation status based on field key
           setFieldValidationStatus((prev: any) => ({
             ...prev,
             [key]: resolve,
@@ -122,22 +202,18 @@ const LoginScreen = () => {
 
     setCanValidateField(true);
 
-    console.log("login validataion promise before");
+    console.log("login validation promise before");
 
-    // Wait for all validations to complete
     await Promise.all(validationPromises);
 
-    console.log("login validataion promise after");
+    console.log("login validation promise after");
 
-    const allValid = errors
-      .map((error) => error.message?.length === 0)
-      .every((status) => status === true);
+    const allValid = errors.length === 0;
 
-    console.log("error", errors);
+    console.log("errors", errors);
 
     if (allValid) {
       setErrors([]);
-
       setIsLoading(true);
       let fcmToken = "";
 
@@ -176,7 +252,6 @@ const LoginScreen = () => {
           }
         })
         .catch(async (e) => {
-          // console.error(e);
           console.error(e.response);
           if (e?.response?.data?.errors) {
             const responseErrors = e.response.data.errors;
@@ -205,84 +280,11 @@ const LoginScreen = () => {
             });
           }
         })
-
         .finally(() => {
           setIsLoading(false);
         });
     }
   };
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedMobile(mobile);
-    }, 100);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [mobile]);
-
-  const checkPin = async (mobileNumber: string) => {
-    if (!mobileNumber) {
-      setErrors([
-        {
-          param: "mobile",
-          message: "Please enter a valid 10-digit mobile number.",
-        },
-      ]);
-      return;
-    }
-
-   try {
-  const res = await api.get(
-    `/users/checkPin?mobile=${mobileNumber}&key=INTERNAL`
-  );
-  const resData = res.data?.data;
-
-  if (resData && resData.length > 0) {
-    // Only get users with role FIELD_ENGINEER
-    const b2CUsers = resData.filter((user: any) => user.role === "FIELD_ENGINEER");
-
-    if (b2CUsers.length > 0) {
-      const pinResetUser = b2CUsers.find((user: any) => user.pinReset === true);
-
-      if (pinResetUser) {
-        setHasPin(true);
-      } else {
-        router.push({
-          pathname: "/forgot_password",
-          params: {
-            mobileNumber: mobileNumber,
-            key: "INTERNAL",
-            from: "setPin",
-          },
-        });
-      }
-      return;
-    }
-  }
-  setErrors([
-    {
-      param: "mobile",
-      message: "You are not registered. Please register to continue.",
-    },
-  ]);
-} catch (error) {
-  setErrors([
-    {
-      param: "mobile",
-      message: "Something went wrong. Please try again later.",
-    },
-  ]);
-}
-  };
-  useEffect(() => {
-    if (debouncedMobile && debouncedMobile.length === 10) {
-      checkPin(debouncedMobile);
-    } else {
-      setHasPin(false);
-      // setErrors([]);
-    }
-  }, [debouncedMobile]);
 
   return (
     <BasePage>
@@ -310,7 +312,6 @@ const LoginScreen = () => {
           </View>
 
           <View className="mt-6">
-            {/* <PrimaryText>{JSON.stringify(errors)}</PrimaryText> */}
             <PrimaryTextFormField
               prefix="+91"
               prefixStyle="text-black font-bold mx-2"
@@ -328,16 +329,16 @@ const LoginScreen = () => {
               setFieldValidationStatus={setFieldValidationStatus}
               validateFieldFunc={setFieldValidationStatusFunc}
               customValidations={(value) => {
-                // mobile no should start with 6-9
                 const customRE = /^[6-9]/;
                 if (!customRE.test(value)) {
-                  return "mobileNoShouldStartWith69";
+                  return "Mobile no. should start with 6-9";
                 }
                 return undefined;
               }}
               onChangeText={(text: string) => {
                 setMobileNumber(text);
               }}
+              // value={mobile}
             />
           </View>
           {hasPin && (
@@ -367,7 +368,7 @@ const LoginScreen = () => {
           <View className="mt-2 mx-1">
             <PrimaryLink
               href="/forgot_password"
-              className="font-semibold  color-secondary-950"
+              className="font-semibold color-secondary-950"
             >
               Forgot PIN?
             </PrimaryLink>
@@ -375,25 +376,13 @@ const LoginScreen = () => {
           <View className="mt-2">
             <PrimaryButton
               isLoading={isLoading}
-              onPress={hasPin ? handleSendOTP : checkPin}
+              onPress={hasPin ? handleSendOTP : () => checkPin(mobile || "")}
               btnText={hasPin ? "Login" : "Submit"}
+              
             />
-            {/* <PrimaryText
-              className="mt-4  text-center text-sm font-regular"
-              translate="none"
-            >
-              {t("dontHaveAnAccount") + " "}
-              <PrimaryLink
-                href="/registration/null"
-                className="font-bold-1 underline color-secondary-950"
-              >
-                registerNow
-              </PrimaryLink>
-            </PrimaryText> */}
           </View>
         </View>
 
-        {/* Footer Animation */}
         <View>
           <LottieView
             ref={animationRef}
@@ -404,32 +393,10 @@ const LoginScreen = () => {
               height: 200,
             }}
           />
-          {/* <PrimaryText
-            className="mt-8 text-sm text-center px-8 font-regular"
-            translate="none"
-          >
-            {t("byLoggingInYouAgreeToOur") + " "}
-            <PrimaryText
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Terms_And_conditions.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              termsConditions
-            </PrimaryText>{" "}
-            {t("and") + " "}
-            <PrimaryText
-              onPress={() => {
-                Linking.openURL("https://godezk.com/Privacy_Policy.html");
-              }}
-              className="font-bold-1 text-primary-950"
-            >
-              privacyPolicy
-            </PrimaryText>
-          </PrimaryText> */}
         </View>
       </View>
     </BasePage>
   );
 };
+
 export default LoginScreen;
