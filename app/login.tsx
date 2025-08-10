@@ -222,9 +222,21 @@ const LoginScreen = () => {
   }, [mobile]);
 
 const checkPin = async (mobile: string) => {
-  const trimmedMobile = mobile.trim(); // Remove spaces
+  const trimmedMobile = mobile.trim();
 
-  if (!trimmedMobile || !/^\d{10}$/.test(trimmedMobile)) {
+  // Check if mobile number is empty
+  if (!trimmedMobile) {
+    setErrors([
+      {
+        param: "mobile",
+        message: "Please enter a mobile number.",
+      },
+    ]);
+    return;
+  }
+
+  // Check if not exactly 10 digits
+  if (!/^\d{10}$/.test(trimmedMobile)) {
     setErrors([
       {
         param: "mobile",
@@ -283,14 +295,21 @@ const checkPin = async (mobile: string) => {
 };
 
 
-  useEffect(() => {
-    if (debouncedMobile && debouncedMobile.length === 10) {
-      checkPin(debouncedMobile);
-    } else {
-      setHasPin(false);
-      // setErrors([]);
-    }
-  }, [debouncedMobile]);
+
+useEffect(() => {
+  if (!debouncedMobile) {
+    
+    setErrors([{ param: "mobile", message: "Please enter a mobile number." }]);
+    setHasPin(false);
+  } else if (debouncedMobile.length === 10) {
+    checkPin(debouncedMobile);
+  } else {
+    setHasPin(false);
+    // Optionally clear errors for partial input
+    // setErrors([]);
+  }
+}, [debouncedMobile]);
+
 
   return (
     <BasePage>
