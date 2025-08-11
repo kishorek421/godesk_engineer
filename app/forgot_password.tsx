@@ -112,13 +112,13 @@ const ForgotPassword = () => {
     setIsLoading(true);
     setErrors([]);
 
-    const reqBody = { mobile, key: "INTERNAL" };
+    const reqBody = { mobile, key: "FIELD_ENGINEER" };
 
     console.log("reqBody", reqBody);
 
     await api
       .get(
-        `/userProfile/forgotPassword/sendForgotPasswordOtp?mobile=${mobile}&key=INTERNAL`
+        `/userProfile/forgotPassword/sendForgotPasswordOtp?mobile=${mobile}&key=FIELD_ENGINEER`
       )
 
       .then(async (response) => {
@@ -264,7 +264,7 @@ const ForgotPassword = () => {
     setErrors([]);
 
     await api
-      .post("/users/send", { mobile, key: "INTERNAL" })
+      .post("/users/send", { mobile, key: "FIELD_ENGINEER" })
       .then((response) => {
         console.log("Response:", response.data.data);
 
@@ -353,7 +353,7 @@ const ForgotPassword = () => {
       formData.append("confirmPassword", confirmPassword);
 
       api
-        .put(RESET_PASSWORD + `?userId=${userId}&key=INTERNAL`, formData, {
+        .put(RESET_PASSWORD + `?userId=${userId}&key=FIELD_ENGINEER`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

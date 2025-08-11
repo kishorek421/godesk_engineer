@@ -22,7 +22,7 @@ import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 const LoginScreen = () => {
   const { showToast } = useToast();
   const animationRef = useRef<LottieView>(null);
-  const [mobile, setMobileNumber] = useState<string>();
+  const [mobile, setMobileNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -211,104 +211,61 @@ const LoginScreen = () => {
         });
     }
   };
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedMobile(mobile);
-    }, 100);
+useEffect(() => {
+  const handler = setTimeout(() => {
+    setDebouncedMobile(mobile);
+  }, 10);
+  return () => clearTimeout(handler);
+}, [mobile]);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [mobile]);
+// Reset hasPin when mobile changes
+useEffect(() => {
+  setHasPin(false);
+}, [mobile]);
 
-const checkPin = async (mobile: string) => {
-  const trimmedMobile = mobile.trim();
-
-  // Check if mobile number is empty
-  if (!trimmedMobile) {
-    setErrors([
-      {
-        param: "mobile",
-        message: "Please enter a mobile number.",
-      },
-    ]);
-    return;
-  }
-
-  // Check if not exactly 10 digits
-  if (!/^\d{10}$/.test(trimmedMobile)) {
-    setErrors([
-      {
-        param: "mobile",
-        message: "Please enter a valid 10-digit mobile number.",
-      },
-    ]);
-    return;
-  }
-
+const checkPin = async (mobileNumber: string) => {
   try {
-    const res = await api.get(
-      `/users/checkPin?mobile=${trimmedMobile}&key=INTERNAL`
-    );
-    const resData = res.data?.data;
+    const res = await api.get(`/users/checkPin?mobile=${mobileNumber}&key=INTERNAL`);
+    const pinReset = res.data?.data?.[0]?.pinReset;
 
-    if (resData && resData.length > 0) {
-      // Only get users with role FIELD_ENGINEER
-      const b2CUsers = resData.filter(
-        (user: any) => user.role === "FIELD_ENGINEER"
-      );
-
-      if (b2CUsers.length > 0) {
-        const pinResetUser = b2CUsers.find(
-          (user: any) => user.pinReset === true
-        );
-
-        if (pinResetUser) {
-          setHasPin(true);
-        } else {
-          router.push({
-            pathname: "/forgot_password",
-            params: {
-              mobileNumber: trimmedMobile,
-              key: "INTERNAL",
-              from: "setPin",
-            },
-          });
-        }
-        return;
-      }
+    if (pinReset === true) {
+      setHasPin(true);
+    } else if (pinReset === false) {
+      router.push({
+        pathname: "/(auth)/forgot_password",
+        params: { mobileNumber, key: "INTERNAL", from: "setPin" },
+      });
+    } else {
+      setErrors([{ param: "mobile", message: "You are not registered. Please register to continue." }]);
     }
-    setErrors([
-      {
-        param: "mobile",
-        message: "You are not registered. Please register to continue.",
-      },
-    ]);
-  } catch (error) {
-    setErrors([
-      {
-        param: "mobile",
-        message: "Something went wrong. Please try again later.",
-      },
-    ]);
+  } catch {
+    setErrors([{ param: "mobile", message: "Something went wrong. Please try again later." }]);
   }
 };
 
-
+const validateMobile = (mobileNumber: string) => /^\d{10}$/.test(mobileNumber);
 
 useEffect(() => {
-  if (!debouncedMobile) {
-    
-    setErrors([{ param: "mobile", message: "Please enter a mobile number." }]);
-    setHasPin(false);
-  } else if (debouncedMobile.length === 10) {
+  if (debouncedMobile && debouncedMobile.length === 10) {
     checkPin(debouncedMobile);
-  } else {
-    setHasPin(false);
-    // Optionally clear errors for partial input
-    // setErrors([]);
   }
 }, [debouncedMobile]);
+
+const handleButtonPress = () => {
+  if (!validateMobile(mobile)) {
+    setErrors([{ param: "mobile", message: "Please enter a valid 10-digit mobile number." }]);
+    return;
+  }
+
+  setErrors([]);
+
+  if (hasPin) {
+    handleSendOTP();
+  } else {
+    checkPin(mobile);
+  }
+};
+
 
 
   return (
@@ -358,7 +315,7 @@ useEffect(() => {
                 // mobile no should start with 6-9
                 const customRE = /^[6-9]/;
                 if (!customRE.test(value)) {
-                  return "mobileNoShouldStartWith69";
+                  return "Mobile No. Should Start With 6-9";
                 }
                 return undefined;
               }}
@@ -402,7 +359,7 @@ useEffect(() => {
           <View className="mt-2">
             <PrimaryButton
               isLoading={isLoading}
-              onPress={hasPin ? handleSendOTP : checkPin}
+              onPress={hasPin ? handleSendOTP : handleButtonPress}
               btnText={hasPin ? "Login" : "Submit"}
             />
             {/* <PrimaryText
