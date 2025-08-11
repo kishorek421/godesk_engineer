@@ -3,18 +3,20 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">65.0.35.228</domain> 
     </domain-config>
-   
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">13.201.225.84</domain> 
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">43.205.35.224</domain> 
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">0.0.0.0</domain>
+    </domain-config>
+      <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">13.201.225.84</domain> 
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">127.0.0.1</domain>
+    </domain-config>
+     <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">workplace.godezk.com</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
@@ -44,7 +46,7 @@
         <domain includeSubdomains="true">192.168.0.158</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.159</domain>
+    <domain includeSubdomains="true">192.168.0.159</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.1.10</domain>
@@ -61,44 +63,4 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">192.168.0.135</domain>
     </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.134</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.15</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.17</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.39</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.5</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.3</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.19</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.14</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.149</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.46</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.147</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.0.148</domain>
-    </domain-config>
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.11</domain>
-    </domain-config>
-    
 </network-security-config>
