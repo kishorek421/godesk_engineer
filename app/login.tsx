@@ -223,23 +223,76 @@ useEffect(() => {
   setHasPin(false);
 }, [mobile]);
 
-const checkPin = async (mobileNumber: string) => {
-  try {
-    const res = await api.get(`/users/checkPin?mobile=${mobileNumber}&key=INTERNAL`);
-    const pinReset = res.data?.data?.[0]?.pinReset;
+const checkPin = async (mobile: string) => {
+  const trimmedMobile = mobile.trim();
 
-    if (pinReset === true) {
-      setHasPin(true);
-    } else if (pinReset === false) {
-      router.push({
-        pathname: "/(auth)/forgot_password",
-        params: { mobileNumber, key: "INTERNAL", from: "setPin" },
-      });
-    } else {
-      setErrors([{ param: "mobile", message: "You are not registered. Please register to continue." }]);
+  // Check if mobile number is empty
+  if (!trimmedMobile) {
+    setErrors([
+      {
+        param: "mobile",
+        message: "Please enter a mobile number.",
+      },
+    ]);
+    return;
+  }
+
+  // Check if not exactly 10 digits
+  if (!/^\d{10}$/.test(trimmedMobile)) {
+    setErrors([
+      {
+        param: "mobile",
+        message: "Please enter a valid 10-digit mobile number.",
+      },
+    ]);
+    return;
+  }
+
+  try {
+    const res = await api.get(
+      `/users/checkPin?mobile=${trimmedMobile}&key=INTERNAL`
+    );
+    const resData = res.data?.data;
+
+    if (resData && resData.length > 0) {
+      // Only get users with role FIELD_ENGINEER
+      const b2CUsers = resData.filter(
+        (user: any) => user.role === "FIELD_ENGINEER"
+      );
+
+      if (b2CUsers.length > 0) {
+        const pinResetUser = b2CUsers.find(
+          (user: any) => user.pinReset === true
+        );
+
+        if (pinResetUser) {
+          setHasPin(true);
+        } else {
+          router.push({
+            pathname: "/forgot_password",
+            params: {
+              mobileNumber: trimmedMobile,
+              key: "INTERNAL",
+              from: "setPin",
+            },
+          });
+        }
+        return;
+      }
     }
-  } catch {
-    setErrors([{ param: "mobile", message: "Something went wrong. Please try again later." }]);
+    setErrors([
+      {
+        param: "mobile",
+        message: "You are not registered. Please register to continue.",
+      },
+    ]);
+  } catch (error) {
+    setErrors([
+      {
+        param: "mobile",
+        message: "Something went wrong. Please try again later.",
+      },
+    ]);
   }
 };
 
