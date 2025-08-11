@@ -91,9 +91,8 @@ android {
         applicationId 'com.godezk.godezkengineer'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-
-        versionCode 37
-        versionName "1.2.0"
+        versionCode 44
+        versionName "1.0.0"
     }
     signingConfigs {
         debug {

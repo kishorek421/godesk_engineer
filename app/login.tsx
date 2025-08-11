@@ -22,7 +22,7 @@ import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 const LoginScreen = () => {
   const { showToast } = useToast();
   const animationRef = useRef<LottieView>(null);
-  const [mobile, setMobileNumber] = useState<string>();
+  const [mobile, setMobileNumber] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -211,15 +211,17 @@ const LoginScreen = () => {
         });
     }
   };
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedMobile(mobile);
-    }, 100);
+useEffect(() => {
+  const handler = setTimeout(() => {
+    setDebouncedMobile(mobile);
+  }, 10);
+  return () => clearTimeout(handler);
+}, [mobile]);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [mobile]);
+// Reset hasPin when mobile changes
+useEffect(() => {
+  setHasPin(false);
+}, [mobile]);
 
 const checkPin = async (mobile: string) => {
   const trimmedMobile = mobile.trim();
@@ -294,21 +296,29 @@ const checkPin = async (mobile: string) => {
   }
 };
 
-
+const validateMobile = (mobileNumber: string) => /^\d{10}$/.test(mobileNumber);
 
 useEffect(() => {
-  if (!debouncedMobile) {
-    
-    setErrors([{ param: "mobile", message: "Please enter a mobile number." }]);
-    setHasPin(false);
-  } else if (debouncedMobile.length === 10) {
+  if (debouncedMobile && debouncedMobile.length === 10) {
     checkPin(debouncedMobile);
-  } else {
-    setHasPin(false);
-    // Optionally clear errors for partial input
-    // setErrors([]);
   }
 }, [debouncedMobile]);
+
+const handleButtonPress = () => {
+  if (!validateMobile(mobile)) {
+    setErrors([{ param: "mobile", message: "Please enter a valid 10-digit mobile number." }]);
+    return;
+  }
+
+  setErrors([]);
+
+  if (hasPin) {
+    handleSendOTP();
+  } else {
+    checkPin(mobile);
+  }
+};
+
 
 
   return (
@@ -358,7 +368,7 @@ useEffect(() => {
                 // mobile no should start with 6-9
                 const customRE = /^[6-9]/;
                 if (!customRE.test(value)) {
-                  return "mobileNoShouldStartWith69";
+                  return "Mobile No. Should Start With 6-9";
                 }
                 return undefined;
               }}
@@ -402,7 +412,7 @@ useEffect(() => {
           <View className="mt-2">
             <PrimaryButton
               isLoading={isLoading}
-              onPress={hasPin ? handleSendOTP : checkPin}
+              onPress={hasPin ? handleSendOTP : handleButtonPress}
               btnText={hasPin ? "Login" : "Submit"}
             />
             {/* <PrimaryText
