@@ -17,7 +17,7 @@ import {
   GET_CHECK_IN_OUT_STATUS,
   GET_INPROGRESS_TICKETS_DETAILS,
   GET_USER_DETAILS,
-  GET_ATTENDANCE_TRANSACTION
+  GET_ATTENDANCE_TRANSACTION,
 } from "@/constants/api_endpoints";
 import TicketListLayout from "@/components/tickets/TicketListLayout";
 import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
@@ -43,8 +43,10 @@ const HomeScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({});
-  const [checkInOutStatus, setCheckInOutStatus] = useState<CheckInOutStatusDetailsModel[]>([]);
-    const [expanded, setExpanded] = useState(false);
+  const [checkInOutStatus, setCheckInOutStatus] = useState<
+    CheckInOutStatusDetailsModel[]
+  >([]);
+
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
@@ -57,7 +59,9 @@ const HomeScreen = () => {
   // } = useLocation();
 
   const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
-  const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(null);
+  const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(
+    null
+  );
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -96,7 +100,9 @@ const HomeScreen = () => {
 
       if (data && Array.isArray(data)) {
         const today = new Date().toISOString().split("T")[0];
-        const todayEntry = data.find((item: CheckInOutStatusDetailsModel) => item.date === today);
+        const todayEntry = data.find(
+          (item: CheckInOutStatusDetailsModel) => item.date === today
+        );
 
         if (todayEntry?.check_in) {
           setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
@@ -139,7 +145,6 @@ const HomeScreen = () => {
   //   isBackgroundLocationPermissionAllowed,
   //   inProgressTicketDetails?.id,
   // ]);
-
 
   const fetchInProgressTicketDetails = () => {
     apiClient
@@ -266,12 +271,12 @@ const HomeScreen = () => {
         <View>
           {todayCheckInTime && (
             <View className="bg-blue-200 rounded-md px-2 py-1 mx-4 self-start">
-              <PrimaryText className="text-gray-800 font-medium text-sm" >
-               {t("checkInMessage", { time: todayCheckInTime })}
+              <PrimaryText className="text-gray-800 font-medium text-sm">
+                {t("checkInMessage", { time: todayCheckInTime })}
               </PrimaryText>
 
               {todayCheckOutTime && (
-                <PrimaryText className="text-gray-800 font-medium text-sm" >
+                <PrimaryText className="text-gray-800 font-medium text-sm">
                   {t("checkOutMessage", { time: todayCheckOutTime })}
                 </PrimaryText>
               )}
@@ -347,11 +352,10 @@ const HomeScreen = () => {
                       <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
                         {inProgressTicketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
-                      <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
                         <PrimaryText
                           className="mt-[1px] text-[13px] text-gray-900 font-regular"
                           translate="api"
-                          numberOfLines={expanded ? undefined : 4}
+                          numberOfLines={4}
                           ellipsizeMode="tail"
                         >
                           {`${t('issueIn')}: ${Array.isArray(inProgressTicketDetails.issueTypeDetails) && inProgressTicketDetails.issueTypeDetails.length > 0
@@ -359,7 +363,6 @@ const HomeScreen = () => {
                             : "-"
                             }`}
                         </PrimaryText>
-                      </TouchableWithoutFeedback>
                     </View>
                     <TicketStatusComponent
                       statusKey={inProgressTicketDetails.statusDetails?.key}
