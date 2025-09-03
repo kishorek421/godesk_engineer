@@ -82,10 +82,19 @@ export default class WebSocketClient {
 
   public sendMessage(message: unknown): void {
     if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      try {
+        this.ws.send(JSON.stringify(message));
+        console.log("WebSocket message sent successfully:", message);
+      } catch (error) {
+        console.error("Error sending WebSocket message:", error);
+      }
     } else {
-      console.error("WebSocket is not open. Cannot send message.");
+      console.error("WebSocket is not open. Current state:", this.ws?.readyState);
     }
+  }
+
+  public isConnected(): boolean {
+    return this.ws?.readyState === WebSocket.OPEN;
   }
 
   public addMessageListener(listener: Listener): void {

@@ -32,6 +32,7 @@ import { useToast } from "@/context/ToastContext";
 import { removeItem, setItem } from "@/utils/secure_store";
 import { requestForegroundPermissionsAsync } from "expo-location";
 import { TouchableWithoutFeedback } from "react-native";
+import useLocation from "@/hooks/useLocation";
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -51,12 +52,12 @@ const HomeScreen = () => {
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
 
-  // const {
-  //   isForegroundLocationPermissionAllowed,
-  //   isBackgroundLocationPermissionAllowed,
-  //   startBackgroundLocationTracking,
-  //   startForegroundLocationTracking,
-  // } = useLocation();
+  const {
+    isForegroundLocationPermissionAllowed,
+    isBackgroundLocationPermissionAllowed,
+    startBackgroundLocationTracking,
+    startForegroundLocationTracking,
+  } = useLocation();
 
   const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
   const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(
@@ -121,30 +122,35 @@ const HomeScreen = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (
-  //     isForegroundLocationPermissionAllowed &&
-  //     isBackgroundLocationPermissionAllowed
-  //   ) {
-  //     if (inProgressTicketDetails?.id) {
-  //       console.log(
-  //         "start tracking background -------------------------------->"
-  //       );
+  useEffect(() => {
+    console.log("isForegroundLocationPermissionAllowed ------------------>", isForegroundLocationPermissionAllowed);
+    console.log("isBackgroundLocationPermissionAllowed ------------------>", isBackgroundLocationPermissionAllowed);
+    if (
+      isForegroundLocationPermissionAllowed &&
+      isBackgroundLocationPermissionAllowed
+    ) {
+      if (inProgressTicketDetails?.id) {
+      // if (true) {
+        console.log(
+          "start tracking background -------------------------------->"
+        );
 
-  //       startBackgroundLocationTracking();
-  //     } else if (isForegroundLocationPermissionAllowed) {
-  //       // if background permission is not allowed, start foreground location tracking
-  //       startForegroundLocationTracking();
-  //     }
-  //   } else if (isForegroundLocationPermissionAllowed) {
-  //     // if background permission is not allowed, start foreground location tracking
-  //     startForegroundLocationTracking();
-  //   }
-  // }, [
-  //   isForegroundLocationPermissionAllowed,
-  //   isBackgroundLocationPermissionAllowed,
-  //   inProgressTicketDetails?.id,
-  // ]);
+        startBackgroundLocationTracking();
+      } else if (isForegroundLocationPermissionAllowed) {
+        console.log("start foreground location tracking ------------------>");
+        // if background permission is not allowed, start foreground location tracking
+        startForegroundLocationTracking();
+      }
+    } else if (isForegroundLocationPermissionAllowed) {
+      console.log("start foreground location tracking ------------------>");
+      // if background permission is not allowed, start foreground location tracking
+      startForegroundLocationTracking();
+    }
+  }, [
+    isForegroundLocationPermissionAllowed,
+    isBackgroundLocationPermissionAllowed,
+    inProgressTicketDetails?.id,
+  ]);
 
   const fetchInProgressTicketDetails = () => {
     apiClient
@@ -221,6 +227,7 @@ const HomeScreen = () => {
     };
   }, [exitApp, segments]);
 
+  // old code
   // Start background location tracking
   // async function startLocationTracking() {
   //   const hasStarted =

@@ -24,6 +24,7 @@ import i18n from "@/i18n";
 import { I18nextProvider } from "react-i18next";
 import BasePage from '@/components/base/base_page';
 import Toast from "@/components/base/toast";
+import { LocationProvider } from "@/context/LocationContext";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -193,128 +194,130 @@ export default function RootLayout() {
   return (
     <GluestackUIProvider mode="light">
       <AuthProvider>
-        <I18nextProvider i18n={i18n}>
-          <ToastProvider>
-            <Stack>
-              <Stack.Screen
-                name="index"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="home"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="notifications/all_notifications"
+        <LocationProvider>
+          <I18nextProvider i18n={i18n}>
+            <ToastProvider>
+              <Stack>
+                <Stack.Screen
+                  name="index"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="home"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="notifications/all_notifications"
 
-                options={{
-                  headerTitle: "Notifications",
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
+                  options={{
+                    headerTitle: "Notifications",
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
 
-              <Stack.Screen
-                name="login"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
+                <Stack.Screen
+                  name="login"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
 
-              <Stack.Screen
-                name="verify_otp"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="forgot_password"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="ticket_details/[ticketId]"
-                options={{
-                  // headerShown: false,
-                  headerTitle: "Ticket Details",
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
+                <Stack.Screen
+                  name="verify_otp"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="forgot_password"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="ticket_details/[ticketId]"
+                  options={{
+                    // headerShown: false,
+                    headerTitle: "Ticket Details",
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
 
-              <Stack.Screen
-                name="translations/language_selection"
-                options={{
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
-              <Stack.Screen
-                name="image_viewer/[uri]"
-                options={{
-                  presentation: "modal",
-                  headerShown: false,
-                  headerTitleStyle: {
-                    fontFamily: "SemiBold",
-                  },
-                  headerBackTitleStyle: {
-                    fontFamily: "Regular",
-                  },
-                }}
-              />
+                <Stack.Screen
+                  name="translations/language_selection"
+                  options={{
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
+                <Stack.Screen
+                  name="image_viewer/[uri]"
+                  options={{
+                    presentation: "modal",
+                    headerShown: false,
+                    headerTitleStyle: {
+                      fontFamily: "SemiBold",
+                    },
+                    headerBackTitleStyle: {
+                      fontFamily: "Regular",
+                    },
+                  }}
+                />
 
-            </Stack>
-            <Toast />
-          </ToastProvider>
-        </I18nextProvider>
+              </Stack>
+              <Toast />
+            </ToastProvider>
+          </I18nextProvider>
+        </LocationProvider>
       </AuthProvider>
     </GluestackUIProvider>
   );
