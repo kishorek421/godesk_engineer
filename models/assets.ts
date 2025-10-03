@@ -39,6 +39,7 @@ export interface AssetSubTypeModelDetails {
 
 
 export interface AssetInUseCustomerDetailsModel {
+  id?:string
   orgName?: string;
   branchName?: string;
   firstName?: string;

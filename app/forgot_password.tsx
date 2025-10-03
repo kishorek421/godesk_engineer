@@ -149,7 +149,7 @@ const ForgotPassword = () => {
       })
       .finally(() => {
         console.log("Request completed");
-        setIsLoading(false); // Ensure loading state is reset
+        setIsLoading(false); 
       });
   };
   useEffect(() => {

@@ -1,13 +1,17 @@
 import { ESCALATED, RAISED, TICKET_IN_PROGRESS, TICKET_CLOSED, ASSIGNED } from "@/constants/configuration_keys";
+import { AUTH_TOKEN_KEY } from "@/constants/storage_keys";
 import { ErrorModel } from "@/models/common";
 import { router } from "expo-router";
 import moment from "moment";
+import { getItem } from "./secure_store";
+import axios from "axios";
+import qs from "qs";
 export const isFormFieldInValid = (
   name: string,
   errors: ErrorModel[],
 ): string => {
   //console.log("checking error", name);
-  
+
   let msg = "";
   for (const error of errors) {
     if (error.param === name) {
@@ -27,7 +31,7 @@ export const getStatusColor = (statusKey?: string): string => {
       return "color-secondary-950 bg-secondary-100";
     case TICKET_CLOSED:
       return "color-primary-950 bg-primary-100";
-    case ASSIGNED :
+    case ASSIGNED:
       return "text-[#040042] bg-[#d2cfff]";
     default:
       return "bg-color-white color-gray-900";
@@ -36,15 +40,15 @@ export const getStatusColor = (statusKey?: string): string => {
 
 export function getGreetingMessage() {
   const currentHour = moment().hour();
- 
+
   if (currentHour >= 5 && currentHour < 12) {
-    return ('goodMorning'); 
+    return ('goodMorning');
   } else if (currentHour >= 12 && currentHour < 17) {
-    return ('goodAfternoon'); 
+    return ('goodAfternoon');
   } else if (currentHour >= 17 && currentHour < 21) {
-    return ('goodEvening'); 
+    return ('goodEvening');
   } else {
-    return ('hello'); 
+    return ('hello');
   }
 }
 export const getAorAn = (word: string) => {
@@ -104,6 +108,80 @@ export const setErrorValue = (
   });
 };
 
+// http://my.exotel.com/bellwether2/exoml/start_voice/916046
+export const makeExotelCall = async (
+  mobile: string,
+  userId: string,
+  showToast: (options: {
+    position: "top" | "bottom";
+    type: "success" | "error" | "info";
+    message: string;
+  }) => void
+) => {
+  const token = await getItem(AUTH_TOKEN_KEY);
+  if (!token) return;
+  try {
+    console.log("token", token);
+
+    let data = qs.stringify(
+      {
+        From: userId,
+        CallerId: "08047096559",
+        To: mobile,
+      },
+      { encode: false }
+    );
+    console.log("data", data);
+
+
+    const authToken = btoa(
+      `2c5dd739f347675fbf942814e5bb5c57697c023fcf43966d:34464c9d277b68db16029237a7748fc3501cdcf84b25655f`
+    );
+
+    console.log("authToken", authToken);
+    // MmM1ZGQ3MzlmMzQ3Njc1ZmJmOTQyODE0ZTViYjVjNTc2OTdjMDIzZmNmNDM5NjZkOjM0NDY0YzlkMjc3YjY4ZGIxNjAyOTIzN2E3NzQ4ZmMzNTAxY2RjZjg0YjI1NjU1Zg==
+
+    const response = await axios.post(
+      "https://api.exotel.com/v1/Accounts/bellwether2/Calls/connect",
+      data,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${authToken}`,
+          Accept: "*/*",
+        },
+      }
+    );
+    console.log("Call initiated:", response.data);
+    console.log("Call initiated:", response.status);
+
+    if (response.status === 200) {
+      showToast({
+        position: "top",
+        type: "success",
+        message: "callRequestedSuccessfully",
+      });
+    } else {
+      showToast({
+        position: "top",
+        type: "error",
+        message: "failedToRequestACallBack",
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Error initiating call:",
+      error?.response ? error.response.data : error.message
+    );
+    showToast({
+      position: "top",
+      type: "error",
+      message: "failedToRequestACallBack",
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
 
 
 export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
