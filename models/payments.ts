@@ -13,6 +13,8 @@ import {
     quantity?: number;
     discount?: string;
     finalPrice?: string;
+    modelName?: string;
+    partNumber?: string;
   }
   
   export interface ItemDetailsModel {

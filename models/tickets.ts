@@ -46,6 +46,13 @@ export interface AssignedToUserDetailsModel {
   lastName?: string;
   phoneNumber?: string;
 }
+export interface RatingModel {
+  id?: string;
+  value?: string;
+  description?: string;
+  feedback?: string;
+
+}
 
 export interface IssueTypeModel {
   id?: string;

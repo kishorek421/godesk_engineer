@@ -33,7 +33,7 @@ apiClient.interceptors.request.use(
       try {
         const iMessaging = await getFirebaseMessaging();
         fcmToken = (await getFCMToken(iMessaging)) ?? "";
-        console.log("fcmToken", fcmToken);
+        // console.log("fcmToken", fcmToken);
       } catch (e) {
         console.error("Token Error ->", e);
       }
