@@ -38,3 +38,5 @@ yarn-error.*
 .expo
 dist/
 web-build/
+
+build-1754644832361.apk

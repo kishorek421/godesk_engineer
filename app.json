@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "GoDezk Engineer",
-    "slug": "godezk-engineer",
+    "slug": "godesk-engineer",
     "scheme": "godezkengineer",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -17,7 +17,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.godezk.godezkengineer",
       "infoPlist": {
-        "UIBackgroundModes": ["location"],
+        "UIBackgroundModes": [
+          "location"
+        ],
         "NSCameraUsageDescription": "Allow access to your camera to capture photos of damaged assets for reporting purposes",
         "NSUserTrackingUsageDescription": "We would like to track your activity to provide a better experience and personalized content.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "We track your location to update your route to the customer place.",
