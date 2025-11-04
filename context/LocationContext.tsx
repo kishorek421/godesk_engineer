@@ -3,7 +3,7 @@ import { createContext, ReactNode } from "react";
 import * as Location from "expo-location";
 import api from "@/clients/apiClient";
 import { AppState, AppStateStatus, Platform } from "react-native";
-import { useWebSocket } from "./WSContext";
+// import { useWebSocket } from "./WSContext";
 import useAuth from "@/hooks/useAuth";
 import * as TaskManager from "expo-task-manager";
 import { getItem, setItem } from "@/utils/secure_store";
@@ -172,7 +172,7 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
 
   const { token } = useAuth();
 
-  const socket = useWebSocket();
+  // const socket = useWebSocket();
 
   const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(false);
   const [
@@ -461,16 +461,16 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
             heading: heading ?? 0,
           });
 
-          if (ticketId) {
-            // update current location to customer
-            socket?.sendMessage({
-              ticketId: ticketId,
-              lat: latitude,
-              lng: longitude,
-              heading: heading,
-              token: "Bearer " + token,
-            });
-          }
+          // if (ticketId) {
+          //   // update current location to customer
+          //   socket?.sendMessage({
+          //     ticketId: ticketId,
+          //     lat: latitude,
+          //     lng: longitude,
+          //     heading: heading,
+          //     token: "Bearer " + token,
+          //   });
+          // }
         }
       );
     }

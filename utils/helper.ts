@@ -183,7 +183,12 @@ export const makeExotelCall = async (
   }
 };
 
-
+export function generateLogo(firstname: string, lastname?: string): string {
+  const logName = lastname
+    ? `${firstname.substring(0, 1)}${lastname.substring(0, 1)}`
+    : `${firstname.slice(0, 2)}`;
+  return logName.toUpperCase();
+}
 export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
   console.log("remoteMessage", remoteMessage);
   const data = remoteMessage.data;

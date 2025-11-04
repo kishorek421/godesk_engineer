@@ -17,6 +17,7 @@ interface AuthContextProps {
   loading: boolean;
   logout: any;
   token?: string;
+   loadUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -41,6 +42,28 @@ export const AuthProvider = ({
   const router = useRouter();
   const [token, setToken] = useState<string>();
 
+  const loadUser = async () => {
+    const token = await getItem(AUTH_TOKEN_KEY);
+    console.log("token", token);
+    const refreshToken = await getItem(REFRESH_TOKEN_KEY);
+    console.log("refreshToken", refreshToken);
+    if (token) {
+      setToken(token);
+      try {
+        const response = await apiClient.get(GET_USER_DETAILS);
+        setUser(response.data);
+        router.replace({ pathname: "/home" });
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
+        await clearStorage();
+        router.replace({ pathname: "/translations/language_selection" });
+      }
+    } else {
+      router.replace({ pathname: "/translations/language_selection" });
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     // const loadLanuage = async () => {
     //   const selectedLanguage = await getItem('language');
@@ -48,27 +71,6 @@ export const AuthProvider = ({
     //     i18n.changeLanguage(selectedLanguage);
     //   }
     // }
-    const loadUser = async () => {
-      const token = await getItem(AUTH_TOKEN_KEY);
-      console.log("token", token);
-      const refreshToken = await getItem(REFRESH_TOKEN_KEY);
-      console.log("refreshToken", refreshToken);
-      if (token) {
-        setToken(token);
-        try {
-          const response = await apiClient.get(GET_USER_DETAILS);
-          setUser(response.data);
-          router.replace({ pathname: "/home" });
-        } catch (error) {
-          console.error("Failed to fetch user:", error);
-          await clearStorage();
-          router.replace({ pathname: "/translations/language_selection" });
-        }
-      } else {
-        router.replace({ pathname: "/translations/language_selection" });
-      }
-      setLoading(false);
-    };
     // loadLanuage();
     loadUser();
   }, []);
@@ -82,7 +84,8 @@ export const AuthProvider = ({
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout, token }}>
+    <AuthContext.Provider value={{ user, loading, logout, token,loadUser }}>
+      
       <ThemeProvider
         value={{
           fonts: {

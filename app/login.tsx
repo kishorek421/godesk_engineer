@@ -171,7 +171,7 @@ const LoginScreen = () => {
               await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
               console.log("AUTH_TOKEN_KEY ->", await getItem(AUTH_TOKEN_KEY));
               router.dismissAll();
-              router.replace("/home");
+              router.replace("/(root)/home");
             }
           }
         })

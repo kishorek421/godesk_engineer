@@ -25,6 +25,7 @@ import { I18nextProvider } from "react-i18next";
 import BasePage from '@/components/base/base_page';
 import Toast from "@/components/base/toast";
 import { LocationProvider } from "@/context/LocationContext";
+import { RefreshProvider } from "@/context/RefreshContext";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -195,6 +196,7 @@ export default function RootLayout() {
     <GluestackUIProvider mode="light">
       <AuthProvider>
         <LocationProvider>
+           <RefreshProvider>
           <I18nextProvider i18n={i18n}>
             <ToastProvider>
               <Stack>
@@ -210,6 +212,19 @@ export default function RootLayout() {
                     },
                   }}
                 />
+                 <Stack.Screen
+                            name="(root)"
+                            options={{
+                              headerShown: false,
+                              headerTitle: "Home",
+                              headerTitleStyle: {
+                                fontFamily: "SemiBold",
+                              },
+                              headerBackTitleStyle: {
+                                fontFamily: "Regular",
+                              },
+                            }}
+                          />
                 <Stack.Screen
                   name="home"
                   options={{
@@ -317,6 +332,7 @@ export default function RootLayout() {
               <Toast />
             </ToastProvider>
           </I18nextProvider>
+           </RefreshProvider>
         </LocationProvider>
       </AuthProvider>
     </GluestackUIProvider>
