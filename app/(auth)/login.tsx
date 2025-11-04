@@ -328,7 +328,7 @@ const handleButtonPress = () => {
           <View>
             <View className="flex-row items-end ">
               <Image
-                source={require("../assets/images/godezk_engineer_banner_300x150.png")}
+                source={require("../../assets/images/godezk_engineer_banner_300x150.png")}
                 style={{
                   width: 80,
                   height: 50,
@@ -434,7 +434,7 @@ const handleButtonPress = () => {
         <View>
           <LottieView
             ref={animationRef}
-            source={require("../assets/lottie/login.json")}
+            source={require("../../assets/lottie/login.json")}
             autoPlay
             loop
             style={{

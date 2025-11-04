@@ -17,7 +17,7 @@ import {
 } from "@/constants/api_endpoints";
 import api from "@/clients/apiClient";
 import { router, useLocalSearchParams } from "expo-router";
-import Toast from "react-native-toast-message";
+import { useToast } from "@/context/ToastContext";
 import PrimaryTextareaFormField from "@/components/PrimaryTextareaFormField";
 import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
 import SubmitButton from "@/components/SubmitButton";
@@ -45,7 +45,7 @@ import BasePage from "@/components/base/base_page";
 
 const CreateLeaveRequest = () => {
   const [errors, setErrors] = useState<ErrorModel[]>([]);
-
+  const { showToast } = useToast();
   const { leaveId, leaveTypeId } = useLocalSearchParams();
   const [canValidateField, setCanValidateField] = useState(false);
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
@@ -214,12 +214,13 @@ const CreateLeaveRequest = () => {
     api[apiMethod](url, createLeaveRequestObj)
       .then((response) => {
         console.log("Response data", response.data.data);
-        Toast.show({
+        showToast({
           type: "success",
-          text1: leaveDetails?.id
-            ? "toast37"
-            : "toast38",
-          visibilityTime: 5000,
+           position: "top",
+          message: leaveDetails?.id
+            ? "Leave updated successfully"
+            : "Leave created successfully",
+      
         });
 
         setIsLoading(false);
@@ -243,11 +244,10 @@ const CreateLeaveRequest = () => {
             .join("\n");
 
           if (errorMessages) {
-            Toast.show({
-              type: "customToast",
-              text1: "toast35",
-              text2: errorMessages,
-              visibilityTime: 5000,
+           showToast({
+              type: "error",
+               position: "top",
+              message: errorMessages,
             });
           }
         }
@@ -318,10 +318,10 @@ const CreateLeaveRequest = () => {
           setLeaveType(leaveTypes);
           console.log("selected leave type", leaveTypes);
         } else {
-          Toast.show({
-            type: "info",
-            text2: "toast36",
-            visibilityTime: 5000,
+         showToast({
+            type: "success",
+            position: "top",
+            message:  " Please contact the admin to add leave type.",
           });
         }
       })
@@ -412,9 +412,9 @@ const CreateLeaveRequest = () => {
                 selectedValue={selectedLeaveType}
                 setSelectedValue={setSelectedLeaveType}
                 type="LEAVE_TYPE"
-                placeholder="selectLeaveType"
+                placeholder="Select Leave Type"
                 fieldName="leaveTypeId"
-                label="leaveType"
+                label="Leave Type"
                 canValidateField={canValidateField}
                 setCanValidateField={setCanValidateField}
                 setFieldValidationStatus={setFieldValidationStatus}
@@ -426,7 +426,7 @@ const CreateLeaveRequest = () => {
 
               <View className="flex gap-1 mt-2 mb-5">
                 <Text className="font-medium">
-                  fromAndToDate
+                  From And To Date
                   <Text className="text-red-400"> *</Text>
                 </Text>
                 <FormControl
@@ -446,7 +446,7 @@ const CreateLeaveRequest = () => {
                       {rangeConfirmed.start === null ||
                         rangeConfirmed.end === null ? (
                         <Text className="flex-1 text-gray-400 font-regular">
-                          selectFromAndToDate
+                          Select From And To Date
                         </Text>
                       ) : (
                         <Text className="flex-1 text-gray-900 font-regular">
@@ -490,7 +490,7 @@ const CreateLeaveRequest = () => {
               <PrimaryTextareaFormField
                 fieldName="reason"
                 label="Reason"
-                placeholder="explainInAFewWords"
+                placeholder="Explain in a few words"
                 errors={errors}
                 setErrors={setErrors}
                 min={10}
@@ -513,7 +513,7 @@ const CreateLeaveRequest = () => {
               <SubmitButton
                 isLoading={isLoading}
                 onPress={createLeaveRequest}
-                btnText={leaveDetails?.id ? ("Update") : ("applyLeave")}
+                btnText={leaveDetails?.id ? ("Update") : ("Apply Leave")}
               />
             </View>
           )}
@@ -523,7 +523,7 @@ const CreateLeaveRequest = () => {
 
         <BottomSheet initialHeight={600} ref={bottomSheetRef}>
           <View className="mt-6 ">
-            <Text className="mx-6 font-bold text-xl">selectFromAndToDate</Text>
+            <Text className="mx-6 font-bold text-xl">Select From And To Date</Text>
 
             <View className="mt-2">
               <Calendar

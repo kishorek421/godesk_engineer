@@ -45,6 +45,7 @@ import PrimaryText from "@/components/PrimaryText";
 import { useSegments } from "expo-router";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import LoadingBar from "../LoadingBar";
+import { useTranslation } from "react-i18next";
 
 const ContentLayout = ({
   customerDetails,
@@ -61,7 +62,7 @@ const ContentLayout = ({
   const bottomSheetRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+ const { t } = useTranslation();
   const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
     useState<CheckInOutStatusDetailsModel>({} as CheckInOutStatusDetailsModel);
   const [ticketsTabAdded, setTicketsTabAdded] = useState(false);
@@ -135,7 +136,7 @@ const ContentLayout = ({
             icon: (
               <Ionicons name="ticket-outline" size={20} color={primaryColor} />
             ),
-            path: "/tickets/tickets_history/list/[customerId]",
+            path: "/(auth)/home",
             params: {
               customerId: customerDetails.id ?? "",
             },
@@ -240,9 +241,9 @@ const ContentLayout = ({
 
   return (
     <BasePage>
-      <SafeAreaView className="h-full bg-white">
+      <SafeAreaView className="h-full bg-gray-300">
         <ScrollView className="h-full ">
-          <View className="bg-white h-full">
+          <View className="bg-gray-300 h-full">
             <View className="mt-2">
               <View className="">
                 <View
@@ -251,7 +252,7 @@ const ContentLayout = ({
                   <View className="flex-row justify-between items-center">
                     <View className="">
                       <Text className="text-md font-semibold">
-                       {getGreetingMessage()} 👋
+                       {t(getGreetingMessage())} 👋
                       </Text>
                       <Text className="color-primary-950 text-lg font-bold-1">
                         {customerDetails.firstName ?? ""}{" "}
@@ -291,8 +292,8 @@ const ContentLayout = ({
                         >
                           <ButtonText>
                             {checkInOutStatusDetails.value === "Checked In"
-                              ? "checkOut"
-                              : "checkIn"}
+                              ? t("checkOut")
+                              : t("checkIn")}
                           </ButtonText>
                         </Button>
                       </View>
@@ -305,19 +306,14 @@ const ContentLayout = ({
                   scrollEnabled={false}
                 >
                   <View>
-                  
 
- 
-    
-
-
-                    <View className={`w-full`}>
+                    <View className={`w-full mt-4`}>
                       {serviceTabs && (
                         <VStack className={`w-full `}>
                           <Text
                             className={`${Platform.OS === "ios" ? "px-4" : "px-6"} text-[16px] font-semibold`}
                           >
-                            quickActions
+                            Quick Actions
                           </Text>
                           <FlatList
                             // showsHorizontalScrollIndicator={false}
@@ -374,7 +370,7 @@ const ContentLayout = ({
                       >
                         <View className="flex-row items-center">
                           <Text className="text-[16px] font-semibold">
-                            recentTickets
+                            Recent Tickets
                           </Text>
                           <Pressable
                             onPress={() => {
@@ -391,17 +387,13 @@ const ContentLayout = ({
                         </View>
                         <Pressable
                           onPress={() =>
-                            router.push({
-                              pathname:
-                                "/tickets/tickets_history/list/[customerId]",
-                              params: {
-                                customerId: customerDetails.id ?? "",
-                              },
-                            })
+                          router.push({
+                            pathname: "/(auth)/home",
+                          })
                           }
                         >
                           <Text className="text-sm underline color-primary-950 font-medium">
-                            showAll
+                            Show All
                           </Text>
                         </Pressable>
                       </HStack>

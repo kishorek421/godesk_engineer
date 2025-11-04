@@ -52,7 +52,7 @@ export const AuthProvider = ({
       try {
         const response = await apiClient.get(GET_USER_DETAILS);
         setUser(response.data);
-        router.replace({ pathname: "/home" });
+        router.replace({ pathname: "/(root)/home" });
       } catch (error) {
         console.error("Failed to fetch user:", error);
         await clearStorage();

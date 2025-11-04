@@ -12,7 +12,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import useAuth from "@/hooks/useAuth";
 import api from "@/clients/apiClient";
 import { DELETE_CUSTOMER } from "@/constants/api_endpoints";
-import Toast from "react-native-toast-message";
+
 import { primaryColor } from "@/constants/colors";
 import useLocation from "@/hooks/useLocation";
 import {
@@ -25,6 +25,7 @@ import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
+import { Fontisto } from "@expo/vector-icons";
 
 const CustomDrawerContent = (props: any) => {
   const { logout } = useAuth();
@@ -41,49 +42,42 @@ const CustomDrawerContent = (props: any) => {
               className="w-full h-32"
             />
           </View>
-          <DrawerItemList {...props} />
-          {/* <DrawerItem
-            label={t("My Orders")}
-            icon={({color, size}) => (
-              <AntDesign name="shoppingcart" size={size} color={color} />
+          {/* <DrawerItemList {...props} /> */}
+          <DrawerItem
+            label={t("Home")}
+            icon={({ color, size }) => (
+              <AntDesign name="home" size={size} color={primaryColor} />
             )}
             onPress={() => {
-              router.push("/settings/my_orders");
+              router.back();
             }}
-          /> */}
+          />
+          <DrawerItem
+            label={t("change PIN")}
+            icon={({ color, size }) => (
+              <AntDesign name="lock1" size={size} color={primaryColor} />
+            )}
+            onPress={() => router.push("/change_password")}
+          />
+
           <DrawerItem
             label={t("Attendance")}
-            icon={({color, size}) => (
-              <AntDesign name="contacts" size={size} color={color} />
+            icon={({ color, size }) => (
+              <AntDesign name="clockcircleo" size={size} color={primaryColor} />
             )}
-            onPress={() => {
-              router.push("/checkIn_out/checkIn_out_list");
-            }}
+            onPress={() => router.push("/checkIn_out/checkIn_out_list")}
           />
+
           <DrawerItem
             label={t("Leave")}
-            icon={({color, size}) => (
-              <AntDesign name="questioncircleo" size={size} color={color} />
+            icon={({ color, size }) => (
+              <Fontisto name="holiday-village" size={24} color={primaryColor} />
             )}
-            onPress={() => {
-              router.push("/leave/leave_history/list/[userRole]");
-            }}
+            onPress={() => router.push("/leave/leave_history/list/[userRole]")}
           />
-          {/* <DrawerItem
-            label={t("change PIN")}
-            icon={({color, size}) => (
-              <AntDesign name="setting" size={size} color={color} />
-            )}
-            onPress={() => {
-              router.push("/change_password");
-            }}
-          /> */}
-          {/* <DrawerItem
-          label={t("familyMember")}
-          onPress={() => {
-            router.push("/settings/family_list/[customerId]");
-          }}
-        /> */}
+
+
+
           {/* <DrawerItem
           label={t("Rate Us")}
           onPress={() => {
@@ -107,7 +101,7 @@ const CustomDrawerContent = (props: any) => {
                 await removeItem(IS_WELCOMED);
                 await removeItem(USER_DETAILS);
                 clearAllData();
-                router.replace("login");
+               router.push('/(auth)/login');
               }
             }}
           >
@@ -139,13 +133,13 @@ const CustomDrawerContent = (props: any) => {
                 await removeItem(IS_WELCOMED);
                 await removeItem(USER_DETAILS);
                 clearAllData();
-                router.replace("/(auth)/login");
+                router.replace("/login");
               }
             }}
           >
             <View className="flex flex-row">
               <PrimaryText className="text-primary-950 font-bold-1 text-md ">
-                logout
+                Logout
               </PrimaryText>
               <AntDesign
                 name="logout"
@@ -156,7 +150,7 @@ const CustomDrawerContent = (props: any) => {
             </View>
           </Pressable>
         </View>
-        {Platform.OS === "ios" && (
+        {/* {Platform.OS === "ios" && (
           <View className="px-6 mb-4 mt-4">
             <Pressable
               onPress={async () => {
@@ -220,7 +214,7 @@ const CustomDrawerContent = (props: any) => {
               </View>
             </Pressable>
           </View>
-        )}
+        )} */}
         {/* <View className="pb-6 pt-4 px-6">
           <TouchableOpacity
             onPress={async () => {

@@ -109,7 +109,7 @@ const LeaveRequestList = () => {
                   })
                 }
               >
-                <ButtonText>applyLeave</ButtonText>
+                <ButtonText>Apply Leave</ButtonText>
                 <Icon
                   name="arrowright"
                   color="white"

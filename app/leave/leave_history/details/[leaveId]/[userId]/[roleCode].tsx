@@ -9,7 +9,7 @@ import {
 } from "@/constants/api_endpoints";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
-import Toast from "react-native-toast-message";
+import { useToast } from "@/context/ToastContext";
 import { Button, ButtonText } from "@/components/ui/button";
 
 import { LeaveRequestModel } from "@/models/leave";
@@ -32,7 +32,7 @@ const DeviceDetailsScreen = ({
 }: LeaveListItemLayoutProps) => {
   const { leaveId, userId, roleCode } = useLocalSearchParams();
 
-
+  const { showToast } = useToast();
   console.log("rolecode",roleCode);
   const [leaveDetails, setLeaveDetails] = useState<LeaveRequestModel>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -138,17 +138,17 @@ const DeviceDetailsScreen = ({
         setLeaveDetails(response.data.data ?? {});
       }
       if (statusKey === "APPROVED") {
-        Toast.show({
+       showToast({
           type: "success",
-          text1: "toast39",
-          visibilityTime: 5000,
+           position: "top",
+          message: "Leave approved successfully",
         });
       }
       if (statusKey === "REJECTED") {
-        Toast.show({
+        showToast({
           type: "success",
-          text1: "toast40",
-          visibilityTime: 5000,
+           position: "top",
+          message: "Leave rejected successfully",
         });
       }
 

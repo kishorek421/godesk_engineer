@@ -276,7 +276,7 @@ const HomeScreen = () => {
     <BasePage>
       <View className="mt-4 mx-3 flex-row justify-between items-start">
         <View>
-          {todayCheckInTime && (
+          {/* {todayCheckInTime && (
             <View className="bg-blue-200 rounded-md px-2 py-1 mx-4 self-start">
               <PrimaryText className="text-gray-800 font-medium text-sm">
                 {t("checkInMessage", { time: todayCheckInTime })}
@@ -288,54 +288,18 @@ const HomeScreen = () => {
                 </PrimaryText>
               )}
             </View>
-          )}
+          )} */}
         </View>
 
-        <Ionicons
+        {/* <Ionicons
           name="notifications-outline"
           size={20}
           color="black"
           onPress={() => router.push("/notifications/all_notifications")}
-        />
+        /> */}
       </View>
-      <View className="mt-6 p-1">
+      <View className=" p-1">
         <View className="flex-row justify-between items-center">
-          <View className="flex px-4">
-            <PrimaryText className="mx-2  font-medium text-md leading-5">
-              {t(getGreetingMessage())} 👋
-            </PrimaryText>
-            <PrimaryText className="mx-2 mt-[2px] font-semibold font-regular text-md text-primary-950">
-              {userDetails?.firstName ?? ""} {userDetails?.lastName ?? ""}
-            </PrimaryText>
-            {/* <PrimaryText className=""><Link href={'/sitemap'}>sitemap</Link></PrimaryText> */}
-          </View>
-          {checkInOutStatusDetails.value !== "Checked Out" && (
-            <View className="me-4">
-              <Button
-                className="bg-primary-950 rounded-lg"
-                  onPress={async () => {
-                  const { status } = await requestForegroundPermissionsAsync();
-                  if (status === "granted") {
-                    toggleImagePicker();
-                    await getCheckInOutStatus();
-                    await fetchCheckInOutStatus();
-                  } else {
-                    showToast({
-                      position: "top",
-                      type: "error",
-                      message: "toast18",
-                    });
-                  }
-                }}
-              >
-                <ButtonText>
-                  {checkInOutStatusDetails.value === "Checked In"
-                    ? t("checkOut")
-                    : t("checkIn")}
-                </ButtonText>
-              </Button>
-            </View>
-          )}
         </View>
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">

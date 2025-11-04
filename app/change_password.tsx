@@ -6,7 +6,7 @@ import SubmitButton from "@/components/SubmitButton";
 import api from "@/clients/apiClient";
 import { CHANGE_PASSWORD } from "@/constants/api_endpoints";
 import { ErrorModel } from "@/models/common";
-import Toast from "react-native-toast-message";
+import { useToast } from "@/context/ToastContext";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import { setItem } from "@/utils/secure_store";
 import PrimaryText from "@/components/PrimaryText";
@@ -17,7 +17,7 @@ const ChangePassword = () => {
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [currentPassword, setCurrentPassword] = useState<string>("");
-
+   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorModel[]>([]);
   const [canValidateField, setCanValidateField] = useState(false);
@@ -104,10 +104,10 @@ const ChangePassword = () => {
             await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
           }
 
-          Toast.show({
+          showToast({
             type: "success",
-            text1: "PIN changed successfully",
-            visibilityTime: 5000,
+             position: "top",
+            message: "PIN changed successfully",
           });
 
           setIsLoading(false);

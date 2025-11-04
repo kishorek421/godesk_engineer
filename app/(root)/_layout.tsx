@@ -105,20 +105,12 @@ export const Layout = () => {
             shadowColor: "#f2f2f2",
           },
           header: () => (
-            <SafeAreaView className="bg-primary-950">
+            <SafeAreaView className="">
               <View>
                 <View
                   className={`flex-1 flex-col justify-center items-center absolute w-full ${Platform.OS === "android" && "mt-4"}`}
                 >
-                  <PrimaryText
-                    className="text-[11px] font-medium text-gray-100"
-                    translate="none"
-                  >
-                    {t(getGreetingMessage())} 👋
-                  </PrimaryText>
-                  <Text className="flex-1 text-white font-semibold text-sm">
-                    {user?.firstName ?? ""} {user?.lastName ?? ""}
-                  </Text>
+                 
                 </View>
                 <View>
                   <View
@@ -127,7 +119,7 @@ export const Layout = () => {
                     <TouchableOpacity
                       onPress={() => props.navigation?.openDrawer()}
                     >
-                      <AntDesign name="bars" size={24} color="white" />
+                      <AntDesign name="bars" size={24} color="black" />
                     </TouchableOpacity>
                     <View className="flex-row justify-center items-center gap-3">
                       <TouchableOpacity
@@ -140,7 +132,7 @@ export const Layout = () => {
                             <Ionicons
                               name="notifications-outline"
                               size={22}
-                              color="white"
+                              color="black"
                             />
                             {unreadCount > 0 && (
                               <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[16px] h-[16px] px-[3px] items-center justify-center z-10">
@@ -153,7 +145,7 @@ export const Layout = () => {
                         </View>
                       </TouchableOpacity>
                       
-                        <View className="bg-primary-200 flex-col justify-center items-center w-8 h-8 rounded-full">
+                        {/* <View className="bg-primary-200 flex-col justify-center items-center w-8 h-8 rounded-full">
                           {
                             <PrimaryText className="text-primary-950 text-sm font-semibold">
                               {generateLogo(
@@ -162,11 +154,11 @@ export const Layout = () => {
                               )}
                             </PrimaryText>
                           }
-                        </View>
+                        </View> */}
                      
                     </View>
                   </View>
-                  <View className="h-0.5 bg-gray-50" />
+
                 </View>
               </View>
             </SafeAreaView>
@@ -175,9 +167,10 @@ export const Layout = () => {
       >
         <Drawer.Screen
           name="home"
-          options={{ title: t("home"), headerTitle: "" }}
+          options={{ title: ("Home"), headerTitle: "" }}
         />
-        <Drawer.Screen
+               
+        {/* <Drawer.Screen
           name="attendance"
           options={{
             title: t("Attendance"),
@@ -210,8 +203,8 @@ export const Layout = () => {
             ),
             headerRight: undefined,
           }}
-        />
-        <Drawer.Screen
+        /> */}
+        {/* <Drawer.Screen
           name="Leave"
           options={{
             title: t("Leave"),
@@ -244,11 +237,11 @@ export const Layout = () => {
             ),
             headerRight: undefined,
           }}
-        />
-        <Drawer.Screen
+        /> */}
+        {/* <Drawer.Screen
           name="change_password"
           options={{
-            title: t("Change PIN"),
+            title: "",
             headerTitleStyle: {
               fontWeight: "bold",
               marginLeft: getMarginStart(),
@@ -278,7 +271,7 @@ export const Layout = () => {
             ),
             headerRight: undefined,
           }}
-        />
+        /> */}
       </Drawer>
     </GestureHandlerRootView>
   );
