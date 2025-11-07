@@ -53,7 +53,7 @@ const CustomDrawerContent = (props: any) => {
             }}
           />
           <DrawerItem
-            label={t("change PIN")}
+            label={t("Change PIN")}
             icon={({ color, size }) => (
               <AntDesign name="lock1" size={size} color={primaryColor} />
             )}

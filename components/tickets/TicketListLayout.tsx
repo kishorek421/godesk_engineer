@@ -157,8 +157,8 @@ const TicketListLayout = () => {
             >
               <PrimaryText
                 className={`h-96 text-center mt-1 font-regular ${selectedTab === index
-                    ? "text-primary-950 font-medium"
-                    : "text-gray-500 font-normal text-sm"
+                  ? "text-primary-950 font-medium"
+                  : "text-gray-500 font-normal text-sm"
                   }`}
               >
                 {item}
@@ -171,7 +171,7 @@ const TicketListLayout = () => {
       {recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
           <PrimaryText className="text-gray-400 text-md text-center font-regular">
-noTicketsFound
+            noTicketsFound
           </PrimaryText>
         </View>
       ) : (

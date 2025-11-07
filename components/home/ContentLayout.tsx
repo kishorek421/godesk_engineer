@@ -243,7 +243,7 @@ const ContentLayout = ({
     <BasePage>
       <SafeAreaView className="h-full bg-gray-300">
         <ScrollView className="h-full ">
-          <View className="bg-gray-300 h-full">
+          <View className="bg-gray-100 h-full">
             <View className="mt-2">
               <View className="">
                 <View

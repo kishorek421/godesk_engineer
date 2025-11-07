@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Alert } from "react-native";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
@@ -26,6 +26,8 @@ import BasePage from '@/components/base/base_page';
 import Toast from "@/components/base/toast";
 import { LocationProvider } from "@/context/LocationContext";
 import { RefreshProvider } from "@/context/RefreshContext";
+import VersionCheck from "react-native-version-check";
+import { Linking } from "react-native";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -45,11 +47,57 @@ export default function RootLayout() {
   });
   const [initialNotificationStatus, setInitialNotificationStatus] =
     useState<InitialNotificationStatus>(InitialNotificationStatus.fetching);
-
+  const [isVisible, setIsVisible] = useState(false);
+  const [storeUrl, setStoreUrl] = useState("");
   const { messagingRef, isMessagingReady } = useFirebaseMessaging();
 
   useEffect(() => {
     checkAppVersion();
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+  const promptUpdateIfNeeded = async () => {
+    const latestVersion = await VersionCheck.getLatestVersion();
+    const currentVersion = VersionCheck.getCurrentVersion();
+
+    console.log("latestVersion", latestVersion);
+    console.log("currentVersion", currentVersion);
+
+    const updateInfo = await VersionCheck.needUpdate({ currentVersion, latestVersion });
+    console.log("updateInfo", updateInfo);
+    if (updateInfo.isNeeded && latestVersion > currentVersion) {
+      Alert.alert(
+        "Update Available",
+        "Please update the app to the latest version.",
+        [
+          {
+            text: "Update",
+            onPress: async () => {
+              const url = await VersionCheck.getStoreUrl({
+                appID: "6741766542",
+                packageName: "com.godezk.godezkengineer",
+              });
+              Linking.openURL(url);
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+      const url = await VersionCheck.getStoreUrl({
+        appID: "6741766542",
+        packageName: "com.godezk.godezkengineer",
+      });
+      setStoreUrl(url);
+      setIsVisible(true);
+    }
+  };
+
+
+  useEffect(() => {
+    promptUpdateIfNeeded();
+    checkAppVersion();
+
     if (loaded) {
       SplashScreen.hideAsync();
     }
@@ -269,6 +317,12 @@ export default function RootLayout() {
                     name="checkIn_out/checkIn_out_list"
                     options={{
                       headerTitle: "Attendance List",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="change_paswsword"
+                    options={{
+                      headerTitle: "Change PIN",
                     }}
                   />
                   <Stack.Screen
