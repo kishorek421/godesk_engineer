@@ -36,7 +36,7 @@ import {
 import CheckInOutModal from "./CheckInOutModal";
 
 import { SafeAreaView } from "react-native";
-import { requestForegroundPermissionsAsync } from "expo-location";
+import useLocation from "@/hooks/useLocation";
 
 import Fontisto from "@expo/vector-icons/Fontisto";
 import BasePage from "../base/base_page";
@@ -73,6 +73,7 @@ const ContentLayout = ({
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const segments = useSegments();
   const [refreshFlag, setRefreshFlag] = useState(false);
+  const { isForegroundLocationPermissionAllowed } = useLocation();
   const toggleCheckInCheckOut = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
@@ -265,9 +266,8 @@ const ContentLayout = ({
                         <Button
                           className="bg-primary-950 rounded-lg"
                           onPress={async () => {
-                            const { status } =
-                              await requestForegroundPermissionsAsync();
-                            if (status === "granted") {
+                            // Use location context instead of requesting permissions
+                            if (isForegroundLocationPermissionAllowed) {
                               toggleCheckInCheckOut();
                             } else {
                               // Toast.show({

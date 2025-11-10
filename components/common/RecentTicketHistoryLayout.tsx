@@ -87,7 +87,7 @@ const RecentTicketHistoryLayout = ({
         }`}
       >
         <PrimaryText className="text-gray-500 text-sm text-center font-regular">
-          noRecentTicketFound
+          No Recent Ticket Found
         </PrimaryText>
       </View>
     </BasePage>

@@ -125,7 +125,7 @@ const LeaveRequestList = () => {
         ) : leaveRequestList.length === 0 ? (
           <BasePage>
             <View className="w-full h-full flex justify-center items-center">
-              <Text className="text-gray-500 font-regular">noDataFound</Text>
+              <Text className="text-gray-500 font-regular">No Data Found</Text>
               {/* <Text>{JSON.stringify(userDetails?.roleDetails[0]?.code??"-")}</Text> */}
             </View>
           </BasePage>

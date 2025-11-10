@@ -178,7 +178,7 @@ const DeviceDetailsScreen = ({
         <View className="bg-white px-3 py-3 rounded-lg w-full">
           <View className="flex-row justify-between items-center">
             <View>
-              <Text className="text-gray-500 text-md">leaveType</Text>
+              <Text className="text-gray-500 text-md">Leave Type</Text>
               <Text className="font-semibold text-gray-900 text-md">
                 {leaveDetails.leaveTypeDetails?.value ?? "-"}
               </Text>
@@ -194,13 +194,13 @@ const DeviceDetailsScreen = ({
           <View className="w-full mt-1">
             <View className="flex-row justify-between items-center">
               <View className="flex">
-<Text className="text-gray-500 text-md">startDate</Text>
+<Text className="text-gray-500 text-md">Start Date</Text>
 <Text className="font-semibold text-gray-900 text-md">
                   {leaveDetails.startDate ?? "-"}
                 </Text>
               </View>
               <View className="flex items-end">
-<Text className="text-gray-500 text-md">endDate</Text>
+<Text className="text-gray-500 text-md">End Date</Text>
 <Text className="font-semibold text-gray-900 text-md">
                   {leaveDetails.endDate ?? "-"}
                 </Text>
@@ -213,13 +213,13 @@ const DeviceDetailsScreen = ({
           <View className="w-full">
             <View className="flex-row justify-between items-center">
               <View className="flex">
-<Text className="text-gray-500 text-md">daysCount</Text>
+<Text className="text-gray-500 text-md">Days Count</Text>
 <Text className="font-semibold text-gray-900 text-md">
                   {leaveDetails.daysCount ?? "-"}
                 </Text>
               </View>
               <View className="flex items-end">
-<Text className="text-gray-500 text-md">approvedBy</Text>
+<Text className="text-gray-500 text-md">Approved By</Text>
 <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                   {leaveDetails.approvedBy?.name ?? "-"}
                 </Text>
@@ -229,13 +229,13 @@ const DeviceDetailsScreen = ({
           <View className="border-[.5px] border-gray-300 mt-1 mb-3 w-full h-[1px]" />
           <View className="flex-row justify-between items-center">
             <View className="flex">
-              <Text className="text-gray-500 text-md">remainingDays</Text>
+              <Text className="text-gray-500 text-md">Remaining Days</Text>
               <Text className="font-semibold text-gray-900 text-md">
                 {leaveDetails.remainingDays ?? "-"}
               </Text>
             </View>
             <View className="flex items-end">
-              <Text className="text-gray-500 text-md">lossOfPay</Text>
+              <Text className="text-gray-500 text-md">Loss Of Pay</Text>
               <Text className="mt-[2px] font-semibold text-gray-900 text-md">
                 {leaveDetails.lossOfPay ?? "-"}
               </Text>

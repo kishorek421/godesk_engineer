@@ -65,6 +65,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { useToast } from "@/context/ToastContext";
 import { TouchableWithoutFeedback } from "react-native";
 import i18n from "@/i18n";
+import useLocation from "@/hooks/useLocation";
 
 const TicketDetails = () => {
 
@@ -75,6 +76,7 @@ const TicketDetails = () => {
   const [currentTime, setCurrentTime] = useState(
     moment().format("DD/MM/YYYY hh:mm:ss A")
   );
+  const { isForegroundLocationPermissionAllowed } = useLocation();
 
   const { ticketId } = useLocalSearchParams();
   const [ticketDetails, setTicketDetails] = useState<TicketListItemModel>({});
@@ -184,11 +186,12 @@ const TicketDetails = () => {
 
   const fetchPincode = async () => {
     try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.error("Permission to access location was denied");
+      // Use location context instead of requesting permissions
+      if (!isForegroundLocationPermissionAllowed) {
+        console.error("Location permission not granted");
         return;
       }
+      
       let location: Location.LocationObject | null =
         await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
 

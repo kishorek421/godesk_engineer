@@ -114,7 +114,7 @@ export const Layout = () => {
                 </View>
                 <View>
                   <View
-                    className={`flex-row justify-between items-center px-3 ${Platform.OS === "android" ? "mt-4 mb-6" : "mb-4"}`}
+                    className={`flex-row justify-between items-center px-5 ${Platform.OS === "android" ? "mt-8 mb-8" : "mb-4"}`}
                   >
                     <TouchableOpacity
                       onPress={() => props.navigation?.openDrawer()}

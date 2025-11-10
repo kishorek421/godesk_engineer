@@ -66,31 +66,31 @@ export default function RootLayout() {
 
     const updateInfo = await VersionCheck.needUpdate({ currentVersion, latestVersion });
     console.log("updateInfo", updateInfo);
-    if (updateInfo.isNeeded && latestVersion > currentVersion) {
-      Alert.alert(
-        "Update Available",
-        "Please update the app to the latest version.",
-        [
-          {
-            text: "Update",
-            onPress: async () => {
-              const url = await VersionCheck.getStoreUrl({
-                appID: "6741766542",
-                packageName: "com.godezk.godezkengineer",
-              });
-              Linking.openURL(url);
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-      const url = await VersionCheck.getStoreUrl({
-        appID: "6741766542",
-        packageName: "com.godezk.godezkengineer",
-      });
-      setStoreUrl(url);
-      setIsVisible(true);
-    }
+    // if (updateInfo.isNeeded && latestVersion > currentVersion) {
+    //   Alert.alert(
+    //     "Update Available",
+    //     "Please update the app to the latest version.",
+    //     [
+    //       {
+    //         text: "Update",
+    //         onPress: async () => {
+    //           const url = await VersionCheck.getStoreUrl({
+    //             appID: "6741766542",
+    //             packageName: "com.godezk.godezkengineer",
+    //           });
+    //           Linking.openURL(url);
+    //         },
+    //       },
+    //     ],
+    //     { cancelable: false }
+    //   );
+    //   const url = await VersionCheck.getStoreUrl({
+    //     appID: "6741766542",
+    //     packageName: "com.godezk.godezkengineer",
+    //   });
+    //   setStoreUrl(url);
+    //   setIsVisible(true);
+    // }
   };
 
 
@@ -320,7 +320,7 @@ export default function RootLayout() {
                     }}
                   />
                   <Stack.Screen
-                    name="change_paswsword"
+                    name="change_password"
                     options={{
                       headerTitle: "Change PIN",
                     }}
