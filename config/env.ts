@@ -1,11 +1,11 @@
 // http
-const LOCAL_BASE_URL = "http://192.168.0.155:8089";
-const DEV_BASE_URL = "http://13.201.225.84:8090";
+const LOCAL_BASE_URL = "http://52.66.244.127:8090";
+const DEV_BASE_URL = "http://52.66.244.127:8089";
 const STAGE_BASE_URL = "http://65.0.35.228:8090";
 const PROD_BASE_URL = "https://workplace.godezk.com/api";
 // ws
 const LOCAL_BASE_WS_URL = "ws://127.0.0.1:5000/";
-const DEV_BASE_WS_URL = "ws://13.201.225.84:8090/app/engineer";
+const DEV_BASE_WS_URL = "ws://52.66.244.127:8089/app/engineer";
 
 enum ENVS {
   local,
@@ -15,8 +15,8 @@ enum ENVS {
 }
 
 // const env: ENVS = ENVS.local;
-// const env: ENVS = ENVS.dev;
-const env: ENVS = ENVS.stage;
+const env: ENVS = ENVS.dev;
+// const env: ENVS = ENVS.stage;
 // const env: ENVS = ENVS.prod;
 
 const getBaseURL = (iENV: ENVS) => {

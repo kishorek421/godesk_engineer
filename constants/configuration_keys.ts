@@ -10,4 +10,6 @@ export const TICKET_STATUS = "TICKET_STATUS";
 export const TICKET_ASSIGNED = "TICKET_ASSIGNED";
 export const ASSIGNED = "ASSIGNED";
 export const TICKET_OPENED = "TICKET_OPENED";
-export const PAYMENT_MODE = "PAYMENT_MODE"
+export const PAYMENT_MODE = "PAYMENT_MODE";
+export const REJECTED = "REJECTED";
+export const APPROVED = "APPROVED";

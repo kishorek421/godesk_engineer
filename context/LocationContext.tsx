@@ -3,14 +3,14 @@ import { createContext, ReactNode } from "react";
 import * as Location from "expo-location";
 import api from "@/clients/apiClient";
 import { AppState, AppStateStatus, Platform } from "react-native";
-import { useWebSocket } from "./WSContext";
+// import { useWebSocket } from "./WSContext";
 import useAuth from "@/hooks/useAuth";
 import * as TaskManager from "expo-task-manager";
 import { getItem, setItem } from "@/utils/secure_store";
 import { AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY } from "@/constants/storage_keys";
 import { BASE_URL } from "@/config/env";
 import axios, { AxiosError } from "axios";
-import { wsClient } from "@/clients/ws_client";
+// import { wsClient } from "@/clients/ws_client";
 import { primaryColor } from "@/constants/colors";
 
 interface CurrentLocationModel {
@@ -42,137 +42,137 @@ interface LcoationProviderProps {
 
 const LOCATION_TASK_NAME = "background-location-task";
 
-TaskManager.defineTask(
-  LOCATION_TASK_NAME,
-  async ({
-    data,
-    error,
-  }: {
-    data: {
-      locations: {
-        coords: CurrentLocationModel;
-      }[];
-    };
-    error: any;
-  }) => {
-    if (error) {
-      console.error("Background location error:", error);
-      return;
-    }
+// TaskManager.defineTask(
+//   LOCATION_TASK_NAME,
+//   async ({
+//     data,
+//     error,
+//   }: {
+//     data: {
+//       locations: {
+//         coords: CurrentLocationModel;
+//       }[];
+//     };
+//     error: any;
+//   }) => {
+//     if (error) {
+//       console.error("Background location error:", error);
+//       return;
+//     }
 
-    const inProgressTicketId = await getItem("inProgressTicketId");
-    console.log(
-      "inProgressTicketId >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
-      inProgressTicketId
-    );
+//     const inProgressTicketId = await getItem("inProgressTicketId");
+//     console.log(
+//       "inProgressTicketId >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+//       inProgressTicketId
+//     );
 
-    if (inProgressTicketId) {
-      if (data && data.locations && data.locations.length > 0) {
-        const { locations } = data;
-        const { latitude, longitude, heading } = locations[0].coords;
-        console.log("📍 Background location:", latitude, longitude, heading);
+//     if (inProgressTicketId) {
+//       if (data && data.locations && data.locations.length > 0) {
+//         const { locations } = data;
+//         const { latitude, longitude, heading } = locations[0].coords;
+//         console.log("📍 Background location:", latitude, longitude, heading);
         
-        // Validate coordinates
-        if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
-          console.error("Invalid coordinates received:", { latitude, longitude, heading });
-          return;
-        }
+//         // Validate coordinates
+//         if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
+//           console.error("Invalid coordinates received:", { latitude, longitude, heading });
+//           return;
+//         }
 
-        let token = await getItem(AUTH_TOKEN_KEY);
-        if (token) {
-          try {
-            // Validate token
-            await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
-          } catch (e) {
-            console.error("Token validation failed, attempting refresh");
-            try {
-              const refreshToken = await getItem(REFRESH_TOKEN_KEY);
-              console.log("Refreshing token...");
-              const response = await axios.get(
-                BASE_URL +
-                  "/login/refresh_token" +
-                  `?refreshToken=${refreshToken}`
-              );
-              const newToken = response.data?.data?.accessToken;
-              await setItem(AUTH_TOKEN_KEY, newToken);
-              console.log("Token refreshed successfully");
-              token = newToken;
-            } catch (refreshError) {
-              console.error("Token refresh failed:", refreshError);
-              return; // Exit if we can't get a valid token
-            }
-          }
+//         let token = await getItem(AUTH_TOKEN_KEY);
+//         if (token) {
+//           try {
+//             // Validate token
+//             await axios.post(BASE_URL + `/login/validate?token=${token}`, {});
+//           } catch (e) {
+//             console.error("Token validation failed, attempting refresh");
+//             try {
+//               const refreshToken = await getItem(REFRESH_TOKEN_KEY);
+//               console.log("Refreshing token...");
+//               const response = await axios.get(
+//                 BASE_URL +
+//                   "/login/refresh_token" +
+//                   `?refreshToken=${refreshToken}`
+//               );
+//               const newToken = response.data?.data?.accessToken;
+//               await setItem(AUTH_TOKEN_KEY, newToken);
+//               console.log("Token refreshed successfully");
+//               token = newToken;
+//             } catch (refreshError) {
+//               console.error("Token refresh failed:", refreshError);
+//               return; // Exit if we can't get a valid token
+//             }
+//           }
 
-          // Check if WebSocket is connected before sending
-          if (wsClient.isConnected()) {
-            try {
-              wsClient.sendMessage({
-                ticketId: inProgressTicketId,
-                lat: latitude,
-                lng: longitude,
-                heading: heading,
-                token: "Bearer " + token,
-              });
-              console.log("📍 Location sent via WebSocket successfully");
-            } catch (wsError) {
-              console.error("WebSocket send error:", wsError);
-              // Fallback to API call if WebSocket fails
-              try {
-                await axios.post(BASE_URL + "/location/update", {
-                  ticketId: inProgressTicketId,
-                  lat: latitude,
-                  lng: longitude,
-                  heading: heading || 0,
-                }, {
-                  headers: { Authorization: "Bearer " + token }
-                });
-                console.log("📍 Location sent via API fallback");
-              } catch (apiError) {
-                console.error("API fallback also failed:", apiError);
-              }
-            }
-          } else {
-            console.log("WebSocket not connected, attempting to send via API");
-            // Fallback to API call if WebSocket is not connected
-            try {
-              await axios.post(BASE_URL + "/location/update", {
-                ticketId: inProgressTicketId,
-                lat: latitude,
-                lng: longitude,
-                heading: heading || 0,
-              }, {
-                headers: { Authorization: "Bearer " + token }
-              });
-              console.log("📍 Location sent via API fallback");
-            } catch (apiError) {
-              console.error("API fallback failed:", apiError);
-            }
-          }
-        } else {
-          console.error("No valid token available for location update");
-        }
-      } else {
-        console.log("No location data received in background task");
-      }
-    } else {
-      console.log("No inProgressTicketId, stopping background location updates");
-      // Stop background location updates if no active ticket
-      try {
-        await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
-        console.log("Background location updates stopped");
-      } catch (stopError) {
-        console.error("Error stopping location updates:", stopError);
-      }
-    }
-  }
-);
+//           // Check if WebSocket is connected before sending
+//           if (wsClient.isConnected()) {
+//             try {
+//               wsClient.sendMessage({
+//                 ticketId: inProgressTicketId,
+//                 lat: latitude,
+//                 lng: longitude,
+//                 heading: heading,
+//                 token: "Bearer " + token,
+//               });
+//               console.log("📍 Location sent via WebSocket successfully");
+//             } catch (wsError) {
+//               console.error("WebSocket send error:", wsError);
+//               // Fallback to API call if WebSocket fails
+//               try {
+//                 await axios.post(BASE_URL + "/location/update", {
+//                   ticketId: inProgressTicketId,
+//                   lat: latitude,
+//                   lng: longitude,
+//                   heading: heading || 0,
+//                 }, {
+//                   headers: { Authorization: "Bearer " + token }
+//                 });
+//                 console.log("📍 Location sent via API fallback");
+//               } catch (apiError) {
+//                 console.error("API fallback also failed:", apiError);
+//               }
+//             }
+//           } else {
+//             console.log("WebSocket not connected, attempting to send via API");
+//             // Fallback to API call if WebSocket is not connected
+//             try {
+//               await axios.post(BASE_URL + "/location/update", {
+//                 ticketId: inProgressTicketId,
+//                 lat: latitude,
+//                 lng: longitude,
+//                 heading: heading || 0,
+//               }, {
+//                 headers: { Authorization: "Bearer " + token }
+//               });
+//               console.log("📍 Location sent via API fallback");
+//             } catch (apiError) {
+//               console.error("API fallback failed:", apiError);
+//             }
+//           }
+//         } else {
+//           console.error("No valid token available for location update");
+//         }
+//       } else {
+//         console.log("No location data received in background task");
+//       }
+//     } else {
+//       console.log("No inProgressTicketId, stopping background location updates");
+//       // Stop background location updates if no active ticket
+//       try {
+//         await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+//         console.log("Background location updates stopped");
+//       } catch (stopError) {
+//         console.error("Error stopping location updates:", stopError);
+//       }
+//     }
+//   }
+// );
 
 export const LocationProvider = ({ children }: LcoationProviderProps) => {
   const appState = useRef<AppStateStatus>(AppState.currentState);
 
   const { token } = useAuth();
 
-  const socket = useWebSocket();
+  // const socket = useWebSocket();
 
   const [isLocationEnabled, setIsLocationEnabled] = useState<boolean>(false);
   const [
@@ -194,6 +194,7 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
     // fetch the user address
     // fetchAddressList();
     // simultanously fetch the currect location of the user
+    // Check location permissions without requesting them
     setCurrentLocationAsDefault();
   }, []);
 
@@ -203,16 +204,20 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
       console.log("nextAppState", nextAppState);
       console.log("appState.current", appState.current);
 
-      if (nextAppState === "active") {
+      if (nextAppState === "active" && appState.current !== "active") {
         appState.current = nextAppState;
-        setCurrentLocationAsDefault();
+        // Only refresh location if permissions are already granted
+        // Don't request permissions again to avoid duplicate prompts
+        if (isForegroundLocationPermissionAllowed && isBackgroundLocationPermissionAllowed) {
+          setCurrentLocationAsDefault();
+        }
       }
     });
 
     return () => {
       subscription.remove();
     };
-  }, []);
+  }, [isForegroundLocationPermissionAllowed, isBackgroundLocationPermissionAllowed]);
 
   const checkLocationServices = async () => {
     const enabled = await Location.hasServicesEnabledAsync();
@@ -225,7 +230,7 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
     try {
       await checkLocationServices();
       if (Platform.OS === "android") {
-        try {
+             try {
           let { status, canAskAgain } =
             await Location.getForegroundPermissionsAsync();
           if (status === "granted") {
@@ -254,6 +259,7 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
         if (status === "granted") {
           return true;
         }
+        return false;
       }
     } catch (e) {
       console.error("e -> ", e);
@@ -266,34 +272,21 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
       await checkLocationServices();
       if (Platform.OS === "android") {
         try {
-          let { status, canAskAgain } =
-            await Location.getBackgroundPermissionsAsync();
+          let { status } = await Location.getBackgroundPermissionsAsync();
           if (status === "granted") {
             return true;
-          } else if (status === "undetermined") {
-            let { status: newStatus } =
-              await Location.requestBackgroundPermissionsAsync();
-            if (newStatus === "granted") {
-              return true;
-            }
-          } else if (status === "denied" && canAskAgain) {
-            let { status: newStatus } =
-              await Location.requestBackgroundPermissionsAsync();
-            if (newStatus === "granted") {
-              return true;
-            }
           }
+          // Don't request permissions - just return false if not granted
+          return false;
         } catch (e) {
           console.error("e -> ", e);
         }
         return false;
       } else {
-        // granted = true; // Assuming iOS permission is handled elsewhere
-        const { status } = await Location.requestBackgroundPermissionsAsync();
+        // For iOS, just check status without requesting
+        const { status } = await Location.getBackgroundPermissionsAsync();
         console.log("status ->", status);
-        if (status === "granted") {
-          return true;
-        }
+        return status === "granted";
       }
     } catch (e) {
       console.error("e -> ", e);
@@ -461,16 +454,16 @@ export const LocationProvider = ({ children }: LcoationProviderProps) => {
             heading: heading ?? 0,
           });
 
-          if (ticketId) {
-            // update current location to customer
-            socket?.sendMessage({
-              ticketId: ticketId,
-              lat: latitude,
-              lng: longitude,
-              heading: heading,
-              token: "Bearer " + token,
-            });
-          }
+          // if (ticketId) {
+          //   // update current location to customer
+          //   socket?.sendMessage({
+          //     ticketId: ticketId,
+          //     lat: latitude,
+          //     lng: longitude,
+          //     heading: heading,
+          //     token: "Bearer " + token,
+          //   });
+          // }
         }
       );
     }

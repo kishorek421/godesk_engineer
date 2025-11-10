@@ -61,7 +61,7 @@ const LanguageSelectionScreen = () => {
     i18n.changeLanguage(selectedLang);
     await setItem(LANGUAGE_KEY, selectedLang);
     setLoading(false);
-    router.push('/login');
+    router.push('/(auth)/login');
   };
 
   if (initializing) {
