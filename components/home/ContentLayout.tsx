@@ -75,8 +75,10 @@ const ContentLayout = ({
   const [refreshFlag, setRefreshFlag] = useState(false);
   const { isForegroundLocationPermissionAllowed } = useLocation();
   const toggleCheckInCheckOut = () => {
-    setIsModalVisible(!isModalVisible);
-    if (!isModalVisible) {
+    const newVisibility = !isModalVisible;
+    setIsModalVisible(newVisibility);
+    
+    if (newVisibility) {
       bottomSheetRef.current?.show();
     } else {
       bottomSheetRef.current?.hide();
@@ -416,7 +418,6 @@ const ContentLayout = ({
               checkedInId={checkInOutStatusDetails.id}
               onClose={() => {
                 setIsModalVisible(false);
-                toggleCheckInCheckOut();
                 fetchCheckInOutStatus();
               }}
             />

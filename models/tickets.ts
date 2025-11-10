@@ -16,6 +16,8 @@ export interface TicketListItemModel {
   id?: string;
   description?: string;
   dueBy?: string;
+  scheduledDate?:string;
+  timeSlot?:string;
   assetInUseDetails?: AssetInUseListItemModel;
   assetSubTypeDetails?: AssetSubTypeListItemModel;
   statusDetails?: ConfigurationModel;

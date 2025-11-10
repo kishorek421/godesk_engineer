@@ -55,6 +55,7 @@ const CreateLeaveRequest = () => {
     useState<DropdownModel>();
   const [leaveType, setLeaveType] = useState<LeaveTypeModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [userSelectedDate, setUserSelectedDate] = useState(false);
   const [leaveDetailsPreview, setLeaveDetailsPreview] =
     useState<LeaveRequestDetailsModel>();
   const bottomSheetRef = useRef(null);
@@ -219,7 +220,7 @@ const CreateLeaveRequest = () => {
            position: "top",
           message: leaveDetails?.id
             ? "Leave updated successfully"
-            : "Leave created successfully",
+            : "Leave applied successfully",
       
         });
 
@@ -260,20 +261,19 @@ const CreateLeaveRequest = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedLeaveType?.value) {
+    if (rangeConfirmed.start && rangeConfirmed.end) {
       fetchPreviewDetails();
+    } else {
+      setLeaveDetailsPreview(undefined); // Clear preview when dates are not selected
     }
-  }, [selectedLeaveType?.value, rangeConfirmed.start, rangeConfirmed.end]);
+  }, [selectedLeaveType?.value, rangeConfirmed]);
 
   const fetchPreviewDetails = () => {
-    if (!selectedLeaveType?.value) {
+    if (!selectedLeaveType?.value || !rangeConfirmed.start || !rangeConfirmed.end) {
       return;
     }
-    let url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}`;
 
-    if (rangeConfirmed.start && rangeConfirmed.end) {
-      url += `&startDate=${rangeConfirmed.start}&endDate=${rangeConfirmed.end}`;
-    }
+    const url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}&startDate=${rangeConfirmed.start}&endDate=${rangeConfirmed.end}`;
 
     api
       .get(url)
@@ -391,17 +391,19 @@ const CreateLeaveRequest = () => {
             <LoadingBar />
           ) : (
             <View className="px-4  p-4">
-              {selectedLeaveType?.value && (
-                <View className="mb-4">
-                  <View className="rounded bg-primary-200 px-3 py-2">
-                    <Text className="text-gray-800 font-medium text-sm">
-                      {leaveDetailsPreview?.remainingDays === 0
-                        ? `You have consumed all the leaves for this leave type. Also, the loss of pay for this is ${leaveDetailsPreview?.lossOfPay ?? "_"} .`
-                        : `For the selected leave type, you have ${leaveDetailsPreview?.remainingDays ?? "_"} leave days remaining.`}
-                    </Text>
+              {selectedLeaveType?.value &&
+                leaveDetailsPreview &&
+                (!leaveId || userSelectedDate) && (
+                  <View className="mb-4">
+                    <View className="rounded bg-primary-200 px-3 py-2">
+                      <Text className="text-gray-800 font-medium text-sm">
+                        {leaveDetailsPreview?.remainingDays === 0
+                          ? `You have consumed all the leaves for this leave type. Also, the loss of pay for this is ${leaveDetailsPreview?.lossOfPay ?? "_"} .`
+                          : `For the selected leave type, you have ${leaveDetailsPreview?.remainingDays ?? "_"} leave days remaining.`}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )}
+                )}
 
               <PrimaryDropdownFormField
                 className="mb-3"
@@ -561,6 +563,7 @@ const CreateLeaveRequest = () => {
                 className="w-48 bg-primary-950 h-12 rounded-lg"
                 onPress={() => {
                   handleRangeConfirmed();
+                  setUserSelectedDate(true);
                   bottomSheetRef.current?.hide();
                   setErrors([]);
                 }}
