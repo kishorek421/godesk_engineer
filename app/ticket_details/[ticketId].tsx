@@ -115,27 +115,36 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-  const fetchTicketDetails = async () => {
-    console.log("ticketId ----------------------->", ticketId);
+ const fetchTicketDetails = async () => {
+  console.log("ticketId ----------------------->", ticketId);
 
-    setIsLoading(true);
-    if (ticketId) {
-      try {
-        const response = await apiClient.get(
-          GET_TICKET_DETAILS + `?ticketId=${ticketId}`
-        );
-        const ticketData = response.data.data ?? {};
-        console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
+  setIsLoading(true);
+
+  if (ticketId) {
+    try {
+      const response = await apiClient.get(
+        GET_TICKET_DETAILS + `?ticketId=${ticketId}`
+      );
+
+      const ticketData = response.data?.data ?? null;
+      console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", ticketData);
+
+      if (ticketData) {
         setTicketDetails(ticketData);
         getPaymentProducts();
         setPaymentProducts(ticketData.paymentProducts ?? []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
+        setIsLoading(false); 
+      } else {
+        console.warn("No ticket data found, keeping loader active...");
+        setTimeout(fetchTicketDetails, 2000);
       }
+    } catch (e) {
+      console.error("Error fetching ticket details:", e);
+      setTimeout(fetchTicketDetails, 2000);
     }
-  };
+  }
+};
+
   const formatTimeSlot = (slot: string) => {
     if (!slot) return "";
     if (slot.includes("-")) {
@@ -557,8 +566,7 @@ const TicketDetails = () => {
       return <PrimaryText className="text-gray-700">-</PrimaryText>;
     }
     return products.map((item) => {
-      const productNames = item?.itemDetails
-        .map((detail: any) => detail.productDetails?.name || "Unknown Product")
+      const productNames = item?.itemDetails.map((detail: any) => detail.productDetails?.name || "Unknown Product")
         .join(", ") || "Unknown Product";
       return (
         <View key={item.id} className="flex-row justify-between w-full items-center">
@@ -584,7 +592,7 @@ const TicketDetails = () => {
       );
     });
   };
-  return isLoading ? (
+  return isLoading || !ticketDetails?.id ? (
     <LoadingBar />
   ) : (
     <BasePage>

@@ -55,7 +55,10 @@ const TicketListItemLayout = ({
       >
         <View className="w-full bg-white px-3 py-3 rounded-lg">
           <View className="flex">
-            {ticketModel?.timeSlot && (
+            {ticketModel?.timeSlot && [
+                "ASSIGNED",
+                "OPENED",
+              ].includes(ticketModel.statusDetails?.key ?? "") && (
               <View>
                 <View className="mt-3 w-full">
 

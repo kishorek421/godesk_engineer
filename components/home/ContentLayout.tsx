@@ -56,7 +56,7 @@ const ContentLayout = ({
   authorizedModules: RoleModulePermissionsModel[];
   roleDetails: RoleModel;
 }) => {
-     const userTypeKey = customerDetails?.userTypeDetails?.[0]?.key;
+
   const [serviceTabs, setServiceTabs] = useState<ServiceItemModel[]>([]);
   const width = Dimensions.get("window").width;
   const bottomSheetRef = useRef(null);
@@ -160,53 +160,8 @@ const ContentLayout = ({
             },
             code: "CHECKIN",
           });
-
-          return updatedTabs;
-        });
-
-        setTicketsTabAdded(true);
-      }
-
-      const userTypeKey = customerDetails?.userTypeDetails?.[0]?.key;
-
-      console.log("userTypeKey--------->", userTypeKey);
-
-      if (
-        userTypeKey !== undefined &&
-        userTypeKey === "CUSTOMER" &&
-        !customerTabsAdded
-      ) {
-        setServiceTabs((prev) => [
-          ...prev,
-          {
-            label: "Devices",
-            icon: <AntDesign name="laptop" size={20} color={primaryColor} />,
-            path: "/devices/devices_list",
-            code: "DEVICES",
-          },
-          {
-            label: "Users",
-            icon: <AntDesign name="user" size={20} color={primaryColor} />,
-            path: "/users/users_list",
-            code: "USERS",
-          },
-        ]);
-
-        setCustomerTabsAdded(true);
-      }
-
-      if (
-        userTypeKey !== undefined &&
-        (userTypeKey === "CUSTOMER" ||
-          userTypeKey === "CUSTOMER_EMPLOYEE" ||
-          userTypeKey === "FIELD_ENGINEER" ||
-          userTypeKey === "EMPLOYEE") &&
-        !leaveTabAdded
-      ) {
-        setServiceTabs((prev) => [
-          ...prev,
-          {
-            label: "Leave",
+            updatedTabs.push({
+             label: "Leave",
             icon: (
               <Fontisto name="holiday-village" size={24} color={primaryColor} />
             ),
@@ -215,11 +170,15 @@ const ContentLayout = ({
               customerId: customerDetails.id ?? "",
             },
             code: "LEAVE",
-          },
-        ]);
+          });
 
-        setLeaveTabAdded(true);
+          return updatedTabs;
+        });
+
+        setTicketsTabAdded(true);
       }
+
+  
     }
   }, [customerDetails, roleDetails]);
 
@@ -244,7 +203,7 @@ const ContentLayout = ({
 
   return (
     <BasePage>
-      <SafeAreaView className="h-full bg-gray-300">
+      <SafeAreaView className="h-full ">
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
             <View className="mt-2">
