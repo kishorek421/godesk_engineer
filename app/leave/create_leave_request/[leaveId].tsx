@@ -109,8 +109,16 @@ const CreateLeaveRequest = () => {
             start: response.data.data.startDate,
             end: response.data.data.endDate,
           });
+          // Set marked dates for calendar display
+          const existingMarkedDates = getDateRange(
+            response.data.data.startDate,
+            response.data.data.endDate
+          );
+          setMarkedDates(existingMarkedDates);
+          console.log("Existing leave dates loaded:", existingMarkedDates);
         } else {
           setRangeConfirmed({ start: null, end: null });
+          setMarkedDates({});
         }
         if (
           response.data?.data.leaveTypeDetails?.id &&
@@ -543,7 +551,7 @@ const CreateLeaveRequest = () => {
                 onDayPress={onDayPress}
                 markingType={"period"}
                 markedDates={markedDates}
-                minDate={new Date().toISOString().split("T")[0]}
+                minDate={leaveDetails?.id ? undefined : new Date().toISOString().split("T")[0]}
               />
             </View>
             <View className="flex-row justify-evenly px-6 my-6 gap-4 w-full">

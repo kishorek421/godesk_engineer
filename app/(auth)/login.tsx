@@ -15,6 +15,7 @@ import {
   AUTH_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
   TEMP_FCM_TOKEN,
+  IS_WELCOMED,
 } from "@/constants/storage_keys";
 import { useToast } from "@/context/ToastContext";
 import { getFCMToken } from "@/services/fcm";
@@ -169,6 +170,7 @@ const LoginScreen = () => {
               console.log("loginData ->", loginData.token);
               await setItem(AUTH_TOKEN_KEY, loginData.token);
               await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
+              await setItem(IS_WELCOMED, "true");
               console.log("AUTH_TOKEN_KEY ->", await getItem(AUTH_TOKEN_KEY));
               router.dismissAll();
               router.replace("/(root)/home");
