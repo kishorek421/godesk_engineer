@@ -38,7 +38,7 @@ interface PrimaryTextFormFieldProps {
   validateFieldFunc: (fieldName: string, isValid: boolean) => void;
   defaultValue?: string;
   isRequired?: boolean;
-  keyboardType?: KeyboardTypeOptions;
+  keyboardType?: KeyboardTypeOptions | "number-pad";
   min?: number;
   max?: number;
   filterExp?: RegExp;
@@ -197,9 +197,9 @@ const PrimaryTextFormField = ({
                 : true
               : isSecured
           }
-          keyboardType={
+         keyboardType={
             inputType === "password"
-              ? "default"
+              ? "number-pad"
               : textCase !== TextCase.freeform
                 ? "visible-password"
                 : keyboardType
