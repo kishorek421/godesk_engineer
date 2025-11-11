@@ -44,10 +44,11 @@ export const AuthProvider = ({
 
   const loadUser = async () => {
     const token = await getItem(AUTH_TOKEN_KEY);
+    const isWelcomed = await getItem(IS_WELCOMED);
     console.log("token", token);
     const refreshToken = await getItem(REFRESH_TOKEN_KEY);
     console.log("refreshToken", refreshToken);
-    if (token) {
+    if (token && isWelcomed) {
       setToken(token);
       try {
         const response = await apiClient.get(GET_USER_DETAILS);
