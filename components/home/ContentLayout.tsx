@@ -75,10 +75,8 @@ const ContentLayout = ({
   const [refreshFlag, setRefreshFlag] = useState(false);
   const { isForegroundLocationPermissionAllowed } = useLocation();
   const toggleCheckInCheckOut = () => {
-    const newVisibility = !isModalVisible;
-    setIsModalVisible(newVisibility);
-    
-    if (newVisibility) {
+    setIsModalVisible(!isModalVisible);
+    if (!isModalVisible) {
       bottomSheetRef.current?.show();
     } else {
       bottomSheetRef.current?.hide();
@@ -203,25 +201,16 @@ const ContentLayout = ({
 
   return (
     <BasePage>
-      <SafeAreaView className="h-full ">
+      <SafeAreaView className="h-full  ">
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
             <View className="mt-2">
               <View className="">
                 <View
-                  className={`${Platform.OS === "ios" ? "px-4" : "px-6"} w-full`}
+                  className={`${Platform.OS === "ios" ? "px-4" : "px-4"} w-full`}
                 >
-                  <View className="flex-row justify-between items-center">
-                    <View className="">
-                      <Text className="text-md font-semibold">
-                       {t(getGreetingMessage())} 👋
-                      </Text>
-                      <Text className="color-primary-950 text-lg font-bold-1">
-                        {customerDetails.firstName ?? ""}{" "}
-                        {customerDetails.lastName ?? ""}
-                      </Text>
-                      {/* <Link href={'/_sitemap'}>device</Link> */}
-                    </View>
+                  <View className="flex-row justify-end items-end">
+                    
                     {checkInOutStatusDetails.value !== "Checked Out" && (
                       <View className="">
                         <Button
@@ -377,6 +366,7 @@ const ContentLayout = ({
               checkedInId={checkInOutStatusDetails.id}
               onClose={() => {
                 setIsModalVisible(false);
+                toggleCheckInCheckOut();
                 fetchCheckInOutStatus();
               }}
             />

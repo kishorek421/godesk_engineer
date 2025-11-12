@@ -204,14 +204,14 @@ export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
       },
     });
   }
-  // if (type === "LEAVE_REQUEST" && id) {
-  //   router.push({
-  //     pathname: "/leave/leave_history/details/[leaveId]",
-  //     params: {
-  //       leaveId: id,
-  //     },
-  //   });
-  // }
+  if (type === "LEAVE_REQUEST" && id) {
+    router.push({
+      pathname: "/leave/leave_history/details/[leaveId]/[userId]/[roleCode]",
+      params: {
+        leaveId: id,
+      },
+    });
+  }
 };
 export const numerals_en = {
   0: "0", 1: "1", 2: "2", 3: "3", 4: "4",

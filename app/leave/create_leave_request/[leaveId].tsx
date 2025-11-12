@@ -55,7 +55,6 @@ const CreateLeaveRequest = () => {
     useState<DropdownModel>();
   const [leaveType, setLeaveType] = useState<LeaveTypeModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [userSelectedDate, setUserSelectedDate] = useState(false);
   const [leaveDetailsPreview, setLeaveDetailsPreview] =
     useState<LeaveRequestDetailsModel>();
   const bottomSheetRef = useRef(null);
@@ -109,16 +108,8 @@ const CreateLeaveRequest = () => {
             start: response.data.data.startDate,
             end: response.data.data.endDate,
           });
-          // Set marked dates for calendar display
-          const existingMarkedDates = getDateRange(
-            response.data.data.startDate,
-            response.data.data.endDate
-          );
-          setMarkedDates(existingMarkedDates);
-          console.log("Existing leave dates loaded:", existingMarkedDates);
         } else {
           setRangeConfirmed({ start: null, end: null });
-          setMarkedDates({});
         }
         if (
           response.data?.data.leaveTypeDetails?.id &&
@@ -169,9 +160,9 @@ const CreateLeaveRequest = () => {
           message: "Please select from and to date",
         },
       ]);
-      setCanValidateField(true); 
+      setCanValidateField(true);
     } else {
-  
+
       setErrors((prevErrors) =>
         prevErrors.filter(
           (error) => error.param !== "startDate" && error.param !== "endDate",
@@ -179,7 +170,7 @@ const CreateLeaveRequest = () => {
       );
     }
 
-  
+
     setCanValidateField(true);
 
 
@@ -195,7 +186,7 @@ const CreateLeaveRequest = () => {
 
     await Promise.all(validationPromises);
 
-    
+
     const hasErrors = errors.some((error) => error.message && error.message.length > 0);
 
     if (
@@ -203,7 +194,7 @@ const CreateLeaveRequest = () => {
       rangeConfirmed.end === null ||
       hasErrors
     ) {
-   
+
       return;
     }
 
@@ -225,11 +216,11 @@ const CreateLeaveRequest = () => {
         console.log("Response data", response.data.data);
         showToast({
           type: "success",
-           position: "top",
+          position: "top",
           message: leaveDetails?.id
             ? "Leave updated successfully"
-            : "Leave applied successfully",
-      
+            : "Leave created successfully",
+
         });
 
         setIsLoading(false);
@@ -253,9 +244,9 @@ const CreateLeaveRequest = () => {
             .join("\n");
 
           if (errorMessages) {
-           showToast({
+            showToast({
               type: "error",
-               position: "top",
+              position: "top",
               message: errorMessages,
             });
           }
@@ -267,21 +258,44 @@ const CreateLeaveRequest = () => {
     fetchLeaveDetailsById();
     fetchLeaveTypes();
   }, []);
+  // helper: normalize dates to same format/representation as leaveDetails.*
+  // adjust if your dates are ISO strings, timestamps, or moment objects
+  const normalize = (d) => (d ? String(d) : null);
+
+  // whether the current selected range differs from original leave's range
+  const isRangeDifferent = React.useMemo(() => {
+    if (!leaveDetails?.id) return true; // new leave -> considered different
+    const originalStart = normalize(leaveDetails.startDate); // change key names if needed
+    const originalEnd = normalize(leaveDetails.endDate);
+    const currentStart = normalize(rangeConfirmed.start);
+    const currentEnd = normalize(rangeConfirmed.end);
+
+    return currentStart !== originalStart || currentEnd !== originalEnd;
+  }, [leaveDetails?.id, leaveDetails?.startDate, leaveDetails?.endDate, rangeConfirmed.start, rangeConfirmed.end]);
 
   useEffect(() => {
-    if (rangeConfirmed.start && rangeConfirmed.end) {
-      fetchPreviewDetails();
-    } else {
-      setLeaveDetailsPreview(undefined); // Clear preview when dates are not selected
-    }
-  }, [selectedLeaveType?.value, rangeConfirmed]);
+    if (!selectedLeaveType?.value) return;
 
-  const fetchPreviewDetails = () => {
-    if (!selectedLeaveType?.value || !rangeConfirmed.start || !rangeConfirmed.end) {
+    // If date range is provided and different from original -> always fetch
+    if (rangeConfirmed.start && rangeConfirmed.end && isRangeDifferent) {
+      fetchPreviewDetails();
       return;
     }
 
-    const url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}&startDate=${rangeConfirmed.start}&endDate=${rangeConfirmed.end}`;
+    // If it's a new leave (no id) -> fetch on type change even if no dates chosen
+    if (!leaveDetails?.id) {
+      fetchPreviewDetails();
+    }
+  }, [selectedLeaveType?.value, rangeConfirmed.start, rangeConfirmed.end, isRangeDifferent, leaveDetails?.id]);
+
+  const fetchPreviewDetails = () => {
+    if (!selectedLeaveType?.value) return;
+
+    let url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}`;
+
+    if (rangeConfirmed.start && rangeConfirmed.end) {
+      url += `&startDate=${rangeConfirmed.start}&endDate=${rangeConfirmed.end}`;
+    }
 
     api
       .get(url)
@@ -289,10 +303,10 @@ const CreateLeaveRequest = () => {
         console.log("PREVIEW", response.data.data ?? {});
         setLeaveDetailsPreview(response.data.data ?? {});
       })
-      .catch((e) => {
-        console.error(e);
-      });
+      .catch((e) => console.error(e));
   };
+
+
 
   const onDayPress = (day: any) => {
     const { dateString } = day;
@@ -326,10 +340,10 @@ const CreateLeaveRequest = () => {
           setLeaveType(leaveTypes);
           console.log("selected leave type", leaveTypes);
         } else {
-         showToast({
+          showToast({
             type: "success",
             position: "top",
-            message:  " Please contact the admin to add leave type.",
+            message: " Please contact the admin to add leave type.",
           });
         }
       })
@@ -399,9 +413,9 @@ const CreateLeaveRequest = () => {
             <LoadingBar />
           ) : (
             <View className="px-4  p-4">
-              {selectedLeaveType?.value &&
-                leaveDetailsPreview &&
-                (!leaveId || userSelectedDate) && (
+              {selectedLeaveType?.value && (
+                // show preview for new leaves OR for existing leaves only when range changed
+                ((!leaveDetails?.id) || isRangeDifferent) && (
                   <View className="mb-4">
                     <View className="rounded bg-primary-200 px-3 py-2">
                       <Text className="text-gray-800 font-medium text-sm">
@@ -411,7 +425,10 @@ const CreateLeaveRequest = () => {
                       </Text>
                     </View>
                   </View>
-                )}
+                )
+              )}
+
+
 
               <PrimaryDropdownFormField
                 className="mb-3"
@@ -507,18 +524,18 @@ const CreateLeaveRequest = () => {
                 max={200}
                 defaultValue={createLeaveRequestModel.reason ?? leaveDetails.reason}
                 filterExp={/^(|[a-zA-Z][a-zA-Z0-9,.-/'#$& ]*)$/}
-                
+
                 canValidateField={canValidateField}
                 setCanValidateField={setCanValidateField}
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
-                
-                 onChangeText={(value) => {
-                setCreateLeaveRequestModel((prevState) => {
-                  prevState.reason = value;
-                  return prevState;
-                });
-              }}
+
+                onChangeText={(value) => {
+                  setCreateLeaveRequestModel((prevState) => {
+                    prevState.reason = value;
+                    return prevState;
+                  });
+                }}
               />
               <SubmitButton
                 isLoading={isLoading}
@@ -551,7 +568,7 @@ const CreateLeaveRequest = () => {
                 onDayPress={onDayPress}
                 markingType={"period"}
                 markedDates={markedDates}
-                minDate={leaveDetails?.id ? undefined : new Date().toISOString().split("T")[0]}
+                minDate={new Date().toISOString().split("T")[0]}
               />
             </View>
             <View className="flex-row justify-evenly px-6 my-6 gap-4 w-full">
@@ -571,7 +588,6 @@ const CreateLeaveRequest = () => {
                 className="w-48 bg-primary-950 h-12 rounded-lg"
                 onPress={() => {
                   handleRangeConfirmed();
-                  setUserSelectedDate(true);
                   bottomSheetRef.current?.hide();
                   setErrors([]);
                 }}

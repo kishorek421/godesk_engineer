@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -43,7 +43,7 @@ import {
 } from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
-import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropDownFormCustom";
+import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropdownFormField";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import * as Location from "expo-location";
 import FeatherIcon from "@expo/vector-icons/Feather";
@@ -65,7 +65,6 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { useToast } from "@/context/ToastContext";
 import { TouchableWithoutFeedback } from "react-native";
 import i18n from "@/i18n";
-import useLocation from "@/hooks/useLocation";
 
 const TicketDetails = () => {
 
@@ -76,7 +75,6 @@ const TicketDetails = () => {
   const [currentTime, setCurrentTime] = useState(
     moment().format("DD/MM/YYYY hh:mm:ss A")
   );
-  const { isForegroundLocationPermissionAllowed } = useLocation();
 
   const { ticketId } = useLocalSearchParams();
   const [ticketDetails, setTicketDetails] = useState<TicketListItemModel>({});
@@ -115,46 +113,28 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
- const fetchTicketDetails = async () => {
-  console.log("ticketId ----------------------->", ticketId);
+  const fetchTicketDetails = async () => {
+    console.log("ticketId ----------------------->", ticketId);
 
-  setIsLoading(true);
-
-  if (ticketId) {
-    try {
-      const response = await apiClient.get(
-        GET_TICKET_DETAILS + `?ticketId=${ticketId}`
-      );
-
-      const ticketData = response.data?.data ?? null;
-      console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", ticketData);
-
-      if (ticketData) {
+    setIsLoading(true);
+    if (ticketId) {
+      try {
+        const response = await apiClient.get(
+          GET_TICKET_DETAILS + `?ticketId=${ticketId}`
+        );
+        const ticketData = response.data.data ?? {};
+        console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
         setTicketDetails(ticketData);
         getPaymentProducts();
         setPaymentProducts(ticketData.paymentProducts ?? []);
-        setIsLoading(false); 
-      } else {
-        console.warn("No ticket data found, keeping loader active...");
-        setTimeout(fetchTicketDetails, 2000);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (e) {
-      console.error("Error fetching ticket details:", e);
-      setTimeout(fetchTicketDetails, 2000);
     }
-  }
-};
-
-  const formatTimeSlot = (slot: string) => {
-    if (!slot) return "";
-    if (slot.includes("-")) {
-      const [start, end] = slot.split("-");
-      const formattedStart = moment(start.trim(), "HH:mm").format("hh:mm A");
-      const formattedEnd = moment(end.trim(), "HH:mm").format("hh:mm A");
-      return `${formattedStart} - ${formattedEnd}`;
-    }
-    return moment(slot.trim(), "HH:mm").format("hh:mm A");
   };
+
   const fetchRatingDetails = async () => {
     if (!ticketId) {
       console.warn("ticketId is not provided");
@@ -204,12 +184,11 @@ const TicketDetails = () => {
 
   const fetchPincode = async () => {
     try {
-      // Use location context instead of requesting permissions
-      if (!isForegroundLocationPermissionAllowed) {
-        console.error("Location permission not granted");
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
         return;
       }
-
       let location: Location.LocationObject | null =
         await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
 
@@ -284,19 +263,19 @@ const TicketDetails = () => {
   };
   const getPaymentProducts = () => {
     apiClient
-      .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
-      .then((response) => {
-        const products = response.data?.data ?? [];
-        setPaymentProducts(products);
-        setIsLoading(false);
-        console.log("paymentProducts state:", products); // Log to verify
-      })
-      .catch((e) => {
-        console.error(e);
-        setIsLoading(false);
-      });
+  .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
+  .then((response) => {
+    const products = response.data?.data ?? [];
+    setPaymentProducts(products);
+    setIsLoading(false);
+    console.log("paymentProducts state:", products); // Log to verify
+  })
+  .catch((e) => {
+    console.error(e);
+    setIsLoading(false);
+  });
   };
-
+  
   const updateTicketStatus = async () => {
     setErrors([]);
     setFieldValidationStatus({});
@@ -553,51 +532,73 @@ const TicketDetails = () => {
     fetchTicketDetails().finally(() => setRefreshing(false));
   };
 
-  const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
-    return listOfProducts.map((item) => ({
-      ...item,
-      itemDetails: item.itemDetails?.filter(
-        (detail: any) => detail.productTypeDetails?.key === "TICKET_SPARES"
-      ),
-    })).filter((item) => item.itemDetails.length > 0);
-  };
-  const getSparesComponent = (products: OrderProductsForTicketModel[]) => {
-    if (products.length === 0) {
-      return <PrimaryText className="text-gray-700">-</PrimaryText>;
-    }
-    return products.map((item) => {
-      const productNames = item?.itemDetails.map((detail: any) => detail.productDetails?.name || "Unknown Product")
-        .join(", ") || "Unknown Product";
-      return (
-        <View key={item.id} className="flex-row justify-between w-full items-center">
-          <View className="flex-row flex-wrap">
-            <PrimaryText className="text-gray-900 text-sm">
-              {productNames}
-            </PrimaryText>
-            {item.modelName && (
-              <>
-                <PrimaryText className="text-primary-950 text-sm">:- Model Name: </PrimaryText>
-                <PrimaryText className="text-secondary-950 text-sm">{item.modelName}</PrimaryText>
-              </>
-            )}
-            {item.partNumber && (
-              <>
-                <PrimaryText className="text-primary-950 text-sm">, Item Part-No: </PrimaryText>
-                <PrimaryText className="text-secondary-950 text-sm">{item.partNumber}</PrimaryText>
-              </>
-            )}
-            <PrimaryText className="text-gray-900 text-sm"> (x{item.quantity})</PrimaryText>
-          </View>
+ const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
+  return listOfProducts.map((item) => ({
+    ...item,
+    itemDetails: item.itemDetails?.filter(
+      (detail : any) => detail.productTypeDetails?.key === "TICKET_SPARES"
+    ),
+  })).filter((item) => item.itemDetails.length > 0);
+};
+const getSparesComponent = (products: OrderProductsForTicketModel[]) => {
+  if (products.length === 0) {
+    return <PrimaryText className="text-gray-700">-</PrimaryText>;
+  }
+  return products.map((item) => {
+    const productNames = item.itemDetails
+      .map((detail:any) => detail.productDetails?.name || "Unknown Product")
+      .join(", ");
+    return (
+      <View key={item.id} className="flex-row justify-between w-full items-center">
+        <View className="flex-row flex-wrap">
+          <PrimaryText className="text-gray-900 text-sm">
+            {productNames}
+          </PrimaryText>
+          {item.modelName && (
+            <>
+              <PrimaryText className="text-primary-950 text-sm">:- Model Name: </PrimaryText>
+              <PrimaryText className="text-secondary-950 text-sm">{item.modelName}</PrimaryText>
+            </>
+          )}
+          {item.partNumber && (
+            <>
+              <PrimaryText className="text-primary-950 text-sm">, Item Part-No: </PrimaryText>
+              <PrimaryText className="text-secondary-950 text-sm">{item.partNumber}</PrimaryText>
+            </>
+          )}
+          <PrimaryText className="text-gray-900 text-sm"> (x{item.quantity})</PrimaryText>
         </View>
-      );
-    });
-  };
-  return isLoading || !ticketDetails?.id ? (
+      </View>
+    );
+  });
+};
+  return isLoading ? (
     <LoadingBar />
   ) : (
     <BasePage>
       <View className="bg-white">
-
+        {/* <Pressable
+          onPress={() => {
+            router.push({
+              pathname: "../home",
+              params: {
+                refresh: "true",
+              },
+            });
+          }}
+        >
+          <View className="flex-row items-center bg-white h-14 px-4">
+            <View className="flex-row items-center flex-1">
+              <MaterialIcons name="arrow-back-ios" size={20} color="black" />
+            </View>
+            <View className="flex-1">
+              <PrimaryText className="font-semibold text-lg text-center">
+              Ticket Details
+              </PrimaryText>
+            </View>
+            <View className="flex-1"></View>
+          </View>
+        </Pressable> */}
         <ScrollView
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -606,6 +607,18 @@ const TicketDetails = () => {
         >
           <View className="flex-1 bg-gray-100 mb-8 h-full">
             <View className="p-4">
+              {/* <Button
+                  onPress={() =>
+                    showToast({
+                      position: 'top',
+                      backgroundColor: "#ff00ff",
+                      message:
+                        "Hello! This is a toast message.Hello! .",
+                    })
+                  }
+                >
+                  <ButtonText>Show Toast</ButtonText>
+                </Button> */}
               <View className="w-full bg-white px-3 py-3 rounded-lg">
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
@@ -633,39 +646,6 @@ const TicketDetails = () => {
                     />
                   </View>
                   <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
-                  <View className="mt-2 w-full">
-                    {ticketDetails?.scheduledDate ? (
-                      <View className="mt-2 w-full">
-                        <View
-                          className="rounded-xl px-4 py-4 mb-2"
-                          style={{ backgroundColor: "#FEF3C7" }}
-                        >
-                          <View className="flex-row items-center gap-2">
-                            <FontAwesome6 name="clock" size={16} color="#92400E" />
-                            <PrimaryText
-                              className="text-[#92400E] text-sm"
-                              translate="none"
-                            >
-                              Scheduled on
-                            </PrimaryText>
-                          </View>
-                          <View
-                            className="mt-3 self-start rounded-full px-3 py-1"
-                            style={{ backgroundColor: "#FDE68A" }}
-                          >
-                            <PrimaryText
-                              className="text-[#78350F] text-xs"
-                              translate="none"
-                            >
-                              {ticketDetails?.scheduledDate} at{" "}
-                              {formatTimeSlot(ticketDetails?.timeSlot ?? "")}
-                            </PrimaryText>
-                          </View>
-                        </View>
-                      </View>
-                    ) : null}
-
-                  </View>
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
@@ -801,7 +781,7 @@ const TicketDetails = () => {
                                 showToast({
                                   position: position || 'top',
                                   type: 'success',
-                                  message: "Call Requested Successfully",
+                                  message: "call Requested Successfully",
                                 });
                                 console.log('Toast shown:', { position, type, message });
                               }
@@ -876,19 +856,19 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   {paymentProducts?.length > 0 && (
-                    <View className="flex mt-4">
-                      <PrimaryText className="text-gray-500 text-md font-regular">
-                        Spare Details
-                      </PrimaryText>
-                      <View className="">
-                        {paymentProducts && paymentProducts.length > 0 ? (
-                          getSparesComponent(getTicketSpares(paymentProducts))
-                        ) : (
-                          <PrimaryText className="text-gray-700">-</PrimaryText>
-                        )}
-                      </View>
-                    </View>
-                  )}
+  <View className="flex mt-4">
+    <PrimaryText className="text-gray-500 text-md font-regular">
+      Spare Details
+    </PrimaryText>
+    <View className="">
+      {paymentProducts && paymentProducts.length > 0 ? (
+        getSparesComponent(getTicketSpares(paymentProducts))
+      ) : (
+        <PrimaryText className="text-gray-700">-</PrimaryText>
+      )}
+    </View>
+  </View>
+)}
 
 
                   {ticketDetails?.statusDetails?.key === "TICKET_CLOSED" &&
@@ -1007,7 +987,7 @@ const TicketDetails = () => {
                             setSelectedTicketStatus(selectedOption);
                           }}
                           type="ticketStatusOptionsState"
-                          placeholder="Select Status"
+                          placeholder="selectStatus"
                           fieldName="selectTicketStatusOptions"
                           label="status"
                           canValidateField={canValidateField}
@@ -1028,7 +1008,7 @@ const TicketDetails = () => {
                           setErrors={setErrors}
                           min={10}
                           max={200}
-                          filterExp={/^(?! )[a-zA-Z0-9,.\-?/'$#&@*+ ]*$/}
+                          filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
                           defaultValue={description}
                           canValidateField={canValidateField}
                           setCanValidateField={setCanValidateField}
