@@ -27,7 +27,7 @@ const translationResources = {
 // i18n initialization
 const initI18n = async () => {
   const savedLanguage = await AsyncStorage.getItem("language");
-  const fallbackLang = Localization.locale.split("-")[0] || "en";
+  const fallbackLang = Localization?.getLocales()?.[0]?.languageCode || "en";
   const language = savedLanguage || fallbackLang;
 
   await i18n.use(initReactI18next).init({
