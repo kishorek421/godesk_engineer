@@ -30,6 +30,7 @@ import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
 // import useLocation from "@/hooks/useLocation";
 import { removeItem, setItem } from "@/utils/secure_store";
+import { requestForegroundPermissionsAsync } from "expo-location";
 import { TouchableWithoutFeedback } from "react-native";
 import useLocation from "@/hooks/useLocation";
 

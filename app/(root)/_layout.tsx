@@ -1,42 +1,50 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Drawer } from "expo-router/drawer";
 import {
-  Platform,
-  SafeAreaView,
   TouchableOpacity,
   View,
   Text,
-  ActivityIndicator,
+  Platform,
 } from "react-native";
 import { DeviceEventEmitter } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { router, useNavigation } from "expo-router";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import CustomDrawerContent from "@/components/home/CustomDrawerContent";
 import PrimaryText from "@/components/PrimaryText";
 import { useTranslation } from "react-i18next";
 import { primaryColor } from "@/constants/colors";
-import { generateLogo, getGreetingMessage } from "@/utils/helper";
+import { getGreetingMessage } from "@/utils/helper";
 import useAuth from "@/hooks/useAuth";
-import { LocationContext } from "@/context/LocationContext";
-import { GET_ALL_NOTIFICATIONS } from "@/constants/api_endpoints";
 import api from "@/clients/apiClient";
+import {
+  GET_ALL_NOTIFICATIONS,
+  GET_USER_DETAILS,
+} from "@/constants/api_endpoints";
 import { NotificationItemModel } from "@/models/notifications";
 import { useFocusEffect } from "@react-navigation/native";
-import { Image } from "react-native";
+import { UserDetailsModel } from "@/models/users";
 
 export const Layout = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
-  const [allNotifications, setAllNotifications] = useState<
-    NotificationItemModel[]
-  >([]);
+  const insets = useSafeAreaInsets();
+  const [customerDetails, setCustomerDetails] = useState<UserDetailsModel>();
+  const [allNotifications, setAllNotifications] = useState<NotificationItemModel[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const navigation = useNavigation();
-  const getMarginStart = (): number => {
-    return Platform.OS === "ios" ? 0 : 15;
-  };
+
+  useEffect(() => {
+    api
+      .get(GET_USER_DETAILS, {})
+      .then((response) => {
+        const details = response.data?.data ?? {};
+        setCustomerDetails(details);
+      })
+      .catch(console.error);
+  }, []);
 
   const fetchAllNotifications = async () => {
     try {
@@ -47,10 +55,7 @@ export const Layout = () => {
 
       while (!isLastPage) {
         const response = await api.get(GET_ALL_NOTIFICATIONS, {
-          params: {
-            pageNo: page,
-            pageSize: 10,
-          },
+          params: { pageNo: page, pageSize: 10 },
         });
 
         const content = response.data?.data?.content ?? [];
@@ -59,12 +64,7 @@ export const Layout = () => {
         if (content.length === 0) break;
 
         allNotifications = [...allNotifications, ...content];
-
-        // Count unread items
-        totalUnread += content.filter(
-          (item: NotificationItemModel) => !item.isRead
-        ).length;
-
+        totalUnread += content.filter((item : any) => !item.isRead).length;
         isLastPage = paginator?.lastPage === true;
         page++;
       }
@@ -82,19 +82,13 @@ export const Layout = () => {
     }, [])
   );
 
-  // Listen for foreground notification events to update the badge instantly
   useEffect(() => {
-    const sub = DeviceEventEmitter.addListener(
-      "NEW_NOTIFICATION_RECEIVED",
-      () => {
-        setUnreadCount((prev) => prev + 1);
-      }
-    );
-
-    return () => {
-      sub.remove();
-    };
+    const sub = DeviceEventEmitter.addListener("NEW_NOTIFICATION_RECEIVED", () => {
+      setUnreadCount((prev) => prev + 1);
+    });
+    return () => sub.remove();
   }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
@@ -105,21 +99,29 @@ export const Layout = () => {
             shadowColor: "#f2f2f2",
           },
           header: () => (
-            <SafeAreaView className="">
+            <SafeAreaView className="bg-primary-950">
               <View>
                 <View
                   className={`flex-1 flex-col justify-center items-center absolute w-full ${Platform.OS === "android" && "mt-4"}`}
                 >
-                 
+                  <PrimaryText
+                    className="text-[11px] font-medium text-gray-100"
+                    translate="none"
+                  >
+                    {t(getGreetingMessage())} 👋
+                  </PrimaryText>
+                  <Text className="flex-1 text-white font-semibold text-sm">
+                    {customerDetails?.firstName ?? ""} {customerDetails?.lastName ?? ""}
+                  </Text>
                 </View>
                 <View>
                   <View
-                    className={`flex-row justify-between items-center px-5 ${Platform.OS === "android" ? "mt-8 mb-8" : "mb-4"}`}
+                    className={`flex-row justify-between items-center px-3 ${Platform.OS === "android" ? "mt-4 mb-6" : "mb-4"}`}
                   >
                     <TouchableOpacity
                       onPress={() => props.navigation?.openDrawer()}
                     >
-                      <AntDesign name="bars" size={24} color="black" />
+                      <AntDesign name="bars" size={24} color="white" />
                     </TouchableOpacity>
                     <View className="flex-row justify-center items-center gap-3">
                       <TouchableOpacity
@@ -132,7 +134,7 @@ export const Layout = () => {
                             <Ionicons
                               name="notifications-outline"
                               size={22}
-                              color="black"
+                              color="white"
                             />
                             {unreadCount > 0 && (
                               <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[16px] h-[16px] px-[3px] items-center justify-center z-10">
@@ -144,36 +146,24 @@ export const Layout = () => {
                           </View>
                         </View>
                       </TouchableOpacity>
-                      
-                        {/* <View className="bg-primary-200 flex-col justify-center items-center w-8 h-8 rounded-full">
-                          {
-                            <PrimaryText className="text-primary-950 text-sm font-semibold">
-                              {generateLogo(
-                                user?.firstName ?? "",
-                                user?.lastName
-                              )}
-                            </PrimaryText>
-                          }
-                        </View> */}
                      
                     </View>
                   </View>
-
+                  <View className="h-0.5 bg-gray-50" />
                 </View>
               </View>
             </SafeAreaView>
           ),
         })}
       >
-        <Drawer.Screen
-          name="home"
-          options={{ title: ("Home"), headerTitle: "" }}
-        />
-               
         {/* <Drawer.Screen
-          name="attendance"
+          name="home"
+          options={{ title: t("home"), headerTitle: "" }}
+        />
+        <Drawer.Screen
+          name="contact_us"
           options={{
-            title: t("Attendance"),
+            title: t("contactUs"),
             headerTitleStyle: {
               fontWeight: "bold",
               marginLeft: getMarginStart(),
@@ -203,11 +193,11 @@ export const Layout = () => {
             ),
             headerRight: undefined,
           }}
-        /> */}
-        {/* <Drawer.Screen
-          name="Leave"
+        />
+        <Drawer.Screen
+          name="FAQ"
           options={{
-            title: t("Leave"),
+            title: t("faqs"),
             headerTitleStyle: {
               fontWeight: "bold",
               marginLeft: getMarginStart(),
@@ -237,11 +227,11 @@ export const Layout = () => {
             ),
             headerRight: undefined,
           }}
-        /> */}
-        {/* <Drawer.Screen
-          name="change_password"
+        />
+        <Drawer.Screen
+          name="settings"
           options={{
-            title: "",
+            title: t("settings"),
             headerTitleStyle: {
               fontWeight: "bold",
               marginLeft: getMarginStart(),

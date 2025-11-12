@@ -56,7 +56,7 @@ const ContentLayout = ({
   authorizedModules: RoleModulePermissionsModel[];
   roleDetails: RoleModel;
 }) => {
-     const userTypeKey = customerDetails?.userTypeDetails?.[0]?.key;
+
   const [serviceTabs, setServiceTabs] = useState<ServiceItemModel[]>([]);
   const width = Dimensions.get("window").width;
   const bottomSheetRef = useRef(null);
@@ -75,10 +75,8 @@ const ContentLayout = ({
   const [refreshFlag, setRefreshFlag] = useState(false);
   const { isForegroundLocationPermissionAllowed } = useLocation();
   const toggleCheckInCheckOut = () => {
-    const newVisibility = !isModalVisible;
-    setIsModalVisible(newVisibility);
-    
-    if (newVisibility) {
+    setIsModalVisible(!isModalVisible);
+    if (!isModalVisible) {
       bottomSheetRef.current?.show();
     } else {
       bottomSheetRef.current?.hide();
@@ -160,53 +158,8 @@ const ContentLayout = ({
             },
             code: "CHECKIN",
           });
-
-          return updatedTabs;
-        });
-
-        setTicketsTabAdded(true);
-      }
-
-      const userTypeKey = customerDetails?.userTypeDetails?.[0]?.key;
-
-      console.log("userTypeKey--------->", userTypeKey);
-
-      if (
-        userTypeKey !== undefined &&
-        userTypeKey === "CUSTOMER" &&
-        !customerTabsAdded
-      ) {
-        setServiceTabs((prev) => [
-          ...prev,
-          {
-            label: "Devices",
-            icon: <AntDesign name="laptop" size={20} color={primaryColor} />,
-            path: "/devices/devices_list",
-            code: "DEVICES",
-          },
-          {
-            label: "Users",
-            icon: <AntDesign name="user" size={20} color={primaryColor} />,
-            path: "/users/users_list",
-            code: "USERS",
-          },
-        ]);
-
-        setCustomerTabsAdded(true);
-      }
-
-      if (
-        userTypeKey !== undefined &&
-        (userTypeKey === "CUSTOMER" ||
-          userTypeKey === "CUSTOMER_EMPLOYEE" ||
-          userTypeKey === "FIELD_ENGINEER" ||
-          userTypeKey === "EMPLOYEE") &&
-        !leaveTabAdded
-      ) {
-        setServiceTabs((prev) => [
-          ...prev,
-          {
-            label: "Leave",
+            updatedTabs.push({
+             label: "Leave",
             icon: (
               <Fontisto name="holiday-village" size={24} color={primaryColor} />
             ),
@@ -215,11 +168,15 @@ const ContentLayout = ({
               customerId: customerDetails.id ?? "",
             },
             code: "LEAVE",
-          },
-        ]);
+          });
 
-        setLeaveTabAdded(true);
+          return updatedTabs;
+        });
+
+        setTicketsTabAdded(true);
       }
+
+  
     }
   }, [customerDetails, roleDetails]);
 
@@ -244,25 +201,16 @@ const ContentLayout = ({
 
   return (
     <BasePage>
-      <SafeAreaView className="h-full bg-gray-300">
+      <SafeAreaView className="h-full  ">
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
             <View className="mt-2">
               <View className="">
                 <View
-                  className={`${Platform.OS === "ios" ? "px-4" : "px-6"} w-full`}
+                  className={`${Platform.OS === "ios" ? "px-4" : "px-4"} w-full`}
                 >
-                  <View className="flex-row justify-between items-center">
-                    <View className="">
-                      <Text className="text-md font-semibold">
-                       {t(getGreetingMessage())} 👋
-                      </Text>
-                      <Text className="color-primary-950 text-lg font-bold-1">
-                        {customerDetails.firstName ?? ""}{" "}
-                        {customerDetails.lastName ?? ""}
-                      </Text>
-                      {/* <Link href={'/_sitemap'}>device</Link> */}
-                    </View>
+                  <View className="flex-row justify-end items-end">
+                    
                     {checkInOutStatusDetails.value !== "Checked Out" && (
                       <View className="">
                         <Button
@@ -418,6 +366,7 @@ const ContentLayout = ({
               checkedInId={checkInOutStatusDetails.id}
               onClose={() => {
                 setIsModalVisible(false);
+                toggleCheckInCheckOut();
                 fetchCheckInOutStatus();
               }}
             />
