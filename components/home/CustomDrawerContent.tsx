@@ -55,7 +55,7 @@ const CustomDrawerContent = (props: any) => {
           <DrawerItem
             label={t("Change PIN")}
             icon={({ color, size }) => (
-              <AntDesign name="lock1" size={size} color={primaryColor} />
+              <AntDesign name="lock" size={size} color={primaryColor} />
             )}
             onPress={() => router.push("/change_password")}
           />
@@ -63,7 +63,7 @@ const CustomDrawerContent = (props: any) => {
           <DrawerItem
             label={t("Attendance")}
             icon={({ color, size }) => (
-              <AntDesign name="clockcircleo" size={size} color={primaryColor} />
+              <AntDesign name="clock-circle" size={size} color={primaryColor} />
             )}
             onPress={() => router.push("/checkIn_out/checkIn_out_list")}
           />

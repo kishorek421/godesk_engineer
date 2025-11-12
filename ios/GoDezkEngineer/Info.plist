@@ -44,33 +44,61 @@
 	<string>12.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>13.201.225.84</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>52.66.244.127</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>65.0.35.228</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+		</dict>
 	</dict>
+
 	<key>NSCameraUsageDescription</key>
 	<string>Allow access to your camera to capture photos of damaged assets for reporting purposes.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to use your location to track your check in, check out location and during travelling to customer place.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We track your location even in background  during travelling to customer place.</string>
+	<string>We track your location even in background during travelling to customer place.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We track your location during travelling to customer place and check in, check out records.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your microphone</string>
+	<string>Allow $(PRODUCT_NAME) to access your microphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your photos</string>
+	<string>Allow $(PRODUCT_NAME) to access your photos.</string>
+
 	<key>NSUserActivityTypes</key>
 	<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
 	</array>
+
 	<key>NSUserTrackingUsageDescription</key>
 	<string>We would like to track your activity to provide a better experience and personalized content.</string>
+
 	<key>RCTNewArchEnabled</key>
 	<true/>
+
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

@@ -99,10 +99,10 @@ export const Layout = () => {
             shadowColor: "#f2f2f2",
           },
           header: () => (
-            <SafeAreaView className="bg-primary-950">
+            <SafeAreaView className="bg-primary-950" edges={["top"]}>
               <View>
                 <View
-                  className={`flex-1 flex-col justify-center items-center absolute w-full ${Platform.OS === "android" && "mt-4"}`}
+                  className={`flex-1 flex-col justify-center items-center absolute w-full`}
                 >
                   <PrimaryText
                     className="text-[11px] font-medium text-gray-100"
@@ -115,9 +115,7 @@ export const Layout = () => {
                   </Text>
                 </View>
                 <View>
-                  <View
-                    className={`flex-row justify-between items-center px-3 ${Platform.OS === "android" ? "mt-4 mb-6" : "mb-4"}`}
-                  >
+                  <View className={`flex-row justify-between items-center px-3 mb-4`}>
                     <TouchableOpacity
                       onPress={() => props.navigation?.openDrawer()}
                     >

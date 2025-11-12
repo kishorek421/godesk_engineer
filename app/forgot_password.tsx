@@ -1,12 +1,4 @@
-import {
-  View,
-  SafeAreaView,
-  Pressable,
-  Image,
-  TouchableOpacity,
-  Modal,
-  TextInput,
-} from "react-native";
+import { View, Pressable, Image, TouchableOpacity, Modal, TextInput } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { ErrorModel } from "@/models/common";
@@ -22,6 +14,7 @@ import PrimaryText from "@/components/PrimaryText";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useTranslation } from "react-i18next";
+import BasePage from "@/components/base/base_page";
 import PrimaryLink from "@/components/PrimaryLink";
 import { useToast } from "@/context/ToastContext";
 import {
@@ -388,6 +381,7 @@ const ForgotPassword = () => {
   };
 
   return (
+    <BasePage includeTop>
     <View className={`h-full ${modalVisible ? "bg-gray-100" : "bg-white"}`}>
       <View className="h-16 border-gray-300 shadow-gray-300 flex justify-center">
         <Pressable
@@ -725,6 +719,7 @@ const ForgotPassword = () => {
         </View>
       )}
     </View>
+    </BasePage>
   );
 };
 

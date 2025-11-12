@@ -4,6 +4,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
 import { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import { AuthProvider, InitialNotificationStatus, } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
@@ -242,13 +243,14 @@ export default function RootLayout() {
   }
   return (
     <>
-    <GluestackUIProvider mode="light">
-      <AuthProvider>
-        <LocationProvider>
-          <RefreshProvider>
-            <I18nextProvider i18n={i18n}>
-              <ToastProvider>
-                <Stack>
+    <SafeAreaProvider>
+      <GluestackUIProvider mode="light">
+        <AuthProvider>
+          <LocationProvider>
+            <RefreshProvider>
+              <I18nextProvider i18n={i18n}>
+                <ToastProvider>
+                  <Stack>
                   <Stack.Screen
                     name="index"
                     options={{
@@ -448,14 +450,15 @@ export default function RootLayout() {
                     }}
                   />
 
-                </Stack>
-                <Toast />
-              </ToastProvider>
-            </I18nextProvider>
-          </RefreshProvider>
-        </LocationProvider>
-      </AuthProvider>
-    </GluestackUIProvider>
+                  </Stack>
+                  <Toast />
+                </ToastProvider>
+              </I18nextProvider>
+            </RefreshProvider>
+          </LocationProvider>
+        </AuthProvider>
+      </GluestackUIProvider>
+    </SafeAreaProvider>
     </>
   );
 }

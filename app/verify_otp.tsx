@@ -1,6 +1,5 @@
 import {
   View,
-
   SafeAreaView,
   Image,
   Pressable,
@@ -25,7 +24,7 @@ import { I18nextProvider, useTranslation } from "react-i18next";
 import { useToast } from "@/context/ToastContext";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
- const {showToast} = useToast();
+  const { showToast } = useToast();
   const [timer, setTimer] = useState(120);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -76,7 +75,9 @@ const VerifyOTPScreen = () => {
 
     try {
       await apiClient
-        .get(`/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER&fcmToken=${fcmToken}`)
+        .get(
+          `/otp/verify?mobile=${mobile}&otp=${otp}&type=FIELD_ENGINEER&fcmToken=${fcmToken}`
+        )
         .then(async (response) => {
           if (response.data?.success) {
             const loginData = response.data?.data;
@@ -118,8 +119,8 @@ const VerifyOTPScreen = () => {
       .then((response) => {
         console.log("Response:", response.data.data);
         if (response.data?.success) {
-           showToast({
-                          position: "top",
+          showToast({
+            position: "top",
             type: "success",
             message: "toast5",
           });
@@ -137,7 +138,7 @@ const VerifyOTPScreen = () => {
   };
 
   return (
-    <BasePage>
+    <BasePage includeTop>
       <View className="flex justify-between h-full bg-white">
         <View className="mt-1">
           <View className="flex-row items-end mx-3">
@@ -155,7 +156,10 @@ const VerifyOTPScreen = () => {
                 checkYourMobile
               </PrimaryText>
               <View className="flex-row mt-2">
-                <PrimaryText className="color-gray-400 text-sm font-regular" translate="none">
+                <PrimaryText
+                  className="color-gray-400 text-sm font-regular"
+                  translate="none"
+                >
                   {t("otpMessage", { mobile })}.
                 </PrimaryText>
               </View>
@@ -177,7 +181,7 @@ const VerifyOTPScreen = () => {
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
                 onChangeText={(e: string) => setOtp(e)}
-              // defaultErrorMessage="Please enter a OTP"
+                // defaultErrorMessage="Please enter a OTP"
               />
             </View>
             <View className="flex justify-center mt-8 items-center ">
@@ -199,7 +203,10 @@ const VerifyOTPScreen = () => {
                       {isDisabled ? (
                         <>
                           {t("resendOtpInTime") + " "}
-                          <PrimaryText className="font-semibold underline text-primary-950" translate="none">
+                          <PrimaryText
+                            className="font-semibold underline text-primary-950"
+                            translate="none"
+                          >
                             {getTime()}
                           </PrimaryText>
                         </>
@@ -207,8 +214,6 @@ const VerifyOTPScreen = () => {
                         t("resendOTP")
                       )}
                     </PrimaryText>
-
-
                   </Pressable>
                 </View>
               </View>
@@ -225,7 +230,7 @@ const VerifyOTPScreen = () => {
                   <ActivityIndicator color="white" className="ms-1" />
                 ) : (
                   <AntDesign
-                    name="arrowright"
+                    name="arrow-right"
                     size={20}
                     color="white"
                     className="ms-1"

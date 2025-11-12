@@ -322,7 +322,7 @@ const handleButtonPress = () => {
 
 
   return (
-    <BasePage>
+    <BasePage includeTop>
       <View className="flex justify-between h-full bg-white">
         <View className="px-4">
           <View>

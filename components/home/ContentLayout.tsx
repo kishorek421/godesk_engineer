@@ -35,7 +35,7 @@ import {
 } from "@/constants/api_endpoints";
 import CheckInOutModal from "./CheckInOutModal";
 
-import { SafeAreaView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import useLocation from "@/hooks/useLocation";
 
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -77,7 +77,7 @@ const ContentLayout = ({
   const toggleCheckInCheckOut = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
-      bottomSheetRef.current?.show();
+      bottomSheetRef.current?.show();   
     } else {
       bottomSheetRef.current?.hide();
     }
@@ -201,7 +201,7 @@ const ContentLayout = ({
 
   return (
     <BasePage>
-      <SafeAreaView className="h-full  ">
+      <SafeAreaView className="h-full" edges={["left", "right", "bottom"]}>
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
             <View className="mt-2">
