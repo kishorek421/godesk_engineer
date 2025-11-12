@@ -241,6 +241,7 @@ export default function RootLayout() {
     return null;
   }
   return (
+    <>
     <GluestackUIProvider mode="light">
       <AuthProvider>
         <LocationProvider>
@@ -455,5 +456,6 @@ export default function RootLayout() {
         </LocationProvider>
       </AuthProvider>
     </GluestackUIProvider>
+    </>
   );
 }

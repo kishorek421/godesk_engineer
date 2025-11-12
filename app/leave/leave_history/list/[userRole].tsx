@@ -124,10 +124,13 @@ const LeaveRequestList = () => {
           <LoadingBar />
         ) : leaveRequestList.length === 0 ? (
           <BasePage>
-            <View className="w-full h-full flex justify-center items-center">
-              <Text className="text-gray-500 font-regular">No Data Found</Text>
-              {/* <Text>{JSON.stringify(userDetails?.roleDetails[0]?.code??"-")}</Text> */}
-            </View>
+            <View
+                    className={` bg-gray-200 flex justify-center items-center rounded-lg h-36 mb-4 mt-6 mx-4`}
+                  >
+                    <Text className="text-gray-500 text-sm text-center font-regular">
+                      No Data Found
+                    </Text>
+                  </View>
           </BasePage>
         ) : (
           <View className="pt-2 bg-gray-100 h-full">

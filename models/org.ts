@@ -46,6 +46,7 @@ export interface OrgDepartmentMappingDetailsModel {
 export interface BranchDetailsModel {
   id?: string;
   name?: string;
+  lastName?:string;
   orgId?: string;
   headOfBranchId?: string;
   gstin?: string;

@@ -8,6 +8,7 @@ import React from "react";
 import { useFocusEffect } from "expo-router";
 import BasePage from "@/components/base/base_page";
 import { CheckInOutStatusDetailsModel } from "@/models/users";
+import LoadingBar from "@/components/LoadingBar";
 
 const AttendanceHistoryLayout = ({
   placing,
@@ -22,6 +23,7 @@ const AttendanceHistoryLayout = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [refreshing, setRefreshing] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     fetchAttendance(1);
   }, []);
@@ -46,7 +48,7 @@ const AttendanceHistoryLayout = ({
     .then((response) => {
       let content = response.data?.data?.content ?? [];
       console.log("ticket////////////", content);
-
+setIsLoading(false);
       if (nextPageNumber === 1) {
         setAttendance(content);
       } else {
@@ -76,6 +78,7 @@ const AttendanceHistoryLayout = ({
     .catch((e) => {
       console.error(e);
       setRefreshing(false);
+      setIsLoading(false);
     });
 };
 
@@ -84,7 +87,9 @@ useFocusEffect(
     fetchAttendance(1);
   }, [])
 );
-  return attendance.length === 0 ? (
+  return isLoading ? (
+            <LoadingBar />
+          ) :attendance.length === 0 ? (
     <BasePage>
       <View
         className={` bg-gray-200 flex justify-center items-center rounded-lg h-36 mb-4 ${

@@ -28,7 +28,6 @@ import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-import useLocation from "@/hooks/useLocation";
 
 
 interface CheckInOutProps {
@@ -58,8 +57,6 @@ const CheckInOutModal = ({
     ImagePicker.useCameraPermissions();
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  
-  const { isForegroundLocationPermissionAllowed } = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -67,27 +64,26 @@ const CheckInOutModal = ({
     }, 1000);
 
     const fetchPincode = async () => {
-      // Use location from context instead of requesting permissions
-      if (isForegroundLocationPermissionAllowed) {
-        try {
-          const location = await Location.getCurrentPositionAsync({});
-          const { latitude, longitude } = location.coords;
-
-          const [address] = await Location.reverseGeocodeAsync({
-            latitude,
-            longitude,
-          });
-          setPincode(address.postalCode ?? "");
-        } catch (error) {
-          console.error("Error getting location:", error);
-        }
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission to access location was denied");
+        return;
       }
+
+      const location = await Location.getCurrentPositionAsync({});
+      const { latitude, longitude } = location.coords;
+
+      const [address] = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+      setPincode(address.postalCode ?? "");
     };
 
     fetchPincode();
 
     return () => clearInterval(timer); // Cleanup timer on component unmount
-  }, [isForegroundLocationPermissionAllowed]);
+  }, []);
 
   const requestCameraPermissions = async () => {
     if (cameraPermissionStatus?.granted) {
@@ -146,7 +142,6 @@ const CheckInOutModal = ({
       const fileSizeMB = bytesToMB(fileSize);
       if (fileSizeMB < 16) {
         setSelfie(asset.uri);
-        setErrorValue("selfie", "", "", setErrors);
       } else {
         showToast({
           position: "top",
