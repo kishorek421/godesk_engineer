@@ -46,6 +46,7 @@ export const AuthProvider = ({
     const token = await getItem(AUTH_TOKEN_KEY);
     const isWelcomed = await getItem(IS_WELCOMED);
     console.log("token", token);
+    console.log("isWelcomed", isWelcomed);
     const refreshToken = await getItem(REFRESH_TOKEN_KEY);
     console.log("refreshToken", refreshToken);
     if (token && isWelcomed) {
