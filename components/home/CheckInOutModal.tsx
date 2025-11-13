@@ -149,6 +149,7 @@ const CheckInOutModal = ({
       const fileSizeMB = bytesToMB(fileSize);
       if (fileSizeMB < 16) {
         setSelfie(asset.uri);
+         setErrorValue("selfie", "", "", setErrors);
       } else {
         showToast({
           position: "top",
