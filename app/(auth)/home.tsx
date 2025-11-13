@@ -38,7 +38,7 @@ const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [exitApp, setExitApp] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const bottomSheetRef = useRef(null);
+  const bottomSheetRef = useRef<{ show: () => void; hide: () => void } | null>(null);
   const segments = useSegments();
   const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -63,13 +63,13 @@ const HomeScreen = () => {
   const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(
     null
   );
-  const toggleImagePicker = () => {
-    setIsModalVisible(!isModalVisible);
-    if (!isModalVisible) {
-      bottomSheetRef.current?.show();
-    } else {
-      bottomSheetRef.current?.hide();
-    }
+  const openCheckInCheckOut = () => {
+    setIsModalVisible(true);
+    bottomSheetRef.current?.show();
+  };
+  const closeCheckInCheckOut = () => {
+    setIsModalVisible(false);
+    bottomSheetRef.current?.hide();
   };
 
   useEffect(() => {
@@ -382,7 +382,6 @@ const HomeScreen = () => {
           checkedInId={checkInOutStatusDetails.id}
           onClose={() => {
             setIsModalVisible(false);
-            toggleImagePicker();
             fetchCheckInOutStatus();
           }}
         />

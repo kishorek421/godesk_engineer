@@ -58,6 +58,13 @@ const CheckInOutModal = ({
   const { showToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
+  const handleClose = () => {
+    setSelfie("");
+    setErrors([]);
+    setErrorMsg("");
+    onClose();
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentTime(moment().format("DD/MM/YYYY hh:mm:ss A"));
@@ -206,7 +213,7 @@ const CheckInOutModal = ({
               setSelfie("");
               setErrors([]);
               setErrorMsg("");
-              onClose();
+              handleClose();
 
             })
             .catch((e) => {
@@ -239,7 +246,7 @@ const CheckInOutModal = ({
   };
 
   return (
-    <BottomSheet initialHeight={500} ref={bottomSheetRef}>
+    <BottomSheet initialHeight={500} ref={bottomSheetRef} onClose={handleClose}>
       <BasePage>
         <View className="gap-4 p-4">
           {/* <PrimaryText>{JSON.stringify(checkedInId)}</PrimaryText> */}
@@ -302,7 +309,7 @@ const CheckInOutModal = ({
                           }}
                           disabled={isLoading}
                         >
-                          <AntDesign name="closecircle" size={16} color="white" />
+                          <AntDesign name="close-circle" size={16} color="white" />
                         </Pressable>
                       </View>
                     </View>

@@ -59,7 +59,7 @@ const ContentLayout = ({
 
   const [serviceTabs, setServiceTabs] = useState<ServiceItemModel[]>([]);
   const width = Dimensions.get("window").width;
-  const bottomSheetRef = useRef(null);
+  const bottomSheetRef = useRef<{ show: () => void; hide: () => void } | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
  const { t } = useTranslation();
@@ -74,13 +74,9 @@ const ContentLayout = ({
   const segments = useSegments();
   const [refreshFlag, setRefreshFlag] = useState(false);
   const { isForegroundLocationPermissionAllowed } = useLocation();
-  const toggleCheckInCheckOut = () => {
-    setIsModalVisible(!isModalVisible);
-    if (!isModalVisible) {
-      bottomSheetRef.current?.show();   
-    } else {
-      bottomSheetRef.current?.hide();
-    }
+  const openCheckInCheckOut = () => {
+    setIsModalVisible(true);
+    bottomSheetRef.current?.show();
   };
   const handleDoubleClick = () => {
     if (exitApp) {
@@ -216,26 +212,17 @@ const ContentLayout = ({
                         <Button
                           className="bg-primary-950 rounded-lg"
                           onPress={async () => {
-                            // Use location context instead of requesting permissions
-                            if (isForegroundLocationPermissionAllowed) {
-                              toggleCheckInCheckOut();
-                            } else {
-                              // Toast.show({
-                              //   type: "error",
-                              //   text1:translatedStrings['$1']
-                              //     "Allow app location permission to Check In/Check Out",
-                              //   visibilityTime: 5000,
-                              // });
+                            openCheckInCheckOut();
+                            if (!isForegroundLocationPermissionAllowed) {
                               Alert.alert(
                                 "Location Permission Required",
                                 `Please allow location access in settings to access your ${checkInOutStatusDetails.value === "Checked In" ? "check out" : "check in"} location`,
                                 [
                                   {
                                     text: "Allow Location",
-                                    onPress: () => Linking.openSettings(), // Opens app settings
+                                    onPress: () => Linking.openSettings(),
                                   },
                                 ]
-                                // { cancelable: false }
                               );
                             }
                           }}
@@ -366,7 +353,6 @@ const ContentLayout = ({
               checkedInId={checkInOutStatusDetails.id}
               onClose={() => {
                 setIsModalVisible(false);
-                toggleCheckInCheckOut();
                 fetchCheckInOutStatus();
               }}
             />

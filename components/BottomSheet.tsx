@@ -14,10 +14,11 @@ const { height: screenHeight } = Dimensions.get("window");
 interface BottomSheetProps {
   children: any;
   initialHeight: number;
+  onClose?: () => void;
 }
 
 const BottomSheet = forwardRef(
-  ({ children, initialHeight = 300 }: BottomSheetProps, ref) => {
+  ({ children, initialHeight = 300, onClose }: BottomSheetProps, ref) => {
     const animatedHeight = useRef(new Animated.Value(0)).current;
     const maxHeight = useRef(initialHeight).current;
     const [visible, setVisible] = React.useState(false);
@@ -56,7 +57,10 @@ const BottomSheet = forwardRef(
           toValue: 0,
           duration: 300,
           useNativeDriver: false,
-        }).start(() => setVisible(false));
+        }).start(() => {
+          setVisible(false);
+          onClose?.();
+        });
       },
     }));
 
@@ -73,7 +77,10 @@ const BottomSheet = forwardRef(
         toValue: 0,
         duration: 300,
         useNativeDriver: false,
-      }).start(() => setVisible(false));
+      }).start(() => {
+        setVisible(false);
+        onClose?.();
+      });
     };
 
     return (
