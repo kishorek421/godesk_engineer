@@ -22,13 +22,9 @@ const AllNotifications = () => {
   const [refreshing, setRefreshing] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const swipeableRefs = useRef<Record<string, any>>({});
-
   const fetchNotifications = (nextPageNumber: number) => {
-    if (isLoading) return;
-
     setRefreshing(true);
     setIsLoading(true);
-
     apiClient
       .get(GET_ALL_NOTIFICATIONS, {
         params: {
@@ -39,30 +35,33 @@ const AllNotifications = () => {
       })
       .then((response) => {
         let content = response.data?.data?.content ?? [];
+        console.log("content notification////////////------------>", content);
         if (nextPageNumber === 1) {
           setAllNotifications(content);
         } else {
           setAllNotifications((prevState) => [...prevState, ...content]);
         }
-
         let paginator = response.data?.data?.paginator;
         if (paginator) {
           let iCurrentPage = paginator.currentPage;
           let iLastPage = paginator.lastPage;
           if (iCurrentPage && iLastPage !== undefined) {
             setCurrentPage(iCurrentPage);
-            setIsLastPage(iCurrentPage >= iLastPage);
+            setIsLastPage(iLastPage);
           }
         }
+
+        setRefreshing(false);
       })
       .catch((e) => {
         console.error(e);
+        setRefreshing(false);
       })
       .finally(() => {
         setIsLoading(false);
-        setRefreshing(false);
       });
   };
+
   const clearAllNotifications = () => {
     setIsLoading(true);
 
@@ -171,6 +170,7 @@ const AllNotifications = () => {
                       fetchNotifications(currentPage + 1);
                     }
                   }}
+                  
                   ListFooterComponent={<View style={{ height: 200 }} />}
                   refreshControl={
                     <RefreshControl
