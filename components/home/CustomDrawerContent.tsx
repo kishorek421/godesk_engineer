@@ -63,7 +63,7 @@ const CustomDrawerContent = (props: any) => {
           <DrawerItem
             label={t("Attendance")}
             icon={({ color, size }) => (
-              <AntDesign name="clock-circle" size={size} color={primaryColor} />
+              <AntDesign name="clockcircle" size={size} color={primaryColor} />
             )}
             onPress={() => router.push("/checkIn_out/checkIn_out_list")}
           />

@@ -15,7 +15,7 @@ import { getItem, setItem } from "@/utils/secure_store";
 import PrimaryText from "@/components/PrimaryText";
 import i18next from "i18next";
 import i18n from "@/i18n";
-import { LANGUAGE_KEY } from "@/constants/storage_keys";
+import { LANGUAGE_KEY, IS_WELCOMED } from "@/constants/storage_keys";
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", name: "English", englishName: "English" },
@@ -60,8 +60,10 @@ const LanguageSelectionScreen = () => {
     // await setLanguage(selectedLang);
     i18n.changeLanguage(selectedLang);
     await setItem(LANGUAGE_KEY, selectedLang);
-    setLoading(false);
-    router.push('/(auth)/login');
++    // Mark the user as having completed the welcome/language selection flow
++    await setItem(IS_WELCOMED, "true");
+     setLoading(false);
+     router.push('/(auth)/login');
   };
 
   if (initializing) {

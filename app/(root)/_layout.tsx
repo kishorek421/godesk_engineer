@@ -70,6 +70,7 @@ export const Layout = () => {
       }
 
       setAllNotifications(allNotifications);
+      console.log("Total unread notifications:", totalUnread);
       setUnreadCount(totalUnread);
     } catch (err) {
       console.error("Error fetching notifications:", err);
@@ -101,54 +102,48 @@ export const Layout = () => {
           header: () => (
             <SafeAreaView className="bg-primary-950" edges={["top"]}>
               <View>
-                <View
-                  className={`flex-1 flex-col justify-center items-center absolute w-full`}
-                >
-                  <PrimaryText
-                    className="text-[11px] font-medium text-gray-100"
-                    translate="none"
-                  >
-                    {t(getGreetingMessage())} 👋
-                  </PrimaryText>
-                  <Text className="flex-1 text-white font-semibold text-sm">
-                    {customerDetails?.firstName ?? ""} {customerDetails?.lastName ?? ""}
-                  </Text>
-                </View>
-                <View>
-                  <View className={`flex-row justify-between items-center px-3 mb-4`}>
-                    <TouchableOpacity
-                      onPress={() => props.navigation?.openDrawer()}
-                    >
+                <View className="flex-row items-center px-3 py-3">
+                  {/* Left: Drawer button */}
+                  <View className="w-10 items-start justify-center">
+                    <TouchableOpacity onPress={() => props.navigation?.openDrawer()}>
                       <AntDesign name="bars" size={24} color="white" />
                     </TouchableOpacity>
-                    <View className="flex-row justify-center items-center gap-3">
-                      <TouchableOpacity
-                        onPress={() =>
-                          router.push("/notifications/all_notifications")
-                        }
-                      >
-                        <View className="items-center justify-center">
-                          <View className="relative">
-                            <Ionicons
-                              name="notifications-outline"
-                              size={22}
-                              color="white"
-                            />
-                            {unreadCount > 0 && (
-                              <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[16px] h-[16px] px-[3px] items-center justify-center z-10">
-                                <PrimaryText className="text-white text-[10px] font-bold">
-                                  {unreadCount > 99 ? "99+" : unreadCount}
-                                </PrimaryText>
-                              </View>
-                            )}
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                     
-                    </View>
                   </View>
-                  <View className="h-0.5 bg-gray-50" />
+
+                  {/* Center: Greeting and name */}
+                  <View className="flex-1 items-center justify-center">
+                    <PrimaryText
+                      className="text-[11px] font-medium text-gray-100"
+                      translate="none"
+                    >
+                      {t(getGreetingMessage())} 👋
+                    </PrimaryText>
+                    <Text className="text-white font-semibold text-sm" numberOfLines={1}>
+                      {customerDetails?.firstName ?? ""} {customerDetails?.lastName ?? ""}
+                    </Text>
+                  </View>
+
+                  {/* Right: Notifications */}
+                  <View className="w-10 items-end justify-center">
+                    <TouchableOpacity
+                      onPress={() => router.push("/notifications/all_notifications")}
+                    >
+                      <View className="items-center justify-center">
+                        <View className="relative">
+                          <Ionicons name="notifications-outline" size={22} color="white" />
+                          {unreadCount > 0 && (
+                            <View className="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full min-w-[16px] h-[16px] px-[3px] items-center justify-center z-10">
+                              <PrimaryText className="text-white text-[10px] font-bold">
+                                {unreadCount > 99 ? "99+" : unreadCount}
+                              </PrimaryText>
+                            </View>
+                          )}
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
+                <View className="h-0.5 bg-gray-50" />
               </View>
             </SafeAreaView>
           ),
@@ -266,3 +261,4 @@ export const Layout = () => {
 };
 
 export default Layout;
+ 

@@ -1,3 +1,4 @@
+
 import {
   Pressable,
   ScrollView,
@@ -9,7 +10,7 @@ import {
   FlatList,
   Alert,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, MaterialIcons } from '@expo/vector-icons';
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -32,13 +33,7 @@ import {
   FormControlErrorText,
 } from "@/components/ui/form-control";
 import SubmitButton from "@/components/SubmitButton";
-import {
-  bytesToMB,
-  getFileName,
-  isFormFieldInValid,
-  makeExotelCall,
-  setErrorValue,
-} from "@/utils/helper";
+import { bytesToMB, getFileName, isFormFieldInValid, makeExotelCall, setErrorValue } from "@/utils/helper";
 import ImagePickerComponent from "@/components/ImagePickerComponent";
 import { ConfigurationModel } from "@/models/configurations";
 import {
@@ -49,7 +44,7 @@ import {
 } from "@/constants/configuration_keys";
 import moment from "moment";
 import { ErrorModel, DropdownModel } from "@/models/common";
-import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropdownFormField";
+import PrimaryDropdownFormFieldWithCustomDropdown from "@/components/PrimaryDropDownFormCustom";
 import PrimaryTextFormField from "@/components/PrimaryTextFormField";
 import * as Location from "expo-location";
 import FeatherIcon from "@expo/vector-icons/Feather";
@@ -73,6 +68,7 @@ import { TouchableWithoutFeedback } from "react-native";
 import i18n from "@/i18n";
 
 const TicketDetails = () => {
+
   const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [errors, setErrors] = useState<ErrorModel[]>([]);
@@ -118,27 +114,48 @@ const TicketDetails = () => {
       fieldValidationStatus[fieldName](isValid);
     }
   };
-  const fetchTicketDetails = async () => {
-    console.log("ticketId ----------------------->", ticketId);
+   const formatTimeSlot = (slot: string) => {
+      if (!slot) return "";
+      if (slot.includes("-")) {
+        const [start, end] = slot.split("-");
+        const formattedStart = moment(start.trim(), "HH:mm").format("hh:mm A");
+        const formattedEnd = moment(end.trim(), "HH:mm").format("hh:mm A");
+        return `${formattedStart} - ${formattedEnd}`;
+      }
+      return moment(slot.trim(), "HH:mm").format("hh:mm A");
+    };
+ const fetchTicketDetails = async () => {
+  console.log("ticketId ----------------------->", ticketId);
 
-    setIsLoading(true);
-    if (ticketId) {
-      try {
-        const response = await apiClient.get(
-          GET_TICKET_DETAILS + `?ticketId=${ticketId}`
-        );
-        const ticketData = response.data.data ?? {};
-        console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", response.data.data);
+  setIsLoading(true);
+
+  if (ticketId) {
+    try {
+      const response = await apiClient.get(
+        GET_TICKET_DETAILS + `?ticketId=${ticketId}`
+      );
+
+      const ticketData = response.data?.data ?? null;
+      console.log("ticketData ~~~~~~~~~~~~~~~~~~~~~~~~", ticketData);
+
+      if (ticketData) {
         setTicketDetails(ticketData);
         getPaymentProducts();
         setPaymentProducts(ticketData.paymentProducts ?? []);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
+        setIsLoading(false); // stop loader only if data is fetched successfully
+      } else {
+        console.warn("No ticket data found, keeping loader active...");
+        // Optionally retry after a short delay
+        setTimeout(fetchTicketDetails, 2000);
       }
+    } catch (e) {
+      console.error("Error fetching ticket details:", e);
+      // You can show an error message or retry after delay
+      setTimeout(fetchTicketDetails, 2000);
     }
-  };
+  }
+};
+
 
   const fetchRatingDetails = async () => {
     if (!ticketId) {
@@ -151,9 +168,7 @@ const TicketDetails = () => {
     setIsLoading(true);
 
     try {
-      const response = await apiClient.get(
-        `/rating/getByTicketId?ticketId=${ticketId}`
-      );
+      const response = await apiClient.get(`/rating/getByTicketId?ticketId=${ticketId}`);
       const ticketData: RatingModel[] = response.data.data ?? [];
       console.log("Rating data received:", ticketData);
       const map: Record<string, RatingModel> = {};
@@ -197,9 +212,7 @@ const TicketDetails = () => {
         return;
       }
       let location: Location.LocationObject | null =
-        await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
+        await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High });
 
       if (!location) {
         location = await Location.getLastKnownPositionAsync({});
@@ -226,6 +239,7 @@ const TicketDetails = () => {
     }
   };
 
+
   useEffect(() => {
     console.log("ticketId", ticketId);
 
@@ -247,17 +261,14 @@ const TicketDetails = () => {
     return () => clearInterval(timer);
   }, [ticketId, navigation]);
 
+
   const handleSelectOption = async (option: string) => {
     console.log("Selected option:", option);
     const selectedTicketStatus =
       ticketStatusOptionsState.find((item) => item.key === option) ?? {};
 
     // Dynamically translate the label if available
-    if (
-      selectedTicketStatus &&
-      selectedTicketStatus.value &&
-      selectedTicketStatus.value
-    ) {
+    if (selectedTicketStatus && selectedTicketStatus.value && selectedTicketStatus.value) {
       selectedTicketStatus.value = selectedTicketStatus.value;
     }
     console.log("selectedTicketStatus", selectedTicketStatus);
@@ -267,26 +278,26 @@ const TicketDetails = () => {
   const toggleImagePicker = () => {
     setIsModalVisible(!isModalVisible);
     if (!isModalVisible) {
-      (bottomSheetRef.current as any)?.show();
+      bottomSheetRef.current?.show();
     } else {
-      (bottomSheetRef.current as any)?.hide();
+      bottomSheetRef.current?.hide();
     }
   };
   const getPaymentProducts = () => {
     apiClient
-      .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
-      .then((response) => {
-        const products = response.data?.data ?? [];
-        setPaymentProducts(products);
-        setIsLoading(false);
-        console.log("paymentProducts state:", products); // Log to verify
-      })
-      .catch((e) => {
-        console.error(e);
-        setIsLoading(false);
-      });
+  .get(GET_ORDER_PRODUCTS_OF_TICKET + `?ticketId=${ticketId}`)
+  .then((response) => {
+    const products = response.data?.data ?? [];
+    setPaymentProducts(products);
+    setIsLoading(false);
+    console.log("paymentProducts state:", products); // Log to verify
+  })
+  .catch((e) => {
+    console.error(e);
+    setIsLoading(false);
+  });
   };
-
+  
   const updateTicketStatus = async () => {
     setErrors([]);
     setFieldValidationStatus({});
@@ -307,6 +318,7 @@ const TicketDetails = () => {
     const allValid = errors
       .map((error) => error.message?.length === 0)
       .every((status) => status === true);
+
 
     const currentErrors: any[] = [];
 
@@ -344,7 +356,7 @@ const TicketDetails = () => {
     if (!description) {
       currentErrors.push({
         param: "description",
-        message: "Please enter a description",
+        message: "Comments are required",
       });
     }
     if (!selectedTicketStatus.key) {
@@ -353,6 +365,7 @@ const TicketDetails = () => {
         message: "Please select a status",
       });
     }
+
 
     // Location
     if (!latitude || !longitude) {
@@ -363,6 +376,7 @@ const TicketDetails = () => {
     if (!pincode) {
       // Alert.alert("Location is required but couldn't be fetched. Please try again!");
     }
+
 
     // Set all accumulated errors
     if (currentErrors.length > 0) {
@@ -400,7 +414,7 @@ const TicketDetails = () => {
         location: { latitude, longitude },
         pincode,
         description,
-        pin: requiresOtp.includes(statusKey) ? (otp ?? null) : null,
+        pin: requiresOtp.includes(statusKey) ? otp ?? null : null,
         assetImages: uploadedAssetImages,
         paymentMode:
           paymentMethod === "offline"
@@ -412,6 +426,7 @@ const TicketDetails = () => {
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
         requestBody
       );
+
 
       if (updateResponse.status === 200) {
         showToast({
@@ -448,18 +463,22 @@ const TicketDetails = () => {
             type: "success",
             message: genericMessages,
           });
+
         }
       } else {
+
         showToast({
           position: "top",
           type: "error",
           message: error.response?.data?.message || "toast19",
         });
+
       }
     } finally {
       setIsLoading(false);
     }
   };
+
 
   const getTicketStatusOptions = (
     statusKey?: string,
@@ -535,62 +554,46 @@ const TicketDetails = () => {
     fetchTicketDetails().finally(() => setRefreshing(false));
   };
 
-  const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
-    return listOfProducts
-      .map((item) => ({
-        ...item,
-        itemDetails: item.itemDetails?.filter(
-          (detail: any) => detail.productTypeDetails?.key === "TICKET_SPARES"
-        ),
-      }))
-      .filter((item) => item.itemDetails.length > 0);
-  };
-  const getSparesComponent = (products: OrderProductsForTicketModel[]) => {
-    if (products.length === 0) {
-      return <PrimaryText className="text-gray-700">-</PrimaryText>;
-    }
-    return products.map((item) => {
-      const productNames = item?.itemDetails
-        .map((detail: any) => detail.productDetails?.name || "Unknown Product")
-        .join(", ");
-      return (
-        <View
-          key={item.id}
-          className="flex-row justify-between w-full items-center"
-        >
-          <View className="flex-row flex-wrap">
-            <PrimaryText className="text-gray-900 text-sm">
-              {productNames}
-            </PrimaryText>
-            {item.modelName && (
-              <>
-                <PrimaryText className="text-primary-950 text-sm">
-                  :- Model Name:{" "}
-                </PrimaryText>
-                <PrimaryText className="text-secondary-950 text-sm">
-                  {item.modelName}
-                </PrimaryText>
-              </>
-            )}
-            {item.partNumber && (
-              <>
-                <PrimaryText className="text-primary-950 text-sm">
-                  , Item Part-No:{" "}
-                </PrimaryText>
-                <PrimaryText className="text-secondary-950 text-sm">
-                  {item.partNumber}
-                </PrimaryText>
-              </>
-            )}
-            <PrimaryText className="text-gray-900 text-sm">
-              {" "}
-              (x{item.quantity})
-            </PrimaryText>
-          </View>
+ const getTicketSpares = (listOfProducts: OrderProductsForTicketModel[]) => {
+  return listOfProducts.map((item) => ({
+    ...item,
+    itemDetails: item.itemDetails?.filter(
+      (detail : any) => detail.productTypeDetails?.key === "TICKET_SPARES"
+    ),
+  })).filter((item) => item.itemDetails.length > 0);
+};
+const getSparesComponent = (products: OrderProductsForTicketModel[]) => {
+  if (products.length === 0) {
+    return <PrimaryText className="text-gray-700">-</PrimaryText>;
+  }
+  return products.map((item) => {
+    const productNames = item.itemDetails
+      .map((detail:any) => detail.productDetails?.name || "Unknown Product")
+      .join(", ");
+    return (
+      <View key={item.id} className="flex-row justify-between w-full items-center">
+        <View className="flex-row flex-wrap">
+          <PrimaryText className="text-gray-900 text-sm">
+            {productNames}
+          </PrimaryText>
+          {item.modelName && (
+            <>
+              <PrimaryText className="text-primary-950 text-sm">:- Model Name: </PrimaryText>
+              <PrimaryText className="text-secondary-950 text-sm">{item.modelName}</PrimaryText>
+            </>
+          )}
+          {item.partNumber && (
+            <>
+              <PrimaryText className="text-primary-950 text-sm">, Item Part-No: </PrimaryText>
+              <PrimaryText className="text-secondary-950 text-sm">{item.partNumber}</PrimaryText>
+            </>
+          )}
+          <PrimaryText className="text-gray-900 text-sm"> (x{item.quantity})</PrimaryText>
         </View>
-      );
-    });
-  };
+      </View>
+    );
+  });
+};
   return isLoading ? (
     <LoadingBar />
   ) : (
@@ -645,24 +648,17 @@ const TicketDetails = () => {
                       <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
                         {ticketDetails?.ticketNo ?? "-"}
                       </PrimaryText>
-                      <TouchableWithoutFeedback
-                        onPress={() => setExpanded(!expanded)}
-                      >
+                      <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
                         <PrimaryText
                           className="mt-[1px] text-[13px] text-gray-900 font-regular"
                           translate={lng === "en" ? "local" : "api"}
                           numberOfLines={expanded ? undefined : 4}
                           ellipsizeMode="tail"
                         >
-                          {`${t("issueIn")}: ${
-                            Array.isArray(ticketDetails.issueTypeDetails) &&
-                            ticketDetails.issueTypeDetails.length > 0
-                              ? ticketDetails.issueTypeDetails
-                                  .map((item) => item?.name)
-                                  .filter(Boolean)
-                                  .join(", ")
-                              : "-"
-                          }`}
+                          {`${t('issueIn')}: ${Array.isArray(ticketDetails.issueTypeDetails) && ticketDetails.issueTypeDetails.length > 0
+                            ? ticketDetails.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
+                            : "-"
+                            }`}
                         </PrimaryText>
                       </TouchableWithoutFeedback>
                     </View>
@@ -671,7 +667,41 @@ const TicketDetails = () => {
                       statusValue={ticketDetails.statusDetails?.value}
                     />
                   </View>
-                  <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
+                 
+                  <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-1 w-full" />
+                   {ticketDetails?.timeSlot && [
+                "ASSIGNED",
+                "OPENED",
+              ].includes(ticketDetails.statusDetails?.key ?? "") && (
+                  <View className="mt-3 w-full mb-2">
+                    <View
+                      className="rounded-xl p-3"
+                      style={{ backgroundColor: "#FEF3C7" }}
+                    >
+                      <View className="flex-row items-center gap-2">
+                        <FontAwesome6 name="clock" size={16} color="#92400E" />
+                        <PrimaryText
+                          className="text-[#92400E] text-sm"
+                          translate="none"
+                        >
+                          Scheduled on
+                        </PrimaryText>
+                      </View>
+                      <View
+                        className="mt-3 self-start rounded-full px-3 py-1"
+                        style={{ backgroundColor: "#FDE68A" }}
+                      >
+                        <PrimaryText
+                          className="text-[#78350F] text-xs"
+                          translate="none"
+                        >
+                          {ticketDetails?.scheduledDate} at{" "}
+                          {formatTimeSlot(ticketDetails?.timeSlot ?? "")}
+                        </PrimaryText>
+                      </View>
+                    </View>
+                  </View>
+                )}
                   <View className="w-full">
                     <View className="flex-row items-center justify-between">
                       <View className="flex">
@@ -690,8 +720,8 @@ const TicketDetails = () => {
                         <PrimaryText className="text-md text-gray-900 leading-5 font-semibold  mt-[2px]">
                           {ticketDetails.createdAt
                             ? moment(ticketDetails.createdAt).format(
-                                "DD-MM-YYYY hh:mm a"
-                              )
+                              "DD-MM-YYYY hh:mm a"
+                            )
                             : "-"}
                         </PrimaryText>
                       </View>
@@ -711,10 +741,7 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 text-md font-regular">
                           assetType
                         </PrimaryText>
-                        <PrimaryText
-                          className="text-md text-gray-900 font-semibold leading-5 mt-[2px]"
-                          translate={lng === "en" ? "local" : "api"}
-                        >
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate={lng === "en" ? "local" : "api"}>
                           {ticketDetails.assetInUseDetails?.assetMasterDetails
                             ?.assetTypeDetails?.name ?? "-"}
                         </PrimaryText>
@@ -735,12 +762,10 @@ const TicketDetails = () => {
                         <PrimaryText className="text-gray-500 text-md font-regular ">
                           serviceType
                         </PrimaryText>
-                        <PrimaryText
-                          className="text-md text-gray-900 font-semibold leading-5 mt-[2px]"
-                          translate={lng === "en" ? "local" : "api"}
-                        >
+                        <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate={lng === "en" ? "local" : "api"}>
                           {ticketDetails.serviceTypeDetails?.value ?? "-"}
                         </PrimaryText>
+
                       </View>
                     </View>
                   </View>
@@ -752,19 +777,14 @@ const TicketDetails = () => {
                         </PrimaryText>
                         <View className="flex-row">
                           <PrimaryText className="text-md text-gray-900 font-semibold leading-5  ">
-                            {ticketDetails?.assetInUseDetails
-                              ?.assetMasterDetails?.assetModelDetails
-                              ?.modelName ?? "-"}{" "}
+                            {ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelName ?? "-"}{" "}
                           </PrimaryText>
                           <PrimaryText className="text-md text-gray-900 font-semibold leading-5 ">
-                            (
-                            {ticketDetails?.assetInUseDetails
-                              ?.assetMasterDetails?.assetModelDetails
-                              ?.modelNumber ?? "-"}
-                            )
+                            ({ticketDetails?.assetInUseDetails?.assetMasterDetails?.assetModelDetails?.modelNumber ?? "-"})
                           </PrimaryText>
                         </View>
                       </View>
+
                     </View>
                   </View>
 
@@ -775,8 +795,8 @@ const TicketDetails = () => {
                     <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]">
                       {ticketDetails.lastAssignedToDetails?.assignedAt
                         ? moment(
-                            ticketDetails.lastAssignedToDetails?.assignedAt
-                          ).format("DD-MM-YYYY hh:mm A")
+                          ticketDetails.lastAssignedToDetails?.assignedAt
+                        ).format("DD-MM-YYYY hh:mm A")
                         : "-"}
                     </PrimaryText>
                   </View>
@@ -784,10 +804,7 @@ const TicketDetails = () => {
                     <PrimaryText className="text-gray-500 font-regular text-md ">
                       Description
                     </PrimaryText>
-                    <PrimaryText
-                      className="text-md text-gray-900 font-semibold leading-5 mt-[2px]"
-                      translate={lng === "en" ? "local" : "api"}
-                    >
+                    <PrimaryText className="text-md text-gray-900 font-semibold leading-5 mt-[2px]" translate={lng === "en" ? "local" : "api"}>
                       {ticketDetails?.description ?? "-"}
                     </PrimaryText>
                   </View>
@@ -807,11 +824,9 @@ const TicketDetails = () => {
                       <Pressable
                         onPress={() => {
                           const lastAssignedNumber =
-                            ticketDetails.lastAssignedToDetails?.phoneNumber ??
-                            "";
+                            ticketDetails.lastAssignedToDetails?.phoneNumber ?? "";
                           const customerMobile =
-                            ticketDetails.assetInUseDetails?.customerDetails
-                              ?.mobileNumber ?? "";
+                            ticketDetails.assetInUseDetails?.customerDetails?.mobileNumber ?? "";
 
                           if (lastAssignedNumber && customerMobile) {
                             makeExotelCall(
@@ -820,15 +835,11 @@ const TicketDetails = () => {
                               lastAssignedNumber,
                               ({ position, type, message }) => {
                                 showToast({
-                                  position: position || "top",
-                                  type: "success",
+                                  position: position || 'top',
+                                  type: 'success',
                                   message: "call Requested Successfully",
                                 });
-                                console.log("Toast shown:", {
-                                  position,
-                                  type,
-                                  message,
-                                });
+                                console.log('Toast shown:', { position, type, message });
                               }
                             );
                           } else {
@@ -844,6 +855,7 @@ const TicketDetails = () => {
                           08047096559
                         </PrimaryText>
                       </Pressable>
+
                     </View>
                   </View>
 
@@ -900,23 +912,23 @@ const TicketDetails = () => {
                     </View>
                   </View>
                   {paymentProducts?.length > 0 && (
-                    <View className="flex mt-4">
-                      <PrimaryText className="text-gray-500 text-md font-regular">
-                        Spare Details
-                      </PrimaryText>
-                      <View className="">
-                        {paymentProducts && paymentProducts.length > 0 ? (
-                          getSparesComponent(getTicketSpares(paymentProducts))
-                        ) : (
-                          <PrimaryText className="text-gray-700">-</PrimaryText>
-                        )}
-                      </View>
-                    </View>
-                  )}
+  <View className="flex mt-4">
+    <PrimaryText className="text-gray-500 text-md font-regular">
+      Spare Details
+    </PrimaryText>
+    <View className="">
+      {paymentProducts && paymentProducts.length > 0 ? (
+        getSparesComponent(getTicketSpares(paymentProducts))
+      ) : (
+        <PrimaryText className="text-gray-700">-</PrimaryText>
+      )}
+    </View>
+  </View>
+)}
+
 
                   {ticketDetails?.statusDetails?.key === "TICKET_CLOSED" &&
-                  ratingDetailsMap &&
-                  Object.values(ratingDetailsMap).length > 0 ? (
+                    ratingDetailsMap && Object.values(ratingDetailsMap).length > 0 ? (
                     <View className="flex mt-4">
                       <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-1 mb-3 w-full" />
                       <PrimaryText className=" text-lg font-semibold text-primary-950">
@@ -925,23 +937,21 @@ const TicketDetails = () => {
 
                       <View className="flex-row mt-2 items-center">
                         <PrimaryText className="text-gray-500 text-md font-regular">
-                          Rating:{" "}
+                          Rating: {" "}
                         </PrimaryText>
                         {[...Array(5)].map((_, index) => (
                           <MaterialIcons
                             key={index}
                             name={
-                              index <
-                              (Object.values(ratingDetailsMap)[0]?.value || 0)
-                                ? "star"
-                                : "star-border"
+                              index < (Object.values(ratingDetailsMap)[0]?.value || 0)
+                                ? 'star'
+                                : 'star-border'
                             }
                             size={24}
                             color={
-                              index <
-                              (Object.values(ratingDetailsMap)[0]?.value || 0)
-                                ? "#FFD700"
-                                : "#D3D3D3"
+                              index < (Object.values(ratingDetailsMap)[0]?.value || 0)
+                                ? '#FFD700'
+                                : '#D3D3D3'
                             }
                             style={{ marginRight: 2 }}
                           />
@@ -949,21 +959,23 @@ const TicketDetails = () => {
                       </View>
                       <View className="flex-row mt-2 items-center">
                         <PrimaryText className="text-gray-500 text-md font-regular">
-                          Description:{" "}
+                          Description: {" "}
                         </PrimaryText>
                         <PrimaryText className="text-md text-gray-900 font-semibold leading-5">
-                          {Object.values(ratingDetailsMap)[0]?.description ||
-                            "-"}
+                          {Object.values(ratingDetailsMap)[0]?.description || "-"}
                         </PrimaryText>
                       </View>
                       <View className="flex-row mt-2 items-center">
                         <PrimaryText className="text-gray-500 text-md font-regular">
-                          Feedback:{" "}
+                          Feedback: {" "}
                         </PrimaryText>
-                        <PrimaryText className="text-md text-gray-900 font-semibold flex-1 flex-wrap">
+                        <PrimaryText
+                          className="text-md text-gray-900 font-semibold flex-1 flex-wrap"
+                        >
                           {Object.values(ratingDetailsMap)[0]?.feedback || "-"}
                         </PrimaryText>
                       </View>
+
                     </View>
                   ) : null}
 
@@ -982,11 +994,11 @@ const TicketDetails = () => {
                     ticketDetails.statusDetails?.value === "InProgress" ||
                     // (ticketDetails.statusDetails?.key === "WORK_COMPLETED" && ticketDetails.paymentModeDetails?.key !== "CASH") ||
                     ticketDetails.statusDetails?.value === "Paid") && (
-                    <View className="my-4">
-                      <PrimaryText className="font-semibold text-lg text-primary-950">
-                        updateTicketStatus
-                      </PrimaryText>
-                      {/* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                      <View className="my-4">
+                        <PrimaryText className="font-semibold text-lg text-primary-950">
+                          updateTicketStatus
+                        </PrimaryText>
+                        {/* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                         ticketDetails.statusDetails?.key === "IN_PROGRESS" && (
                           <View className="mt-4">
                             <PrimaryText className="font-medium text-md">
@@ -1018,182 +1030,172 @@ const TicketDetails = () => {
                           </View>
                         )} */}
 
-                      <PrimaryDropdownFormFieldWithCustomDropdown
-                        className="my-3"
-                        options={getTicketStatusOptions(
-                          ticketDetails.statusDetails?.key,
-                          ticketDetails.userTypeDetails?.key,
-                          ticketDetails.paymentModeDetails?.key
-                        )}
-                        selectedValue={selectedTicketStatus?.key || ""}
-                        setSelectedValue={(value: string) => {
-                          const selectedOption =
-                            ticketStatusOptionsState.find(
-                              (item) => item.key === value
-                            ) || {};
-                          setSelectedTicketStatus(selectedOption);
-                        }}
-                        type="ticketStatusOptionsState"
-                        placeholder="selectStatus"
-                        fieldName="selectTicketStatusOptions"
-                        label="status"
-                        canValidateField={canValidateField}
-                        setCanValidateField={setCanValidateField}
-                        setFieldValidationStatus={setFieldValidationStatus}
-                        validateFieldFunc={setFieldValidationStatusFunc}
-                        errors={errors}
-                        setErrors={setErrors}
-                        onSelect={handleSelectOption}
-                      />
+                        <PrimaryDropdownFormFieldWithCustomDropdown
+                          className="my-3"
+                          options={getTicketStatusOptions(
+                            ticketDetails.statusDetails?.key,
+                            ticketDetails.userTypeDetails?.key,
+                            ticketDetails.paymentModeDetails?.key
+                          )}
+                          selectedValue={selectedTicketStatus?.key || ""}
+                          setSelectedValue={(value: string) => {
+                            const selectedOption = ticketStatusOptionsState.find((item) => item.key === value) || {};
+                            setSelectedTicketStatus(selectedOption);
+                          }}
+                          type="ticketStatusOptionsState"
+                          placeholder="Select Status"
+                          fieldName="selectTicketStatusOptions"
+                          label="status"
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          errors={errors}
+                          setErrors={setErrors}
+                          onSelect={handleSelectOption}
+                        />
 
-                      <PrimaryTextareaFormField
-                        className="my-3"
-                        fieldName="description"
-                        label="Description"
-                        placeholder="writeShortDescription"
-                        errors={errors}
-                        setErrors={setErrors}
-                        min={10}
-                        max={200}
-                        filterExp={/^[a-zA-Z0-9 \/#.,-/'&$]*$/}
-                        defaultValue={description}
-                        canValidateField={canValidateField}
-                        setCanValidateField={setCanValidateField}
-                        setFieldValidationStatus={setFieldValidationStatus}
-                        validateFieldFunc={setFieldValidationStatusFunc}
-                        onChangeText={(value: any) => setDescription(value)}
-                      />
+                        <PrimaryTextareaFormField
+                          className="my-3"
+                          fieldName="description"
+                          label="Comments"
+                          placeholder="writeShortDescription"
+                          errors={errors}
+                          setErrors={setErrors}
+                          min={10}
+                          max={200}
+                          filterExp={/^(?! )[a-zA-Z0-9,.\-?/'$#&@*+ ]*$/}
+                          defaultValue={description}
+                          canValidateField={canValidateField}
+                          setCanValidateField={setCanValidateField}
+                          setFieldValidationStatus={setFieldValidationStatus}
+                          validateFieldFunc={setFieldValidationStatusFunc}
+                          onChangeText={(value: any) => setDescription(value)}
 
-                      <FormControl
-                        isInvalid={
-                          isFormFieldInValid("assetImages", errors).length > 0
-                        }
-                        className="mb-2"
-                      >
-                        <HStack className="justify-between mt-2 mb-1">
-                          <PrimaryText className="font-medium">
-                            {t("assetImages")}{" "}
-                            {[
-                              "IN_PROGRESS",
-                              "SPARE_REQUIRED",
-                              "CANNOT_RESOLVE",
-                              "TICKET_CLOSED",
-                              "WORK_COMPLETED",
-                            ].includes(selectedTicketStatus.key ?? "") && (
-                              <PrimaryText className="text-red-500 font-regular">
-                                *
-                              </PrimaryText>
-                            )}
-                          </PrimaryText>
+                        />
 
-                          <PrimaryText
-                            className="text-gray-500 font-regular"
-                            translate="none"
-                          >
-                            {assetImages.length}/3
-                          </PrimaryText>
-                        </HStack>
-                        <View className="flex-row flex-wrap">
-                          {assetImages.map((uri, index) => (
-                            <Pressable
-                              onPress={() => {
-                                router.push({
-                                  pathname: "/image_viewer/[uri]",
-                                  params: {
-                                    uri: uri,
-                                  },
-                                });
-                              }}
-                              className="me-3 mt-2"
-                              key={index}
+                        <FormControl
+                          isInvalid={
+                            isFormFieldInValid("assetImages", errors).length > 0
+                          }
+                          className="mb-2"
+                        >
+                          <HStack className="justify-between mt-2 mb-1">
+                            <PrimaryText className="font-medium">
+                              {t("assetImages")}{" "}
+                              {[
+                                "IN_PROGRESS",
+                                "SPARE_REQUIRED",
+                                "CANNOT_RESOLVE",
+                                "TICKET_CLOSED",
+                                "WORK_COMPLETED",
+                              ].includes(selectedTicketStatus.key ?? "") && (
+                                  <PrimaryText className="text-red-500 font-regular">
+                                    *
+                                  </PrimaryText>
+                                )}
+                            </PrimaryText>
+
+                            <PrimaryText
+                              className="text-gray-500 font-regular"
+                              translate="none"
                             >
-                              <View>
-                                <Image
-                                  source={{ uri: uri }}
-                                  className="w-24 h-24 rounded-xl absolute"
-                                />
-                                <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
-                                  <Pressable
-                                    className="mt-2 me-2"
-                                    onPress={() => {
-                                      setAssetImages((prev) => {
-                                        prev.splice(index, 1);
-                                        return [...prev];
-                                      });
-                                    }}
-                                  >
-                                    <AntDesign
-                                      name="close-circle"
-                                      size={16}
-                                      color="white"
-                                    />
-                                  </Pressable>
+                              {assetImages.length}/3
+                            </PrimaryText>
+                          </HStack>
+                          <View className="flex-row flex-wrap">
+                            {assetImages.map((uri, index) => (
+                              <Pressable
+                                onPress={() => {
+                                  router.push({
+                                    pathname: "/image_viewer/[uri]",
+                                    params: {
+                                      uri: uri,
+                                    },
+                                  });
+                                }}
+                                className="me-3 mt-2"
+                                key={index}
+                              >
+                                <View>
+                                  <Image
+                                    source={{ uri: uri }}
+                                    className="w-24 h-24 rounded-xl absolute"
+                                  />
+                                  <View className="w-24 flex items-end gap-4 h-24 rounded-xl">
+                                    <Pressable
+                                      className="mt-2 me-2"
+                                      onPress={() => {
+                                        setAssetImages((prev) => {
+                                          prev.splice(index, 1);
+                                          return [...prev];
+                                        });
+                                      }}
+                                    >
+                                      <AntDesign
+                                        name="closecircle"
+                                        size={16}
+                                        color="white"
+                                      />
+                                    </Pressable>
+                                  </View>
                                 </View>
-                              </View>
-                            </Pressable>
-                          ))}
-                        </View>
-                        {assetImages.length < 3 && (
-                          <Button
-                            className="bg-primary-200 mt-4 rounded-lg items-center justify-center"
-                            onPress={() => toggleImagePicker()}
-                          >
-                            <FeatherIcon
-                              name="plus-circle"
-                              className="me-1"
-                              color={primaryColor}
-                              size={15}
-                            />
-                            <ButtonText className="text-primary-950 text-sm">
-                              <PrimaryText>addImage</PrimaryText>
-                            </ButtonText>
-                          </Button>
-                        )}
-                        <FormControlError className="mt-2">
-                          <FormControlErrorText>
-                            {assetImages.length > 0
-                              ? ""
-                              : isFormFieldInValid("assetImages", errors)}
-                          </FormControlErrorText>
-                        </FormControlError>
-                      </FormControl>
+                              </Pressable>
+                            ))}
+                          </View>
+                          {assetImages.length < 3 && (
+                            <Button
+                              className="bg-primary-200 mt-4 rounded-lg items-center justify-center"
+                              onPress={() => toggleImagePicker()}
+                            >
+                              <FeatherIcon
+                                name="plus-circle"
+                                className="me-1"
+                                color={primaryColor}
+                                size={15}
+                              />
+                              <ButtonText className="text-primary-950 text-sm">
+                                <PrimaryText>addImage</PrimaryText>
+                              </ButtonText>
+                            </Button>
+                          )}
+                          <FormControlError className="mt-2">
+                            <FormControlErrorText>
+                              {assetImages.length > 0
+                                ? ""
+                                : isFormFieldInValid("assetImages", errors)}
+                            </FormControlErrorText>
+                          </FormControlError>
+                        </FormControl>
 
-                      <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
-                        enterOtpForOpenClose
-                      </PrimaryText>
-                      {[
-                        "IN_PROGRESS",
-                        "SPARE_REQUIRED",
-                        "CANNOT_RESOLVE",
-                        "TICKET_CLOSED",
-                      ].includes(selectedTicketStatus?.key ?? "") && (
-                        <View>
-                          <PrimaryTextFormField
-                            fieldName="customerOTP"
-                            label="customerOtp"
-                            placeholder="enterCustomerOtp"
-                            errors={errors}
-                            setErrors={setErrors}
-                            min={4}
-                            max={4}
-                            defaultValue={otp}
-                            isRequired={[
-                              "IN_PROGRESS",
-                              "SPARE_REQUIRED",
-                              "CANNOT_RESOLVE",
-                              "TICKET_CLOSED",
-                            ].includes(selectedTicketStatus?.key ?? "")}
-                            keyboardType="phone-pad"
-                            filterExp={/^[0-9]*$/}
-                            canValidateField={canValidateField}
-                            setCanValidateField={setCanValidateField}
-                            setFieldValidationStatus={setFieldValidationStatus}
-                            validateFieldFunc={setFieldValidationStatusFunc}
-                            onChangeText={(value: string) => setOtp(value)}
-                          />
-                        </View>
-                      )}
-                      {/* /* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
+                        <PrimaryText className="mt-1 mb-2 text-gray-500 text-sm font-regular">
+                          enterOtpForOpenClose
+                        </PrimaryText>
+                        {["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "") && (
+                          <View>
+                            <PrimaryTextFormField
+                              fieldName="customerOTP"
+                              label="customerOtp"
+                              placeholder="enterCustomerOtp"
+                              errors={errors}
+                              setErrors={setErrors}
+                              min={4}
+                              max={4}
+                              defaultValue={otp}
+                              isRequired={
+                                ["IN_PROGRESS", "SPARE_REQUIRED", "CANNOT_RESOLVE", "TICKET_CLOSED"].includes(selectedTicketStatus?.key ?? "")
+                              }
+                              keyboardType="phone-pad"
+                              filterExp={/^[0-9]*$/}
+                              canValidateField={canValidateField}
+                              setCanValidateField={setCanValidateField}
+                              setFieldValidationStatus={setFieldValidationStatus}
+                              validateFieldFunc={setFieldValidationStatusFunc}
+                              onChangeText={(value: string) => setOtp(value)}
+                            />
+                          </View>
+                        )}
+                        {/* /* {ticketDetails.userTypeDetails?.key === "B2C_USER" &&
                           <ConfigurationDropdownFormField
                             className="my-3"
                             configurationCategory={PAYMENT_MODE}
@@ -1218,13 +1220,15 @@ const TicketDetails = () => {
                             }
                           />
                         } */}
-                      <PrimaryButton
-                        isLoading={isLoading}
-                        onPress={updateTicketStatus}
-                        btnText="updateStatus"
-                      />
-                    </View>
-                  )}
+                        <PrimaryButton
+                          isLoading={isLoading}
+                          onPress={updateTicketStatus}
+                          btnText="updateStatus"
+                        />
+                      </View>
+
+                    )}
+
                 </View>
               </View>
             </View>

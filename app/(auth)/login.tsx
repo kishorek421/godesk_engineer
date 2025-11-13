@@ -15,6 +15,7 @@ import {
   AUTH_TOKEN_KEY,
   REFRESH_TOKEN_KEY,
   TEMP_FCM_TOKEN,
+  IS_WELCOMED,
 } from "@/constants/storage_keys";
 import { useToast } from "@/context/ToastContext";
 import { getFCMToken } from "@/services/fcm";
@@ -211,6 +212,16 @@ const LoginScreen = () => {
         });
     }
   };
+  useEffect(() => {
+  const navigateIfLoggedIn = async () => {
+    const existingToken = await getItem(AUTH_TOKEN_KEY);
+    const isWelcomed = await getItem(IS_WELCOMED);
+    if (existingToken && isWelcomed) {
+      router.replace("/(root)/home");
+    }
+  };
+  navigateIfLoggedIn();
+}, []);
 useEffect(() => {
   const handler = setTimeout(() => {
     setDebouncedMobile(mobile);
@@ -470,3 +481,6 @@ const handleButtonPress = () => {
   );
 };
 export default LoginScreen;
+
+
+
