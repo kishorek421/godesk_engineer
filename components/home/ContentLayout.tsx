@@ -352,6 +352,7 @@ const ContentLayout = ({
               status={checkInOutStatusDetails.value}
               checkedInId={checkInOutStatusDetails.id}
               onClose={() => {
+                // bottomSheetRef.current?.hide();
                 setIsModalVisible(false);
                 fetchCheckInOutStatus();
               }}

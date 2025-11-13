@@ -210,10 +210,11 @@ const CheckInOutModal = ({
                     : "toast17",
 
               });
-              setSelfie("");
+             setSelfie("");
               setErrors([]);
               setErrorMsg("");
-              handleClose();
+              bottomSheetRef.current?.hide();
+
 
             })
             .catch((e) => {
@@ -309,7 +310,7 @@ const CheckInOutModal = ({
                           }}
                           disabled={isLoading}
                         >
-                          <AntDesign name="close-circle" size={16} color="white" />
+                          <AntDesign name="closecircle" size={16} color="white" />
                         </Pressable>
                       </View>
                     </View>

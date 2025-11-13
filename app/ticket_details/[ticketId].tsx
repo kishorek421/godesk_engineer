@@ -1085,7 +1085,7 @@ const TicketDetails = () => {
                     <PrimaryTextareaFormField
                       className="my-3"
                       fieldName="description"
-                      label="Description"
+                      label="Comments"
                       placeholder="writeShortDescription"
                       errors={errors}
                       setErrors={setErrors}
@@ -1159,7 +1159,7 @@ const TicketDetails = () => {
                                   }}
                                 >
                                   <AntDesign
-                                    name="close-circle"
+                                    name="closecircle"
                                     size={16}
                                     color="white"
                                   />
