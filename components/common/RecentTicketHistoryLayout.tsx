@@ -101,6 +101,7 @@ const RecentTicketHistoryLayout = ({
         />
       )}
       numColumns={1}
+      scrollEnabled={placing !== "home"}
       // className={`${placing === "home" ? "h-96 mb-16" : ""}`}
       keyExtractor={(_, index) => index.toString()}
       onEndReached={() => {
@@ -116,7 +117,7 @@ const RecentTicketHistoryLayout = ({
           }}
         />
       }
-      ListFooterComponent={<View style={{ height: 140 }} />}
+      ListFooterComponent={<View style={{ height: placing === "home" ? 8 : 140 }} />}
     />
   );
 };

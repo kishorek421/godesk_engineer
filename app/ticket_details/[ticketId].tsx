@@ -1159,7 +1159,7 @@ const TicketDetails = () => {
                                   }}
                                 >
                                   <AntDesign
-                                    name="closecircle"
+                                    name="close-circle"
                                     size={16}
                                     color="white"
                                   />

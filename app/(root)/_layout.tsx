@@ -6,6 +6,7 @@ import {
   View,
   Text,
   Platform,
+  StatusBar,
 } from "react-native";
 import { DeviceEventEmitter } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -100,8 +101,13 @@ export const Layout = () => {
             shadowColor: "#f2f2f2",
           },
           header: () => (
-            <SafeAreaView className="bg-primary-950" edges={["top"]}>
-              <View>
+            <SafeAreaView className="bg-white" edges={["top"]}>
+              <StatusBar
+                backgroundColor="#ffffff"
+                barStyle="dark-content"
+                translucent={false}
+              />
+              <View className="bg-primary-950">
                 <View className="flex-row items-center px-3 py-3">
                   {/* Left: Drawer button */}
                   <View className="w-10 items-start justify-center">

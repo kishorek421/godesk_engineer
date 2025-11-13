@@ -496,7 +496,7 @@ const CreateLeaveRequest = () => {
                             }}
                           >
                             <AntDesign
-                              name="closecircle"
+                              name="close-circle"
                               size={20}
                               color="#9ca3af"
                             />

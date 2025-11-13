@@ -311,7 +311,7 @@ const CheckInOutModal = ({
                           }}
                           disabled={isLoading}
                         >
-                          <AntDesign name="closecircle" size={16} color="white" />
+                          <AntDesign name="close-circle" size={16} color="white" />
                         </Pressable>
                       </View>
                     </View>

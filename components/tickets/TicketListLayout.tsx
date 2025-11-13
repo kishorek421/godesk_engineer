@@ -20,13 +20,14 @@ import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
+import LoadingBar from "../LoadingBar";
 
 const TicketListLayout = () => {
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(true);
 
   const tabs = [
@@ -76,6 +77,7 @@ const TicketListLayout = () => {
     console.log("fetching tickets");
     if (selectedTab === 1) {
       setRefreshing(true);
+      setIsLoading(true);
       await apiClient
         .get(GET_OPENED_TICKETS_LIST, {
           params: { pageNo: nextCurrentPage, pageSize: 10 },
@@ -103,6 +105,7 @@ const TicketListLayout = () => {
         })
         .finally(() => {
           setRefreshing(false);
+          setIsLoading(false);
         });
     } else {
       setRefreshing(true);
@@ -135,6 +138,7 @@ const TicketListLayout = () => {
         })
         .finally(() => {
           setRefreshing(false);
+          setIsLoading(false);
         });
     }
   };
@@ -151,12 +155,12 @@ const TicketListLayout = () => {
           <BasePage>
             <TouchableOpacity
               onPress={() => setSelectedTab(index)}
-              className={`ms-2 h-12 py-2 rounded-full w-40 mb-8 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
+              className={`ms-2 h-12 py-2 rounded-full w-40 ${selectedTab === index ? "bg-primary-200" : "bg-gray-200"
                 }`}
               key={index}
             >
               <PrimaryText
-                className={`h-96 text-center mt-1 font-regular ${selectedTab === index
+                className={`text-center mt-1 font-regular ${selectedTab === index
                   ? "text-primary-950 font-medium"
                   : "text-gray-500 font-normal text-sm"
                   }`}
@@ -168,7 +172,9 @@ const TicketListLayout = () => {
         )}
         className="mt-6"
       />
-      {recentTickets.length === 0 ? (
+      {isLoading ? (
+        <LoadingBar />
+      ) : recentTickets.length === 0 ? (
         <View className="flex h-32 justify-center items-center mt-1 mx-4 bg-gray-200 font-regular rounded-lg">
           <PrimaryText className="text-gray-400 text-md text-center font-regular">
             noTicketsFound

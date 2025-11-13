@@ -111,9 +111,9 @@ const LeaveRequestList = () => {
               >
                 <ButtonText>Apply Leave</ButtonText>
                 <Icon
-                  name="arrowright"
+                  name="arrow-right" 
                   color="white"
-                  size={22}
+                  size={18}
                   className="ms-2"
                 />
               </Button>

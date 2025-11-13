@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import BasePage from "../base/base_page";
 import { t } from "i18next";
 import { TouchableWithoutFeedback } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 const TicketListItemLayout = ({
   ticketModel,
   cn = "",
@@ -17,7 +18,6 @@ const TicketListItemLayout = ({
   ticketModel: TicketListItemModel;
   cn?: string;
 }) => {
-
   //  const { refreshFlag, setRefreshFlag } = useRefresh();
 
   const [refreshing, setRefreshing] = useState(true);
@@ -41,7 +41,7 @@ const TicketListItemLayout = ({
     return moment(slot.trim(), "HH:mm").format("hh:mm A");
   };
   return (
-    <BasePage>
+    <View>
       <Pressable
         onPress={() => {
           router.push({
@@ -55,46 +55,51 @@ const TicketListItemLayout = ({
       >
         <View className="w-full bg-white px-3 py-3 rounded-lg">
           <View className="flex">
-            {ticketModel?.timeSlot && [
-                "ASSIGNED",
-                "OPENED",
-              ].includes(ticketModel.statusDetails?.key ?? "") && (
-              <View>
-                <View className="mt-3 w-full">
-
-                  <View className="flex-row items-center">
-                    <Entypo
-                      name="time-slot"
-                      size={16}
-                      color="#206e69"
-                      className="mr-1 mt-[1px]"
-                    />
-                    <PrimaryText className="flex-1 shrink text-md font-bold text-primary-950">
-                     Scheduled on {ticketModel?.scheduledDate} at {formatTimeSlot(ticketModel?.timeSlot ?? "")}
-                    </PrimaryText>
+            {ticketModel?.timeSlot &&
+              ["ASSIGNED", "OPENED"].includes(
+                ticketModel.statusDetails?.key ?? ""
+              ) && (
+                <View>
+                  <View className="mt-3 w-full">
+                    <View className="flex-row items-center">
+                      <Entypo
+                        name="time-slot"
+                        size={16}
+                        color="#206e69"
+                        className="mr-1 mt-[1px]"
+                      />
+                      <PrimaryText className="flex-1 shrink text-md font-bold text-primary-950">
+                        Scheduled on {ticketModel?.scheduledDate} at{" "}
+                        {formatTimeSlot(ticketModel?.timeSlot ?? "")}
+                      </PrimaryText>
+                    </View>
                   </View>
-
+                  <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
                 </View>
-                <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
-              </View>
-            )}
+              )}
             <View className="flex-row justify-between w-full items-center">
-
               <View className="flex-1">
                 <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
                   {ticketModel?.ticketNo ?? "-"}
                 </PrimaryText>
-                <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+                <TouchableWithoutFeedback
+                  onPress={() => setExpanded(!expanded)}
+                >
                   <PrimaryText
                     className="mt-[1px] text-[13px] text-gray-900 font-regular"
                     translate="api"
                     numberOfLines={expanded ? undefined : 4}
                     ellipsizeMode="tail"
                   >
-                    {`${t('issueIn')}: ${Array.isArray(ticketModel.issueTypeDetails) && ticketModel.issueTypeDetails.length > 0
-                      ? ticketModel.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
-                      : "-"
-                      }`}
+                    {`${t("issueIn")}: ${
+                      Array.isArray(ticketModel.issueTypeDetails) &&
+                      ticketModel.issueTypeDetails.length > 0
+                        ? ticketModel.issueTypeDetails
+                            .map((item) => item?.name)
+                            .filter(Boolean)
+                            .join(", ")
+                        : "-"
+                    }`}
                   </PrimaryText>
                 </TouchableWithoutFeedback>
               </View>
@@ -124,8 +129,8 @@ const TicketListItemLayout = ({
                   <PrimaryText className="text-md text-gray-900 font-semibold mt-[2px] leading-5">
                     {ticketModel.createdAt
                       ? moment(Number.parseInt(ticketModel.createdAt)).format(
-                        "DD-MM-YYYY hh:mm a"
-                      )
+                          "DD-MM-YYYY hh:mm a"
+                        )
                       : "-"}
                   </PrimaryText>
                 </View>
@@ -135,19 +140,19 @@ const TicketListItemLayout = ({
           {["Work Completed"].includes(
             ticketModel.statusDetails?.value ?? ""
           ) && (
-              <>
-                <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
-                <View className=" py-1 flex-row justify-start items-center ">
-                  <Entypo name="bell" size={16} color="#eab308" />
-                  <PrimaryText className="text-secondary-950 text-sm font-regular ms-1">
-                    {getHelpText(ticketModel.statusDetails?.key)}
-                  </PrimaryText>
-                </View>
-              </>
-            )}
+            <>
+              <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
+              <View className=" py-1 flex-row justify-start items-center ">
+                <Entypo name="bell" size={16} color="#eab308" />
+                <PrimaryText className="text-secondary-950 text-sm font-regular ms-1">
+                  {getHelpText(ticketModel.statusDetails?.key)}
+                </PrimaryText>
+              </View>
+            </>
+          )}
         </View>
       </Pressable>
-    </BasePage>
+    </View>
   );
 };
 
