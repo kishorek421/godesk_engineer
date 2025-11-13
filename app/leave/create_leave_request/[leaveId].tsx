@@ -108,6 +108,12 @@ const CreateLeaveRequest = () => {
             start: response.data.data.startDate,
             end: response.data.data.endDate,
           });
+          const range = getDateRange(
+            response.data.data.startDate,
+            response.data.data.endDate,
+          );
+          setMarkedDates(range);
+          setStartDate(response.data.data.startDate);
         } else {
           setRangeConfirmed({ start: null, end: null });
         }
@@ -367,28 +373,28 @@ const CreateLeaveRequest = () => {
     }
   };
 
-  const getDateRange = (start: any, end: any) => {
-    const dates: any = {};
-    const startDateObj = new Date(start);
-    const endDateObj = new Date(end);
+  function getDateRange(start: any, end: any) {
+     const dates: any = {};
+     const startDateObj = new Date(start);
+     const endDateObj = new Date(end);
 
-    if (startDateObj > endDateObj) {
-      return getDateRange(end, start);
-    }
+     if (startDateObj > endDateObj) {
+       return getDateRange(end, start);
+     }
 
-    let currentDate = new Date(startDateObj);
-    while (currentDate <= endDateObj) {
-      const dateString = currentDate.toISOString().split("T")[0];
-      dates[dateString] = {
-        color: secondaryColor,
-        textColor: "#ffffff",
-        ...(dateString === start && { startingDay: true }),
-        ...(dateString === end && { endingDay: true }),
-      };
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-    return dates;
-  };
+     let currentDate = new Date(startDateObj);
+     while (currentDate <= endDateObj) {
+       const dateString = currentDate.toISOString().split("T")[0];
+       dates[dateString] = {
+         color: secondaryColor,
+         textColor: "#ffffff",
+         ...(dateString === start && { startingDay: true }),
+         ...(dateString === end && { endingDay: true }),
+       };
+       currentDate.setDate(currentDate.getDate() + 1);
+     }
+     return dates;
+   }
   // const [translatedLabel, setTranslatedLabel] = useState("Your Message");
   // const {language} = useTranslation();
   // useEffect(() => {
