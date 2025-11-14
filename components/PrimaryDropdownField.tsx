@@ -7,7 +7,7 @@ import {
   Pressable,
   TextInput,
   View,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import PrimaryText from "../components/PrimaryText";
@@ -51,7 +51,7 @@ const PrimaryDropdownField = ({
   const screenHeight = Dimensions.get("window").height;
 
   const [visible, setVisible] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   const [dropdownPos, setDropdownPos] = useState({
     top: 0,
@@ -65,7 +65,7 @@ const PrimaryDropdownField = ({
     console.log(
       "options changed ~~~~~~~~~~~~~~~~~~~~~~~~~~~>>>>>>",
       "type ----------->",
-      type,
+      type
     );
     setDropdownOptions(options);
   }, [options]);
@@ -150,7 +150,9 @@ const PrimaryDropdownField = ({
 
     <View>
       <Pressable ref={buttonRef} onPress={openDropdown} disabled={disabled}>
-        <View className={`border-[1px] ${disabled ? "border-gray-200 bg-gray-100" : "border-gray-300"} rounded-md h-14 flex-col justify-center items-start px-3`}>
+        <View
+          className={`border-[1px] ${disabled ? "border-gray-200 bg-gray-100" : "border-gray-300"} rounded-md h-14 flex-col justify-center items-start px-3`}
+        >
           <PrimaryText
             className={`
     ${disabled ? "text-gray-400" : selectedValue?.label ? "text-gray-900" : "text-gray-500"}
@@ -164,7 +166,7 @@ const PrimaryDropdownField = ({
         <View className="flex-row justify-center items-center gap-2">
           {selectedValue?.label && !disabled && (
             <Pressable onPress={handleClear}>
-              <Ionicons name="close-circle" size={14} color="#9ca3af"  />
+              <Ionicons name="close-circle" size={14} color="grey" />
             </Pressable>
           )}
           <Pressable onPress={openDropdown} disabled={disabled}>
@@ -181,7 +183,10 @@ const PrimaryDropdownField = ({
           className="absolute top-0 left-0 right-0 bottom-0"
           onPress={() => setVisible(false)}
         >
-          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
+          >
             <View
               style={{
                 position: "absolute",
@@ -206,7 +211,7 @@ const PrimaryDropdownField = ({
                           const filteredOptions = options.filter((option) =>
                             option.label
                               .toLowerCase()
-                              .includes(text.toLowerCase()),
+                              .includes(text.toLowerCase())
                           );
                           setDropdownOptions(filteredOptions);
                         }
@@ -216,7 +221,7 @@ const PrimaryDropdownField = ({
                       className="absolute top-0 bottom-0 right-4 mx-3 p-4 mt-1 rounded-lg"
                       onPress={handleClearSearch}
                     >
-                      <Ionicons name="close-circle" size={14} color="#9ca3af"  />
+                      <Ionicons name="close-circle" size={14} color="grey" />
                     </Pressable>
                     <Pressable className="absolute top-0 bottom-0 right-0 p-4 rounded-lg">
                       <View className="">
@@ -257,7 +262,9 @@ const PrimaryDropdownField = ({
                   )}
                   onEndReached={onEndReached}
                   keyboardShouldPersistTaps="handled"
-                  keyboardDismissMode={Platform.OS === 'ios' ? 'on-drag' : 'none'}
+                  keyboardDismissMode={
+                    Platform.OS === "ios" ? "on-drag" : "none"
+                  }
                 />
               )}
             </View>

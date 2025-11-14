@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";

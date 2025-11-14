@@ -312,7 +312,7 @@ const CheckInOutModal = ({
                           }}
                           disabled={isLoading}
                         >
-                          <Ionicons name="close-circle"size={16} color="white" />
+                          <Ionicons name="close-circle"size={16} color="grey" />
                         </Pressable>
                       </View>
                     </View>

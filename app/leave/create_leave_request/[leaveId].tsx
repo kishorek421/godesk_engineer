@@ -495,7 +495,7 @@ const CreateLeaveRequest = () => {
                               setRangeConfirmed({ start: null, end: null });
                             }}
                           >
-                            <Ionicons name="close-circle"size={16} color="white" />
+                            <Ionicons name="close-circle"size={16} color="grey" />
                           </Pressable>
                         )}
                       <View className="flex-row items-center">

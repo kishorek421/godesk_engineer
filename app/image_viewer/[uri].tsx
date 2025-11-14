@@ -39,7 +39,7 @@ const ImageViewer = () => {
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.closeButtonContainer}>
         <Pressable onPress={() => router.back()}>
-          <Ionicons name="close-circle"size={16} color="white" />
+          <Ionicons name="close-circle"size={24} color="grey" />
         </Pressable>
       </View>
 

@@ -22,7 +22,6 @@ const LeaveCustomerEmployeeListItemLayout = ({
 }: LeaveListItemLayoutProps) => {
 
   return (
-    <BasePage>
       <View className="px-4 py-2">
         <View className="bg-white shadow-sm px-3 py-3 rounded-lg w-full">
           <Pressable
@@ -137,7 +136,6 @@ const LeaveCustomerEmployeeListItemLayout = ({
           </Pressable>
         </View>
       </View>
-    </BasePage>
   );
 };
 
