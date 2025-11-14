@@ -28,6 +28,7 @@ import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
+import { Ionicons } from "@expo/vector-icons";
 
 
 interface CheckInOutProps {
@@ -311,7 +312,7 @@ const CheckInOutModal = ({
                           }}
                           disabled={isLoading}
                         >
-                          <AntDesign name="close-circle" size={16} color="white" />
+                          <Ionicons name="close-circle"size={16} color="grey" />
                         </Pressable>
                       </View>
                     </View>

@@ -25,7 +25,7 @@ import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-import { Fontisto } from "@expo/vector-icons";
+import { Fontisto, Ionicons } from "@expo/vector-icons";
 
 const CustomDrawerContent = (props: any) => {
   const { logout } = useAuth();
@@ -63,7 +63,7 @@ const CustomDrawerContent = (props: any) => {
           <DrawerItem
             label={t("Attendance")}
             icon={({ color, size }) => (
-              <AntDesign name="clock-circle" size={size} color={primaryColor} />
+              <Ionicons name="time-outline" size={size} color={primaryColor} />
             )}
             onPress={() => router.push("/checkIn_out/checkIn_out_list")}
           />

@@ -495,11 +495,7 @@ const CreateLeaveRequest = () => {
                               setRangeConfirmed({ start: null, end: null });
                             }}
                           >
-                            <AntDesign
-                              name="close-circle"
-                              size={20}
-                              color="#9ca3af"
-                            />
+                            <Ionicons name="close-circle"size={16} color="grey" />
                           </Pressable>
                         )}
                       <View className="flex-row items-center">

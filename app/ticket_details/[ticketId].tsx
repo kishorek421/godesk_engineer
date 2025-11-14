@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -859,7 +859,7 @@ const TicketDetails = () => {
                               showToast({
                                 position: position || "top",
                                 type: "success",
-                                message: "call Requested Successfully",
+                                message: "Call Requested Successfully",
                               });
                               console.log("Toast shown:", {
                                 position,
@@ -1158,11 +1158,7 @@ const TicketDetails = () => {
                                     });
                                   }}
                                 >
-                                  <AntDesign
-                                    name="close-circle"
-                                    size={16}
-                                    color="white"
-                                  />
+                                  <Ionicons name="close-circle" size={16} color="white" />
                                 </Pressable>
                               </View>
                             </View>

@@ -4,7 +4,6 @@ import api from "@/clients/apiClient";
 import {
   GET_LEAVE_REQUEST_LIST,
   GET_USER_DETAILS,
-
 } from "@/constants/api_endpoints";
 import { LeaveRequestModel } from "@/models/leave";
 import useRefresh from "@/hooks/useRefresh";
@@ -18,6 +17,7 @@ import { use } from "i18next";
 import PrimaryText from "@/components/PrimaryText";
 import BasePage from "@/components/base/base_page";
 import LoadingBar from "@/components/LoadingBar";
+import { Ionicons } from "@expo/vector-icons";
 
 const LeaveRequestList = () => {
   const { userId } = useLocalSearchParams();
@@ -110,8 +110,8 @@ const LeaveRequestList = () => {
                 }
               >
                 <ButtonText>Apply Leave</ButtonText>
-                <Icon
-                  name="arrow-right" 
+                <Ionicons
+                  name="arrow-forward"
                   color="white"
                   size={18}
                   className="ms-2"
@@ -125,12 +125,12 @@ const LeaveRequestList = () => {
         ) : leaveRequestList.length === 0 ? (
           <BasePage>
             <View
-                    className={` bg-gray-200 flex justify-center items-center rounded-lg h-36 mb-4 mt-6 mx-4`}
-                  >
-                    <Text className="text-gray-500 text-sm text-center font-regular">
-                      No Data Found
-                    </Text>
-                  </View>
+              className={` bg-gray-200 flex justify-center items-center rounded-lg h-36 mb-4 mt-6 mx-4`}
+            >
+              <Text className="text-gray-500 text-sm text-center font-regular">
+                No Data Found
+              </Text>
+            </View>
           </BasePage>
         ) : (
           <View className="pt-2 bg-gray-100 h-full">
