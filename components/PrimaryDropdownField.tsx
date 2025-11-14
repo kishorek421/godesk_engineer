@@ -13,6 +13,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import PrimaryText from "../components/PrimaryText";
 import Octicons from "@expo/vector-icons/Octicons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Ionicons } from "@expo/vector-icons";
 
 interface PrimaryDropdownFieldProps {
   options: any[];
@@ -163,7 +164,7 @@ const PrimaryDropdownField = ({
         <View className="flex-row justify-center items-center gap-2">
           {selectedValue?.label && !disabled && (
             <Pressable onPress={handleClear}>
-              <AntDesign name="close-circle" size={14} color="#9ca3af" />
+              <Ionicons name="close-circle" size={14} color="#9ca3af"  />
             </Pressable>
           )}
           <Pressable onPress={openDropdown} disabled={disabled}>
@@ -215,7 +216,7 @@ const PrimaryDropdownField = ({
                       className="absolute top-0 bottom-0 right-4 mx-3 p-4 mt-1 rounded-lg"
                       onPress={handleClearSearch}
                     >
-                      <AntDesign name="close-circle" size={16} color="#9ca3af" />
+                      <Ionicons name="close-circle" size={14} color="#9ca3af"  />
                     </Pressable>
                     <Pressable className="absolute top-0 bottom-0 right-0 p-4 rounded-lg">
                       <View className="">

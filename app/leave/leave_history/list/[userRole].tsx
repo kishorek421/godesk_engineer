@@ -18,6 +18,7 @@ import { use } from "i18next";
 import PrimaryText from "@/components/PrimaryText";
 import BasePage from "@/components/base/base_page";
 import LoadingBar from "@/components/LoadingBar";
+import { Ionicons } from "@expo/vector-icons";
 
 const LeaveRequestList = () => {
   const { userId } = useLocalSearchParams();
@@ -110,8 +111,8 @@ const LeaveRequestList = () => {
                 }
               >
                 <ButtonText>Apply Leave</ButtonText>
-                <Icon
-                  name="arrow-right" 
+                <Ionicons
+                    name="arrow-forward" 
                   color="white"
                   size={18}
                   className="ms-2"

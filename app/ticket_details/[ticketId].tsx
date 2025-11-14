@@ -859,7 +859,7 @@ const TicketDetails = () => {
                               showToast({
                                 position: position || "top",
                                 type: "success",
-                                message: "call Requested Successfully",
+                                message: "Call Requested Successfully",
                               });
                               console.log("Toast shown:", {
                                 position,
@@ -1158,11 +1158,7 @@ const TicketDetails = () => {
                                     });
                                   }}
                                 >
-                                  <AntDesign
-                                    name="close-circle"
-                                    size={16}
-                                    color="white"
-                                  />
+                                  <Ionicons name="close-circle" size={16} color="white" />
                                 </Pressable>
                               </View>
                             </View>

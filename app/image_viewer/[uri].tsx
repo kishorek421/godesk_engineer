@@ -15,6 +15,7 @@ import {
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
 import PrimaryText from "@/components/PrimaryText";
+import { Ionicons } from "@expo/vector-icons";
 
 const ImageViewer = () => {
   const { uri } = useLocalSearchParams();
@@ -38,7 +39,7 @@ const ImageViewer = () => {
     <GestureHandlerRootView style={styles.container}>
       <View style={styles.closeButtonContainer}>
         <Pressable onPress={() => router.back()}>
-          <AntDesign name="close-circle" size={20} color="#9ca3af" />
+          <Ionicons name="close-circle"size={16} color="white" />
         </Pressable>
       </View>
 

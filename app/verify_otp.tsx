@@ -22,6 +22,7 @@ import BasePage from "@/components/base/base_page";
 import { useFirebaseMessaging } from "@/hooks/useFirebaseMessaging";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import { useToast } from "@/context/ToastContext";
+import { Ionicons } from "@expo/vector-icons";
 const VerifyOTPScreen = () => {
   const { mobile } = useLocalSearchParams();
   const { showToast } = useToast();
@@ -229,8 +230,8 @@ const VerifyOTPScreen = () => {
                 {isLoading ? (
                   <ActivityIndicator color="white" className="ms-1" />
                 ) : (
-                  <AntDesign
-                    name="arrow-right"
+                  <Ionicons
+                    name="arrow-forward"
                     size={20}
                     color="white"
                     className="ms-1"
