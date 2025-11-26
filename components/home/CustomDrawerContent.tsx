@@ -26,6 +26,7 @@ import PrimaryText from "../PrimaryText";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const CustomDrawerContent = (props: any) => {
   const { logout } = useAuth();
@@ -101,7 +102,7 @@ const CustomDrawerContent = (props: any) => {
                 await removeItem(IS_WELCOMED);
                 await removeItem(USER_DETAILS);
                 clearAllData();
-               router.push('/(auth)/login');
+                router.push('/(auth)/login');
               }
             }}
           >
@@ -119,37 +120,38 @@ const CustomDrawerContent = (props: any) => {
           </Pressable>
         </View>
 
-        <View className="p-6 bg-slate-50">
-          <Pressable
-            onPress={async () => {
-              if (logout) {
-                // await clearStorage();
-                clearAllData();
-                logout();
-              } else {
-                // await clearStorage();
-                await removeItem(AUTH_TOKEN_KEY);
-                await removeItem(REFRESH_TOKEN_KEY);
-                await removeItem(IS_WELCOMED);
-                await removeItem(USER_DETAILS);
-                clearAllData();
-                router.replace("/login");
-              }
-            }}
-          >
-            <View className="flex flex-row">
-              <PrimaryText className="text-primary-950 font-bold-1 text-md ">
-                Logout
-              </PrimaryText>
-              <AntDesign
-                name="logout"
-                size={16}
-                color={primaryColor}
-                className="ms-2"
-              />
-            </View>
-          </Pressable>
-        </View>
+        <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "#f8fafc" }}>
+          <View className="p-6">
+            <Pressable
+              onPress={async () => {
+                if (logout) {
+                  clearAllData();
+                  logout();
+                } else {
+                  await removeItem(AUTH_TOKEN_KEY);
+                  await removeItem(REFRESH_TOKEN_KEY);
+                  await removeItem(IS_WELCOMED);
+                  await removeItem(USER_DETAILS);
+                  clearAllData();
+                  router.replace("/login");
+                }
+              }}
+            >
+              <View className="flex flex-row items-center">
+                <PrimaryText className="text-primary-950 font-bold-1 text-md">
+                  Logout
+                </PrimaryText>
+                <AntDesign
+                  name="logout"
+                  size={16}
+                  color={primaryColor}
+                  style={{ marginLeft: 8 }}
+                />
+              </View>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+
         {/* {Platform.OS === "ios" && (
           <View className="px-6 mb-4 mt-4">
             <Pressable
