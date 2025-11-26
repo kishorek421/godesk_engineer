@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React, { ReactNode } from "react";
 // Assuming Translator is in this path
@@ -11,6 +11,11 @@ const BasePage = ({ children, includeTop = false }: BasePageProps) => {
     : (["left", "right", "bottom"] as const);
   return (
     <SafeAreaView className="" edges={edges}>
+      <StatusBar
+                      backgroundColor="#ffffff"
+                      barStyle="dark-content"
+                      translucent={false}
+                    />
       <View>{children}</View>
     </SafeAreaView>
   );

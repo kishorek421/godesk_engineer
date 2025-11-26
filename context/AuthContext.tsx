@@ -44,12 +44,9 @@ export const AuthProvider = ({
 
   const loadUser = async () => {
     const token = await getItem(AUTH_TOKEN_KEY);
-    const isWelcomed = await getItem(IS_WELCOMED);
-    console.log("token", token);
-    console.log("isWelcomed", isWelcomed);
     const refreshToken = await getItem(REFRESH_TOKEN_KEY);
     console.log("refreshToken", refreshToken);
-    if (token && isWelcomed) {
+    if (token ) {
       setToken(token);
       try {
         const response = await apiClient.get(GET_USER_DETAILS);
@@ -57,7 +54,7 @@ export const AuthProvider = ({
         router.replace({ pathname: "/(root)/home" });
       } catch (error) {
         console.error("Failed to fetch user:", error);
-        await clearStorage();
+        // await clearStorage();
         router.replace({ pathname: "/translations/language_selection" });
       }
     } else {
