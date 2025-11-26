@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, DeviceEventEmitter, Platform } from "react-native";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
@@ -29,6 +29,7 @@ import { LocationProvider } from "@/context/LocationContext";
 import { RefreshProvider } from "@/context/RefreshContext";
 import VersionCheck from "react-native-version-check";
 import { Linking } from "react-native";
+import { requestTrackingPermissionsAsync } from "expo-tracking-transparency";
 SplashScreen.preventAutoHideAsync();
 const APP_VERSION = "1.0.10";
 
@@ -105,138 +106,331 @@ export default function RootLayout() {
   }, [loaded]);
 
 
-  useEffect(() => {
-    const initNotificationListener = async () => {
-      let unsubscribeOnMessage: (() => void) | undefined;
-      let unsubscribeOnClickNotificationListener: any;
-      let unsubscribeOnOpen: (() => void) | undefined;
+const processedNotificationsRef = React.useRef(new Set<string>());
 
-      if (isMessagingReady && messagingRef.current) {
-        console.log("messaging is ready");
+useEffect(() => {
+  let unsubscribeOnMessage: (() => void) | undefined;
+  let unsubscribeOnClickNotificationListener: any;
+  let unsubscribeOnOpen: (() => void) | undefined;
 
-        unsubscribeOnMessage = messagingRef.current.onMessage(
-          async (remoteMessage: any) => {
-            console.log("Foreground message:", remoteMessage);
+  if (isMessagingReady && messagingRef.current) {
+    // Add a single click/tap listener (only once)
+    unsubscribeOnClickNotificationListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        try {
+          const content = response.notification.request.content;
+          const data = (content.data as any) || {};
+          console.log("✅ [NOTIFICATION] User tapped notification:", content);
+          // Normalize shape expected by handleNotificationNavigation
+          handleNotificationNavigation({
+            notification: {
+              title: content.title,
+              body: content.body,
+            },
+            data,
+          } as any);
+        } catch (e) {
+          console.error("Error handling notification response:", e);
+        }
+      });
 
-            // Sentry.captureMessage(
-            //   "remoteMessage -> " + JSON.stringify(remoteMessage),
-            // );
+    unsubscribeOnMessage = messagingRef.current.onMessage(
+      async (remoteMessage: any) => {
+        try {
+          console.log("Foreground message:", remoteMessage);
 
-            const token = await getItem(AUTH_TOKEN_KEY);
-            // const userDetails = JSON.parse((await getItem(USER_DETAILS)) ?? "");
-            const userId = remoteMessage?.data?.userId;
-            if (
-              token &&
+          // Build a stable id to dedupe notifications
+          const uniqueId =
+            remoteMessage?.data?.id ||
+            remoteMessage?.messageId ||
+            remoteMessage?.notification?.title + "|" + remoteMessage?.notification?.body ||
+            JSON.stringify(remoteMessage?.data || {});
 
-              userId &&
-              remoteMessage?.notification
-            ) {
-              // setNotificationData(remoteMessage);
+          // Skip if we've recently processed this notification
+          if (processedNotificationsRef.current.has(uniqueId)) {
+            console.log("Skipping duplicate notification:", uniqueId);
+            return;
+          }
+          processedNotificationsRef.current.add(uniqueId);
+          // Remove dedupe key after 30s to allow future notifications with same id
+          setTimeout(() => {
+            processedNotificationsRef.current.delete(uniqueId);
+          }, 30_000);
 
-              await Notifications.scheduleNotificationAsync({
-                content: {
-                  title: remoteMessage.notification.title,
-                  body: remoteMessage.notification.body,
-                  sound: "default",
-                },
-                trigger: null,
-              });
-              // setNotificationFrom(true);
-              // unsubscribeOnClickNotificationListener =
-              //   Notifications.addNotificationReceivedListener((response) => {
-              //     console.log("response ----->", response);
-              //     handleNotificationNavigation(remoteMessage);
-              //   });
-              unsubscribeOnClickNotificationListener =
-                Notifications.addNotificationResponseReceivedListener(
-                  (response) => {
-                    console.log(
-                      "response ->",
-                      response.notification.request.content,
-                    );
-                    handleNotificationNavigation(
-                      remoteMessage,
-                      "addNotificationResponseReceivedListener",
-                    );
+          const token = await getItem(AUTH_TOKEN_KEY);
+          const userIdNull = remoteMessage?.data?.userId;
+          const userId =
+            !userIdNull || userIdNull === "null" ? null : userIdNull;
+
+          if (remoteMessage?.notification) {
+            console.log("✅ [NOTIFICATION] Received in foreground:", {
+              title: remoteMessage.notification.title,
+              body: remoteMessage.notification.body,
+              type: remoteMessage?.data?.type,
+              id: remoteMessage?.data?.id,
+            });
+
+            try {
+              const notificationId =
+                await Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: remoteMessage.notification.title,
+                    body: remoteMessage.notification.body,
+                    sound: "default",
+                    data: {
+                      ...(remoteMessage.data || {}),
+                      type: remoteMessage?.data?.type,
+                      id: remoteMessage?.data?.id,
+                    },
                   },
-                );
+                  trigger: null,
+                });
+
+              console.log(
+                "✅ [NOTIFICATION] Notification scheduled with ID:",
+                notificationId
+              );
+            } catch (error: any) {
+              console.error(
+                "❌ [NOTIFICATION] Error scheduling notification:",
+                error
+              );
             }
-          },
-        );
 
-        unsubscribeOnOpen = messagingRef.current.onNotificationOpenedApp(
-          (remoteMessage: any) => {
-            // Sentry.captureMessage(
-            //   "remoteMessage:onNotificationOpenedApp --->" + remoteMessage,
-            // );
-            handleNotificationNavigation(
-              remoteMessage,
-              "onNotificationOpenedApp",
-            );
-          },
-        );
+            DeviceEventEmitter.emit("new-notification", {
+              type: remoteMessage?.data?.type,
+              subtype:
+                remoteMessage?.data?.subType || remoteMessage?.data?.subtype,
+              message: {
+                id: remoteMessage?.data?.id,
+                title: remoteMessage?.notification?.title,
+                body: remoteMessage?.notification?.body,
+              },
+            });
+          }
+        } catch (err) {
+          console.error("onMessage handler error:", err);
+        }
+      }
+    );
 
-        messagingRef.current
-          .getInitialNotification()
-          .then((remoteMessage: any) => {
-            console.log("fetch initial notifications");
+    unsubscribeOnOpen = messagingRef.current.onNotificationOpenedApp(
+      (remoteMessage: any) => {
+        try {
+          console.log(
+            "✅ [NOTIFICATION] App opened from background notification:",
+            {
+              title: remoteMessage?.notification?.title,
+              body: remoteMessage?.notification?.body,
+              type: remoteMessage?.data?.type,
+            }
+          );
 
-            // this method will be triggered when app is terminated also
-            if (remoteMessage) {
-              const data = remoteMessage.data;
-              if (data) {
-                handleNotificationNavigation(
-                  remoteMessage,
-                  "getInitialNotification",
-                );
-                setInitialNotificationStatus(
-                  InitialNotificationStatus.notifications_pending,
-                );
-              } else {
-                setInitialNotificationStatus(
-                  InitialNotificationStatus.notifications_empty,
-                );
+          // Use token to decide navigation, same logic as before
+          getItem(AUTH_TOKEN_KEY).then((token) => {
+            if (!token) {
+              handleNotificationNavigation({
+                ...remoteMessage,
+                data: {
+                  ...remoteMessage?.data,
+                  id: null,
+                  roleDetails: null,
+                  type: null,
+                  subtype: null,
+                },
+              });
+              return;
+            }
+            handleNotificationNavigation(remoteMessage);
+          });
+        } catch (e) {
+          console.error("onNotificationOpenedApp error:", e);
+        }
+      }
+    );
+
+    messagingRef.current
+      .getInitialNotification()
+      .then(async (remoteMessage: any) => {
+        try {
+          console.log("🔍 [NOTIFICATION] Checking initial notification...");
+
+          if (remoteMessage) {
+            console.log(
+              "✅ [NOTIFICATION] App opened from terminated state:",
+              {
+                title: remoteMessage?.notification?.title,
+                body: remoteMessage?.notification?.body,
+                type: remoteMessage?.data?.type,
               }
+            );
+
+            const data = remoteMessage.data;
+            const token = await getItem(AUTH_TOKEN_KEY);
+
+            if (data) {
+              if (!token) {
+                handleNotificationNavigation({
+                  ...remoteMessage,
+                  data: {
+                    ...remoteMessage?.data,
+                    id: null,
+                    roleDetails: null,
+                    type: null,
+                    subtype: null,
+                  },
+                });
+              } else {
+                handleNotificationNavigation(remoteMessage);
+              }
+              setInitialNotificationStatus(
+                InitialNotificationStatus.notifications_pending
+              );
             } else {
               setInitialNotificationStatus(
-                InitialNotificationStatus.notifications_empty,
+                InitialNotificationStatus.notifications_empty
               );
             }
-            console.log("remoteMessage ----->", remoteMessage);
-          });
+          } else {
+            console.log("ℹ️ [NOTIFICATION] No initial notification found");
+            setInitialNotificationStatus(
+              InitialNotificationStatus.notifications_empty
+            );
+          }
+        } catch (e) {
+          console.error("getInitialNotification then handler error", e);
+        }
+      });
 
-        messagingRef.current.setBackgroundMessageHandler(
-          async (remoteMessage: any) => {
-            console.log("Background message:", remoteMessage);
-            // Sentry.captureMessage("remoteMessage" + remoteMessage);
-            if (remoteMessage)
-              handleNotificationNavigation(
-                remoteMessage,
-                "setBackgroundMessageHandler",
-              );
-          },
+      // when app is in background
+      messagingRef.current.setBackgroundMessageHandler(
+        async (remoteMessage: any) => {
+          console.log("Background message:", remoteMessage);
+        }
+      );
+    }
+
+    try {
+      const initializeAnalytics = async () => {
+        if (Platform.OS === "android") {
+          // setAnalyticsCollectionEnabled(analyticsRef.current, true);
+          // await analyticsRef.current.setAnalyticsCollectionEnabled(true);
+          // await analytics().setAnalyticsCollectionEnabled(true);
+          return;
+        }
+        // Check if consent has already been granted
+        const storedConsent = await getItem("analyticsConsent");
+        console.log(
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~storedConsent",
+          storedConsent,
+          typeof storedConsent
         );
-      }
 
-      return () => {
-        if (unsubscribeOnMessage) {
-          console.log("Closing messaging listener...");
-          unsubscribeOnMessage();
-        } else {
-          console.log("unsubscribe is null");
+        if (storedConsent !== null) {
+          console.log("type of storedConsent", typeof storedConsent);
+
+          const consented = storedConsent === "true";
+          // await analyticsRef.current.setAnalyticsCollectionEnabled(consented);
+          // await analytics().setAnalyticsCollectionEnabled(consented);
+          // setAnalyticsCollectionEnabled(analyticsRef.current, consented);
+          console.log("content setted ---->");
+          // await analytics().logEvent("test_event", {
+          //   user: "kishore",
+          //   screen: "dashboard",
+          // });
+          console.log("📨 test_event sent");
+
+          //  setConsentRequested(true);
+          return;
         }
-        if (unsubscribeOnOpen) {
-          console.log("Closing onNotificationOpenedApp listener...");
-          unsubscribeOnOpen();
-        }
-        if (unsubscribeOnClickNotificationListener) {
-          unsubscribeOnClickNotificationListener.remove();
-        }
+
+        console.log(
+          "------------------------analyticsRef.current-------------------------"
+        );
+
+        // Disable analytics by default
+        // setAnalyticsCollectionEnabled(analyticsRef.current, false);
+
+        console.log(
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> permission ------------------>"
+        );
+
+        const requestPermission = async () => {
+          const { status } = await requestTrackingPermissionsAsync();
+          console.log("Tracking Permission Status:", status);
+          // Handle the status accordingly
+          if (status === "granted") {
+            // Proceed with tracking-related tasks
+            return true;
+          } else {
+            // Skip or limit tracking
+            return false;
+          }
+        };
+
+        // Request tracking permission before any data is collected
+        // requestPermission();
+
+        console.log(
+          "prompting for analytics -------------------------------------->"
+        );
+
+        // Show consent prompt
+        Alert.alert(
+          "Data Collection Consent",
+          "We would like to collect analytics data to improve your experience. Do you consent to this?",
+          [
+            {
+              text: "Decline",
+              onPress: async () => {
+                await setItem("analyticsConsent", "false");
+                // setAnalyticsCollectionEnabled(analyticsRef.current, false);
+                // await analyticsRef.current.setAnalyticsCollectionEnabled(false);
+                // await analytics().setAnalyticsCollectionEnabled(false);
+                //  setConsentRequested(true);
+              },
+            },
+            {
+              text: "Accept",
+              onPress: async () => {
+                // Check ATT for iOS
+                const attAuthorized = await requestPermission();
+                const canTrack = attAuthorized; // Add additional consent logic for Android if needed
+                await setItem("analyticsConsent", canTrack.toString());
+                // setAnalyticsCollectionEnabled(analyticsRef.current, canTrack);
+                // await analyticsRef.current.setAnalyticsCollectionEnabled(canTrack);
+                // await analytics().setAnalyticsCollectionEnabled(canTrack);
+                console.log("setting analytics true");
+                //  setConsentRequested(true);
+              },
+            },
+          ],
+          { cancelable: false }
+        );
       };
-    };
-    initNotificationListener();
-  }, [loaded, isMessagingReady]);
+      initializeAnalytics();
+    } catch (e) {
+      console.error("initialize analytics error", e);
+    }
 
+    return () => {
+      if (unsubscribeOnMessage) {
+        console.log("Closing messaging listener...");
+        unsubscribeOnMessage();
+      } else {
+        console.log("unsubscribe is null");
+      }
+      if (unsubscribeOnOpen) {
+        console.log("Closing onNotificationOpenedApp listener...");
+        unsubscribeOnOpen();
+      }
+      if (unsubscribeOnClickNotificationListener) {
+        unsubscribeOnClickNotificationListener.remove();
+      }
+    };
+    // };
+    // initNotificationListener();
+  }, [loaded, isMessagingReady]);
 
   if (!loaded) {
     return null;
