@@ -6,8 +6,8 @@ import {
   SafeAreaView,
   Pressable,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
-import { router, Link, useSegments } from "expo-router";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { router, Link, useSegments, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
@@ -58,26 +58,16 @@ const HomeScreen = () => {
     startBackgroundLocationTracking,
     startForegroundLocationTracking,
   } = useLocation();
-
+ const [refreshing, setRefreshing] = useState(true);
   const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
   const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(
     null
   );
-  const openCheckInCheckOut = () => {
-    setIsModalVisible(true);
-    bottomSheetRef.current?.show();
-  };
-  const closeCheckInCheckOut = () => {
-    setIsModalVisible(false);
-    bottomSheetRef.current?.hide();
-  };
+
 
   useEffect(() => {
     fetchInProgressTicketDetails();
-    fetchUserDetails();
-    getCheckInOutStatus();
-    fetchCheckInOutStatus();
-  }, []);
+  }, [refreshing]);
 
   const fetchCheckInOutStatus = async () => {
     apiClient
@@ -94,33 +84,7 @@ const HomeScreen = () => {
         console.error(e.response.data);
       });
   };
-  const getCheckInOutStatus = async () => {
-    try {
-      const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
-      const data = response.data?.data?.content;
 
-      if (data && Array.isArray(data)) {
-        const today = new Date().toISOString().split("T")[0];
-        const todayEntry = data.find(
-          (item: CheckInOutStatusDetailsModel) => item.date === today
-        );
-
-        if (todayEntry?.check_in) {
-          setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
-        } else {
-          setTodayCheckInTime(null);
-        }
-
-        if (todayEntry?.check_out) {
-          setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
-        } else {
-          setTodayCheckOutTime(null);
-        }
-      }
-    } catch (e: any) {
-      console.error("Error fetching ", e.response?.data || e.message);
-    }
-  };
 
   useEffect(() => {
     console.log("isForegroundLocationPermissionAllowed ------------------>", isForegroundLocationPermissionAllowed);
@@ -151,44 +115,39 @@ const HomeScreen = () => {
     isBackgroundLocationPermissionAllowed,
     inProgressTicketDetails?.id,
   ]);
+ 
+const fetchInProgressTicketDetails = async () => {
+  // 🔥 Start refreshing immediately
+  setRefreshing(true);
 
-  const fetchInProgressTicketDetails = () => {
-    apiClient
-      .get(GET_INPROGRESS_TICKETS_DETAILS)
-      .then(async (response) => {
-        const content = response.data?.data?.content;
-        console.log("inProgressTicketDetails", JSON.stringify(content));
+  try {
+    const response = await apiClient.get(GET_INPROGRESS_TICKETS_DETAILS);
+    const content = response.data?.data?.content;
 
-        if (content && content.length > 0) {
-          const ticketData = content[0] ?? {};
-          console.log("ticketId -------------->", ticketData.id);
-          setInProgressTicketDetails(ticketData);
-          const ticketId = ticketData.id;
-          await setItem("inProgressTicketId", ticketId);
-        } else {
-          await removeItem("inProgressTicketId");
-        }
-      })
-      .catch(async (error) => {
-        console.error("Error fetching tickets", error);
-        await removeItem("inProgressTicketId");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-  const fetchUserDetails = () => {
-    apiClient
-      .get(GET_USER_DETAILS)
-      .then((response) => {
-        console.log(response.data?.data);
-        const userData = response.data.data ?? {};
-        setUserDetails(userData);
-      })
-      .catch((error) => {
-        console.error("Error fetching user details", error);
-      });
-  };
+    console.log("inProgressTicketDetails", JSON.stringify(content));
+
+    if (content && content.length > 0) {
+      const ticketData = content[0] ?? {};
+      console.log("ticketId -------------->", ticketData.id);
+
+      setInProgressTicketDetails(ticketData);
+
+      const ticketId = ticketData.id;
+      await setItem("inProgressTicketId", ticketId);
+    } else {
+      await removeItem("inProgressTicketId");
+    }
+  } catch (error: any) {
+    console.error("Error fetching tickets", error);
+    await removeItem("inProgressTicketId");
+  } finally {
+    // 🔥 Stop refreshing and loading indicators
+    setRefreshing(false);
+    setIsLoading(false);
+  }
+};
+
+
 
   const handleDoubleClick = () => {
     if (exitApp) {
@@ -201,7 +160,6 @@ const HomeScreen = () => {
       }, 2000);
     }
   };
-
   useEffect(() => {
     const backAction = () => {
       if (segments.join("/") === "home") {

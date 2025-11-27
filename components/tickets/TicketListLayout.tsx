@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   FlatList,
   Text,
@@ -21,6 +21,7 @@ import apiClient from "@/clients/apiClient";
 import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
 import LoadingBar from "../LoadingBar";
+import { useFocusEffect } from "expo-router";
 
 const TicketListLayout = () => {
   const [recentTickets, setRecentTickets] = useState<TicketListItemModel[]>([]);
@@ -53,7 +54,11 @@ const TicketListLayout = () => {
   useEffect(() => {
     fetchTickets(1, selectedTab);
   }, [selectedTab]);
-
+useFocusEffect(
+  useCallback(() => {
+    fetchTickets(1, selectedTab); // your API call or state refresh
+  }, [selectedTab])
+);
   const getEndPoint = (selectedTab?: number): string => {
     switch (selectedTab) {
       case 0:
