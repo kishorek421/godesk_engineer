@@ -14,10 +14,10 @@ enum ENVS {
   prod,
 }
 
-const env: ENVS = ENVS.local;
+// const env: ENVS = ENVS.local;
 // const env: ENVS = ENVS.dev;
 // const env: ENVS = ENVS.stage;
-// const env: ENVS = ENVS.prod;
+const env: ENVS = ENVS.prod;
 
 const getBaseURL = (iENV: ENVS) => {
   switch (iENV) {
