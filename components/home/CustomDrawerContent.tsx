@@ -5,14 +5,12 @@ import {
   DrawerItemList,
 } from "@react-navigation/drawer";
 import { router } from "expo-router";
-import React, { useState, useEffect } from "react";
-import { View, Text, Image, Alert, Platform, Pressable } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import React from "react";
+import { View, Image, Alert, Platform, Pressable } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import useAuth from "@/hooks/useAuth";
 import api from "@/clients/apiClient";
 import { DELETE_CUSTOMER } from "@/constants/api_endpoints";
-
 import { primaryColor } from "@/constants/colors";
 import useLocation from "@/hooks/useLocation";
 import {
@@ -25,16 +23,37 @@ import BasePage from "../base/base_page";
 import PrimaryText from "../PrimaryText";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-import { Fontisto, Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+ 
 const CustomDrawerContent = (props: any) => {
   const { logout } = useAuth();
   const { clearAllData } = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useToast();
+ 
+  const handleLogout = async () => {
+    if (logout) {
+      clearAllData();
+      logout();
+    } else {
+      await removeItem(AUTH_TOKEN_KEY);
+      await removeItem(REFRESH_TOKEN_KEY);
+      await removeItem(IS_WELCOMED);
+      await removeItem(USER_DETAILS);
+      clearAllData();
+      router.replace("/(auth)/login");
+    }
+  };
+ 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        zIndex: 99999,
+        elevation: 99999,
+        backgroundColor: "#fff",
+      }}
+      edges={["bottom"]}
+    >
       <DrawerContentScrollView {...props} scrollEnabled={false}>
         <BasePage>
           <View className="px-3 py-1">
@@ -43,139 +62,84 @@ const CustomDrawerContent = (props: any) => {
               className="w-full h-32"
             />
           </View>
-          {/* <DrawerItemList {...props} /> */}
+ 
+          <DrawerItemList {...props} />
+ 
           <DrawerItem
-            label={t("Home")}
-            icon={({ color, size }) => (
-              <AntDesign name="home" size={size} color={primaryColor} />
-            )}
-            onPress={() => {
-              router.back();
-            }}
+            label={t("My Orders")}
+            onPress={() => router.push("/settings/my_orders")}
           />
+ 
           <DrawerItem
-            label={t("Change PIN")}
-            icon={({ color, size }) => (
-              <AntDesign name="lock" size={size} color={primaryColor} />
-            )}
-            onPress={() => router.push("/change_password")}
+            label={t("contactUs")}
+            onPress={() => router.push("/settings/contact_us")}
           />
-
+ 
           <DrawerItem
-            label={t("Attendance")}
-            icon={({ color, size }) => (
-              <Ionicons name="time-outline" size={size} color={primaryColor} />
-            )}
-            onPress={() => router.push("/checkIn_out/checkIn_out_list")}
+            label={t("faqs")}
+            onPress={() => router.push("/settings/faq")}
           />
-
+ 
           <DrawerItem
-            label={t("Leave")}
-            icon={({ color, size }) => (
-              <Fontisto name="holiday-village" size={24} color={primaryColor} />
-            )}
-            onPress={() => router.push("/leave/leave_history/list/[userRole]")}
+            label={t("settings")}
+            onPress={() => router.push("/settings/settings")}
           />
-
-
-
-          {/* <DrawerItem
-          label={t("Rate Us")}
-          onPress={() => {
-            router.push("/settings/rate_us/[ticketId]");
-          }}
-        /> */}
         </BasePage>
       </DrawerContentScrollView>
-      <View className="mb-2">
-        <View className="p-6">
-          <Pressable
-            onPress={async () => {
-              if (logout) {
-                // await clearStorage();
-                clearAllData();
-                logout();
-              } else {
-                // await clearStorage();
-                await removeItem(AUTH_TOKEN_KEY);
-                await removeItem(REFRESH_TOKEN_KEY);
-                await removeItem(IS_WELCOMED);
-                await removeItem(USER_DETAILS);
-                clearAllData();
-                router.push('/(auth)/login');
-              }
-            }}
-          >
-            {/* <View className="flex flex-row">
-              <Text className="text-primary-950 font-bold-1 text-md ">
-                Logout
-              </Text>
+ 
+      {/* LOGOUT & DELETE SECTION */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          backgroundColor: "#fff",
+          zIndex: 99999,
+          elevation: 99999,
+ 
+          paddingTop: 14,
+          paddingBottom: 34, // <-- FIX: ensures visibility over nav bar
+        }}
+      >
+        {/* Logout Button */}
+        <View className="p-6 bg-slate-50">
+          <Pressable onPress={handleLogout}>
+            <View className="flex flex-row items-center">
+              <PrimaryText className="text-primary-950 font-bold-1 text-md ">
+                logout
+              </PrimaryText>
               <AntDesign
                 name="logout"
                 size={16}
                 color={primaryColor}
-                className="ms-2"
+                style={{ marginLeft: 6 }}
               />
-            </View> */}
+            </View>
           </Pressable>
         </View>
-
-        <SafeAreaView edges={["bottom"]} style={{ backgroundColor: "#f8fafc" }}>
-          <View className="p-6">
+ 
+        {/* Delete Account – iOS Only */}
+        {Platform.OS === "ios" && (
+          <View className="px-6 mt-2">
             <Pressable
-              onPress={async () => {
-                if (logout) {
-                  clearAllData();
-                  logout();
-                } else {
-                  await removeItem(AUTH_TOKEN_KEY);
-                  await removeItem(REFRESH_TOKEN_KEY);
-                  await removeItem(IS_WELCOMED);
-                  await removeItem(USER_DETAILS);
-                  clearAllData();
-                  router.replace("/login");
-                }
-              }}
-            >
-              <View className="flex flex-row items-center">
-                <PrimaryText className="text-primary-950 font-bold-1 text-md">
-                  Logout
-                </PrimaryText>
-                <AntDesign
-                  name="logout"
-                  size={16}
-                  color={primaryColor}
-                  style={{ marginLeft: 8 }}
-                />
-              </View>
-            </Pressable>
-          </View>
-        </SafeAreaView>
-
-        {/* {Platform.OS === "ios" && (
-          <View className="px-6 mb-4 mt-4">
-            <Pressable
-              onPress={async () => {
+              onPress={() => {
                 Alert.alert(
                   "Delete Account",
                   "Are you sure you want to delete your account?",
                   [
-                    {
-                      text: "Cancel",
-                      onPress: () => console.log("Cancel Pressed"),
-                    },
+                    { text: "Cancel" },
                     {
                       text: "OK",
                       onPress: () => {
                         api
                           .delete(DELETE_CUSTOMER)
-                          .then(async (response) => {
+                          .then(async () => {
                             showToast({
                               position: "top",
                               type: "success",
                               message: "accountDeletedSuccessfully",
                             });
-
+ 
                             if (logout) {
                               await clearStorage();
                               logout();
@@ -184,11 +148,7 @@ const CustomDrawerContent = (props: any) => {
                               router.replace("/(auth)/login");
                             }
                           })
-                          .catch((e) => {
-                            console.error(e.response.data);
-
-                            router.back();
-
+                          .catch(() => {
                             showToast({
                               position: "top",
                               type: "error",
@@ -198,42 +158,27 @@ const CustomDrawerContent = (props: any) => {
                           });
                       },
                     },
-                  ],
-                  { cancelable: true }
+                  ]
                 );
               }}
             >
               <View className="flex flex-row mb-4">
-                <PrimaryText className="text-red-400  text-md ">
+                <PrimaryText className="text-red-400 text-md ">
                   deleteAccount
                 </PrimaryText>
                 <AntDesign
                   name="delete"
                   size={16}
                   color="#f87171"
-                  className="ms-2"
+                  style={{ marginLeft: 6 }}
                 />
               </View>
             </Pressable>
           </View>
-        )} */}
-        {/* <View className="pb-6 pt-4 px-6">
-          <TouchableOpacity
-            onPress={async () => {
-              await removeItem(AUTH_TOKEN_KEY);
-              await removeItem(REFRESH_TOKEN_KEY);
-              router.replace("/(auth)/login");
-            }}
-          >
-            <View className="flex flex-row">
-              <Text className="text-red-600 text-md  font-regular">Delete Accout</Text>
-              <Icon name="delete" size={16} color="#dc2626" className="ms-2" />
-            </View>
-          </TouchableOpacity>
-        </View> */}
+        )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
-
+ 
 export default CustomDrawerContent;

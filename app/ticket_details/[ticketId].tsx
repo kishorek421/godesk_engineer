@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import PrimaryText from "@/components/PrimaryText";
 import React, { useEffect, useRef, useState } from "react";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -75,6 +75,7 @@ import { TouchableWithoutFeedback } from "react-native";
 import i18n from "@/i18n";
 import { useHeaderHeight } from "@react-navigation/elements";
 import useRefresh from "@/hooks/useRefresh";
+import PrimaryDropdownFormField from "@/components/PrimaryDropdownFormField";
 
 const TicketDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -110,6 +111,7 @@ const TicketDetails = () => {
   >([]);
   const [ratingDetailsMap, setRatingDetailsMap] = useState<RatingModel>({});
   const [paymentMethod, setPaymentMethod] = useState<string | null>(null);
+  const [acknowledged, setAcknowledged] = useState(false);
   const lng = i18n.language;
   const [selectedPaymentMode, setSelectedPaymentMode] =
     useState<ConfigurationModel>();
@@ -354,7 +356,20 @@ const TicketDetails = () => {
       "TICKET_CLOSED",
     ];
 
+    const requiresAcknowledgment = [
+      "CUSTOMER_NOT_RESPONDING",
+      "TRANSFER_TO_ANOTHER"
+    ];
+
     const statusKey = selectedTicketStatus?.key ?? "";
+
+    // Check if acknowledgment is required but not provided
+    if (requiresAcknowledgment.includes(statusKey) && !acknowledged) {
+      currentErrors.push({
+        param: "acknowledgmentId",
+        message: "Please acknowledge this action by checking the box"
+      });
+    }
 
     // Image validation
     if (assetImages.length === 0 && requiresImageOrOTP.includes(statusKey)) {
@@ -491,7 +506,7 @@ const TicketDetails = () => {
     statusKey?: string,
     customerTypeKey?: string,
     paymentModeKey?: string
-  ): (string | { label: any; value: any })[] => {
+  ): (string | { label: string; value: string; requiresAcknowledgment?: boolean })[] => {
     if (statusKey === ASSIGNED) {
       return [
         { value: "OPENED", label: "Open" },
@@ -511,6 +526,11 @@ const TicketDetails = () => {
           value: "CUSTOMER_NOT_AVAILABLE",
           label: "Customer not available",
         },
+        {
+          value: "CUSTOMER_NOT_RESPONDING",
+          label: "Customer not responding",
+          requiresAcknowledgment: true
+        },
       ];
     }
     if (statusKey === "IN_PROGRESS") {
@@ -521,7 +541,12 @@ const TicketDetails = () => {
             label: "Work Completed",
           },
           { value: "SPARE_REQUIRED", label: "Spare Required" },
-          { value: "CANNOT_RESOLVE", label: "Cannot Resolve" },
+          { value: "CANNOT_RESOLVE", label: "Cannot Resolve & Close Ticket" },
+          {
+            value: "TRANSFER_TO_ANOTHER",
+            label: "Transfer To Another Engineer",
+            requiresAcknowledgment: true
+          },
         ];
       } else {
         return [
@@ -642,7 +667,21 @@ const TicketDetails = () => {
         >
           <View className="flex-1 bg-gray-100 mb-8 h-full">
             <View className="p-4">
+
+
+
               <View className="w-full bg-white px-3 py-3 rounded-lg">
+                <View className="mt-2 rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
+                  <View className="flex-row items-start">
+                    <Entypo name="info-with-circle" size={18} color="#FFAA00" />
+
+                    <PrimaryText className="text-[#7A5600] text-sm ml-2 flex-1 leading-5">
+                      This ticket has been closed as unresolved. No service
+                      charges have been applied.
+                    </PrimaryText>
+                  </View>
+                </View>
+
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
                     <View className="flex-1">
@@ -1056,34 +1095,49 @@ const TicketDetails = () => {
                           </View>
                         )} */}
 
-                        <PrimaryDropdownFormFieldWithCustomDropdown
-                          className="my-3"
-                          options={getTicketStatusOptions(
-                            ticketDetails.statusDetails?.key,
-                            ticketDetails.userTypeDetails?.key,
-                            ticketDetails.paymentModeDetails?.key
-                          )}
-                          selectedValue={selectedTicketStatus?.key || ""}
-                          setSelectedValue={(value: string) => {
-                            const selectedOption =
-                              ticketStatusOptionsState.find(
-                                (item) => item.key === value
-                              ) || {};
-                            setSelectedTicketStatus(selectedOption);
-                          }}
-                          type="ticketStatusOptionsState"
-                          placeholder="Select Status"
-                          fieldName="selectTicketStatusOptions"
-                          label="status"
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          errors={errors}
-                          setErrors={setErrors}
-                          onSelect={handleSelectOption}
-                        />
+                        <View className="my-3">
+                          <PrimaryDropdownFormFieldWithCustomDropdown
+                            className="my-3"
+                            options={getTicketStatusOptions(
+                              ticketDetails.statusDetails?.key,
+                              ticketDetails.userTypeDetails?.key,
+                              ticketDetails.paymentModeDetails?.key
+                            )}
+                            selectedValue={selectedTicketStatus?.key || ""}
+                            setSelectedValue={(value: string) => {
+                              const selectedOption =
+                                ticketStatusOptionsState.find(
+                                  (item) => item.key === value
+                                ) || {};
+                              setSelectedTicketStatus(selectedOption);
+                            }}
+                            type="ticketStatusOptionsState"
+                            placeholder="Select Status"
+                            fieldName="selectTicketStatusOptions"
+                            label="status"
+                            canValidateField={canValidateField}
+                            setCanValidateField={setCanValidateField}
+                            setFieldValidationStatus={setFieldValidationStatus}
+                            validateFieldFunc={setFieldValidationStatusFunc}
+                            errors={errors}
+                            setErrors={setErrors}
+                            onSelect={handleSelectOption}
+                          />
 
+                        </View>
+                        <View>
+                          {selectedTicketStatus.key === "CUSTOMER_NOT_RESPONDING" && (
+                            <View className="mt-2 rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
+                              <View className="flex-row items-start">
+                                <Entypo name="info-with-circle" size={18} color="#FFAA00" />
+
+                                <PrimaryText className="text-[#7A5600] text-sm ml-2 flex-1 leading-5">
+                                  Customer is not responding. This ticket will be closed without resolution.
+                                </PrimaryText>
+                              </View>
+                            </View>
+                          )}
+                        </View>
                         <PrimaryTextareaFormField
                           className="my-3"
                           fieldName="description"
@@ -1252,11 +1306,47 @@ const TicketDetails = () => {
                             }
                           />
                         } */}
-                        <PrimaryButton
-                          isLoading={isLoading}
-                          onPress={updateTicketStatus}
-                          btnText="updateStatus"
-                        />
+                        {["CUSTOMER_NOT_RESPONDING", "TRANSFER_TO_ANOTHER"].includes(selectedTicketStatus?.key ?? "") ? (
+                          <View className="mb-4">
+                            <View className="border border-gray-300 rounded-md p-4 mb-4">
+                              <View className="flex-row items-start">
+
+                                <View className="flex-1">
+                                  <PrimaryText className="text-red-700 font-medium mb-1">No Payout Alert</PrimaryText>
+                                  <View className="flex-row items-start mt-2">
+                                    <Pressable
+                                      onPress={() => setAcknowledged(!acknowledged)}
+                                      className="flex-row items-start"
+                                    >
+                                      <View className={`w-7 h-7 rounded-md border-2 ${acknowledged ? 'bg-primary-950 border-primary-600' : 'border-gray-400'} items-center justify-center mr-4 mt-0.5`}>
+                                        {acknowledged && <Ionicons name="checkmark" size={14} color="white" />}
+                                      </View>
+                                    </Pressable>
+                                    <PrimaryText className=" flex-1">
+                                      I acknowledge and agree to transfer this ticket, and understand that no payout will be issued for my service.
+                                    </PrimaryText>
+                                  </View>
+                                </View>
+                              </View>
+                            </View>
+
+                            {/* Show button but disable if not acknowledged */}
+                            <PrimaryButton
+                              isLoading={isLoading}
+                              onPress={updateTicketStatus}
+                              btnText="updateStatus"
+                              disabled={!acknowledged}
+                            />
+                          </View>
+                        ) : (
+                          // Show button for all other statuses
+                          <PrimaryButton
+                            isLoading={isLoading}
+                            onPress={updateTicketStatus}
+                            btnText="updateStatus"
+                          />
+                        )}
+
                       </View>
                     )}
                 </View>

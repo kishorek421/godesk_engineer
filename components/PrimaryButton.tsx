@@ -9,8 +9,7 @@ interface PrimaryButtonProps {
   className?: string;
   rightIcon?: any;
   leftIcon?: any;
-
-
+  disabled?: boolean;
   translate?: "local" | "api" | "none";
 }
 
@@ -21,14 +20,15 @@ const PrimaryButton = ({
   className,
   rightIcon,
   leftIcon,
+  disabled = false,
   translate = "local",
 }: PrimaryButtonProps) => {
   const { t } = useTranslation();
   return (
     <Button
-      className={`bg-primary-950 mt-6 h-14 shadow-sm rounded-lg ${className ?? ""}`}
+      className={`mt-6 h-14 shadow-sm rounded-lg ${isLoading || disabled ? 'bg-primary-600' : 'bg-primary-950'} ${className ?? ""}`}
       onPress={onPress}
-      disabled={isLoading}
+      disabled={isLoading || disabled}
     >
       {leftIcon && (
         <MaterialIcons name={leftIcon as any} size={18} color="#fff" />
