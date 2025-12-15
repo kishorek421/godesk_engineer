@@ -201,7 +201,7 @@ useEffect(() => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => setRefreshing(true)}
-            colors={["#1977F3"]}
+
           />
         }
       >
@@ -209,7 +209,7 @@ useEffect(() => {
 
         {isLoading ? (
           <PrimaryText className="mt-6 text-center font-regular text-gray-500">
-            Loading...
+          
           </PrimaryText>
         ) : (
           inProgressTicketDetails.id && (

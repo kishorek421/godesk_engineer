@@ -354,11 +354,12 @@ const TicketDetails = () => {
       "SPARE_REQUIRED",
       "CANNOT_RESOLVE",
       "TICKET_CLOSED",
+      "TRANSFER_TO_OTHER"
     ];
 
     const requiresAcknowledgment = [
       "CUSTOMER_NOT_RESPONDING",
-      "TRANSFER_TO_ANOTHER"
+      "TRANSFER_TO_OTHER"
     ];
 
     const statusKey = selectedTicketStatus?.key ?? "";
@@ -543,7 +544,7 @@ const TicketDetails = () => {
           { value: "SPARE_REQUIRED", label: "Spare Required" },
           { value: "CANNOT_RESOLVE", label: "Cannot Resolve & Close Ticket" },
           {
-            value: "TRANSFER_TO_ANOTHER",
+            value: "TRANSFER_TO_OTHER",
             label: "Transfer To Another Engineer",
             requiresAcknowledgment: true
           },
@@ -671,16 +672,17 @@ const TicketDetails = () => {
 
 
               <View className="w-full bg-white px-3 py-3 rounded-lg">
+                 {ticketDetails?.subStatusDetails?.description && (
                 <View className="mt-2 rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
                   <View className="flex-row items-start">
                     <Entypo name="info-with-circle" size={18} color="#FFAA00" />
 
                     <PrimaryText className="text-[#7A5600] text-sm ml-2 flex-1 leading-5">
-                      This ticket has been closed as unresolved. No service
-                      charges have been applied.
+                      {ticketDetails?.subStatusDetails?.description}
                     </PrimaryText>
                   </View>
                 </View>
+                )}
 
                 <View className="flex">
                   <View className="flex-row justify-between w-full">
@@ -714,7 +716,7 @@ const TicketDetails = () => {
                     />
                   </View>
 
-                  <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-1 w-full" />
+                  <View className="border-dashed border-[1px] border-gray-300 h-[1px]  mb-1 w-full" />
                   {ticketDetails?.timeSlot &&
                     ["ASSIGNED", "OPENED"].includes(
                       ticketDetails.statusDetails?.key ?? ""
@@ -1123,16 +1125,14 @@ const TicketDetails = () => {
                             setErrors={setErrors}
                             onSelect={handleSelectOption}
                           />
-
                         </View>
                         <View>
                           {selectedTicketStatus.key === "CUSTOMER_NOT_RESPONDING" && (
-                            <View className="mt-2 rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
+                            <View className=" rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
                               <View className="flex-row items-start">
                                 <Entypo name="info-with-circle" size={18} color="#FFAA00" />
-
                                 <PrimaryText className="text-[#7A5600] text-sm ml-2 flex-1 leading-5">
-                                  Customer is not responding. This ticket will be closed without resolution.
+                                 This status can be updated only when you are at the customer’s location.
                                 </PrimaryText>
                               </View>
                             </View>
@@ -1254,6 +1254,7 @@ const TicketDetails = () => {
                           "SPARE_REQUIRED",
                           "CANNOT_RESOLVE",
                           "TICKET_CLOSED",
+                          "TRANSFER_TO_OTHER"
                         ].includes(selectedTicketStatus?.key ?? "") && (
                             <View>
                               <PrimaryTextFormField
@@ -1270,6 +1271,7 @@ const TicketDetails = () => {
                                   "SPARE_REQUIRED",
                                   "CANNOT_RESOLVE",
                                   "TICKET_CLOSED",
+                                  "TRANSFER_TO_OTHER"
                                 ].includes(selectedTicketStatus?.key ?? "")}
                                 keyboardType="phone-pad"
                                 filterExp={/^[0-9]*$/}
@@ -1306,9 +1308,9 @@ const TicketDetails = () => {
                             }
                           />
                         } */}
-                        {["CUSTOMER_NOT_RESPONDING", "TRANSFER_TO_ANOTHER"].includes(selectedTicketStatus?.key ?? "") ? (
+                        {["CUSTOMER_NOT_RESPONDING", "TRANSFER_TO_OTHER"].includes(selectedTicketStatus?.key ?? "") ? (
                           <View className="mb-4">
-                            <View className="border border-gray-300 rounded-md p-4 mb-4">
+                            <View className="border border-gray-300 rounded-md p-4 mb-4 mt-2">
                               <View className="flex-row items-start">
 
                                 <View className="flex-1">
