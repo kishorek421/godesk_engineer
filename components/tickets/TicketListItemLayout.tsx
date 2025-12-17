@@ -77,39 +77,43 @@ const TicketListItemLayout = ({
                   <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
                 </View>
               )}
-            <View className="flex-row justify-between w-full items-center">
-              <View className="flex-1">
-                <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
-                  {ticketModel?.ticketNo ?? "-"}
-                </PrimaryText>
-                <TouchableWithoutFeedback
-                  onPress={() => setExpanded(!expanded)}
-                >
-                  <PrimaryText
-                    className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                    translate="api"
-                    numberOfLines={expanded ? undefined : 4}
-                    ellipsizeMode="tail"
-                  >
-                    {`${t("issueIn")}: ${
-                      Array.isArray(ticketModel.issueTypeDetails) &&
-                      ticketModel.issueTypeDetails.length > 0
-                        ? ticketModel.issueTypeDetails
-                            .map((item) => item?.name)
-                            .filter(Boolean)
-                            .join(", ")
-                        : "-"
-                    }`}
-                  </PrimaryText>
-                </TouchableWithoutFeedback>
-              </View>
-              <View>
-                <TicketStatusComponent
-                  statusKey={ticketModel.statusDetails?.key}
-                  statusValue={ticketModel.statusDetails?.value}
-                />
-              </View>
-            </View>
+      <View className="flex-row items-center w-full">
+  {/* LEFT CONTENT */}
+  <View className="flex-1 pr-2">
+    <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
+      {ticketModel?.ticketNo ?? "-"}
+    </PrimaryText>
+
+    <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
+    <PrimaryText
+  className="mt-[1px] text-[13px] text-gray-900 font-regular"
+  numberOfLines={expanded ? undefined : 4}
+  ellipsizeMode="tail"
+>
+  <PrimaryText className="font-bold">
+    {t("issueIn")}:
+  </PrimaryText>{" "}
+  {Array.isArray(ticketModel.issueTypeDetails) &&
+  ticketModel.issueTypeDetails.length > 0
+    ? ticketModel.issueTypeDetails
+        .map((item) => item?.name)
+        .filter(Boolean)
+        .join(", ")
+    : "-"}
+</PrimaryText>
+
+    </TouchableWithoutFeedback>
+  </View>
+
+  {/* RIGHT STATUS */}
+  <View className="max-w-[60%] items-end">
+    <TicketStatusComponent
+      statusKey={ticketModel.statusDetails?.key}
+      statusValue={ticketModel.statusDetails?.value}
+    />
+  </View>
+</View>
+
             <View className="border-dashed border-[1px] border-gray-300 h-[1px] mt-3 mb-3 w-full" />
             <View className="w-full">
               <View className="flex-row items-center justify-between">

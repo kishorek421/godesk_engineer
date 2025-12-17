@@ -52,8 +52,9 @@ const HomeScreen = () => {
   const segments = useSegments();
   const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-    useState<CheckInOutStatusDetailsModel>({});
+const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
+  useState<CheckInOutStatusDetailsModel | null>(null);
+
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
@@ -208,9 +209,8 @@ useEffect(() => {
         <View className="mt-4 mx-3 flex-row justify-between items-start"></View>
 
         {isLoading ? (
-          <PrimaryText className="mt-6 text-center font-regular text-gray-500">
-          
-          </PrimaryText>
+          <PrimaryText className="mt-6 text-center font-regular text-gray-500"> </PrimaryText>
+
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -293,8 +293,8 @@ useEffect(() => {
         <CheckInOutModal
           setIsModalVisible={setIsModalVisible}
           bottomSheetRef={bottomSheetRef}
-          status={checkInOutStatusDetails.value}
-          checkedInId={checkInOutStatusDetails.id}
+          status={checkInOutStatusDetails?.value}
+          checkedInId={checkInOutStatusDetails?.id}
           onClose={() => {
             setIsModalVisible(false);
             fetchCheckInOutStatus();
