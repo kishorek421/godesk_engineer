@@ -5,6 +5,9 @@ import {
   TouchableOpacity,
   FlatList,
   Pressable,
+  TouchableWithoutFeedback,
+  Dimensions,
+  Keyboard,
 } from "react-native";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
 import {
@@ -56,7 +59,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
   const [isOpen, setIsOpen] = useState(false);
   const [displayText, setDisplayText] = useState<string>("");
 
-  // Sync display text whenever selectedValue or options change
+  // Update displayed text when selectedValue changes
   useEffect(() => {
     if (selectedValue) {
       const selectedOption = options.find((item) => {
@@ -75,15 +78,15 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
     }
   }, [selectedValue, options]);
 
-  // Register validation resolver only once
+  // Register validation function
   useEffect(() => {
     setFieldValidationStatus((prev: any) => ({
       ...prev,
       [fieldName]: (isValid: boolean) => validateFieldFunc(fieldName, isValid),
     }));
-  }, []); // Runs only on mount
+  }, [fieldName, validateFieldFunc, setFieldValidationStatus]);
 
-  // Trigger validation when requested
+  // Validate when requested from parent
   useEffect(() => {
     if (canValidateField) {
       validateField(selectedValue);
@@ -112,48 +115,67 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
     setSelectedValue(value);
     setDisplayText(label);
     onSelect?.(value);
-    setIsOpen(false); // Close dropdown after selection
+    setIsOpen(false);
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+    Keyboard.dismiss();
   };
 
   return (
-    <FormControl
-      isInvalid={isFormFieldInValid(fieldName, errors).length > 0}
-      className={className}
-    >
-      <FormControlLabel className="mb-1">
-        <FormControlLabelText>{label}</FormControlLabelText>
-        {isRequired && (
-          <FormControlLabelAstrick className="text-red-400 ms-0.5">
-            *
-          </FormControlLabelAstrick>
-        )}
-      </FormControlLabel>
+    <View className="relative">
+      {/* Main Form Field */}
+      <FormControl
+        isInvalid={isFormFieldInValid(fieldName, errors).length > 0}
+        className={className}
+      >
+        <FormControlLabel className="mb-1">
+          <FormControlLabelText>{label}</FormControlLabelText>
+          {isRequired && (
+            <FormControlLabelAstrick className="text-red-400 ms-0.5">
+              *
+            </FormControlLabelAstrick>
+          )}
+        </FormControlLabel>
 
-      {/* Dropdown Trigger */}
-      <Pressable onPress={() => setIsOpen(!isOpen)}>
-        <View className="flex-row items-center justify-between px-4 border border-gray-300 rounded-md bg-white w-full py-3.5">
-          <Text
-            className={`text-lg ${
-              displayText ? "text-gray-900" : "text-gray-900"
-            }`}
+        {/* Trigger */}
+        <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <View
+            pointerEvents="box-only"
+            className="flex-row items-center justify-between px-4 py-3.5 border border-gray-300 rounded-md bg-white"
           >
-            {displayText || placeholder}
-          </Text>
-          <SimpleLineIcons
-            name={isOpen ? "arrow-up" : "arrow-down"}
-            size={16}
-            color="#a9a9a9"
-          />
-        </View>
-      </Pressable>
+            <Text
+              className={`text-lg flex-1 ${
+                displayText ? "text-gray-900" : "text-gray-400"
+              }`}
+            >
+              {displayText || placeholder}
+            </Text>
+            <SimpleLineIcons
+              name={isOpen ? "arrow-up" : "arrow-down"}
+              size={16}
+              color="#a9a9a9"
+            />
+          </View>
+        </Pressable>
 
-      {/* Static Dropdown List Below the Field */}
+        {/* Error Message */}
+        <FormControlError>
+          <FormControlErrorText>
+            {isFormFieldInValid(fieldName, errors)}
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      {/* Dropdown List - Absolute positioned below the field */}
       {isOpen && (
-        <View className="mt-2 bg-white border border-gray-300 rounded-md shadow-lg max-h-60">
+        <View className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60">
           <FlatList
             data={options}
             keyExtractor={(_, index) => index.toString()}
             showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
             renderItem={({ item }) => {
               const label = typeof item === "string" ? item : item.label;
               const value = typeof item === "string" ? item : item.value;
@@ -161,16 +183,14 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
 
               return (
                 <TouchableOpacity
+                  onPress={() => handleSelect(item)}
                   className={`py-3 px-4 border-b border-gray-200 last:border-b-0 ${
                     isSelected ? "" : ""
                   }`}
-                  onPress={() => handleSelect(item)}
                 >
                   <Text
                     className={`text-base ${
-                      isSelected
-                        ? "text-gray-800 font-regular"
-                        : "text-gray-800 font-regular"
+                      isSelected ? "text-gray-800" : "text-gray-800"
                     }`}
                   >
                     {label}
@@ -182,12 +202,22 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
         </View>
       )}
 
-      <FormControlError>
-        <FormControlErrorText>
-          {isFormFieldInValid(fieldName, errors)}
-        </FormControlErrorText>
-      </FormControlError>
-    </FormControl>
+      {/* Invisible Full-Screen Overlay - Closes dropdown on outside tap */}
+      {isOpen && (
+        <TouchableWithoutFeedback onPress={closeDropdown}>
+          <View
+            style={{
+              position: "absolute",
+              top: -Dimensions.get("window").height,
+              left: -Dimensions.get("window").width,
+              right: -Dimensions.get("window").width,
+              bottom: -Dimensions.get("window").height,
+              zIndex: 40, // Below dropdown (which has z-50)
+            }}
+          />
+        </TouchableWithoutFeedback>
+      )}
+    </View>
   );
 };
 

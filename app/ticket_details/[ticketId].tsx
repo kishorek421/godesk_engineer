@@ -342,11 +342,11 @@ const TicketDetails = () => {
     // If any errors, show them and STOP
     if (currentErrors.length > 0) {
       setErrors(currentErrors);
-      showToast({
-        position: "top",
-        type: "error",
-        message: "Please fix the errors above",
-      });
+      // showToast({
+      //   position: "top",
+      //   type: "error",
+      //   message: "Please fix the errors above",
+      // });
       return;
     }
 
@@ -491,7 +491,13 @@ const TicketDetails = () => {
       );
     });
   };
-
+  useEffect(() => {
+    if (selectedStatusKey) {
+      setErrors((prevErrors) =>
+        prevErrors.filter((e) => e.param !== "selectTicketStatusOptions")
+      );
+    }
+  }, [selectedStatusKey]);
   return isLoading ? (
     <LoadingBar />
   ) : (
