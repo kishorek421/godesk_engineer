@@ -69,7 +69,7 @@ const VerifyOTPScreen = () => {
 
     try {
       fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
-      console.log("fcmToken", fcmToken);
+      //console.log("fcmToken", fcmToken);
     } catch (e) {
       console.error("Token Error ->", e);
     }
@@ -118,7 +118,7 @@ const VerifyOTPScreen = () => {
     await apiClient
       .post("/otp/send", { mobile, type: "FIELD_ENGINEER" })
       .then((response) => {
-        console.log("Response:", response.data.data);
+        //console.log("Response:", response.data.data);
         if (response.data?.success) {
           showToast({
             position: "top",
@@ -133,7 +133,7 @@ const VerifyOTPScreen = () => {
         console.error("Error sending OTP:", error.response?.data || error);
       })
       .finally(() => {
-        console.log("Request completed");
+        //console.log("Request completed");
         setIsLoading(false);
       });
   };

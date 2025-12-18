@@ -96,11 +96,12 @@ android {
         applicationId 'com.godezk.godezkengineer'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 73
+        versionCode 74
         versionName "1.8.2"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
+    
     signingConfigs {
         debug {
             storeFile file('debug.keystore')

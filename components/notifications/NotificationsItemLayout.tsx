@@ -40,7 +40,7 @@ const NotificationsItemLayout = ({
   return (
     <Pressable
       onPress={async () => {
-        console.log("item -> ", item);
+        //console.log("item -> ", item);
         callbackFunc(item.notificationId);
         handleNotificationNavigation({ data: item });
       }}

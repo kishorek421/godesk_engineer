@@ -180,7 +180,7 @@ const ContentLayout = ({
     api
       .get(GET_CHECK_IN_OUT_STATUS)
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
+        //console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
           setCheckInOutStatusDetails(data);

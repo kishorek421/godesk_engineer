@@ -185,7 +185,7 @@ const CheckInOutModal = ({
       })
       .then((response) => {
         const uploadedSelfie = response.data.data;
-        console.log("uploadedSelfie", uploadedSelfie);
+        //console.log("("uploadedSelfie", uploadedSelfie);
 
         if (uploadedSelfie && uploadedSelfie.length > 0) {
           const checkInOutModel: CreateCheckInOutModel = {
@@ -242,7 +242,7 @@ const CheckInOutModal = ({
       })
       .catch((e) => {
         let errors = e.response?.data;
-        console.log("errors ---->", errors);
+        //console.log("("errors ---->", errors);
         setIsLoading(false);
         setErrorMsg("Failed to update your attendance. Please retry.");
       });

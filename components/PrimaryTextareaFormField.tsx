@@ -131,22 +131,24 @@ const PrimaryTextareaFormField = ({
       </FormControlLabel>
       <Textarea size="md" variant="default">
         <TextareaInput
-          placeholder={t(placeholder)}
-          value={value}
-          keyboardType={keyboardType}
-          onChangeText={(newValue) => {
-            // if expression not null and value matches the expressions(regular expressions)
-            if (filterExp && !filterExp.test(newValue)) {
-              return;
-            }
-            const valLen = newValue.length;
-            if (max && valLen <= max) {
-              onChangeText(newValue);
-              setValue(newValue);
-            }
-            validateField(newValue);
-          }}
-        />
+  placeholder={t(placeholder)}
+  value={value}
+  keyboardType={keyboardType}
+  multiline
+  textAlignVertical="top" 
+  onChangeText={(newValue) => {
+    if (filterExp && !filterExp.test(newValue)) return;
+
+    const valLen = newValue.length;
+    if (max && valLen <= max) {
+      onChangeText(newValue);
+      setValue(newValue);
+    }
+
+    validateField(newValue);
+  }}
+/>
+
       </Textarea>
       <FormControlError>
         <FormControlErrorText>

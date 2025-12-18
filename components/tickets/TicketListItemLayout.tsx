@@ -106,7 +106,7 @@ const TicketListItemLayout = ({
   </View>
 
   {/* RIGHT STATUS */}
-  <View className="max-w-[60%] items-end">
+  <View className="max-w-[53%] ">
     <TicketStatusComponent
       statusKey={ticketModel.statusDetails?.key}
       statusValue={ticketModel.statusDetails?.value}

@@ -51,7 +51,7 @@ const ConfigurationDropdownField = ({
         .then((response) => {
           const configs = response.data?.data ?? [];
           if (configs) {
-            console.log("configs ~~~~~~~~~~~~~~~~~~~~~~`", configs);
+            //console.log("("("("configs ~~~~~~~~~~~~~~~~~~~~~~`", configs);
             setOptions(configs);
             if (defaultKey) {
               const defaultKeyDetails = configs.find(
@@ -74,7 +74,7 @@ const ConfigurationDropdownField = ({
   }, []);
 
   useEffect(() => {
-    console.log("defaultValue", defaultValue);
+    //console.log("("("("defaultValue", defaultValue);
     
     if (defaultValue?.id === undefined && defaultKey) {
       const defaultKeyDetails = options.find(

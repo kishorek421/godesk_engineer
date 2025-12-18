@@ -79,7 +79,7 @@ useFocusEffect(
   };
 
   const fetchTickets = async (nextCurrentPage: number, selectedTab: number) => {
-    console.log("fetching tickets");
+    //console.log("fetching tickets");
     if (selectedTab === 1) {
       setRefreshing(true);
       setIsLoading(true);
@@ -118,7 +118,7 @@ useFocusEffect(
       getTicketLists(nextCurrentPage, 10, endpoint)
         .then((response: any) => {
           let content = response.data?.data?.content ?? [];
-          console.log("Fetched Tickets: ", content);
+          //console.log("Fetched Tickets: ", content);
 
           if (content && content.length > 0) {
             if (nextCurrentPage === 1) {

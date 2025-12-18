@@ -3,7 +3,6 @@ import {
   ScrollView,
   View,
   Image,
-  SafeAreaView,
   RefreshControl,
   KeyboardAvoidingView,
   Platform,
@@ -384,7 +383,7 @@ const TicketDetails = () => {
         paymentMode: "cce2e5f5-340d-410a-9074-1ec72ace1e18", // or your logic
       };
 
-      console.log("Updating ticket with:", requestBody);
+      //console.log("Updating ticket with:", requestBody);
 
       const updateResponse = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
@@ -531,36 +530,42 @@ const TicketDetails = () => {
               )}
 
               <View className="flex">
-                <View className="flex-row justify-between w-full">
-                  <View className="flex-1">
-                    <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
+                <View className="flex-row items-center w-full">
+                  {/* LEFT CONTENT */}
+                  <View className="flex-1 pr-2">
+                    <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
                       {ticketDetails?.ticketNo ?? "-"}
                     </PrimaryText>
+
                     <TouchableWithoutFeedback
                       onPress={() => setExpanded(!expanded)}
                     >
                       <PrimaryText
                         className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                        translate={lng === "en" ? "local" : "api"}
                         numberOfLines={expanded ? undefined : 4}
                         ellipsizeMode="tail"
                       >
-                        {`${t("issueIn")}: ${
-                          Array.isArray(ticketDetails.issueTypeDetails) &&
-                          ticketDetails.issueTypeDetails.length > 0
-                            ? ticketDetails.issueTypeDetails
-                                .map((item) => item?.name)
-                                .filter(Boolean)
-                                .join(", ")
-                            : "-"
-                        }`}
+                        <PrimaryText className="font-bold">
+                          {t("issueIn")}:
+                        </PrimaryText>{" "}
+                        {Array.isArray(ticketDetails.issueTypeDetails) &&
+                        ticketDetails.issueTypeDetails.length > 0
+                          ? ticketDetails.issueTypeDetails
+                              .map((item) => item?.name)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "-"}
                       </PrimaryText>
                     </TouchableWithoutFeedback>
                   </View>
-                  <TicketStatusComponent
-                    statusKey={ticketDetails.statusDetails?.key}
-                    statusValue={ticketDetails.statusDetails?.value}
-                  />
+
+                  {/* RIGHT STATUS */}
+                  <View className="max-w-[53%] ">
+                    <TicketStatusComponent
+                      statusKey={ticketDetails.statusDetails?.key}
+                      statusValue={ticketDetails.statusDetails?.value}
+                    />
+                  </View>
                 </View>
 
                 <View className="border-dashed border-[1px] border-gray-300 h-[1px]  mb-1 w-full" />

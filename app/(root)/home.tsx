@@ -25,10 +25,10 @@ const HomeScreen = () => {
     api
       .get(GET_USER_DETAILS, {})
       .then((response) => {
-        console.log(
-          "Line: 28 - customerDetails ---------------------------~~~~~~~~~~~>",
-          JSON.stringify(response.data)
-        );
+        // console.log(
+        //   "Line: 28 - customerDetails ---------------------------~~~~~~~~~~~>",
+        //   JSON.stringify(response.data)
+        // );
         setCustomerDetails(response.data?.data ?? {});
       })
       .catch((e) => {

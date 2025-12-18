@@ -45,7 +45,7 @@ export const AuthProvider = ({
   const loadUser = async () => {
     const token = await getItem(AUTH_TOKEN_KEY);
     const refreshToken = await getItem(REFRESH_TOKEN_KEY);
-    console.log("refreshToken", refreshToken);
+    //console.log("refreshToken", refreshToken);
     if (token ) {
       setToken(token);
       try {

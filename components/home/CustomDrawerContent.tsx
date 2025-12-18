@@ -160,7 +160,7 @@ const CustomDrawerContent = (props: any) => {
                   [
                     {
                       text: "Cancel",
-                      onPress: () => console.log("Cancel Pressed"),
+                      onPress: () => //console.log("Cancel Pressed"),
                     },
                     {
                       text: "OK",

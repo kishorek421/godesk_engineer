@@ -37,7 +37,7 @@ interface PrimaryDropdownFormFieldProps {
   contentClassName?: string;
   defaultErrorMsg?: string;
   onClear?: () => void;
-  parentRef: React.RefObject<any>;
+  parentRef?: React.RefObject<any>;
   emptyMsg?:string;
   disabled?:boolean
 
@@ -92,7 +92,7 @@ const PrimaryDropdownFormField = ({
   }, [canValidateField]);
 
   const validateField = (newValue: any) => {
-    console.log("newValue", newValue);
+    //console.log("newValue", newValue);
     if (isRequired && (newValue === undefined || newValue.length === 0)) {
       validateFieldFunc(fieldName, false);
       setErrorValue(
@@ -128,7 +128,7 @@ const PrimaryDropdownFormField = ({
         selectedValue={selectedValue}
         placeholder={placeholder}
         onItemSelect={(type, selectedItem) => {
-          console.log("selectedItem", selectedItem);
+          //console.log("selectedItem", selectedItem);
           onItemSelect && onItemSelect(type, selectedItem);
           validateField(selectedItem);
         }}

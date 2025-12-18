@@ -195,6 +195,7 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
                   >
                     {label}
                   </Text>
+                  <View className="h-[1px] bg-gray-200 mt-2" />
                 </TouchableOpacity>
               );
             }}

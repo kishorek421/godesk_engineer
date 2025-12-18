@@ -12,7 +12,7 @@ import CheckInStatusComponent from "@/components/checkIn_out/CheckInStatusCompon
 
 const checkInDetailsPage = () => {
   const { checkInId } = useLocalSearchParams();
-  console.log("checkInId---->:", checkInId);
+  //console.log("checkInId---->:", checkInId);
   const [employeeDetails, setEmployeeDetails] = useState<CheckInOutStatusDetailsModel>();
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -22,7 +22,7 @@ const checkInDetailsPage = () => {
       .get(`/attendanceTransaction/view?id=${checkInId}`)
       .then((response) => {
         setIsLoading(false);
-        console.log("response.data.data", response.data.data);
+        //console.log("response.data.data", response.data.data);
         setEmployeeDetails(response.data?.data ?? {});
       })
       .catch((e) => {

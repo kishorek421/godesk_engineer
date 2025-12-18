@@ -20,7 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 const ImageViewer = () => {
   const { uri } = useLocalSearchParams();
   const [scale, setScale] = useState(new Animated.Value(1));
-  console.log("Image URI: ", uri);
+  //console.log("Image URI: ", uri);
 
   const onPinchEvent = Animated.event([{ nativeEvent: { scale } }], {
     useNativeDriver: true,

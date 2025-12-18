@@ -114,7 +114,7 @@ const ForgotPassword = () => {
 
     const reqBody = { mobile, key: "FIELD_ENGINEER" };
 
-    console.log("reqBody", reqBody);
+    //console.log("reqBody", reqBody);
 
     await api
       .get(
@@ -123,7 +123,7 @@ const ForgotPassword = () => {
 
       .then(async (response) => {
         let loginData = response.data.data;
-        console.log("loginData ", loginData);
+        //console.log("loginData ", loginData);
         // setEmail("");
         if (loginData.userId) {
           setUserId(loginData?.userId);
@@ -148,7 +148,7 @@ const ForgotPassword = () => {
         ]);
       })
       .finally(() => {
-        console.log("Request completed");
+        //console.log("Request completed");
         setIsLoading(false);
       });
   };
@@ -266,7 +266,7 @@ const ForgotPassword = () => {
     await api
       .post("/users/send", { mobile, key: "FIELD_ENGINEER" })
       .then((response) => {
-        console.log("Response:", response.data.data);
+        //console.log("Response:", response.data.data);
 
         if (response.data?.success) {
           // Navigate to OTP verification page
@@ -296,7 +296,7 @@ const ForgotPassword = () => {
         }
       })
       .finally(() => {
-        console.log("Request completed");
+        //console.log("Request completed");
         setIsLoading(false); // Ensure loading state is reset
       });
   };
@@ -364,7 +364,7 @@ const ForgotPassword = () => {
         )
         .then(async (response) => {
           let loginData = response.data.data;
-          console.log("loginData ", loginData);
+          //console.log("loginData ", loginData);
           showToast({
             position: "top",
             type: "success",

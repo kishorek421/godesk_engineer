@@ -30,7 +30,7 @@ export const useFirebaseMessaging = (): UseFirebaseMessagingProps => {
                 //   const iFcmToken = await getFCMToken(iMessaging);
                 //   if (iFcmToken) {
                 //     setFcmToken(iFcmToken);
-                //     console.log("FCM Token:", iFcmToken);
+                //     //console.log("FCM Token:", iFcmToken);
                 //   }
                 // } catch (e) {
                 //   console.error("Token Error ->", e);

@@ -96,7 +96,7 @@ const PrimaryTextFormField = ({
   }, [inputType]);
 
   useEffect(() => {
-    // console.log("fieldName", fieldName);
+    // //console.log("fieldName", fieldName);
 
     setFieldValidationStatus((prevState: any) => ({
       ...prevState,
@@ -105,12 +105,12 @@ const PrimaryTextFormField = ({
   }, []);
 
   useEffect(() => {
-    console.log("defaultValue ~~~~~~~~~~~~~~~~~~~~~~~~~~~~>", defaultValue);
+    //console.log("defaultValue ~~~~~~~~~~~~~~~~~~~~~~~~~~~~>", defaultValue);
     setValue(defaultValue ?? "");
   }, [defaultValue]);
 
   useEffect(() => {
-    // console.log("canValidateField ---------------------->", canValidateField);
+    // //console.log("canValidateField ---------------------->", canValidateField);
 
     if (canValidateField) {
       validateField(value);
@@ -205,7 +205,7 @@ const PrimaryTextFormField = ({
                 : keyboardType
           }
           onChangeText={(newValue: string) => {
-            console.log("newValue", newValue);
+            //console.log("newValue", newValue);
 
             // if expression not null and value matches the expressions(regular expressions)
             if (filterExp && !filterExp.test(newValue)) {
@@ -214,7 +214,7 @@ const PrimaryTextFormField = ({
 
             const valLen = newValue.length;
             let caseValue = newValue;
-            // console.log("caseValue", caseValue);
+            // //console.log("caseValue", caseValue);
             if (max && valLen <= max) {
               switch (textCase) {
                 case TextCase.uppercase:
@@ -224,7 +224,7 @@ const PrimaryTextFormField = ({
                   caseValue = newValue.toLocaleLowerCase();
                   break;
               }
-              // console.log("caseValue 2222->", caseValue);
+              // //console.log("caseValue 2222->", caseValue);
 
               onChangeText(caseValue);
               setValue(caseValue);

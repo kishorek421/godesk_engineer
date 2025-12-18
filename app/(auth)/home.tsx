@@ -3,7 +3,6 @@ import {
   Text,
   BackHandler,
   ToastAndroid,
-  SafeAreaView,
   Pressable,
   ScrollView,
   RefreshControl,
@@ -70,7 +69,7 @@ const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
   // AUTO REFRESH WHEN SCREEN FOCUSES
   useFocusEffect(
     useCallback(() => {
-      console.log("HomeScreen focused → auto refreshing...");
+      //console.log("HomeScreen focused → auto refreshing...");
       setRefreshing(true);
     }, [])
   );
@@ -83,11 +82,11 @@ const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
       const response = await apiClient.get(GET_INPROGRESS_TICKETS_DETAILS);
       const content = response.data?.data?.content;
 
-      console.log("inProgressTicketDetails", JSON.stringify(content));
+      //console.log("inProgressTicketDetails", JSON.stringify(content));
 
       if (content && content.length > 0) {
         const ticketData = content[0] ?? {};
-        console.log("ticketId -------------->", ticketData.id);
+        //console.log("ticketId -------------->", ticketData.id);
 
         setInProgressTicketDetails(ticketData);
 
@@ -118,7 +117,7 @@ useEffect(() => {
     apiClient
       .get(GET_CHECK_IN_OUT_STATUS)
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
+        //console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
           setCheckInOutStatusDetails(data);
