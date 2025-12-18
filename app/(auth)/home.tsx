@@ -6,6 +6,7 @@ import {
   Pressable,
   ScrollView,
   RefreshControl,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
@@ -51,6 +52,7 @@ const HomeScreen = () => {
   const segments = useSegments();
   const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
+    const [expanded, setExpanded] = useState(false);
 const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
   useState<CheckInOutStatusDetailsModel | null>(null);
 
@@ -223,34 +225,43 @@ useEffect(() => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                  <View className="flex-row justify-between w-full">
-                    <View className="flex-1">
-                      <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
-                        {inProgressTicketDetails?.ticketNo ?? "-"}
-                      </PrimaryText>
+                 <View className="flex-row items-center w-full">
+                  {/* LEFT CONTENT */}
+                  <View className="flex-1 pr-2">
+                    <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
+                      {inProgressTicketDetails?.ticketNo ?? "-"}
+                    </PrimaryText>
 
+                    <TouchableWithoutFeedback
+                      onPress={() => setExpanded(!expanded)}
+                    >
                       <PrimaryText
                         className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                        translate="api"
-                        numberOfLines={4}
+                        numberOfLines={expanded ? undefined : 4}
+                        ellipsizeMode="tail"
                       >
-                        {`${t("issueIn")}: ${
-                          Array.isArray(inProgressTicketDetails.issueTypeDetails) &&
-                          inProgressTicketDetails.issueTypeDetails.length > 0
-                            ? inProgressTicketDetails.issueTypeDetails
-                                .map((item) => item?.name)
-                                .filter(Boolean)
-                                .join(", ")
-                            : "-"
-                        }`}
+                        <PrimaryText className="font-bold">
+                          {t("issueIn")}:
+                        </PrimaryText>{" "}
+                        {Array.isArray(inProgressTicketDetails.issueTypeDetails) &&
+                        inProgressTicketDetails.issueTypeDetails.length > 0
+                          ? inProgressTicketDetails.issueTypeDetails
+                              .map((item) => item?.name)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "-"}
                       </PrimaryText>
-                    </View>
+                    </TouchableWithoutFeedback>
+                  </View>
 
+                  {/* RIGHT STATUS */}
+                  <View className="max-w-[53%] ">
                     <TicketStatusComponent
                       statusKey={inProgressTicketDetails.statusDetails?.key}
                       statusValue={inProgressTicketDetails.statusDetails?.value}
                     />
                   </View>
+                </View>
 
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
 
