@@ -1,4 +1,12 @@
-import { View, Text, Pressable, Alert, DeviceEventEmitter, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Alert,
+  DeviceEventEmitter,
+  Platform,
+  LogBox,
+} from "react-native";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
@@ -6,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-import { AuthProvider, InitialNotificationStatus, } from "@/context/AuthContext";
+import { AuthProvider, InitialNotificationStatus } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import {
   Poppins_400Regular,
@@ -23,7 +31,7 @@ import { handleNotificationNavigation } from "@/utils/helper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import i18n from "@/i18n";
 import { I18nextProvider } from "react-i18next";
-import BasePage from '@/components/base/base_page';
+import BasePage from "@/components/base/base_page";
 import Toast from "@/components/base/toast";
 import { LocationProvider } from "@/context/LocationContext";
 import { RefreshProvider } from "@/context/RefreshContext";
@@ -41,6 +49,17 @@ async function checkAppVersion() {
   }
 }
 export default function RootLayout() {
+  // SUPPRESS ALL CONSOLE LOGS, WARNINGS & ERRORS
+  // ============================================
+  console.log = () => {};
+  console.warn = () => {};
+  console.error = () => {};
+  console.info = () => {};
+  console.debug = () => {};
+
+  // Suppress React Native LogBox warnings and errors
+  LogBox.ignoreAllLogs();
+
   const [loaded] = useFonts({
     Regular: Poppins_400Regular,
     Medium: Poppins_500Medium,
@@ -60,8 +79,8 @@ export default function RootLayout() {
     }
   }, [loaded]);
   const isVersionGreater = (latest: any, current: any) => {
-    const l = latest.split('.').map(Number);
-    const c = current.split('.').map(Number);
+    const l = latest.split(".").map(Number);
+    const c = current.split(".").map(Number);
 
     for (let i = 0; i < l.length; i++) {
       if (l[i] > (c[i] || 0)) return true;
@@ -100,7 +119,6 @@ export default function RootLayout() {
     }
   };
 
-
   useEffect(() => {
     promptUpdateIfNeeded();
     checkAppVersion();
@@ -109,7 +127,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
 
   const processedNotificationsRef = React.useRef(new Set<string>());
 
@@ -148,7 +165,9 @@ export default function RootLayout() {
             const uniqueId =
               remoteMessage?.data?.id ||
               remoteMessage?.messageId ||
-              remoteMessage?.notification?.title + "|" + remoteMessage?.notification?.body ||
+              remoteMessage?.notification?.title +
+                "|" +
+                remoteMessage?.notification?.body ||
               JSON.stringify(remoteMessage?.data || {});
 
             // Skip if we've recently processed this notification
@@ -489,7 +508,7 @@ export default function RootLayout() {
                           },
                         }}
                       />
-                      
+
                       <Stack.Screen
                         name="leave/create_leave_request/[leaveId]"
                         options={{
@@ -561,7 +580,6 @@ export default function RootLayout() {
                       />
                       <Stack.Screen
                         name="notifications/all_notifications"
-
                         options={{
                           headerTitle: "Notifications",
                           headerTitleStyle: {
@@ -649,7 +667,6 @@ export default function RootLayout() {
                           },
                         }}
                       />
-
                     </Stack>
                     <Toast />
                   </ToastProvider>
