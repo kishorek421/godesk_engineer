@@ -415,8 +415,10 @@ const TicketDetails = () => {
         if (genericMessages) {
           showToast({
             position: "top",
-            type: "success",
+            type: "error",
+            duration:5000,
             message: genericMessages,
+            
           });
         }
       } else {
@@ -517,17 +519,7 @@ const TicketDetails = () => {
         <View className="flex-1 bg-gray-100 mb-8 h-full">
           <View className="p-4">
             <View className="w-full bg-white px-3 py-3 rounded-lg">
-              {ticketDetails?.subStatusDetails?.description && (
-                <View className="mt-2 rounded-xl border border-secondary-950 bg-secondary-100 p-3 mb-4">
-                  <View className="flex-row items-start">
-                    <Entypo name="info-with-circle" size={18} color="#FFAA00" />
-
-                    <PrimaryText className="text-[#7A5600] text-sm ml-2 flex-1 leading-5">
-                      {ticketDetails?.subStatusDetails?.description}
-                    </PrimaryText>
-                  </View>
-                </View>
-              )}
+             
 
               <View className="flex">
                 <View className="flex-row items-center w-full">
