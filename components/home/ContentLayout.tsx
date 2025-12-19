@@ -196,7 +196,6 @@ const ContentLayout = ({
   }, []);
 
   return (
-    <BasePage>
       <SafeAreaView className="h-full" edges={["left", "right", "bottom"]}>
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
@@ -362,7 +361,6 @@ const ContentLayout = ({
       
       </SafeAreaView>
 
-    </BasePage>
   );
 };
 
