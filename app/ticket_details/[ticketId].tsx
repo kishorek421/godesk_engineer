@@ -1105,7 +1105,7 @@ const TicketDetails = () => {
                             </Pressable>
                             <PrimaryText className="flex-1">
                               {selectedStatusKey === "CANNOT_RESOLVE"
-                                ? "I acknowledge that the customer is not responding and understand that no payout will be issued for my service."
+                                ? "I acknowledge and agree to close this ticket as cannot resolve, and understand that no payout will be issued for my service."
                                 : selectedStatusKey === "TRANSFER_TO_OTHER"
                                   ? "I acknowledge and agree to transfer this ticket, and understand that no payout will be issued for my service."
                                   : ""}
@@ -1120,10 +1120,9 @@ const TicketDetails = () => {
                           }}
                           btnText="updateStatus"
                           disabled={
-                            [
-                              "CANNOT_RESOLVE",
-                              "TRANSFER_TO_OTHER",
-                            ].includes(selectedStatusKey) && !acknowledged
+                            ["CANNOT_RESOLVE", "TRANSFER_TO_OTHER"].includes(
+                              selectedStatusKey
+                            ) && !acknowledged
                           }
                         />
                       </View>
