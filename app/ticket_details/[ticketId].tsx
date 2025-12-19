@@ -163,7 +163,7 @@ const TicketDetails = () => {
         return [
           { value: "TICKET_CLOSED", label: "Close" },
           { value: "SPARE_REQUIRED", label: "Spare Required" },
-          { value: "CANNOT_RESOLVE", label: "Cannot Resolve" },
+          { value: "CANNOT_RESOLVE", label: "Cannot Resolve & Close Ticket" },
         ];
       }
     }
@@ -299,7 +299,7 @@ const TicketDetails = () => {
       "TRANSFER_TO_OTHER",
     ].includes(selectedStatusKey);
     const requiresAcknowledgment = [
-      "CUSTOMER_NOT_RESPONDING",
+      "CANNOT_RESOLVE",
       "TRANSFER_TO_OTHER",
     ].includes(selectedStatusKey);
 
@@ -416,9 +416,8 @@ const TicketDetails = () => {
           showToast({
             position: "top",
             type: "error",
-            duration:5000,
+            duration: 5000,
             message: genericMessages,
-            
           });
         }
       } else {
@@ -519,8 +518,6 @@ const TicketDetails = () => {
         <View className="flex-1 bg-gray-100 mb-8 h-full">
           <View className="p-4">
             <View className="w-full bg-white px-3 py-3 rounded-lg">
-             
-
               <View className="flex">
                 <View className="flex-row items-center w-full">
                   {/* LEFT CONTENT */}
@@ -1078,7 +1075,7 @@ const TicketDetails = () => {
                         />
                       </View>
                     )}
-                    {["CUSTOMER_NOT_RESPONDING", "TRANSFER_TO_OTHER"].includes(
+                    {["CANNOT_RESOLVE", "TRANSFER_TO_OTHER"].includes(
                       selectedStatusKey
                     ) ? (
                       <View className="mb-4">
@@ -1107,9 +1104,11 @@ const TicketDetails = () => {
                               </View>
                             </Pressable>
                             <PrimaryText className="flex-1">
-                              I acknowledge and agree to transfer this ticket,
-                              and understand that no payout will be issued for
-                              my service.
+                              {selectedStatusKey === "CANNOT_RESOLVE"
+                                ? "I acknowledge that the customer is not responding and understand that no payout will be issued for my service."
+                                : selectedStatusKey === "TRANSFER_TO_OTHER"
+                                  ? "I acknowledge and agree to transfer this ticket, and understand that no payout will be issued for my service."
+                                  : ""}
                             </PrimaryText>
                           </View>
                         </View>
@@ -1122,7 +1121,7 @@ const TicketDetails = () => {
                           btnText="updateStatus"
                           disabled={
                             [
-                              "CUSTOMER_NOT_RESPONDING",
+                              "CANNOT_RESOLVE",
                               "TRANSFER_TO_OTHER",
                             ].includes(selectedStatusKey) && !acknowledged
                           }
