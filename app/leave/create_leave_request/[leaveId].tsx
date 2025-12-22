@@ -258,7 +258,7 @@ const CreateLeaveRequest = () => {
   }, []);
   // helper: normalize dates to same format/representation as leaveDetails.*
   // adjust if your dates are ISO strings, timestamps, or moment objects
-  const normalize = (d) => (d ? String(d) : null);
+  const normalize = (d:any) => (d ? String(d) : null);
 
   // whether the current selected range differs from original leave's range
   const isRangeDifferent = React.useMemo(() => {

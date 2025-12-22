@@ -10,7 +10,7 @@ export const isFormFieldInValid = (
   name: string,
   errors: ErrorModel[],
 ): string => {
-  //console.log("checking error", name);
+  ////console.log("checking error", name);
 
   let msg = "";
   for (const error of errors) {
@@ -121,7 +121,7 @@ export const makeExotelCall = async (
   const token = await getItem(AUTH_TOKEN_KEY);
   if (!token) return;
   try {
-    console.log("token", token);
+    //console.log("token", token);
 
     let data = qs.stringify(
       {
@@ -131,14 +131,14 @@ export const makeExotelCall = async (
       },
       { encode: false }
     );
-    console.log("data", data);
+    //console.log("data", data);
 
 
     const authToken = btoa(
       `2c5dd739f347675fbf942814e5bb5c57697c023fcf43966d:34464c9d277b68db16029237a7748fc3501cdcf84b25655f`
     );
 
-    console.log("authToken", authToken);
+    //console.log("authToken", authToken);
     // MmM1ZGQ3MzlmMzQ3Njc1ZmJmOTQyODE0ZTViYjVjNTc2OTdjMDIzZmNmNDM5NjZkOjM0NDY0YzlkMjc3YjY4ZGIxNjAyOTIzN2E3NzQ4ZmMzNTAxY2RjZjg0YjI1NjU1Zg==
 
     const response = await axios.post(
@@ -152,8 +152,8 @@ export const makeExotelCall = async (
         },
       }
     );
-    console.log("Call initiated:", response.data);
-    console.log("Call initiated:", response.status);
+    //console.log("Call initiated:", response.data);
+    //console.log("Call initiated:", response.status);
 
     if (response.status === 200) {
       showToast({
@@ -190,9 +190,9 @@ export function generateLogo(firstname: string, lastname?: string): string {
   return logName.toUpperCase();
 }
 export const handleNotificationNavigation = (remoteMessage: any, from = "") => {
-  console.log("remoteMessage", remoteMessage);
+  //console.log("remoteMessage", remoteMessage);
   const data = remoteMessage.data;
-  console.log("Local notification tapped:", data);
+  //console.log("Local notification tapped:", data);
   // redirectToPage(navigation, { data });
   const type = data?.type;
   const id = data?.id;

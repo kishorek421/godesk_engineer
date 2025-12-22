@@ -31,7 +31,7 @@ const AttendanceHistoryLayout = ({
   }, []);
 
   useEffect(() => {
-    console.log("refreshFlag", refreshFlag);
+    //console.log("refreshFlag", refreshFlag);
 
     if (refreshFlag) {
       fetchAttendance(1);
@@ -49,7 +49,7 @@ const AttendanceHistoryLayout = ({
       })
       .then((response) => {
         let content = response.data?.data?.content ?? [];
-        console.log("ticket////////////", content);
+        //console.log("ticket////////////", content);
         setIsLoading(false);
         if (nextPageNumber === 1) {
           setAttendance(content);

@@ -180,7 +180,7 @@ const ContentLayout = ({
     api
       .get(GET_CHECK_IN_OUT_STATUS)
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
+        //console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
           setCheckInOutStatusDetails(data);
@@ -196,7 +196,6 @@ const ContentLayout = ({
   }, []);
 
   return (
-    <BasePage>
       <SafeAreaView className="h-full" edges={["left", "right", "bottom"]}>
         <ScrollView className="h-full ">
           <View className="bg-gray-100 h-full">
@@ -362,7 +361,6 @@ const ContentLayout = ({
       
       </SafeAreaView>
 
-    </BasePage>
   );
 };
 

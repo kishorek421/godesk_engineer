@@ -1,4 +1,12 @@
-import { View, Text, Pressable, Alert, DeviceEventEmitter, Platform } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  Alert,
+  DeviceEventEmitter,
+  Platform,
+  LogBox,
+} from "react-native";
 import "@/global.css";
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import React from "react";
@@ -6,7 +14,7 @@ import { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
-import { AuthProvider, InitialNotificationStatus, } from "@/context/AuthContext";
+import { AuthProvider, InitialNotificationStatus } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
 import {
   Poppins_400Regular,
@@ -23,7 +31,7 @@ import { handleNotificationNavigation } from "@/utils/helper";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import i18n from "@/i18n";
 import { I18nextProvider } from "react-i18next";
-import BasePage from '@/components/base/base_page';
+import BasePage from "@/components/base/base_page";
 import Toast from "@/components/base/toast";
 import { LocationProvider } from "@/context/LocationContext";
 import { RefreshProvider } from "@/context/RefreshContext";
@@ -41,6 +49,17 @@ async function checkAppVersion() {
   }
 }
 export default function RootLayout() {
+  // SUPPRESS ALL CONSOLE LOGS, WARNINGS & ERRORS
+  // ============================================
+  console.log = () => {};
+  console.warn = () => {};
+  console.error = () => {};
+  console.info = () => {};
+  console.debug = () => {};
+
+  // Suppress React Native LogBox warnings and errors
+  LogBox.ignoreAllLogs();
+
   const [loaded] = useFonts({
     Regular: Poppins_400Regular,
     Medium: Poppins_500Medium,
@@ -60,8 +79,8 @@ export default function RootLayout() {
     }
   }, [loaded]);
   const isVersionGreater = (latest: any, current: any) => {
-    const l = latest.split('.').map(Number);
-    const c = current.split('.').map(Number);
+    const l = latest.split(".").map(Number);
+    const c = current.split(".").map(Number);
 
     for (let i = 0; i < l.length; i++) {
       if (l[i] > (c[i] || 0)) return true;
@@ -75,8 +94,8 @@ export default function RootLayout() {
       const latestVersion = await VersionCheck.getLatestVersion();
       const currentVersion = VersionCheck.getCurrentVersion();
 
-      console.log("currentVersion", currentVersion);
-      console.log("latestVersion", latestVersion);
+      //console.log("currentVersion", currentVersion);
+      //console.log("latestVersion", latestVersion);
 
       const shouldUpdate = isVersionGreater(latestVersion, currentVersion);
 
@@ -96,10 +115,9 @@ export default function RootLayout() {
         );
       }
     } catch (error) {
-      console.log("Error checking app version:", error);
+      //console.log("Error checking app version:", error);
     }
   };
-
 
   useEffect(() => {
     promptUpdateIfNeeded();
@@ -109,7 +127,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
 
   const processedNotificationsRef = React.useRef(new Set<string>());
 
@@ -125,7 +142,7 @@ export default function RootLayout() {
           try {
             const content = response.notification.request.content;
             const data = (content.data as any) || {};
-            console.log("✅ [NOTIFICATION] User tapped notification:", content);
+            //console.log("✅ [NOTIFICATION] User tapped notification:", content);
             // Normalize shape expected by handleNotificationNavigation
             handleNotificationNavigation({
               notification: {
@@ -142,18 +159,20 @@ export default function RootLayout() {
       unsubscribeOnMessage = messagingRef.current.onMessage(
         async (remoteMessage: any) => {
           try {
-            console.log("Foreground message:", remoteMessage);
+            //console.log("Foreground message:", remoteMessage);
 
             // Build a stable id to dedupe notifications
             const uniqueId =
               remoteMessage?.data?.id ||
               remoteMessage?.messageId ||
-              remoteMessage?.notification?.title + "|" + remoteMessage?.notification?.body ||
+              remoteMessage?.notification?.title +
+                "|" +
+                remoteMessage?.notification?.body ||
               JSON.stringify(remoteMessage?.data || {});
 
             // Skip if we've recently processed this notification
             if (processedNotificationsRef.current.has(uniqueId)) {
-              console.log("Skipping duplicate notification:", uniqueId);
+              //console.log("Skipping duplicate notification:", uniqueId);
               return;
             }
             processedNotificationsRef.current.add(uniqueId);
@@ -258,7 +277,7 @@ export default function RootLayout() {
         .getInitialNotification()
         .then(async (remoteMessage: any) => {
           try {
-            console.log("🔍 [NOTIFICATION] Checking initial notification...");
+            //console.log("🔍 [NOTIFICATION] Checking initial notification...");
 
             if (remoteMessage) {
               console.log(
@@ -297,7 +316,7 @@ export default function RootLayout() {
                 );
               }
             } else {
-              console.log("ℹ️ [NOTIFICATION] No initial notification found");
+              //console.log("ℹ️ [NOTIFICATION] No initial notification found");
               setInitialNotificationStatus(
                 InitialNotificationStatus.notifications_empty
               );
@@ -310,7 +329,7 @@ export default function RootLayout() {
       // when app is in background
       messagingRef.current.setBackgroundMessageHandler(
         async (remoteMessage: any) => {
-          console.log("Background message:", remoteMessage);
+          //console.log("Background message:", remoteMessage);
         }
       );
     }
@@ -332,18 +351,18 @@ export default function RootLayout() {
         );
 
         if (storedConsent !== null) {
-          console.log("type of storedConsent", typeof storedConsent);
+          //console.log("type of storedConsent", typeof storedConsent);
 
           const consented = storedConsent === "true";
           // await analyticsRef.current.setAnalyticsCollectionEnabled(consented);
           // await analytics().setAnalyticsCollectionEnabled(consented);
           // setAnalyticsCollectionEnabled(analyticsRef.current, consented);
-          console.log("content setted ---->");
+          //console.log("content setted ---->");
           // await analytics().logEvent("test_event", {
           //   user: "kishore",
           //   screen: "dashboard",
           // });
-          console.log("📨 test_event sent");
+          //console.log("📨 test_event sent");
 
           //  setConsentRequested(true);
           return;
@@ -362,7 +381,7 @@ export default function RootLayout() {
 
         const requestPermission = async () => {
           const { status } = await requestTrackingPermissionsAsync();
-          console.log("Tracking Permission Status:", status);
+          //console.log("Tracking Permission Status:", status);
           // Handle the status accordingly
           if (status === "granted") {
             // Proceed with tracking-related tasks
@@ -405,7 +424,7 @@ export default function RootLayout() {
                 // setAnalyticsCollectionEnabled(analyticsRef.current, canTrack);
                 // await analyticsRef.current.setAnalyticsCollectionEnabled(canTrack);
                 // await analytics().setAnalyticsCollectionEnabled(canTrack);
-                console.log("setting analytics true");
+                //console.log("setting analytics true");
                 //  setConsentRequested(true);
               },
             },
@@ -420,13 +439,13 @@ export default function RootLayout() {
 
     return () => {
       if (unsubscribeOnMessage) {
-        console.log("Closing messaging listener...");
+        //console.log("Closing messaging listener...");
         unsubscribeOnMessage();
       } else {
-        console.log("unsubscribe is null");
+        //console.log("unsubscribe is null");
       }
       if (unsubscribeOnOpen) {
-        console.log("Closing onNotificationOpenedApp listener...");
+        //console.log("Closing onNotificationOpenedApp listener...");
         unsubscribeOnOpen();
       }
       if (unsubscribeOnClickNotificationListener) {
@@ -489,6 +508,7 @@ export default function RootLayout() {
                           },
                         }}
                       />
+
                       <Stack.Screen
                         name="leave/create_leave_request/[leaveId]"
                         options={{
@@ -560,7 +580,6 @@ export default function RootLayout() {
                       />
                       <Stack.Screen
                         name="notifications/all_notifications"
-
                         options={{
                           headerTitle: "Notifications",
                           headerTitleStyle: {
@@ -648,7 +667,6 @@ export default function RootLayout() {
                           },
                         }}
                       />
-
                     </Stack>
                     <Toast />
                   </ToastProvider>

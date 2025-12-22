@@ -60,7 +60,7 @@ const LeaveRequestList = () => {
         } else {
           setLeaveRequestList((prevState) => [...prevState, ...content]);
         }
-        console.log("->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", content);
+        //console.log("->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", content);
 
         let paginator = response.data?.data?.paginator;
         if (paginator) {
@@ -83,7 +83,7 @@ const LeaveRequestList = () => {
     api
       .get(GET_USER_DETAILS)
       .then((response) => {
-        console.log("userTypeDetails---->", response);
+        //console.log("userTypeDetails---->", response);
         setUserDetails(response.data.data ?? {});
       })
       .catch((e) => {

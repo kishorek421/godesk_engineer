@@ -33,7 +33,7 @@ const DeviceDetailsScreen = ({
   const { leaveId, userId, roleCode } = useLocalSearchParams();
 
   const { showToast } = useToast();
-  console.log("rolecode",roleCode);
+  //console.log("rolecode",roleCode);
   const [leaveDetails, setLeaveDetails] = useState<LeaveRequestModel>({});
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -91,7 +91,7 @@ const DeviceDetailsScreen = ({
   }, []);
 
   const fetchLeaveDetailsById = () => {
-    console.log("leaveId", leaveId);
+    //console.log("leaveId", leaveId);
 
     return api
       .get(GET_LEAVE_REQUEST_DETAILS + `?id=${leaveId}`)
@@ -109,7 +109,7 @@ const DeviceDetailsScreen = ({
     api
       .get(GET_CONFIGURATIONS_BY_CATEGORY + "?category=LEAVE_REQUEST_STATUS")
       .then((response) => {
-        console.log("userTypeDetails", response);
+        //console.log("userTypeDetails", response);
         setLeaveStatusConfigs(response.data.data ?? {});
       })
       .catch((e) => {

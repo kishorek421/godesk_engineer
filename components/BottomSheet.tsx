@@ -19,44 +19,45 @@ interface BottomSheetProps {
 
 const BottomSheet = forwardRef(
   ({ children, initialHeight = 300, onClose }: BottomSheetProps, ref) => {
-    const animatedHeight = useRef(new Animated.Value(0)).current;
+    const translateY = useRef(new Animated.Value(screenHeight)).current;
     const maxHeight = useRef(initialHeight).current;
     const [visible, setVisible] = React.useState(false);
 
     const panResponder = useRef(
       PanResponder.create({
-        onStartShouldSetPanResponder: () => false, // Prevent from setting it on touch start
-        onMoveShouldSetPanResponder: (_, gestureState) => gestureState.dy !== 0, // Only respond to vertical movements
-        onPanResponderMove: (event, gestureState) => {
-          const newHeight = maxHeight - gestureState.dy;
-          if (newHeight < screenHeight && newHeight > 0) {
-            animatedHeight.setValue(newHeight);
+        onStartShouldSetPanResponder: () => true,
+        onMoveShouldSetPanResponder: (_, gestureState) =>
+          Math.abs(gestureState.dy) > 5,
+        onPanResponderMove: (_, gestureState) => {
+          if (gestureState.dy > 0) {
+            translateY.setValue(gestureState.dy);
           }
         },
-        onPanResponderRelease: (event, gestureState) => {
-          if (gestureState.dy > 0) {
+        onPanResponderRelease: (_, gestureState) => {
+          if (gestureState.dy > 50) {
             hide();
           } else {
             show();
           }
         },
-      }),
+      })
     ).current;
 
     useImperativeHandle(ref, () => ({
       show: () => {
         setVisible(true);
-        Animated.timing(animatedHeight, {
-          toValue: maxHeight,
-          duration: 300,
-          useNativeDriver: false,
+        Animated.spring(translateY, {
+          toValue: 0,
+          useNativeDriver: true,
+          damping: 20,
+          stiffness: 90,
         }).start();
       },
       hide: () => {
-        Animated.timing(animatedHeight, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: false,
+        Animated.timing(translateY, {
+          toValue: screenHeight,
+          duration: 250,
+          useNativeDriver: true,
         }).start(() => {
           setVisible(false);
           onClose?.();
@@ -65,18 +66,19 @@ const BottomSheet = forwardRef(
     }));
 
     const show = () => {
-      Animated.timing(animatedHeight, {
-        toValue: maxHeight,
-        duration: 300,
-        useNativeDriver: false,
+      Animated.spring(translateY, {
+        toValue: 0,
+        useNativeDriver: true,
+        damping: 20,
+        stiffness: 90,
       }).start();
     };
 
     const hide = () => {
-      Animated.timing(animatedHeight, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
+      Animated.timing(translateY, {
+        toValue: screenHeight,
+        duration: 250,
+        useNativeDriver: true,
       }).start(() => {
         setVisible(false);
         onClose?.();
@@ -87,27 +89,30 @@ const BottomSheet = forwardRef(
       <Modal
         transparent={true}
         visible={visible}
-        animationType="fade"
+        animationType="none"
         onRequestClose={hide}
       >
         <TouchableWithoutFeedback onPress={hide}>
           <View style={styles.overlay}>
-            <Animated.View
-              pointerEvents="box-none"
-              {...panResponder.panHandlers}
-              style={[
-                styles.bottomSheet,
-                { height: animatedHeight, maxHeight: screenHeight },
-              ]}
-            >
-              <View style={styles.handle} />
-              {children}
-            </Animated.View>
+            <TouchableWithoutFeedback>
+              <Animated.View
+                {...panResponder.panHandlers}
+                style={[
+                  styles.bottomSheet,
+                  {
+                    transform: [{ translateY: translateY }],
+                  },
+                ]}
+              >
+                <View style={styles.handle} />
+                {children}
+              </Animated.View>
+            </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
     );
-  },
+  }
 );
 
 BottomSheet.displayName = "BottomSheet";
@@ -119,15 +124,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   bottomSheet: {
+    width: "100%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
-    color: "red",
+    shadowRadius: 10,
+    elevation: 10,
+    paddingBottom: 20,
   },
   handle: {
     width: 60,

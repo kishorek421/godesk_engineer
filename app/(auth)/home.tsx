@@ -3,10 +3,10 @@ import {
   Text,
   BackHandler,
   ToastAndroid,
-  SafeAreaView,
   Pressable,
   ScrollView,
   RefreshControl,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
@@ -52,8 +52,10 @@ const HomeScreen = () => {
   const segments = useSegments();
   const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-    useState<CheckInOutStatusDetailsModel>({});
+    const [expanded, setExpanded] = useState(false);
+const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
+  useState<CheckInOutStatusDetailsModel | null>(null);
+
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
@@ -69,7 +71,7 @@ const HomeScreen = () => {
   // AUTO REFRESH WHEN SCREEN FOCUSES
   useFocusEffect(
     useCallback(() => {
-      console.log("HomeScreen focused → auto refreshing...");
+      //console.log("HomeScreen focused → auto refreshing...");
       setRefreshing(true);
     }, [])
   );
@@ -82,11 +84,11 @@ const HomeScreen = () => {
       const response = await apiClient.get(GET_INPROGRESS_TICKETS_DETAILS);
       const content = response.data?.data?.content;
 
-      console.log("inProgressTicketDetails", JSON.stringify(content));
+      //console.log("inProgressTicketDetails", JSON.stringify(content));
 
       if (content && content.length > 0) {
         const ticketData = content[0] ?? {};
-        console.log("ticketId -------------->", ticketData.id);
+        //console.log("ticketId -------------->", ticketData.id);
 
         setInProgressTicketDetails(ticketData);
 
@@ -117,7 +119,7 @@ useEffect(() => {
     apiClient
       .get(GET_CHECK_IN_OUT_STATUS)
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
+        //console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
           setCheckInOutStatusDetails(data);
@@ -201,16 +203,15 @@ useEffect(() => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={() => setRefreshing(true)}
-            colors={["#1977F3"]}
+
           />
         }
       >
         <View className="mt-4 mx-3 flex-row justify-between items-start"></View>
 
         {isLoading ? (
-          <PrimaryText className="mt-6 text-center font-regular text-gray-500">
-            Loading...
-          </PrimaryText>
+          <PrimaryText className="mt-6 text-center font-regular text-gray-500"> </PrimaryText>
+
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -224,34 +225,43 @@ useEffect(() => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                  <View className="flex-row justify-between w-full">
-                    <View className="flex-1">
-                      <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
-                        {inProgressTicketDetails?.ticketNo ?? "-"}
-                      </PrimaryText>
+                 <View className="flex-row items-center w-full">
+                  {/* LEFT CONTENT */}
+                  <View className="flex-1 pr-2">
+                    <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
+                      {inProgressTicketDetails?.ticketNo ?? "-"}
+                    </PrimaryText>
 
+                    <TouchableWithoutFeedback
+                      onPress={() => setExpanded(!expanded)}
+                    >
                       <PrimaryText
                         className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                        translate="api"
-                        numberOfLines={4}
+                        numberOfLines={expanded ? undefined : 4}
+                        ellipsizeMode="tail"
                       >
-                        {`${t("issueIn")}: ${
-                          Array.isArray(inProgressTicketDetails.issueTypeDetails) &&
-                          inProgressTicketDetails.issueTypeDetails.length > 0
-                            ? inProgressTicketDetails.issueTypeDetails
-                                .map((item) => item?.name)
-                                .filter(Boolean)
-                                .join(", ")
-                            : "-"
-                        }`}
+                        <PrimaryText className="font-bold">
+                          {t("issueIn")}:
+                        </PrimaryText>{" "}
+                        {Array.isArray(inProgressTicketDetails.issueTypeDetails) &&
+                        inProgressTicketDetails.issueTypeDetails.length > 0
+                          ? inProgressTicketDetails.issueTypeDetails
+                              .map((item) => item?.name)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "-"}
                       </PrimaryText>
-                    </View>
+                    </TouchableWithoutFeedback>
+                  </View>
 
+                  {/* RIGHT STATUS */}
+                  <View className="max-w-[53%] ">
                     <TicketStatusComponent
                       statusKey={inProgressTicketDetails.statusDetails?.key}
                       statusValue={inProgressTicketDetails.statusDetails?.value}
                     />
                   </View>
+                </View>
 
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
 
@@ -293,8 +303,8 @@ useEffect(() => {
         <CheckInOutModal
           setIsModalVisible={setIsModalVisible}
           bottomSheetRef={bottomSheetRef}
-          status={checkInOutStatusDetails.value}
-          checkedInId={checkInOutStatusDetails.id}
+          status={checkInOutStatusDetails?.value}
+          checkedInId={checkInOutStatusDetails?.id}
           onClose={() => {
             setIsModalVisible(false);
             fetchCheckInOutStatus();
