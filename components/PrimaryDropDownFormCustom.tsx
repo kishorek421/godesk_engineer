@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Modal, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Pressable,
+  TouchableWithoutFeedback,
+  Dimensions,
+  Keyboard,
+} from "react-native";
 import SimpleLineIcons from "@expo/vector-icons/SimpleLineIcons";
-import { isFormFieldInValid, setErrorValue } from "@/utils/helper";
 import {
   FormControl,
   FormControlLabel,
@@ -11,17 +19,16 @@ import {
   FormControlErrorText,
 } from "@/components/ui/form-control";
 import { ErrorModel } from "@/models/common";
-import { DropdownProps } from "@/models/common";
+import { isFormFieldInValid, setErrorValue } from "@/utils/helper";
 
 interface PrimaryDropdownFormFieldProps {
-  options: (string | { label: any; value: any })[];
-  selectedValue: any;
-  setSelectedValue: any;
-  type: any;
-  onSelect: (selected: string) => void;
+  options: (string | { label: string; value: string })[];
+  selectedValue: string;
+  setSelectedValue: (value: string) => void;
+  onSelect?: (selected: string) => void;
   placeholder: string;
   canValidateField: boolean;
-  setCanValidateField: any;
+  setCanValidateField: (value: boolean) => void;
   setFieldValidationStatus: any;
   validateFieldFunc: (fieldName: string, isValid: boolean) => void;
   fieldName: string;
@@ -29,7 +36,6 @@ interface PrimaryDropdownFormFieldProps {
   setErrors: any;
   label: string;
   isRequired?: boolean;
-  defaultValue?: any;
   className?: string;
 }
 
@@ -37,7 +43,6 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
   options,
   selectedValue,
   setSelectedValue,
-  type,
   onSelect,
   placeholder,
   errors,
@@ -49,99 +54,171 @@ const PrimaryDropdownFormFieldWithCustomDropdown = ({
   setCanValidateField,
   validateFieldFunc,
   setFieldValidationStatus,
-  defaultValue,
   className = "",
 }: PrimaryDropdownFormFieldProps) => {
-  const [visible, setVisible] = useState(false);
-  const [inputText, setInputText] = useState<string>("");
+  const [isOpen, setIsOpen] = useState(false);
+  const [displayText, setDisplayText] = useState<string>("");
 
+  // Update displayed text when selectedValue changes
   useEffect(() => {
-    if (defaultValue) {
-      setSelectedValue(defaultValue);
+    if (selectedValue) {
+      const selectedOption = options.find((item) => {
+        if (typeof item === "string") return item === selectedValue;
+        return item.value === selectedValue;
+      });
+
+      const label =
+        typeof selectedOption === "string"
+          ? selectedOption
+          : selectedOption?.label || selectedValue;
+
+      setDisplayText(label);
+    } else {
+      setDisplayText("");
     }
-  }, [defaultValue]);
+  }, [selectedValue, options]);
 
+  // Register validation function
   useEffect(() => {
-    setFieldValidationStatus((prevState: any) => ({
-      ...prevState,
-      [fieldName]: null,
+    setFieldValidationStatus((prev: any) => ({
+      ...prev,
+      [fieldName]: (isValid: boolean) => validateFieldFunc(fieldName, isValid),
     }));
-  }, []);
+  }, [fieldName, validateFieldFunc, setFieldValidationStatus]);
 
+  // Validate when requested from parent
   useEffect(() => {
     if (canValidateField) {
       validateField(selectedValue);
       setCanValidateField(false);
     }
-  }, [canValidateField]);
+  }, [canValidateField, selectedValue]);
 
-  const validateField = (newValue: any) => {
-    if (isRequired && newValue.value === undefined) {
-      validateFieldFunc(fieldName, false);
+  const validateField = (value: string) => {
+    if (isRequired && !value) {
       setErrorValue(
         fieldName,
-        newValue.value ?? "",
+        value,
         `Please select a ${label.toLowerCase()}`,
         setErrors
       );
-      return;
+      return false;
     }
-    validateFieldFunc(fieldName, true);
-    setErrorValue(fieldName, newValue.value ?? "", "", setErrors);
+    setErrorValue(fieldName, value, "", setErrors);
+    return true;
   };
 
   const handleSelect = (item: string | { label: string; value: string }) => {
     const value = typeof item === "string" ? item : item.value;
+    const label = typeof item === "string" ? item : item.label;
+
     setSelectedValue(value);
-    setInputText(typeof item === "string" ? item : item.label);
-    onSelect(value);
-    setVisible(false);
+    setDisplayText(label);
+    onSelect?.(value);
+    setIsOpen(false);
+  };
+
+  const closeDropdown = () => {
+    setIsOpen(false);
+    Keyboard.dismiss();
   };
 
   return (
-    <FormControl isInvalid={isFormFieldInValid(fieldName, errors).length > 0} className={className}>
-      <FormControlLabel className="mb-1">
-        <FormControlLabelText>{label}</FormControlLabelText>
-        <FormControlLabelAstrick className="text-red-400 ms-0.5">{isRequired ? "*" : ""}</FormControlLabelAstrick>
-      </FormControlLabel>
-      {/* Custom Dropdown */}
-      <Pressable onPress={() => setVisible(true)}>
-        <View className="flex-row items-center justify-between px-4 border border-gray-300 rounded-md bg-white w-full py-3.5">
-          <Text className={`${inputText && inputText.length > 0 ? "text-gray-900" : "text-gray-500"} text-lg`}>
-            {inputText && inputText.length > 0 ? inputText : placeholder}
-          </Text>
-          <SimpleLineIcons name="arrow-down" size={16} color="#a9a9a9" />
-        </View>
-      </Pressable>
+    <View className="relative">
+      {/* Main Form Field */}
+      <FormControl
+        isInvalid={isFormFieldInValid(fieldName, errors).length > 0}
+        className={className}
+      >
+        <FormControlLabel className="mb-1">
+          <FormControlLabelText>{label}</FormControlLabelText>
+          {isRequired && (
+            <FormControlLabelAstrick className="text-red-400 ms-0.5">
+              *
+            </FormControlLabelAstrick>
+          )}
+        </FormControlLabel>
 
-      {/* Dropdown Modal */}
-      <Modal transparent animationType="fade" visible={visible} onRequestClose={() => setVisible(false)}>
-        <TouchableOpacity
-          className="flex-1 bg-black/50 justify-center items-center"
-          activeOpacity={1}
-          onPress={() => setVisible(false)}
-        >
-          <View className="w-96 max-h-96 bg-white rounded-lg p-4 shadow-lg">
-            <FlatList
-              data={options}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => {
-                const displayText = typeof item === "string" ? item : item.label;
-                return (
-                  <TouchableOpacity className="py-3 border-b border-gray-200" onPress={() => handleSelect(item)}>
-                    <Text className="text-base text-gray-800 font-regular">{displayText}</Text>
-                  </TouchableOpacity>
-                );
-              }}
+        {/* Trigger */}
+        <Pressable onPress={() => setIsOpen(!isOpen)}>
+          <View
+            pointerEvents="box-only"
+            className="flex-row items-center justify-between px-4 py-3.5 border border-gray-300 rounded-md bg-white"
+          >
+            <Text
+              className={`text-lg flex-1 ${
+                displayText ? "text-gray-900" : "text-gray-400"
+              }`}
+            >
+              {displayText || placeholder}
+            </Text>
+            <SimpleLineIcons
+              name={isOpen ? "arrow-up" : "arrow-down"}
+              size={16}
+              color="#a9a9a9"
             />
           </View>
-        </TouchableOpacity>
-      </Modal>
+        </Pressable>
 
-      <FormControlError>
-        <FormControlErrorText>{isFormFieldInValid(fieldName, errors)}</FormControlErrorText>
-      </FormControlError>
-    </FormControl>
+        {/* Error Message */}
+        <FormControlError>
+          <FormControlErrorText>
+            {isFormFieldInValid(fieldName, errors)}
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      {/* Dropdown List - Absolute positioned below the field */}
+      {isOpen && (
+        <View className="absolute left-0 right-0 top-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-50 max-h-60">
+          <FlatList
+            data={options}
+            keyExtractor={(_, index) => index.toString()}
+            showsVerticalScrollIndicator={true}
+            nestedScrollEnabled={true}
+            renderItem={({ item }) => {
+              const label = typeof item === "string" ? item : item.label;
+              const value = typeof item === "string" ? item : item.value;
+              const isSelected = value === selectedValue;
+
+              return (
+                <TouchableOpacity
+                  onPress={() => handleSelect(item)}
+                  className={`py-3 px-4 border-b border-gray-200 last:border-b-0 ${
+                    isSelected ? "" : ""
+                  }`}
+                >
+                  <Text
+                    className={`text-base ${
+                      isSelected ? "text-gray-800" : "text-gray-800"
+                    }`}
+                  >
+                    {label}
+                  </Text>
+                  <View className="h-[1px] bg-gray-200 mt-2" />
+                </TouchableOpacity>
+              );
+            }}
+          />
+        </View>
+      )}
+
+      {/* Invisible Full-Screen Overlay - Closes dropdown on outside tap */}
+      {isOpen && (
+        <TouchableWithoutFeedback onPress={closeDropdown}>
+          <View
+            style={{
+              position: "absolute",
+              top: -Dimensions.get("window").height,
+              left: -Dimensions.get("window").width,
+              right: -Dimensions.get("window").width,
+              bottom: -Dimensions.get("window").height,
+              zIndex: 40, // Below dropdown (which has z-50)
+            }}
+          />
+        </TouchableWithoutFeedback>
+      )}
+    </View>
   );
 };
 

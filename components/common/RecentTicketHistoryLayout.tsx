@@ -32,7 +32,7 @@ const RecentTicketHistoryLayout = ({
   }, []);
 
   useEffect(() => {
-    console.log("refreshFlag", refreshFlag);
+    //console.log("("("refreshFlag", refreshFlag);
 
     if (refreshFlag) {
       fetchTickets(1);
@@ -51,7 +51,7 @@ const RecentTicketHistoryLayout = ({
       })
       .then((response) => {
         let content = response.data?.data?.content ?? [];
-        console.log("content ticket////////////------------>", content);
+        //console.log("("("content ticket////////////------------>", content);
         if (nextPageNumber === 1) {
           setRecentTickets(content);
         } else {

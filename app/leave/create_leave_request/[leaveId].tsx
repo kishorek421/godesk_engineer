@@ -51,8 +51,7 @@ const CreateLeaveRequest = () => {
   const [fieldValidationStatus, setFieldValidationStatus] = useState<any>({});
   const [createLeaveRequestModel, setCreateLeaveRequestModel] =
     useState<CreateLeaveRequestModel>({});
-  const [selectedLeaveType, setSelectedLeaveType] =
-    useState<DropdownModel>();
+  const [selectedLeaveType, setSelectedLeaveType] = useState<DropdownModel>();
   const [leaveType, setLeaveType] = useState<LeaveTypeModel[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [leaveDetailsPreview, setLeaveDetailsPreview] =
@@ -85,7 +84,7 @@ const CreateLeaveRequest = () => {
 
   const setFieldValidationStatusFunc = (
     fieldName: string,
-    isValid: boolean,
+    isValid: boolean
   ) => {
     if (fieldValidationStatus[fieldName]) {
       fieldValidationStatus[fieldName](isValid);
@@ -110,7 +109,7 @@ const CreateLeaveRequest = () => {
           });
           const range = getDateRange(
             response.data.data.startDate,
-            response.data.data.endDate,
+            response.data.data.endDate
           );
           setMarkedDates(range);
           setStartDate(response.data.data.startDate);
@@ -151,11 +150,10 @@ const CreateLeaveRequest = () => {
   };
 
   const createLeaveRequest = async () => {
-
     if (rangeConfirmed.start === null || rangeConfirmed.end === null) {
       setErrors((prevErrors) => [
         ...prevErrors.filter(
-          (error) => error.param !== "startDate" && error.param !== "endDate",
+          (error) => error.param !== "startDate" && error.param !== "endDate"
         ),
         {
           param: "startDate",
@@ -168,17 +166,14 @@ const CreateLeaveRequest = () => {
       ]);
       setCanValidateField(true);
     } else {
-
       setErrors((prevErrors) =>
         prevErrors.filter(
-          (error) => error.param !== "startDate" && error.param !== "endDate",
-        ),
+          (error) => error.param !== "startDate" && error.param !== "endDate"
+        )
       );
     }
 
-
     setCanValidateField(true);
-
 
     const validationPromises = Object.keys(fieldValidationStatus).map(
       (key) =>
@@ -187,20 +182,20 @@ const CreateLeaveRequest = () => {
             ...prev,
             [key]: resolve,
           }));
-        }),
+        })
     );
 
     await Promise.all(validationPromises);
 
-
-    const hasErrors = errors.some((error) => error.message && error.message.length > 0);
+    const hasErrors = errors.some(
+      (error) => error.message && error.message.length > 0
+    );
 
     if (
       rangeConfirmed.start === null ||
       rangeConfirmed.end === null ||
       hasErrors
     ) {
-
       return;
     }
 
@@ -226,7 +221,6 @@ const CreateLeaveRequest = () => {
           message: leaveDetails?.id
             ? "Leave updated successfully"
             : "Leave created successfully",
-
         });
 
         setIsLoading(false);
@@ -239,9 +233,7 @@ const CreateLeaveRequest = () => {
 
         if (error?.response?.data?.errors) {
           setErrors(
-            error.response.data.errors.filter(
-              (err: any) => err.param !== null,
-            ),
+            error.response.data.errors.filter((err: any) => err.param !== null)
           );
           setIsLoading(false);
           const errorMessages = error.response.data.errors
@@ -266,7 +258,7 @@ const CreateLeaveRequest = () => {
   }, []);
   // helper: normalize dates to same format/representation as leaveDetails.*
   // adjust if your dates are ISO strings, timestamps, or moment objects
-  const normalize = (d) => (d ? String(d) : null);
+  const normalize = (d:any) => (d ? String(d) : null);
 
   // whether the current selected range differs from original leave's range
   const isRangeDifferent = React.useMemo(() => {
@@ -277,7 +269,13 @@ const CreateLeaveRequest = () => {
     const currentEnd = normalize(rangeConfirmed.end);
 
     return currentStart !== originalStart || currentEnd !== originalEnd;
-  }, [leaveDetails?.id, leaveDetails?.startDate, leaveDetails?.endDate, rangeConfirmed.start, rangeConfirmed.end]);
+  }, [
+    leaveDetails?.id,
+    leaveDetails?.startDate,
+    leaveDetails?.endDate,
+    rangeConfirmed.start,
+    rangeConfirmed.end,
+  ]);
 
   useEffect(() => {
     if (!selectedLeaveType?.value) return;
@@ -292,12 +290,18 @@ const CreateLeaveRequest = () => {
     if (!leaveDetails?.id) {
       fetchPreviewDetails();
     }
-  }, [selectedLeaveType?.value, rangeConfirmed.start, rangeConfirmed.end, isRangeDifferent, leaveDetails?.id]);
+  }, [
+    selectedLeaveType?.value,
+    rangeConfirmed.start,
+    rangeConfirmed.end,
+    isRangeDifferent,
+    leaveDetails?.id,
+  ]);
 
   const fetchPreviewDetails = () => {
     if (!selectedLeaveType?.value) return;
 
-    let url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}`;
+    let url = `${GET_LEAVE_REQUEST_PREVIEW}?leaveTypeId=${selectedLeaveType?.value}&leaveId=${leaveDetails?.id ?? ""}`;
 
     if (rangeConfirmed.start && rangeConfirmed.end) {
       url += `&startDate=${rangeConfirmed.start}&endDate=${rangeConfirmed.end}`;
@@ -311,8 +315,6 @@ const CreateLeaveRequest = () => {
       })
       .catch((e) => console.error(e));
   };
-
-
 
   const onDayPress = (day: any) => {
     const { dateString } = day;
@@ -362,7 +364,7 @@ const CreateLeaveRequest = () => {
     switch (type) {
       case "LEAVE_TYPE":
         let selectedLeaveType = leaveType.find(
-          (leaveType) => leaveType.id === e,
+          (leaveType) => leaveType.id === e
         );
         console.log("selectedLeaveType", selectedLeaveType);
         setSelectedLeaveType({
@@ -374,27 +376,27 @@ const CreateLeaveRequest = () => {
   };
 
   function getDateRange(start: any, end: any) {
-     const dates: any = {};
-     const startDateObj = new Date(start);
-     const endDateObj = new Date(end);
+    const dates: any = {};
+    const startDateObj = new Date(start);
+    const endDateObj = new Date(end);
 
-     if (startDateObj > endDateObj) {
-       return getDateRange(end, start);
-     }
+    if (startDateObj > endDateObj) {
+      return getDateRange(end, start);
+    }
 
-     let currentDate = new Date(startDateObj);
-     while (currentDate <= endDateObj) {
-       const dateString = currentDate.toISOString().split("T")[0];
-       dates[dateString] = {
-         color: secondaryColor,
-         textColor: "#ffffff",
-         ...(dateString === start && { startingDay: true }),
-         ...(dateString === end && { endingDay: true }),
-       };
-       currentDate.setDate(currentDate.getDate() + 1);
-     }
-     return dates;
-   }
+    let currentDate = new Date(startDateObj);
+    while (currentDate <= endDateObj) {
+      const dateString = currentDate.toISOString().split("T")[0];
+      dates[dateString] = {
+        color: secondaryColor,
+        textColor: "#ffffff",
+        ...(dateString === start && { startingDay: true }),
+        ...(dateString === end && { endingDay: true }),
+      };
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  }
   // const [translatedLabel, setTranslatedLabel] = useState("Your Message");
   // const {language} = useTranslation();
   // useEffect(() => {
@@ -419,9 +421,9 @@ const CreateLeaveRequest = () => {
             <LoadingBar />
           ) : (
             <View className="px-4  p-4">
-              {selectedLeaveType?.value && (
+              {selectedLeaveType?.value &&
                 // show preview for new leaves OR for existing leaves only when range changed
-                ((!leaveDetails?.id) || isRangeDifferent) && (
+                (!leaveDetails?.id || isRangeDifferent) && (
                   <View className="mb-4">
                     <View className="rounded bg-primary-200 px-3 py-2">
                       <Text className="text-gray-800 font-medium text-sm">
@@ -431,10 +433,7 @@ const CreateLeaveRequest = () => {
                       </Text>
                     </View>
                   </View>
-                )
-              )}
-
-
+                )}
 
               <PrimaryDropdownFormField
                 className="mb-3"
@@ -477,7 +476,7 @@ const CreateLeaveRequest = () => {
                       className={`flex-row justify-between items-center border-[1px] px-3 py-2 rounded h-14 ${isFormFieldInValid("startDate", errors).length > 0 || isFormFieldInValid("endDate", errors).length > 0 ? "border-red-700 " : "border-gray-300"}`}
                     >
                       {rangeConfirmed.start === null ||
-                        rangeConfirmed.end === null ? (
+                      rangeConfirmed.end === null ? (
                         <Text className="flex-1 text-gray-400 font-regular">
                           Select From And To Date
                         </Text>
@@ -495,7 +494,11 @@ const CreateLeaveRequest = () => {
                               setRangeConfirmed({ start: null, end: null });
                             }}
                           >
-                            <Ionicons name="close-circle"size={16} color="grey" />
+                            <Ionicons
+                              name="close-circle"
+                              size={16}
+                              color="grey"
+                            />
                           </Pressable>
                         )}
                       <View className="flex-row items-center">
@@ -524,14 +527,14 @@ const CreateLeaveRequest = () => {
                 setErrors={setErrors}
                 min={10}
                 max={200}
-                defaultValue={createLeaveRequestModel.reason ?? leaveDetails.reason}
+                defaultValue={
+                  createLeaveRequestModel.reason ?? leaveDetails.reason
+                }
                 filterExp={/^(|[a-zA-Z][a-zA-Z0-9,.-/'#$& ]*)$/}
-
                 canValidateField={canValidateField}
                 setCanValidateField={setCanValidateField}
                 setFieldValidationStatus={setFieldValidationStatus}
                 validateFieldFunc={setFieldValidationStatusFunc}
-
                 onChangeText={(value) => {
                   setCreateLeaveRequestModel((prevState) => {
                     prevState.reason = value;
@@ -542,17 +545,17 @@ const CreateLeaveRequest = () => {
               <SubmitButton
                 isLoading={isLoading}
                 onPress={createLeaveRequest}
-                btnText={leaveDetails?.id ? ("Update") : ("Apply Leave")}
+                btnText={leaveDetails?.id ? "Update" : "Apply Leave"}
               />
             </View>
           )}
-
         </View>
-
 
         <BottomSheet initialHeight={600} ref={bottomSheetRef}>
           <View className="mt-6 ">
-            <Text className="mx-6 font-bold text-xl">Select From And To Date</Text>
+            <Text className="mx-6 font-bold text-xl">
+              Select From And To Date
+            </Text>
 
             <View className="mt-2">
               <Calendar
@@ -598,7 +601,6 @@ const CreateLeaveRequest = () => {
               </Button>
             </View>
           </View>
-
         </BottomSheet>
       </ScrollView>
     </BasePage>

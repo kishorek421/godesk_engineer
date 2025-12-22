@@ -3,11 +3,19 @@ import {
   Text,
   BackHandler,
   ToastAndroid,
-  SafeAreaView,
   Pressable,
+  ScrollView,
+  RefreshControl,
+  TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
-import { router, Link, useSegments } from "expo-router";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import {
+  router,
+  Link,
+  useSegments,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { TicketListItemModel } from "@/models/tickets";
 import apiClient from "@/clients/apiClient";
 import TicketStatusComponent from "@/components/tickets/TicketStatusComponent";
@@ -20,7 +28,10 @@ import {
   GET_ATTENDANCE_TRANSACTION,
 } from "@/constants/api_endpoints";
 import TicketListLayout from "@/components/tickets/TicketListLayout";
-import { CheckInOutStatusDetailsModel, UserDetailsModel } from "@/models/users";
+import {
+  CheckInOutStatusDetailsModel,
+  UserDetailsModel,
+} from "@/models/users";
 import { getGreetingMessage } from "@/utils/helper";
 import { Button, ButtonText } from "@/components/ui/button";
 import CheckInOutModal from "@/components/home/CheckInOutModal";
@@ -28,29 +39,27 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import BasePage from "@/components/base/base_page";
 import { t } from "i18next";
 import { useToast } from "@/context/ToastContext";
-// import useLocation from "@/hooks/useLocation";
 import { removeItem, setItem } from "@/utils/secure_store";
-import { requestForegroundPermissionsAsync } from "expo-location";
-import { TouchableWithoutFeedback } from "react-native";
 import useLocation from "@/hooks/useLocation";
 
 const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [exitApp, setExitApp] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const bottomSheetRef = useRef<{ show: () => void; hide: () => void } | null>(null);
+  const bottomSheetRef = useRef<{ show: () => void; hide: () => void } | null>(
+    null
+  );
   const segments = useSegments();
   const { showToast } = useToast();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
-    useState<CheckInOutStatusDetailsModel>({});
-  const [checkInOutStatus, setCheckInOutStatus] = useState<
-    CheckInOutStatusDetailsModel[]
-  >([]);
+    const [expanded, setExpanded] = useState(false);
+const [checkInOutStatusDetails, setCheckInOutStatusDetails] =
+  useState<CheckInOutStatusDetailsModel | null>(null);
 
   const [inProgressTicketDetails, setInProgressTicketDetails] =
     useState<TicketListItemModel>({});
   const [userDetails, setUserDetails] = useState<UserDetailsModel>({});
+  const [refreshing, setRefreshing] = useState(false);
 
   const {
     isForegroundLocationPermissionAllowed,
@@ -59,91 +68,87 @@ const HomeScreen = () => {
     startForegroundLocationTracking,
   } = useLocation();
 
-  const [todayCheckInTime, setTodayCheckInTime] = useState<string | null>(null);
-  const [todayCheckOutTime, setTodayCheckOutTime] = useState<string | null>(
-    null
+  // AUTO REFRESH WHEN SCREEN FOCUSES
+  useFocusEffect(
+    useCallback(() => {
+      //console.log("HomeScreen focused → auto refreshing...");
+      setRefreshing(true);
+    }, [])
   );
-  const openCheckInCheckOut = () => {
-    setIsModalVisible(true);
-    bottomSheetRef.current?.show();
-  };
-  const closeCheckInCheckOut = () => {
-    setIsModalVisible(false);
-    bottomSheetRef.current?.hide();
+
+  // FETCH IN-PROGRESS TICKET
+  const fetchInProgressTicketDetails = async () => {
+    setRefreshing(true);
+
+    try {
+      const response = await apiClient.get(GET_INPROGRESS_TICKETS_DETAILS);
+      const content = response.data?.data?.content;
+
+      //console.log("inProgressTicketDetails", JSON.stringify(content));
+
+      if (content && content.length > 0) {
+        const ticketData = content[0] ?? {};
+        //console.log("ticketId -------------->", ticketData.id);
+
+        setInProgressTicketDetails(ticketData);
+
+        const ticketId = ticketData.id;
+        await setItem("inProgressTicketId", ticketId);
+      } else {
+        await removeItem("inProgressTicketId");
+        setInProgressTicketDetails({});
+      }
+    } catch (error: any) {
+      console.error("Error fetching tickets", error);
+      setInProgressTicketDetails({});
+      await removeItem("inProgressTicketId");
+    } finally {
+      setRefreshing(false);
+      setIsLoading(false);
+    }
   };
 
-  useEffect(() => {
-    fetchInProgressTicketDetails();
-    fetchUserDetails();
-    getCheckInOutStatus();
-    fetchCheckInOutStatus();
-  }, []);
+// Only refresh when manually pulled OR screen focuses
+useEffect(() => {
+  if (refreshing) fetchInProgressTicketDetails();
+}, [refreshing]);
 
+
+  // CHECK-IN / CHECK-OUT STATUS
   const fetchCheckInOutStatus = async () => {
     apiClient
       .get(GET_CHECK_IN_OUT_STATUS)
       .then((response) => {
-        console.log("checkInDetails", response.data.data);
+        //console.log("checkInDetails", response.data.data);
         const data = response.data?.data;
         if (data) {
-          console.log("data ------>", data);
           setCheckInOutStatusDetails(data);
         }
       })
-      .catch((e) => {
-        console.error(e.response.data);
-      });
-  };
-  const getCheckInOutStatus = async () => {
-    try {
-      const response = await apiClient.get(GET_ATTENDANCE_TRANSACTION);
-      const data = response.data?.data?.content;
-
-      if (data && Array.isArray(data)) {
-        const today = new Date().toISOString().split("T")[0];
-        const todayEntry = data.find(
-          (item: CheckInOutStatusDetailsModel) => item.date === today
-        );
-
-        if (todayEntry?.check_in) {
-          setTodayCheckInTime(todayEntry.check_in.split(".")[0]);
-        } else {
-          setTodayCheckInTime(null);
-        }
-
-        if (todayEntry?.check_out) {
-          setTodayCheckOutTime(todayEntry.check_out.split(".")[0]);
-        } else {
-          setTodayCheckOutTime(null);
-        }
-      }
-    } catch (e: any) {
-      console.error("Error fetching ", e.response?.data || e.message);
-    }
+      .catch((e) => console.error(e.response?.data));
   };
 
+  // START LOCATION TRACKING LOGIC
   useEffect(() => {
-    console.log("isForegroundLocationPermissionAllowed ------------------>", isForegroundLocationPermissionAllowed);
-    console.log("isBackgroundLocationPermissionAllowed ------------------>", isBackgroundLocationPermissionAllowed);
+    console.log(
+      "isForegroundLocationPermissionAllowed ------------------>",
+      isForegroundLocationPermissionAllowed
+    );
+    console.log(
+      "isBackgroundLocationPermissionAllowed ------------------>",
+      isBackgroundLocationPermissionAllowed
+    );
+
     if (
       isForegroundLocationPermissionAllowed &&
       isBackgroundLocationPermissionAllowed
     ) {
       if (inProgressTicketDetails?.id) {
-      // if (true) {
-        console.log(
-          "start tracking background -------------------------------->"
-        );
-
         startBackgroundLocationTracking();
-      } else if (isForegroundLocationPermissionAllowed) {
-        console.log("start foreground location tracking ------------------>");
-        // if background permission is not allowed, start foreground location tracking
+      } else {
         startForegroundLocationTracking();
       }
     } else if (isForegroundLocationPermissionAllowed) {
-      console.log("start foreground location tracking ------------------>");
-      // if background permission is not allowed, start foreground location tracking
       startForegroundLocationTracking();
     }
   }, [
@@ -152,44 +157,7 @@ const HomeScreen = () => {
     inProgressTicketDetails?.id,
   ]);
 
-  const fetchInProgressTicketDetails = () => {
-    apiClient
-      .get(GET_INPROGRESS_TICKETS_DETAILS)
-      .then(async (response) => {
-        const content = response.data?.data?.content;
-        console.log("inProgressTicketDetails", JSON.stringify(content));
-
-        if (content && content.length > 0) {
-          const ticketData = content[0] ?? {};
-          console.log("ticketId -------------->", ticketData.id);
-          setInProgressTicketDetails(ticketData);
-          const ticketId = ticketData.id;
-          await setItem("inProgressTicketId", ticketId);
-        } else {
-          await removeItem("inProgressTicketId");
-        }
-      })
-      .catch(async (error) => {
-        console.error("Error fetching tickets", error);
-        await removeItem("inProgressTicketId");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
-  const fetchUserDetails = () => {
-    apiClient
-      .get(GET_USER_DETAILS)
-      .then((response) => {
-        console.log(response.data?.data);
-        const userData = response.data.data ?? {};
-        setUserDetails(userData);
-      })
-      .catch((error) => {
-        console.error("Error fetching user details", error);
-      });
-  };
-
+  // EXIT APP ON DOUBLE BACK PRESS
   const handleDoubleClick = () => {
     if (exitApp) {
       BackHandler.exitApp();
@@ -227,84 +195,23 @@ const HomeScreen = () => {
     };
   }, [exitApp, segments]);
 
-  // old code
-  // Start background location tracking
-  // async function startLocationTracking() {
-  //   const hasStarted =
-  //     await Location.hasStartedLocationUpdatesAsync(LOCATION_TASK_NAME);
-  //   if (hasStarted) {
-  //     console.log("Background location tracking already started");
-  //     return;
-  //   }
-
-  //   await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-  //     accuracy: Location.Accuracy.High,
-  //     timeInterval: 10000, // Update every 10 seconds
-  //     distanceInterval: 50, // Update every 50 meters
-  //     showsBackgroundLocationIndicator: true, // iOS only
-  //     foregroundService: {
-  //       notificationTitle: "Tracking your location",
-  //       notificationBody: "We are monitoring your location in the background.",
-  //     },
-  //   });
-
-  //   console.log("Background location tracking started");
-  // }
-
-  // async function requestPermissions() {
-  //   const { status: foregroundStatus } =
-  //     await Location.requestForegroundPermissionsAsync();
-  //   console.log("foregroundStatus", foregroundStatus);
-
-  //   if (foregroundStatus === "granted") {
-  //     const { status: backgroundStatus } =
-  //       await Location.requestBackgroundPermissionsAsync();
-  //     console.log("backgroundStatus", backgroundStatus);
-
-  //     if (backgroundStatus === "granted") {
-  //       // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-  //       //   accuracy: Location.Accuracy.Balanced,
-  //       // });
-  //       startLocationTracking();
-  //     }
-  //   }
-
-  //   console.log("All permissions granted");
-  // }
-
   return (
     <BasePage>
-      <View className="mt-4 mx-3 flex-row justify-between items-start">
-        <View>
-          {/* {todayCheckInTime && (
-            <View className="bg-blue-200 rounded-md px-2 py-1 mx-4 self-start">
-              <PrimaryText className="text-gray-800 font-medium text-sm">
-                {t("checkInMessage", { time: todayCheckInTime })}
-              </PrimaryText>
+      <ScrollView
+        className="p-1"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
 
-              {todayCheckOutTime && (
-                <PrimaryText className="text-gray-800 font-medium text-sm">
-                  {t("checkOutMessage", { time: todayCheckOutTime })}
-                </PrimaryText>
-              )}
-            </View>
-          )} */}
-        </View>
+          />
+        }
+      >
+        <View className="mt-4 mx-3 flex-row justify-between items-start"></View>
 
-        {/* <Ionicons
-          name="notifications-outline"
-          size={20}
-          color="black"
-          onPress={() => router.push("/notifications/all_notifications")}
-        /> */}
-      </View>
-      <View className=" p-1">
-        <View className="flex-row justify-between items-center">
-        </View>
         {isLoading ? (
-          <PrimaryText className="mt-6 text-center font-regular text-gray-500">
-            Loading...
-          </PrimaryText>
+          <PrimaryText className="mt-6 text-center font-regular text-gray-500"> </PrimaryText>
+
         ) : (
           inProgressTicketDetails.id && (
             <Pressable
@@ -318,29 +225,46 @@ const HomeScreen = () => {
             >
               <View className="bg-white px-4 py-3 rounded-lg w-full">
                 <View className="flex">
-                   <View className="flex-row justify-between w-full">
-                    <View className="flex-1">
-                      <PrimaryText className="text-tertiary-950 leading-5  font-bold-1">
-                        {inProgressTicketDetails?.ticketNo ?? "-"}
+                 <View className="flex-row items-center w-full">
+                  {/* LEFT CONTENT */}
+                  <View className="flex-1 pr-2">
+                    <PrimaryText className="text-tertiary-950 font-bold-1 leading-5">
+                      {inProgressTicketDetails?.ticketNo ?? "-"}
+                    </PrimaryText>
+
+                    <TouchableWithoutFeedback
+                      onPress={() => setExpanded(!expanded)}
+                    >
+                      <PrimaryText
+                        className="mt-[1px] text-[13px] text-gray-900 font-regular"
+                        numberOfLines={expanded ? undefined : 4}
+                        ellipsizeMode="tail"
+                      >
+                        <PrimaryText className="font-bold">
+                          {t("issueIn")}:
+                        </PrimaryText>{" "}
+                        {Array.isArray(inProgressTicketDetails.issueTypeDetails) &&
+                        inProgressTicketDetails.issueTypeDetails.length > 0
+                          ? inProgressTicketDetails.issueTypeDetails
+                              .map((item) => item?.name)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "-"}
                       </PrimaryText>
-                        <PrimaryText
-                          className="mt-[1px] text-[13px] text-gray-900 font-regular"
-                          translate="api"
-                          numberOfLines={4}
-                          ellipsizeMode="tail"
-                        >
-                          {`${t('issueIn')}: ${Array.isArray(inProgressTicketDetails.issueTypeDetails) && inProgressTicketDetails.issueTypeDetails.length > 0
-                            ? inProgressTicketDetails.issueTypeDetails.map((item) => item?.name).filter(Boolean).join(', ')
-                            : "-"
-                            }`}
-                        </PrimaryText>
-                    </View>
+                    </TouchableWithoutFeedback>
+                  </View>
+
+                  {/* RIGHT STATUS */}
+                  <View className="max-w-[53%] ">
                     <TicketStatusComponent
                       statusKey={inProgressTicketDetails.statusDetails?.key}
                       statusValue={inProgressTicketDetails.statusDetails?.value}
                     />
                   </View>
+                </View>
+
                   <View className="border-[1px] border-gray-300 mt-3 mb-3 border-dashed w-full h-[1px]" />
+
                   <View className="w-full">
                     <View className="flex-row justify-between items-center">
                       <View className="flex">
@@ -348,16 +272,16 @@ const HomeScreen = () => {
                           raisedBy
                         </PrimaryText>
                         <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
-                          {inProgressTicketDetails.customerDetails?.firstName ??
-                            ""}{" "}
-                          {inProgressTicketDetails.customerDetails?.lastName ??
-                            ""}
+                          {inProgressTicketDetails.customerDetails?.firstName ?? ""}{" "}
+                          {inProgressTicketDetails.customerDetails?.lastName ?? ""}
                         </PrimaryText>
                       </View>
+
                       <View className="flex items-end">
                         <PrimaryText className="text-gray-500 font-regular text-md">
                           raisedAt
                         </PrimaryText>
+
                         <PrimaryText className="mt-[2px] font-semibold text-gray-900 text-md leading-5">
                           {inProgressTicketDetails.createdAt
                             ? moment(
@@ -375,18 +299,21 @@ const HomeScreen = () => {
             </Pressable>
           )
         )}
+
         <CheckInOutModal
           setIsModalVisible={setIsModalVisible}
           bottomSheetRef={bottomSheetRef}
-          status={checkInOutStatusDetails.value}
-          checkedInId={checkInOutStatusDetails.id}
+          status={checkInOutStatusDetails?.value}
+          checkedInId={checkInOutStatusDetails?.id}
           onClose={() => {
             setIsModalVisible(false);
             fetchCheckInOutStatus();
+            setRefreshing(true); // Auto refresh after status modal close
           }}
         />
+
         <TicketListLayout />
-      </View>
+      </ScrollView>
     </BasePage>
   );
 };

@@ -22,7 +22,7 @@ const PrimaryLink = ({
   const { t } = useTranslation();
 
   const getFontRegular = (cn: string): string => {
-    // console.log("cn", cn);
+    // //console.log("cn", cn);
 
     if (
       !cn.includes("font-medium") &&

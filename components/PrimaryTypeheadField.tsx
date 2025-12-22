@@ -70,7 +70,7 @@ const PrimaryTypeheadField = ({
       // direction={Platform.select({ ios: "down" })}
       dataSet={suggestions}
       onChangeText={(text: string) => {
-        console.log("txext", text);
+        //console.log("("txext", text);
         if (filterExp && !filterExp.test(text)) {
           return;
         }

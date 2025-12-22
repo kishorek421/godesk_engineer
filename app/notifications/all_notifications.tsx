@@ -35,7 +35,7 @@ const AllNotifications = () => {
       })
       .then((response) => {
         let content = response.data?.data?.content ?? [];
-        console.log("content notification////////////------------>", content);
+        //console.log("content notification////////////------------>", content);
         if (nextPageNumber === 1) {
           setAllNotifications(content);
         } else {
@@ -71,7 +71,7 @@ const AllNotifications = () => {
         notificationIds: [],
       })
       .then((response) => {
-        console.log("response", response);
+        //console.log("response", response);
         setAllNotifications([]);
       })
       .catch((e) => {
@@ -90,7 +90,7 @@ const AllNotifications = () => {
         performType: "Remove",
         notificationIds: [notificationId],
       });
-      console.log("Notification removed successfully:", response);
+      //console.log("Notification removed successfully:", response);
       if (response.data?.message) {
         console.log(response.data.message);
       }

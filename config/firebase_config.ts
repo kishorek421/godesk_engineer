@@ -22,9 +22,9 @@ export async function initializeFirebase() {
 }
 
 export async function getFirebaseMessaging() {
-  console.log("initialize messaging app");
+  // //console.log("initialize messaging app");
   const app = await initializeFirebase(); // Ensure Firebase is initialized
-  console.log("app -> ", app);
+  // //console.log("app -> ", app);
   
   const messaging = getMessaging(app);
   return messaging;

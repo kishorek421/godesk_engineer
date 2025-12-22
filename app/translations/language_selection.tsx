@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  SafeAreaView,
   ActivityIndicator,
   Pressable,
 } from "react-native";
@@ -16,6 +15,7 @@ import PrimaryText from "@/components/PrimaryText";
 import i18next from "i18next";
 import i18n from "@/i18n";
 import { LANGUAGE_KEY } from "@/constants/storage_keys";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SUPPORTED_LANGUAGES = [
   { code: "en", name: "English", englishName: "English" },

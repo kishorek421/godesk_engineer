@@ -7,6 +7,7 @@ import {
   Text,
   Platform,
   StatusBar,
+  LogBox,
 } from "react-native";
 import { DeviceEventEmitter } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -71,7 +72,6 @@ export const Layout = () => {
       }
 
       setAllNotifications(allNotifications);
-      console.log("Total unread notifications:", totalUnread);
       setUnreadCount(totalUnread);
     } catch (err) {
       console.error("Error fetching notifications:", err);
@@ -90,6 +90,19 @@ export const Layout = () => {
     });
     return () => sub.remove();
   }, []);
+
+LogBox.ignoreAllLogs(true);
+
+if (!__DEV__) {
+  global.console = {
+    ...console,
+    log: () => {},
+    warn: () => {},
+    error: () => {},
+    info: () => {},
+    debug: () => {},
+  };
+}
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

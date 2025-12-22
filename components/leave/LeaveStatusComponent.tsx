@@ -19,7 +19,7 @@ const LeaveStatusComponent = ({
       case REJECTED:
         return "text-red-500 bg-red-100";
       case RAISED:
-        // console.log("statusKey", statusKey);
+        // //console.log("statusKey", statusKey);
         return "text-blue-500 bg-blue-100";
       case APPROVED:
         return "text-primary-950 bg-primary-100";

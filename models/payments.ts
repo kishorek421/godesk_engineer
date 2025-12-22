@@ -9,7 +9,7 @@ import {
   export interface OrderProductsForTicketModel {
     id?: string;
     ticketId?: string;
-    itemDetails?: ItemDetailsModel;
+    itemDetails?: ItemDetailsModel[];
     quantity?: number;
     discount?: string;
     finalPrice?: string;

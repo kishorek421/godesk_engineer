@@ -250,7 +250,7 @@ const PrimaryDropdownField = ({
                     <Pressable
                       className="p-3 border-b border-gray-200"
                       onPress={() => {
-                        console.log("item ------>", item);
+                        //console.log("item ------>", item);
                         onItemSelect(type, item.value);
                         setVisible(false);
                       }}

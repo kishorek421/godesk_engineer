@@ -122,18 +122,18 @@ const LoginScreen = () => {
 
     setCanValidateField(true);
 
-    console.log("login validataion promise before");
+    //console.log("login validataion promise before");
 
     // Wait for all validations to complete
     await Promise.all(validationPromises);
 
-    console.log("login validataion promise after");
+    //console.log("login validataion promise after");
 
     const allValid = errors
       .map((error) => error.message?.length === 0)
       .every((status) => status === true);
 
-    console.log("error", errors);
+    //console.log("error", errors);
 
     if (allValid) {
       setErrors([]);
@@ -143,14 +143,14 @@ const LoginScreen = () => {
 
       try {
         fcmToken = (await getFCMToken(messagingRef.current)) ?? "";
-        console.log("fcmToken", fcmToken);
+        //console.log("fcmToken", fcmToken);
         await setItem(TEMP_FCM_TOKEN, fcmToken);
       } catch (e) {
         console.error("Token Error ->", e);
       }
 
       const oldFCMToken = await getItem(TEMP_FCM_TOKEN);
-      console.log("oldFCMToken", oldFCMToken);
+      //console.log("oldFCMToken", oldFCMToken);
       const reqBody = {
         key: "FIELD_ENGINEER",
         mobile,
@@ -158,7 +158,7 @@ const LoginScreen = () => {
         fcmToken,
       };
 
-      console.log("Request Body:", reqBody);
+      //console.log("Request Body:", reqBody);
 
       await api
         .post("/login/user_login", reqBody)
@@ -166,10 +166,10 @@ const LoginScreen = () => {
           if (response.data?.success) {
             const loginData = response.data?.data;
             if (loginData && loginData.token) {
-              console.log("loginData ->", loginData.token);
+              //console.log("loginData ->", loginData.token);
               await setItem(AUTH_TOKEN_KEY, loginData.token);
               await setItem(REFRESH_TOKEN_KEY, loginData.refreshToken);
-              console.log("AUTH_TOKEN_KEY ->", await getItem(AUTH_TOKEN_KEY));
+              //console.log("AUTH_TOKEN_KEY ->", await getItem(AUTH_TOKEN_KEY));
               router.dismissAll();
               router.replace("/(root)/home");
             }

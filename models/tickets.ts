@@ -21,6 +21,7 @@ export interface TicketListItemModel {
   assetInUseDetails?: AssetInUseListItemModel;
   assetSubTypeDetails?: AssetSubTypeListItemModel;
   statusDetails?: ConfigurationModel;
+  subStatusDetails?:ConfigurationModel;
   priorityDetails?: ConfigurationModel;
   ticketTypeDetails?: ConfigurationModel;
   serviceTypeDetails?: ConfigurationModel;

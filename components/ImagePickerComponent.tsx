@@ -35,7 +35,7 @@ const ImagePickerComponent: React.FC<ImagePickerComponentProps> = ({
     if (Platform.OS !== "web") {
       switch (pickerPermissions) {
         case PickerPermissions.CAMERA:
-          console.log("cameraPermissionStatus", cameraPermissionStatus);
+          //console.log("cameraPermissionStatus", cameraPermissionStatus);
           // accessPrivileges - 'all' | 'limited' | 'none'
           if (cameraPermissionStatus?.granted) {
             return true;

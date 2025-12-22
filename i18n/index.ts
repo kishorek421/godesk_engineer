@@ -87,7 +87,7 @@ export const translateText = async (
     }
 
     if (toLang === "en") {
-      console.log("Target language is English — skipping translation.");
+      //console.log("Target language is English — skipping translation.");
       return text;
     }
 
@@ -96,21 +96,21 @@ export const translateText = async (
     // const cacheKey = `translation_${toLang}_${text}`;
     // const cached = await getItem(cacheKey);
 
-    // console.log("cacheKey", cacheKey);
+    // //console.log("cacheKey", cacheKey);
 
     // if (cached) {
-    //   console.log("Using cached translation:", cached);
+    //   //console.log("Using cached translation:", cached);
     //   return cached;
     // }
 
-    console.log("Calling translation API with:", { text, toLang });
+    //console.log("Calling translation API with:", { text, toLang });
 
     const params = {
       text: text,
       languageCode: lng,
     };
 
-    console.log("params", params);
+    //console.log("params", params);
 
     const res = await apiClient.get(`/language/translate`, {
       params: params,
@@ -118,7 +118,7 @@ export const translateText = async (
 
     const translated = res.data?.data?.convertedText;
 
-    console.log("translated", translated);
+    //console.log("translated", translated);
 
     if (!translated || typeof translated !== "string") {
       console.warn(

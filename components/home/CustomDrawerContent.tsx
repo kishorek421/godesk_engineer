@@ -55,7 +55,7 @@ const CustomDrawerContent = (props: any) => {
           <DrawerItem
             label={t("Change PIN")}
             icon={({ color, size }) => (
-              <AntDesign name="lock" size={size} color={primaryColor} />
+              <Ionicons name="lock-closed" size={size} color={primaryColor} />
             )}
             onPress={() => router.push("/change_password")}
           />
@@ -160,7 +160,7 @@ const CustomDrawerContent = (props: any) => {
                   [
                     {
                       text: "Cancel",
-                      onPress: () => console.log("Cancel Pressed"),
+                      onPress: () => //console.log("Cancel Pressed"),
                     },
                     {
                       text: "OK",
