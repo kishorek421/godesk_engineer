@@ -37,6 +37,7 @@ export interface TicketListItemModel {
   lastAssignedToDetails?: AssignedToUserDetailsModel;
   location?: LocationModel;
   pin?: string;
+  subscription?:boolean;
   customersDetails?:CustomerDetailsModel;
   userTypeDetails?: ConfigurationModel;
   paymentModeDetails?: ConfigurationModel;

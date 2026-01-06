@@ -143,7 +143,6 @@ const TicketDetails = () => {
         {
           value: "CUSTOMER_NOT_RESPONDING",
           label: "Customer not responding",
-          requiresAcknowledgment: true,
         },
       ];
     }
@@ -163,7 +162,11 @@ const TicketDetails = () => {
         return [
           { value: "TICKET_CLOSED", label: "Close" },
           { value: "SPARE_REQUIRED", label: "Spare Required" },
-          { value: "CANNOT_RESOLVE", label: "Cannot Resolve & Close Ticket" },
+          {
+            value: "CANNOT_RESOLVE",
+            label: "Cannot Resolve & Close Ticket",
+            requiresAcknowledgment: true,
+          },
         ];
       }
     }
@@ -297,7 +300,21 @@ const TicketDetails = () => {
       "CANNOT_RESOLVE",
       "TICKET_CLOSED",
       "TRANSFER_TO_OTHER",
+      "WORK_COMPLETED",
     ].includes(selectedStatusKey);
+
+    const requiresPin =
+      selectedStatusKey === "WORK_COMPLETED"
+        ? ticketDetails?.subscription === true
+        : true;
+
+    if (requiresOtp && requiresPin && !otp.trim()) {
+      currentErrors.push({
+        param: "customerOTP",
+        message: "Pin is required for the selected status",
+      });
+    }
+
     const requiresAcknowledgment = [
       "CANNOT_RESOLVE",
       "TRANSFER_TO_OTHER",
@@ -321,13 +338,6 @@ const TicketDetails = () => {
       currentErrors.push({
         param: "assetImages",
         message: "At least one asset image is required",
-      });
-    }
-
-    if (requiresOtp && !otp.trim()) {
-      currentErrors.push({
-        param: "customerOTP",
-        message: "Pin is required for the selected status",
       });
     }
 
@@ -378,7 +388,7 @@ const TicketDetails = () => {
         location: { latitude, longitude },
         pincode,
         description: description?.trim(),
-        pin: requiresOtp ? otp.trim() : null,
+        pin: requiresPin ? otp.trim() : null,
         assetImages: uploadedAssetImages,
         paymentMode: "cce2e5f5-340d-410a-9074-1ec72ace1e18", // or your logic
       };
@@ -955,6 +965,7 @@ const TicketDetails = () => {
                           {t("assetImages")}{" "}
                           {[
                             "IN_PROGRESS",
+
                             "SPARE_REQUIRED",
                             "CANNOT_RESOLVE",
                             "TICKET_CLOSED",
@@ -1047,34 +1058,42 @@ const TicketDetails = () => {
                       "CANNOT_RESOLVE",
                       "TICKET_CLOSED",
                       "TRANSFER_TO_OTHER",
-                    ].includes(selectedStatusKey ?? "") && (
-                      <View>
-                        <PrimaryTextFormField
-                          fieldName="customerOTP"
-                          label="customerOtp"
-                          placeholder="enterCustomerOtp"
-                          errors={errors}
-                          setErrors={setErrors}
-                          min={4}
-                          max={4}
-                          defaultValue={otp}
-                          isRequired={[
-                            "IN_PROGRESS",
-                            "SPARE_REQUIRED",
-                            "CANNOT_RESOLVE",
-                            "TICKET_CLOSED",
-                            "TRANSFER_TO_OTHER",
-                          ].includes(selectedStatusKey ?? "")}
-                          keyboardType="phone-pad"
-                          filterExp={/^[0-9]*$/}
-                          canValidateField={canValidateField}
-                          setCanValidateField={setCanValidateField}
-                          setFieldValidationStatus={setFieldValidationStatus}
-                          validateFieldFunc={setFieldValidationStatusFunc}
-                          onChangeText={(value: string) => setOtp(value)}
-                        />
-                      </View>
-                    )}
+                      "WORK_COMPLETED",
+                    ].includes(selectedStatusKey ?? "") &&
+                      (selectedStatusKey !== "WORK_COMPLETED" ||
+                        ticketDetails?.subscription === true) && (
+                        <View>
+                          <PrimaryTextFormField
+                            fieldName="customerOTP"
+                            label="customerOtp"
+                            placeholder="enterCustomerOtp"
+                            errors={errors}
+                            setErrors={setErrors}
+                            min={4}
+                            max={4}
+                            defaultValue={otp}
+                            isRequired={
+                              [
+                                "IN_PROGRESS",
+                                "SPARE_REQUIRED",
+                                "CANNOT_RESOLVE",
+                                "TICKET_CLOSED",
+                                "TRANSFER_TO_OTHER",
+                                "WORK_COMPLETED",
+                              ].includes(selectedStatusKey ?? "") &&
+                      (selectedStatusKey !== "WORK_COMPLETED" ||
+                        ticketDetails?.subscription === true)
+                            }
+                            keyboardType="phone-pad"
+                            filterExp={/^[0-9]*$/}
+                            canValidateField={canValidateField}
+                            setCanValidateField={setCanValidateField}
+                            setFieldValidationStatus={setFieldValidationStatus}
+                            validateFieldFunc={setFieldValidationStatusFunc}
+                            onChangeText={(value: string) => setOtp(value)}
+                          />
+                        </View>
+                      )}
                     {["CANNOT_RESOLVE", "TRANSFER_TO_OTHER"].includes(
                       selectedStatusKey
                     ) ? (
