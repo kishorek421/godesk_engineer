@@ -1081,8 +1081,8 @@ const TicketDetails = () => {
                                 "TRANSFER_TO_OTHER",
                                 "WORK_COMPLETED",
                               ].includes(selectedStatusKey ?? "") &&
-                      (selectedStatusKey !== "WORK_COMPLETED" ||
-                        ticketDetails?.subscription === true)
+                              (selectedStatusKey !== "WORK_COMPLETED" ||
+                                ticketDetails?.subscription === true)
                             }
                             keyboardType="phone-pad"
                             filterExp={/^[0-9]*$/}
