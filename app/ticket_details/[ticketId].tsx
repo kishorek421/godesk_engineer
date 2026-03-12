@@ -167,6 +167,11 @@ const TicketDetails = () => {
             label: "Cannot Resolve & Close Ticket",
             requiresAcknowledgment: true,
           },
+          {
+            value: "TRANSFER_TO_OTHER",
+            label: "Transfer To Another Engineer",
+            requiresAcknowledgment: true,
+          },
         ];
       }
     }
@@ -393,7 +398,7 @@ const TicketDetails = () => {
         paymentMode: "cce2e5f5-340d-410a-9074-1ec72ace1e18", // or your logic
       };
 
-      //console.log("Updating ticket with:", requestBody);
+      console.log("Updating ticket with:", requestBody);
 
       const updateResponse = await apiClient.put(
         `${UPDATE_TICKET_STATUS}?ticketId=${ticketId}`,
