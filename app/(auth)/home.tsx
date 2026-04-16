@@ -129,33 +129,33 @@ useEffect(() => {
   };
 
   // START LOCATION TRACKING LOGIC
-  useEffect(() => {
-    console.log(
-      "isForegroundLocationPermissionAllowed ------------------>",
-      isForegroundLocationPermissionAllowed
-    );
-    console.log(
-      "isBackgroundLocationPermissionAllowed ------------------>",
-      isBackgroundLocationPermissionAllowed
-    );
+  // useEffect(() => {
+  //   console.log(
+  //     "isForegroundLocationPermissionAllowed ------------------>",
+  //     isForegroundLocationPermissionAllowed
+  //   );
+  //   console.log(
+  //     "isBackgroundLocationPermissionAllowed ------------------>",
+  //     isBackgroundLocationPermissionAllowed
+  //   );
 
-    if (
-      isForegroundLocationPermissionAllowed &&
-      isBackgroundLocationPermissionAllowed
-    ) {
-      if (inProgressTicketDetails?.id) {
-        startBackgroundLocationTracking();
-      } else {
-        startForegroundLocationTracking();
-      }
-    } else if (isForegroundLocationPermissionAllowed) {
-      startForegroundLocationTracking();
-    }
-  }, [
-    isForegroundLocationPermissionAllowed,
-    isBackgroundLocationPermissionAllowed,
-    inProgressTicketDetails?.id,
-  ]);
+  //   if (
+  //     isForegroundLocationPermissionAllowed &&
+  //     isBackgroundLocationPermissionAllowed
+  //   ) {
+  //     if (inProgressTicketDetails?.id) {
+  //       startBackgroundLocationTracking();
+  //     } else {
+  //       startForegroundLocationTracking();
+  //     }
+  //   } else if (isForegroundLocationPermissionAllowed) {
+  //     startForegroundLocationTracking();
+  //   }
+  // }, [
+  //   isForegroundLocationPermissionAllowed,
+  //   isBackgroundLocationPermissionAllowed,
+  //   inProgressTicketDetails?.id,
+  // ]);
 
   // EXIT APP ON DOUBLE BACK PRESS
   const handleDoubleClick = () => {

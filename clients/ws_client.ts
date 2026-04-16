@@ -19,7 +19,7 @@
 //   }
 
 //   private async initWs(url: string) {
-//     //console.log("-------------------------------------------------->initWs");
+//     console.log("-------------------------------------------------->initWs");
 
 //     // fetch token from getItem
 //     let token = await getItem(AUTH_TOKEN_KEY);
@@ -33,13 +33,13 @@
 //         // Sentry.captureMessage(`token invalid -> ${(e as AxiosError)?.response?.data}`);
 //         try {
 //           const refreshToken = await getItem(REFRESH_TOKEN_KEY);
-//           //console.log("refreshToken", refreshToken);
+//           console.log("refreshToken", refreshToken);
 //           const response = await axios.get(
 //             BASE_URL + "/login/refresh_token" + `?refreshToken=${refreshToken}`
 //           );
 //           const newToken = response.data?.data?.accessToken;
 //           await setItem(AUTH_TOKEN_KEY, newToken);
-//           //console.log("newToken", newToken);
+//           console.log("newToken", newToken);
 //           token = newToken;
 //         } catch (e) {
 //           console.error("Refresh token error");
@@ -49,16 +49,16 @@
 //         }
 //       }
 
-//       this.ws = new WebSocket(url + "?token=Bearer " + token);
+//       this.ws = new WebSocket(url + "?token=Bearer_" + token);
 
 //       this.ws.onopen = () => {
-//         //console.log("WebSocket connection opened.");
+//         console.log("WebSocket connection opened.");
 //         this.isWsOpened = true;
 //         this.onOpenListeners.forEach((listener) => listener());
 //       };
 
 //       this.ws.onmessage = (message: MessageEvent) => {
-//         //console.log("WebSocket message received:", message.data);
+//         console.log("WebSocket message received:", message.data);
 //         this.listeners.forEach((listener) => listener(message));
 //       };
 
@@ -68,7 +68,7 @@
 
 //       this.ws.onclose = () => {
 //         this.isWsOpened = false;
-//         //console.log("WebSocket connection closed.");
+//         console.log("WebSocket connection closed.");
 //       };
 //     }
 //   }
@@ -84,7 +84,7 @@
 //     if (this.ws?.readyState === WebSocket.OPEN) {
 //       try {
 //         this.ws.send(JSON.stringify(message));
-//         //console.log("WebSocket message sent successfully:", message);
+//         console.log("WebSocket message sent successfully:", message);
 //       } catch (error) {
 //         console.error("Error sending WebSocket message:", error);
 //       }

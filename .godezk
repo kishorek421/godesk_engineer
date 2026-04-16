@@ -1,0 +1,236 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": 1776321267988,
+  "workspaceRoot": "c:\\RN\\godesk_engineer",
+  "alwaysIncludeFiles": [],
+  "filePatterns": [
+    {
+      "pattern": "**/*.ts",
+      "include": true,
+      "description": "TypeScript files"
+    },
+    {
+      "pattern": "**/*.tsx",
+      "include": true,
+      "description": "TypeScript React files"
+    },
+    {
+      "pattern": "**/*.js",
+      "include": true,
+      "description": "JavaScript files"
+    },
+    {
+      "pattern": "**/*.jsx",
+      "include": true,
+      "description": "JavaScript React files"
+    },
+    {
+      "pattern": "**/*.json",
+      "include": true,
+      "description": "JSON config files"
+    },
+    {
+      "pattern": "app/**/*.{ts,tsx}",
+      "include": true,
+      "description": "App routing files"
+    },
+    {
+      "pattern": "components/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Component files"
+    },
+    {
+      "pattern": "contexts/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Context providers"
+    },
+    {
+      "pattern": "models/**/*.{ts,tsx}",
+      "include": true,
+      "description": "TypeScript models"
+    },
+    {
+      "pattern": "constants/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Configuration constants"
+    },
+    {
+      "pattern": "hooks/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Custom hooks"
+    },
+    {
+      "pattern": "utils/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Utility functions"
+    },
+    {
+      "pattern": "services/**/*.{ts,tsx}",
+      "include": true,
+      "description": "External services"
+    },
+    {
+      "pattern": "i18n/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Internationalization"
+    },
+    {
+      "pattern": "clients/**/*.{ts,tsx}",
+      "include": true,
+      "description": "API clients"
+    },
+    {
+      "pattern": "**/package.json",
+      "include": true,
+      "description": "Package configuration"
+    },
+    {
+      "pattern": "**/tsconfig.json",
+      "include": true,
+      "description": "TypeScript config"
+    },
+    {
+      "pattern": "**/app.json",
+      "include": true,
+      "description": "Expo app config"
+    },
+    {
+      "pattern": "**/*.test.{ts,tsx}",
+      "include": false,
+      "description": "Test files"
+    },
+    {
+      "pattern": "**/*.spec.{ts,tsx}",
+      "include": false,
+      "description": "Spec files"
+    },
+    {
+      "pattern": "**/node_modules/**",
+      "include": false,
+      "description": "Node modules"
+    },
+    {
+      "pattern": "**/.expo/**",
+      "include": false,
+      "description": "Expo cache"
+    },
+    {
+      "pattern": "**/dist/**",
+      "include": false,
+      "description": "Build output"
+    },
+    {
+      "pattern": "**/.git/**",
+      "include": false,
+      "description": "Git files"
+    },
+    {
+      "pattern": "**/*.md",
+      "include": true,
+      "description": "Markdown documentation"
+    },
+    {
+      "pattern": "**/README.md",
+      "include": true,
+      "description": "README files"
+    },
+    {
+      "pattern": "app/**/*.{ts,tsx}",
+      "include": true,
+      "description": "App routing files"
+    },
+    {
+      "pattern": "components/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Component files"
+    },
+    {
+      "pattern": "contexts/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Context providers"
+    },
+    {
+      "pattern": "hooks/**/*.{ts,tsx}",
+      "include": true,
+      "description": "Custom hooks"
+    },
+    {
+      "pattern": "**/.expo/**",
+      "include": false,
+      "description": "Expo cache"
+    }
+  ],
+  "languageStyles": [
+    {
+      "language": "typescript",
+      "style": "strict",
+      "conventions": [
+        "Use TypeScript strict mode",
+        "Always use explicit types for function return values",
+        "Use interface for object shapes and extensible definitions",
+        "Use type for unions, primitives, and computed types",
+        "Suffix model interfaces with \"Model\" (e.g., UserDetailsModel, TicketListItemModel)",
+        "Suffix props interfaces with \"Props\" (e.g., PrimaryTextFormFieldProps)",
+        "Never use any - use proper typing or unknown",
+        "Use optional chaining (?. ) and nullish coalescing (?? ) operators",
+        "Always define interfaces for component props",
+        "Prefer const over let, never use var",
+        "Use arrow functions for callbacks",
+        "Use async/await over promises"
+      ],
+      "preferences": {
+        "tabSize": 2,
+        "semicolons": true,
+        "quotes": "single"
+      }
+    },
+    {
+      "language": "javascript",
+      "style": "es6",
+      "conventions": [
+        "Use ES6+ features",
+        "Prefer const over let",
+        "Use arrow functions for callbacks",
+        "Use template literals over string concatenation",
+        "Use destructuring for objects and arrays"
+      ],
+      "preferences": {
+        "tabSize": 2,
+        "semicolons": true,
+        "quotes": "single"
+      }
+    }
+  ],
+  "projectInstructions": "# Project Analysis\n\n## Detected Technologies\n- React Native\n- Expo\n- Expo Router\n- NativeWind\n- TypeScript\n\n## Project Structure\n- android/\n- app/\n- assets/\n- clients/\n- components/\n- config/\n- constants/\n- context/\n- enums/\n- hooks/\n- i18n/\n- ios/\n- models/\n- services/\n- utils/\n\n## Code Style Guidelines\n- Follow consistent formatting throughout the project\n- Use meaningful variable and function names\n- Add comments for complex logic\n- Write clean, maintainable code\n\n## TypeScript Guidelines\n- Use strict type checking\n- Define interfaces for complex types\n- Avoid using `any` type\n- Use proper type annotations\n\n## React Guidelines\n- Use functional components with hooks\n- Follow React best practices\n- Implement proper error handling\n- Use memoization for performance\n\n",
+  "fileStructure": [
+    "android/",
+    "app/",
+    "assets/",
+    "clients/",
+    "components/",
+    "config/",
+    "constants/",
+    "context/",
+    "enums/",
+    "hooks/",
+    "i18n/",
+    "ios/",
+    "models/",
+    "services/",
+    "utils/"
+  ],
+  "detectedTechnologies": [
+    "React Native",
+    "Expo",
+    "Expo Router",
+    "NativeWind",
+    "TypeScript"
+  ],
+  "preferences": {
+    "autoIncludeRelatedFiles": true,
+    "maxContextFiles": 10,
+    "maxFileSize": 50000,
+    "includeTests": false,
+    "includeDocs": true
+  }
+}

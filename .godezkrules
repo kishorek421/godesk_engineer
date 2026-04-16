@@ -1,0 +1,44 @@
+# Project Analysis
+
+## Detected Technologies
+- React Native
+- Expo
+- Expo Router
+- NativeWind
+- TypeScript
+
+## Project Structure
+- android/
+- app/
+- assets/
+- clients/
+- components/
+- config/
+- constants/
+- context/
+- enums/
+- hooks/
+- i18n/
+- ios/
+- models/
+- services/
+- utils/
+
+## Code Style Guidelines
+- Follow consistent formatting throughout the project
+- Use meaningful variable and function names
+- Add comments for complex logic
+- Write clean, maintainable code
+
+## TypeScript Guidelines
+- Use strict type checking
+- Define interfaces for complex types
+- Avoid using `any` type
+- Use proper type annotations
+
+## React Guidelines
+- Use functional components with hooks
+- Follow React best practices
+- Implement proper error handling
+- Use memoization for performance
+
